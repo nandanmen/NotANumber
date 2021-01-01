@@ -1,0 +1,65 @@
+import Visualizer from "../components/Visualizer";
+import Hello from "../components/Hello";
+
+# The Sliding Window Pattern
+
+The sliding window pattern is a neat and simple pattern to optimize problems involving _subarrays_. Let's go over a simple problem to see how this can be useful.
+
+For this problem, we are given an array `arr`, and a subarray size `k`, and we are asked to find the _average_ of _all_ subarrays in `arr` of size `k`. So given an array like `[1, 2, 3, 4]` and a subarray size `k = 2`, the correct answer would be `[1.5, 2.5, 3.5]` because:
+
+- `[1, 2, 3, 4]` has three subarrays of size 2, namely `[1, 2], [2, 3], [3, 4]`.
+- The average of the first subarray is `1 + 2 / 2 = 1.5`, the average of the second is `2.5` (using the same formula), and the average of the third is `3.5`.
+- Putting this together we get the final result `[1.5, 2.5, 3.5]`.
+
+Given these steps, it seems pretty clear that in designing an algorithm to solve this problem we would have to (1) iterate through every subarray then (2) find the average of each and append it to the result array.
+
+A straightforward way to find every subarray of an array is to iterate through each index of the array and _construct_ the subarray that begins at that index by iterating `k` more times. In this second iteration we can also sum up the numbers to compute the resulting average. Here's what that would look like:
+
+<Visualizer Component={Hello} initialInputs={[[1, 2, 3, 4], 2]} controls autoplay>
+
+```js
+export default (arr) => {
+  let sum = 0;
+  const window = [];
+  for (let i = 1; i < 4; i++) {
+    sum += arr[i];
+    window.push(i);
+    debugger;
+  }
+  return sum;
+};
+```
+
+</Visualizer>
+
+Doing that for _every_ index in the array, we get the final algorithm:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4], 2]}
+  caption="This is an interactive demo! Press the pencil icon to change the values of arr and k."
+>
+
+```js
+export default (arr, k) => {
+  const result = [];
+  for (let i = 0; i <= arr.length - k; i++) {
+    let sum = 0;
+    debugger;
+    for (let j = 0; j < k; j++) {
+      sum += arr[i + j];
+      debugger;
+    }
+    result.push(sum / k);
+  }
+  debugger;
+  return result;
+};
+```
+
+</Visualizer>
+
+Notice the number on the bottom right of the animation. This number represents the total number of steps required to compute the result given the inputs `arr` and `k`. Try adding two more items and see how that number changes—it went up, by a _lot_.
+
+Is there a better way?
+
+Looking back at the algorithm, notice that in some cases we're needlessly recalculating the sum.

@@ -1,8 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: "Karla", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -13,4 +17,39 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+article {
+  @apply w-full grid;
+  grid-template-columns: 1fr 2rem 40rem 2rem 1fr;
+}
+
+article > * {
+  grid-column: 3 / span 1;
+  margin-bottom: 1em;
+}
+
+article > p {
+  line-height: 1.6;
+}
+
+h1 {
+  @apply text-4xl font-serif font-semibold text-center;
+}
+
+ul,
+ol {
+  padding: 0 1.1em;
+}
+
+ul {
+  list-style: initial;
+}
+
+ol {
+  list-style: decimal;
+}
+
+code {
+  @apply bg-gray-200 rounded-md p-1 text-sm;
 }
