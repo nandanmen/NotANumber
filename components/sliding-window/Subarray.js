@@ -5,7 +5,7 @@ export default ({ state }) => {
     <>
       <div className="flex w-full justify-center">
         {state.arr.map((item, index) => (
-          <Item key={index} variant={state.window.includes(index) ? "show" : "hide"}>
+          <Item key={index} active={state.window.includes(index)}>
             {item}
           </Item>
         ))}

@@ -14,6 +14,7 @@ export default function Visualizer({
   initialInputs = [],
   controls,
   editable,
+  readOnly,
 }) {
   const code = getCodeText(children);
   const [showForm, toggle] = React.useReducer((show) => !show, false);
@@ -23,7 +24,7 @@ export default function Visualizer({
   return (
     <div style={{ gridColumn: "2 / -2" }} className="mt-4 mb-8 z-0">
       <div
-        className={clsx("p-8 rounded-2xl relative z-20", {
+        className={clsx("px-8 py-16 rounded-2xl relative z-20", {
           "bg-gray-200": Component,
           "bg-yellow-200": !Component,
         })}
@@ -34,37 +35,43 @@ export default function Visualizer({
             <div>
               <Component {...context.models} />
             </div>
-            <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
-              <div>
-                <Button className="mr-1" onClick={context.actions.toggle}>
-                  {isPlaying ? (
-                    <BsPauseFill />
-                  ) : state.__done ? (
-                    <span className="text-sm">
-                      <FaUndo />
-                    </span>
-                  ) : (
-                    <BsPlayFill />
+            {!readOnly && (
+              <>
+                <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
+                  <div>
+                    <Button className="mr-1" onClick={context.actions.toggle}>
+                      {isPlaying ? (
+                        <BsPauseFill />
+                      ) : state.__done ? (
+                        <span className="text-sm">
+                          <FaUndo />
+                        </span>
+                      ) : (
+                        <BsPlayFill />
+                      )}
+                    </Button>
+                    {controls && (
+                      <>
+                        <Button className="mr-1" onClick={context.actions.prev}>
+                          <HiArrowLeft />
+                        </Button>
+                        <Button className="mr-1" onClick={context.actions.next}>
+                          <HiArrowRight />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  {editable && (
+                    <Button onClick={toggle}>
+                      {showForm ? <HiX /> : <HiPencil />}
+                    </Button>
                   )}
-                </Button>
-                {controls && (
-                  <>
-                    <Button className="mr-1" onClick={context.actions.prev}>
-                      <HiArrowLeft />
-                    </Button>
-                    <Button className="mr-1" onClick={context.actions.next}>
-                      <HiArrowRight />
-                    </Button>
-                  </>
-                )}
-              </div>
-              {editable && (
-                <Button onClick={toggle}>{showForm ? <HiX /> : <HiPencil />}</Button>
-              )}
-            </div>
-            <p className="absolute right-5 top-4 text-gray-500">
-              {steps.indexOf(state) + 1} / {steps.length}
-            </p>
+                </div>
+                <p className="absolute right-5 top-4 text-gray-500">
+                  {steps.indexOf(state) + 1} / {steps.length}
+                </p>
+              </>
+            )}
           </>
         )}
       </div>
@@ -89,7 +96,7 @@ export default function Visualizer({
           animate="show"
         />
       )}
-      {caption && <p className="text-center text-sm mt-6">{caption}</p>}
+      {caption && <p className="text-center text-sm mt-4">{caption}</p>}
     </div>
   );
 }

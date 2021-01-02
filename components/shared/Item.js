@@ -12,11 +12,11 @@ const variants = {
   },
 };
 
-export default function Item({ variant = "show", className, ...props }) {
+export default function Item({ variant = "base", className, active, ...props }) {
   return (
     <motion.div
       variants={variants}
-      animate={variant}
+      animate={active ? "show" : "hide"}
       transition={{
         scale: {
           type: "spring",
@@ -24,7 +24,11 @@ export default function Item({ variant = "show", className, ...props }) {
         },
       }}
       className={clsx(
-        "w-12 h-12 rounded-lg bg-green-400 text-white font-semibold flex items-center justify-center mr-2",
+        "w-12 h-12 rounded-lg text-white font-semibold flex items-center justify-center mr-2",
+        {
+          "bg-green-400": variant === "base",
+          "bg-red-500": variant === "danger",
+        },
         className
       )}
       {...props}

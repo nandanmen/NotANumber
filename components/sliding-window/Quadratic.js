@@ -10,7 +10,7 @@ export default ({ state, inputs }) => {
           {state.arr.map((item, index) => (
             <Item
               key={index}
-              variant={(state.subarray || []).includes(index) ? "show" : "hide"}
+              active={index >= state.i && index <= state.i + state.j}
               className="relative"
             >
               {item}
