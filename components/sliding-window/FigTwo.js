@@ -2,7 +2,7 @@ import { motion, AnimateSharedLayout } from "framer-motion";
 import { BsTriangleFill } from "react-icons/bs";
 import Item from "../shared/Item";
 
-export default ({ state }) => {
+export default ({ state, inputs }) => {
   return (
     <>
       <div className="flex w-full justify-center">
@@ -29,9 +29,8 @@ export default ({ state }) => {
           ))}
         </AnimateSharedLayout>
       </div>
-      <p className="font-mono w-full text-center mt-4">
-        {JSON.stringify(state.result)}
-      </p>
+      <p className="font-mono w-full text-center mt-4">k = {inputs[1]}</p>
+      <p className="font-mono w-full text-center">{JSON.stringify(state.result)}</p>
     </>
   );
 };

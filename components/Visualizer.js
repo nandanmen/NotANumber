@@ -1,7 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-import { HiArrowLeft, HiArrowRight, HiPencil, HiCheck, HiX } from "react-icons/hi";
+import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from "react-icons/hi";
 import { BsPlayFill, BsPauseFill } from "react-icons/bs";
+import { FaUndo } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import useAlgorithm from "../lib/useAlgorithm";
@@ -14,14 +15,15 @@ export default function Visualizer({
   controls,
   editable,
 }) {
+  const code = getCodeText(children);
   const [showForm, toggle] = React.useReducer((show) => !show, false);
-  const context = useAlgorithm(getCodeText(children), initialInputs);
+  const context = useAlgorithm(code, initialInputs);
   const { state, steps, isPlaying, inputs, params } = context.models;
 
   return (
-    <div style={{ gridColumn: "2 / -2" }} className="mt-4 mb-8">
+    <div style={{ gridColumn: "2 / -2" }} className="mt-4 mb-8 z-0">
       <div
-        className={clsx("p-8 rounded-2xl relative", {
+        className={clsx("p-8 rounded-2xl relative z-20", {
           "bg-gray-200": Component,
           "bg-yellow-200": !Component,
         })}
@@ -30,35 +32,36 @@ export default function Visualizer({
         {Component && (
           <>
             <div>
-              <Component state={state} />
+              <Component {...context.models} />
             </div>
-            {controls && (
-              <div className="absolute left-0 w-full px-4 text-gray-500 transform translate-y-2 flex justify-between">
-                <div>
-                  <Button className="mr-1" onClick={context.actions.toggle}>
-                    {isPlaying ? <BsPauseFill /> : <BsPlayFill />}
-                  </Button>
-                  <Button className="mr-1" onClick={context.actions.prev}>
-                    <HiArrowLeft />
-                  </Button>
-                  <Button onClick={context.actions.next}>
-                    <HiArrowRight />
-                  </Button>
-                </div>
-                {editable && (
-                  <div>
-                    {showForm && (
-                      <Button>
-                        <HiCheck />
-                      </Button>
-                    )}
-                    <Button onClick={toggle}>
-                      {showForm ? <HiX /> : <HiPencil />}
+            <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
+              <div>
+                <Button className="mr-1" onClick={context.actions.toggle}>
+                  {isPlaying ? (
+                    <BsPauseFill />
+                  ) : state.__done ? (
+                    <span className="text-sm">
+                      <FaUndo />
+                    </span>
+                  ) : (
+                    <BsPlayFill />
+                  )}
+                </Button>
+                {controls && (
+                  <>
+                    <Button className="mr-1" onClick={context.actions.prev}>
+                      <HiArrowLeft />
                     </Button>
-                  </div>
+                    <Button className="mr-1" onClick={context.actions.next}>
+                      <HiArrowRight />
+                    </Button>
+                  </>
                 )}
               </div>
-            )}
+              {editable && (
+                <Button onClick={toggle}>{showForm ? <HiX /> : <HiPencil />}</Button>
+              )}
+            </div>
             <p className="absolute right-5 top-4 text-gray-500">
               {steps.indexOf(state) + 1} / {steps.length}
             </p>
@@ -71,6 +74,19 @@ export default function Visualizer({
           onSubmit={(inputs) =>
             context.actions.setInputs(inputs.map((entry) => entry[1]))
           }
+          className="z-10"
+          variants={{
+            show: {
+              y: 0,
+              opacity: 1,
+            },
+            hide: {
+              y: "-100%",
+              opacity: 0,
+            },
+          }}
+          initial="hide"
+          animate="show"
         />
       )}
       {caption && <p className="text-center text-sm mt-6">{caption}</p>}
@@ -82,7 +98,7 @@ function Button({ className, ...props }) {
   return (
     <button
       className={clsx(
-        "shadow-md rounded-lg bg-gray-100 p-2 font-semibold text-gray-500",
+        "shadow-md rounded-lg bg-gray-100 w-8 h-8 flex items-center justify-center font-semibold text-gray-500",
         className
       )}
       {...props}
@@ -90,7 +106,7 @@ function Button({ className, ...props }) {
   );
 }
 
-function InputForm({ inputs, onSubmit, className }) {
+function InputForm({ inputs, onSubmit, className, ...props }) {
   const [errors, setErrors] = React.useState({});
 
   const handleSubmit = (evt) => {
@@ -116,6 +132,7 @@ function InputForm({ inputs, onSubmit, className }) {
     <motion.form
       className={clsx("flex w-3/4 mx-auto mt-6", className)}
       onSubmit={handleSubmit}
+      {...props}
     >
       {inputs.map(([name, value]) => (
         <label key={name} className="font-mono flex-1 mx-1">

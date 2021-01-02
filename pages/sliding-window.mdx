@@ -16,7 +16,7 @@ Given these steps, it seems pretty clear that in designing an algorithm to solve
 
 A straightforward way to find every subarray of an array is to iterate through each index of the array and _construct_ the subarray that begins at that index by iterating `k` more times. In this second iteration we can also sum up the numbers to compute the resulting average. Here's what that would look like:
 
-<Visualizer Component={Figures.One} initialInputs={[[1, 2, 3, 4], 2]} controls>
+<Visualizer Component={Figures.One} initialInputs={[[1, 2, 3, 4], 2]}>
 
 ```js
 export default (arr) => {
@@ -39,7 +39,6 @@ Doing that for _every_ index in the array, we get the final algorithm:
   Component={Figures.Two}
   initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
   caption="This is an interactive demo! Press the pencil icon to change the values of arr and k."
-  controls
   editable
 >
 

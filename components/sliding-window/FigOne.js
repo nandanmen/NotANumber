@@ -10,7 +10,7 @@ export default ({ state }) => {
           </Item>
         ))}
       </div>
-      <p className="font-mono w-full text-center mt-4">sum: {state.sum}</p>
+      <p className="font-mono w-full text-center mt-4">k = 2 sum: {state.sum}</p>
     </>
   );
 };
