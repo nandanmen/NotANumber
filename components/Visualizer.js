@@ -6,6 +6,7 @@ import { FaUndo } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 
 import useAlgorithm from '../lib/useAlgorithm'
+import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
   if (!children) {
@@ -49,21 +50,30 @@ function Algorithm({
   initialInputs = [],
   controls,
   editable,
+  delay = 400,
 }) {
   let { entryPoint, params, code } = algorithm
-  const context = useAlgorithm(entryPoint, initialInputs)
+
+  const algorithmContext = useAlgorithm(entryPoint, initialInputs)
+  const playerContext = usePlayer(algorithmContext.models.steps, { delay })
+
   const [showForm, toggle] = React.useReducer((show) => !show, false)
-  const { state, steps, isPlaying, inputs } = context.models
+
+  const { steps, inputs } = algorithmContext.models
+  const { state, isPlaying } = playerContext.models
+
+  const { reset } = playerContext.actions
+  React.useEffect(() => reset(), [inputs, reset])
 
   params = JSON.parse(params)
 
   return (
     <>
-      <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-gray-200">
-        <div>{children(context.models)}</div>
+      <div className="py-16 md:rounded-2xl relative z-20 bg-gray-200">
+        <div className="z-0">{children({ state, inputs })}</div>
         <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
-          <div>
-            <Button className="mr-1" onClick={context.actions.toggle}>
+          <div className="flex">
+            <Button className="mr-1" onClick={playerContext.actions.toggle}>
               {isPlaying ? (
                 <BsPauseFill />
               ) : state.__done ? (
@@ -76,10 +86,10 @@ function Algorithm({
             </Button>
             {controls && (
               <>
-                <Button className="mr-1" onClick={context.actions.prev}>
+                <Button className="mr-1" onClick={playerContext.actions.prev}>
                   <HiArrowLeft />
                 </Button>
-                <Button className="mr-1" onClick={context.actions.next}>
+                <Button className="mr-1" onClick={playerContext.actions.next}>
                   <HiArrowRight />
                 </Button>
               </>
@@ -99,7 +109,7 @@ function Algorithm({
         <InputForm
           inputs={params.map((name, index) => [name, inputs[index]])}
           onSubmit={(inputs) =>
-            context.actions.setInputs(inputs.map((entry) => entry[1]))
+            algorithmContext.actions.setInputs(inputs.map((entry) => entry[1]))
           }
           className="z-10"
           variants={{

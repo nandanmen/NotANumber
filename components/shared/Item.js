@@ -2,13 +2,13 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 
 const variants = {
-  hide: {
-    opacity: 0.25,
-    scale: 0.9,
-  },
   show: {
+    y: 0,
     opacity: 1,
-    scale: 1,
+  },
+  hide: {
+    y: 5,
+    opacity: 0.25,
   },
 }
 

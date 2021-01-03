@@ -29,7 +29,6 @@ A straightforward way to find every subarray of an array is to iterate through e
     }
     return sum
   })}
-  editable
 >
   {({ state }) => (
     <React.Fragment>
@@ -50,7 +49,7 @@ A straightforward way to find every subarray of an array is to iterate through e
 Doing that for _every_ index in the array, we get the final algorithm:
 
 <Visualizer
-  initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
   algorithm={snapshot((arr, k) => {
     const result = []
     for (let i = 0; i <= arr.length - k; i++) {
@@ -77,7 +76,7 @@ Is there a better way?
 Looking back at the algorithm, notice that most of the time we're counting numbers that we've already included before. Let's look at the animation again, this time highlighting all the double counts in red:
 
 <Visualizer
-  initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
   algorithm={snapshot((arr, k) => {
     const result = []
     const counted = []
@@ -104,7 +103,7 @@ Looking back at the algorithm, notice that most of the time we're counting numbe
   {(context) => <Figures.DoubleCount {...context} />}
 </Visualizer>
 
-When the algorithm finishes, only 2 elements **were not double counted!** (try playing around with the inputs to convince yourself). It turns out that no matter what inputs, this implementation will _always_ double count every element except for the first and the last.
+When the algorithm finishes, only 2 elements **were not double counted!** It turns out that no matter what inputs, this implementation will _always_ double count every element except for the first and the last (try playing around with the inputs to convince yourself).
 
 So why are we double counting in the first place? If we look at the first two subarrays, we see there's a lot of overlap:
 
@@ -114,4 +113,102 @@ So why are we double counting in the first place? If we look at the first two su
 
 What if, on each step, we only take into account the _differences_ instead? In other words, is there a way to get the sum of the second subarray from the sum of the first? If so, we would be able to _derive_ the sum of the second subarray rather than recounting every element again.
 
-In the example above, we can get the sum of the **second subarray by subtracting 1 and adding 5** to the sum of the first. This is the key insight in getting to the optimal solution for this problem.
+In the example above, we can get the sum of the **second subarray by subtracting 1 and adding 5** to the sum of the first.
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4]]}
+  algorithm={snapshot((arr) => {
+    let window = [0, 3]
+    let sum = 0
+    arr.slice(...window).forEach((item) => (sum += item))
+    debugger
+    let diff = -arr[0]
+    window = [1, 3]
+    sum -= arr[0]
+    debugger
+    diff = arr[3]
+    window = [1, 4]
+    sum += arr[3]
+    debugger
+  })}
+  delay={700}
+>
+  {({ state }) => <Figures.Derive state={state} />}
+</Visualizer>
+
+This reduces the sum computation from `k` iterations to only one iteration! This is also where the sliding window namesake comes from—it's as if we have a window of 4 items that we _slide_ to the next subarray.
+
+Maybe adding a border around the items would make the window more clear:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4]]}
+  algorithm={snapshot((arr) => {
+    let sum = 0
+    let window = [0, 3]
+    arr.slice(...window).forEach((item) => (sum += item))
+    debugger
+    sum = 0
+    window = [1, 4]
+    arr.slice(...window).forEach((item) => (sum += item))
+    debugger
+  })}
+  delay={700}
+  controls
+>
+  {({ state }) => <Figures.Window state={state} />}
+</Visualizer>
+
+With this key insight let's rewrite the algorithm. Remember that the algorithm receives two inputs - an array of numbers `arr` and a size of subarray `k`.
+
+1. At the start, we _build_ the window—iterate until our window contains `k` items—while keeping track of the sum.
+2. Then, we _slide_ the window one item over, updating the sum by subtracting the item no longer in the window and adding the item that was added to the window. By doing this we ensure that the sum stays in sync with the items that are in the window.
+3. With this sum we can compute the average as before.
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  algorithm={snapshot((arr, k) => {
+    const result = []
+    let windowStart = 0
+    let windowSum = 0
+    for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+      windowSum += arr[windowEnd]
+      debugger
+      if (windowEnd >= k - 1) {
+        result.push((windowSum / k).toFixed(2))
+        windowSum -= arr[windowStart]
+        windowStart++
+      }
+    }
+    debugger
+    return result
+  })}
+  delay={600}
+  controls
+  editable
+>
+  {({ state }) => <Figures.Optimal state={state} />}
+</Visualizer>
+
+And that's the find all averages problem using the sliding window pattern! Notice how this implementation only needs 7 steps to calculate the sum instead of 13 with the previous implementation. Now that doesn't seem to be too big of a difference, but look at how the two implementations compare when we add just 3 elements:
+
+<Visualizer
+  initialInputs={[[1, 3, 2, 6, -1, 4, 1, 8, 2], 3]}
+  algorithm={snapshot((arr, k) => {
+    const result = []
+    let windowStart = 0
+    let windowSum = 0
+    for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+      windowSum += arr[windowEnd]
+      debugger
+      if (windowEnd >= k - 1) {
+        result.push((windowSum / k).toFixed(2))
+        windowSum -= arr[windowStart]
+        windowStart++
+      }
+    }
+    debugger
+    return result
+  })}
+>
+  {({ state }) => <Figures.OptimalMin state={state} />}
+</Visualizer>
