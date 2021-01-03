@@ -73,3 +73,15 @@ ol {
 code {
   @apply bg-gray-200 rounded-md p-1 text-sm;
 }
+
+.details > section > *:not(:last-child) {
+  margin-bottom: 1em;
+}
+
+.details code {
+  @apply bg-green-500;
+}
+
+.details {
+  line-height: 1.6;
+}

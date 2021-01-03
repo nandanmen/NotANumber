@@ -1,4 +1,5 @@
 import Visualizer from '../components/Visualizer'
+import Details from '../components/Details'
 import Item from '../components/shared/Item'
 import * as Figures from '../components/sliding-window'
 import snapshot from '../lib/snapshot.macro'
@@ -239,7 +240,7 @@ And that's the find all averages problem using the sliding window pattern! Notic
 
 While the window is building, both algorithms are going at the same pace (try changing the size of k to equal to the size of the array—both algorithms will finish at the same time!). However, once the window is complete, the optimal algorithm blazes off and terminates in less than half the time it takes for the naive algorithm to finish.
 
-## A note on time complexity
+<Details label="A note on time complexity">
 
 Admittedly comparing the runtime of two algorithms from an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
 
@@ -252,3 +253,5 @@ In the naive implementation, for every item in the array, we iterate `k` times t
 In the optimal implementation, we broke down the algorithm into two concrete steps—the build step and the slide step. The time complexity of the algorithm is thus the sum of the build step and the slide step.
 
 The build step is simply `O(k)` because we're only iterating until we reach the window size `k`. At a quick glance, the slide step is `O(n)` because we're iterating until the end of the array. However, we don't start at index `0`—we start at index `k`. Therefore a more tight upper bound is `O(n - k)`. Adding the two together we get the final runtime of `O(n)`. A surprising find! Turns out the runtime of the optimal solution isn't reliant on the value of `k` at all.
+
+</Details>
