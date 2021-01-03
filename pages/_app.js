@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -7,7 +7,7 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </article>
     </main>
-  );
+  )
 }
 
-export default MyApp;
+export default MyApp

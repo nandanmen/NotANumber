@@ -1,8 +1,8 @@
-import { motion, AnimateSharedLayout } from "framer-motion";
-import { BsTriangleFill } from "react-icons/bs";
-import Item from "../shared/Item";
+import { motion, AnimateSharedLayout } from 'framer-motion'
+import { BsTriangleFill } from 'react-icons/bs'
+import Item from '../shared/Item'
 
-export default ({ state, inputs }) => {
+export default function Quadratic({ state, inputs }) {
   return (
     <>
       <div className="flex w-full justify-center">
@@ -19,7 +19,7 @@ export default ({ state, inputs }) => {
                   layoutId="caret"
                   className="absolute top-full mt-1 text-green-500"
                   style={{
-                    fontSize: "8px",
+                    fontSize: '8px',
                   }}
                 >
                   <BsTriangleFill />
@@ -30,7 +30,9 @@ export default ({ state, inputs }) => {
         </AnimateSharedLayout>
       </div>
       <p className="font-mono w-full text-center mt-4">k = {inputs[1]}</p>
-      <p className="font-mono w-full text-center">{JSON.stringify(state.result)}</p>
+      <p className="font-mono w-full text-center">
+        {JSON.stringify(state.result)}
+      </p>
     </>
-  );
-};
+  )
+}

@@ -1,79 +1,95 @@
-import React from "react";
-import clsx from "clsx";
-import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from "react-icons/hi";
-import { BsPlayFill, BsPauseFill } from "react-icons/bs";
-import { FaUndo } from "react-icons/fa";
-import { motion } from "framer-motion";
+import React from 'react'
+import clsx from 'clsx'
+import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from 'react-icons/hi'
+import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
+import { FaUndo } from 'react-icons/fa'
+import { motion } from 'framer-motion'
 
-import useAlgorithm from "../lib/useAlgorithm";
+import useAlgorithm from '../lib/useAlgorithm'
 
-export default function Visualizer({
-  Component,
-  caption,
+export default function Visualizer({ algorithm, caption, children, ...props }) {
+  if (!children) {
+    return (
+      <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
+        <div className="px-8 py-16 rounded-2xl relative z-20 bg-yellow-200">
+          <p className="font-semibold text-center">Implement me!</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!algorithm) {
+    return (
+      <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
+        <div className="px-8 py-16 rounded-2xl relative z-20 bg-gray-200">
+          {children}
+        </div>
+        {caption && <p className="text-center text-sm mt-4">{caption}</p>}
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
+      <Algorithm algorithm={algorithm} {...props}>
+        {children}
+      </Algorithm>
+      {caption && <p className="text-center text-sm mt-4">{caption}</p>}
+    </div>
+  )
+}
+
+function Algorithm({
+  algorithm,
   children,
   initialInputs = [],
   controls,
   editable,
-  readOnly,
 }) {
-  const code = getCodeText(children);
-  const [showForm, toggle] = React.useReducer((show) => !show, false);
-  const context = useAlgorithm(code, initialInputs);
-  const { state, steps, isPlaying, inputs, params } = context.models;
+  let { entryPoint, params, code } = algorithm
+  const context = useAlgorithm(entryPoint, initialInputs)
+  const [showForm, toggle] = React.useReducer((show) => !show, false)
+  const { state, steps, isPlaying, inputs } = context.models
+
+  params = JSON.parse(params)
 
   return (
-    <div style={{ gridColumn: "2 / -2" }} className="mt-4 mb-8 z-0">
-      <div
-        className={clsx("px-8 py-16 rounded-2xl relative z-20", {
-          "bg-gray-200": Component,
-          "bg-yellow-200": !Component,
-        })}
-      >
-        {!Component && <p className="font-semibold text-center">Implement me!</p>}
-        {Component && (
-          <>
-            <div>
-              <Component {...context.models} />
-            </div>
-            {!readOnly && (
+    <>
+      <div className="px-8 py-16 rounded-2xl relative z-20 bg-gray-200">
+        <div>{children(context.models)}</div>
+        <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
+          <div>
+            <Button className="mr-1" onClick={context.actions.toggle}>
+              {isPlaying ? (
+                <BsPauseFill />
+              ) : state.__done ? (
+                <span className="text-sm">
+                  <FaUndo />
+                </span>
+              ) : (
+                <BsPlayFill />
+              )}
+            </Button>
+            {controls && (
               <>
-                <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
-                  <div>
-                    <Button className="mr-1" onClick={context.actions.toggle}>
-                      {isPlaying ? (
-                        <BsPauseFill />
-                      ) : state.__done ? (
-                        <span className="text-sm">
-                          <FaUndo />
-                        </span>
-                      ) : (
-                        <BsPlayFill />
-                      )}
-                    </Button>
-                    {controls && (
-                      <>
-                        <Button className="mr-1" onClick={context.actions.prev}>
-                          <HiArrowLeft />
-                        </Button>
-                        <Button className="mr-1" onClick={context.actions.next}>
-                          <HiArrowRight />
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  {editable && (
-                    <Button onClick={toggle}>
-                      {showForm ? <HiX /> : <HiPencil />}
-                    </Button>
-                  )}
-                </div>
-                <p className="absolute right-5 top-4 text-gray-500">
-                  {steps.indexOf(state) + 1} / {steps.length}
-                </p>
+                <Button className="mr-1" onClick={context.actions.prev}>
+                  <HiArrowLeft />
+                </Button>
+                <Button className="mr-1" onClick={context.actions.next}>
+                  <HiArrowRight />
+                </Button>
               </>
             )}
-          </>
-        )}
+          </div>
+          {editable && (
+            <Button onClick={toggle}>
+              {showForm ? <HiX /> : <HiPencil />}
+            </Button>
+          )}
+        </div>
+        <p className="absolute right-5 top-4 text-gray-500">
+          {steps.indexOf(state) + 1} / {steps.length}
+        </p>
       </div>
       {showForm && (
         <InputForm
@@ -88,7 +104,7 @@ export default function Visualizer({
               opacity: 1,
             },
             hide: {
-              y: "-100%",
+              y: '-100%',
               opacity: 0,
             },
           }}
@@ -96,48 +112,47 @@ export default function Visualizer({
           animate="show"
         />
       )}
-      {caption && <p className="text-center text-sm mt-4">{caption}</p>}
-    </div>
-  );
+    </>
+  )
 }
 
 function Button({ className, ...props }) {
   return (
     <button
       className={clsx(
-        "shadow-md rounded-lg bg-gray-100 w-8 h-8 flex items-center justify-center font-semibold text-gray-500",
+        'shadow-md rounded-lg bg-gray-100 w-8 h-8 flex items-center justify-center font-semibold text-gray-500',
         className
       )}
       {...props}
     />
-  );
+  )
 }
 
 function InputForm({ inputs, onSubmit, className, ...props }) {
-  const [errors, setErrors] = React.useState({});
+  const [errors, setErrors] = React.useState({})
 
   const handleSubmit = (evt) => {
-    evt.preventDefault();
-    const entries = [...new FormData(evt.target).entries()];
+    evt.preventDefault()
+    const entries = [...new FormData(evt.target).entries()]
     if (entries.every(validate)) {
-      onSubmit(entries.map(([name, value]) => [name, JSON.parse(value)]));
+      onSubmit(entries.map(([name, value]) => [name, JSON.parse(value)]))
     }
-  };
+  }
 
   const validate = ([name, value]) => {
     try {
-      JSON.parse(value);
-      setErrors({ ...errors, [name]: null });
-      return true;
+      JSON.parse(value)
+      setErrors({ ...errors, [name]: null })
+      return true
     } catch (err) {
-      setErrors({ ...errors, [name]: `Please enter a serializable value.` });
-      return false;
+      setErrors({ ...errors, [name]: `Please enter a serializable value.` })
+      return false
     }
-  };
+  }
 
   return (
     <motion.form
-      className={clsx("flex w-3/4 mx-auto mt-6", className)}
+      className={clsx('flex w-3/4 mx-auto mt-6', className)}
       onSubmit={handleSubmit}
       {...props}
     >
@@ -156,7 +171,5 @@ function InputForm({ inputs, onSubmit, className, ...props }) {
       ))}
       <button type="submit"></button>
     </motion.form>
-  );
+  )
 }
-
-const getCodeText = (children) => children.props.children.props.children;
