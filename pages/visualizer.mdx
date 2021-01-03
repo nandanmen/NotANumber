@@ -1,0 +1,101 @@
+import Visualizer from '../components/Visualizer'
+import Item from '../components/shared/Item'
+import { DoubleCount } from '../components/sliding-window'
+import snapshot from '../lib/snapshot.macro'
+
+# &lt;Visualizer /&gt;
+
+This is a simple player:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4]]}
+  algorithm={snapshot((arr) => {
+    let sum = 0
+    const window = []
+    for (let i = 1; i < 4; i++) {
+      sum += arr[i]
+      window.push(i)
+      debugger
+    }
+    return sum
+  })}
+  editable
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex w-full justify-center">
+        {state.arr.map((item, index) => (
+          <Item key={index} active={state.window.includes(index)}>
+            {item}
+          </Item>
+        ))}
+      </div>
+      <p className="font-mono w-full text-center mt-4">
+        k = 2 sum: {state.sum}
+      </p>
+    </React.Fragment>
+  )}
+</Visualizer>
+
+This one is a bit more complicated:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
+  algorithm={snapshot((arr, k) => {
+    const result = []
+    const counted = []
+    const doubleCounted = []
+    for (let i = 0; i <= arr.length - k; i++) {
+      const subarray = [i]
+      let sum = 0
+      for (let j = 0; j < k; j++) {
+        subarray.push(i + j)
+        sum += arr[i + j]
+        if (counted.includes(i + j)) {
+          doubleCounted.push(i + j)
+        }
+        debugger
+      }
+      subarray.forEach((item) => counted.push(item))
+      result.push(sum / k)
+    }
+    debugger
+    return result
+  })}
+>
+  {(context) => <DoubleCount {...context} />}
+</Visualizer>
+
+This one is read only:
+
+<Visualizer>
+  <div style={{ marginRight: `3.5rem` }} className="flex justify-center">
+    {[1, 2, 3, 4].map((item, index) => (
+      <Item
+        key={index}
+        variant={index > 0 ? 'danger' : 'base'}
+        className="relative"
+        active
+      >
+        {item}
+      </Item>
+    ))}
+  </div>
+  <div style={{ marginLeft: `3.5rem` }} className="flex justify-center mt-2">
+    {[2, 3, 4, 5].map((item, index, arr) => (
+      <Item
+        key={index}
+        variant={index < arr.length - 1 ? 'danger' : 'base'}
+        className="relative"
+        active
+      >
+        {item}
+      </Item>
+    ))}
+  </div>
+  <p className="font-mono w-full text-center mt-4">k = 4</p>
+</Visualizer>
+
+This one is under construction:
+
+<Visualizer />

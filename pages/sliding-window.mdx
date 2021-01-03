@@ -1,6 +1,7 @@
-import Visualizer from "../components/Visualizer";
-
-import * as Figures from "../components/sliding-window";
+import Visualizer from '../components/Visualizer'
+import Item from '../components/shared/Item'
+import * as Figures from '../components/sliding-window'
+import snapshot from '../lib/snapshot.macro'
 
 # The Sliding Window Pattern
 
@@ -16,48 +17,57 @@ Given these steps, it seems pretty clear that in designing an algorithm to solve
 
 A straightforward way to find every subarray of an array is to iterate through each index of the array and _construct_ the subarray that begins at that index by iterating `k` more times. In this second iteration we can also sum up the numbers to compute the resulting average. Here's what that would look like:
 
-<Visualizer Component={Figures.Subarray} initialInputs={[[1, 2, 3, 4], 2]}>
-
-```js
-export default (arr) => {
-  let sum = 0;
-  const window = [];
-  for (let i = 1; i < 4; i++) {
-    sum += arr[i];
-    window.push(i);
-    debugger;
-  }
-  return sum;
-};
-```
-
+<Visualizer
+  initialInputs={[[1, 2, 3, 4]]}
+  algorithm={snapshot((arr) => {
+    let sum = 0
+    const window = []
+    for (let i = 1; i < 4; i++) {
+      sum += arr[i]
+      window.push(i)
+      debugger
+    }
+    return sum
+  })}
+  editable
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex w-full justify-center">
+        {state.arr.map((item, index) => (
+          <Item key={index} active={state.window.includes(index)}>
+            {item}
+          </Item>
+        ))}
+      </div>
+      <p className="font-mono w-full text-center mt-4">
+        k = 2 sum: {state.sum}
+      </p>
+    </React.Fragment>
+  )}
 </Visualizer>
 
 Doing that for _every_ index in the array, we get the final algorithm:
 
 <Visualizer
-  Component={Figures.Quadratic}
   initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
+  algorithm={snapshot((arr, k) => {
+    const result = []
+    for (let i = 0; i <= arr.length - k; i++) {
+      let sum = 0
+      for (let j = 0; j < k; j++) {
+        sum += arr[i + j]
+        debugger
+      }
+      result.push(sum / k)
+    }
+    debugger
+    return result
+  })}
   caption="This is an interactive demo! Press the pencil icon to change the values of arr and k."
   editable
 >
-
-```js
-export default (arr, k) => {
-  const result = [];
-  for (let i = 0; i <= arr.length - k; i++) {
-    let sum = 0;
-    for (let j = 0; j < k; j++) {
-      sum += arr[i + j];
-      debugger;
-    }
-    result.push(sum / k);
-  }
-  debugger;
-  return result;
-};
-```
-
+  {(context) => <Figures.Quadratic {...context} />}
 </Visualizer>
 
 Notice the number on the top right of the animation. This number represents the total number of steps required to compute the result given the inputs `arr` and `k`. Try adding two more items and see how that number changes—it went up, by a _lot_.
@@ -67,75 +77,39 @@ Is there a better way?
 Looking back at the algorithm, notice that most of the time we're counting numbers that we've already included before. Let's look at the animation again, this time highlighting all the double counts in red:
 
 <Visualizer
-  Component={Figures.DoubleCount}
   initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
+  algorithm={snapshot((arr, k) => {
+    const result = []
+    const counted = []
+    const doubleCounted = []
+    for (let i = 0; i <= arr.length - k; i++) {
+      const subarray = [i]
+      let sum = 0
+      for (let j = 0; j < k; j++) {
+        subarray.push(i + j)
+        sum += arr[i + j]
+        if (counted.includes(i + j)) {
+          doubleCounted.push(i + j)
+        }
+        debugger
+      }
+      subarray.forEach((item) => counted.push(item))
+      result.push(sum / k)
+    }
+    debugger
+    return result
+  })}
   editable
 >
-
-```js
-export default (arr, k) => {
-  const result = [];
-  const counted = [];
-  const doubleCounted = [];
-  for (let i = 0; i <= arr.length - k; i++) {
-    const subarray = [i];
-    let sum = 0;
-    for (let j = 0; j < k; j++) {
-      subarray.push(i + j);
-      sum += arr[i + j];
-
-      if (counted.includes(i + j)) {
-        doubleCounted.push(i + j);
-      }
-
-      debugger;
-    }
-    subarray.forEach((item) => counted.push(item));
-    result.push(sum / k);
-  }
-  debugger;
-  return result;
-};
-```
-
+  {(context) => <Figures.DoubleCount {...context} />}
 </Visualizer>
 
 When the algorithm finishes, only 2 elements **were not double counted!** (try playing around with the inputs to convince yourself). It turns out that no matter what inputs, this implementation will _always_ double count every element except for the first and the last.
 
 So why are we double counting in the first place? If we look at the first two subarrays, we see there's a lot of overlap:
 
-<Visualizer
-  Component={Figures.Comparison}
-  initialInputs={[[1, 2, 3, 4, 5, 6], 4]}
-  readOnly
->
-
-```js
-export default (arr, k) => {
-  const result = [];
-  const counted = [];
-  const doubleCounted = [];
-  for (let i = 0; i <= arr.length - k; i++) {
-    const subarray = [i];
-    let sum = 0;
-    for (let j = 0; j < k; j++) {
-      subarray.push(i + j);
-      sum += arr[i + j];
-
-      if (counted.includes(i + j)) {
-        doubleCounted.push(i + j);
-      }
-
-      debugger;
-    }
-    subarray.forEach((item) => counted.push(item));
-    result.push(sum / k);
-  }
-  debugger;
-  return result;
-};
-```
-
+<Visualizer>
+  <Figures.Comparison />
 </Visualizer>
 
 What if, on each step, we only take into account the _differences_ instead? In other words, how do we get to the sum of the second subarray from the sum of the first? In the example above, we can get the sum of the **second subarray by subtracting 1 and adding 5** to the sum of the first. This is the key insight in getting to the optimal solution for this problem.

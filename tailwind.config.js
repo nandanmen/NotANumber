@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ["PT Serif", "serif"],
-        mono: ["Hasklig", "Menlo", "monospace"],
+        serif: ['PT Serif', 'serif'],
+        mono: ['Hasklig', 'Menlo', 'monospace'],
       },
     },
   },
@@ -13,4 +13,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-};
+}
