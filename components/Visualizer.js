@@ -5,7 +5,8 @@ import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 
-import useAlgorithm from '../lib/useAlgorithm'
+import exec from '../lib/exec'
+import zip from '../lib/zip'
 import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
@@ -52,31 +53,35 @@ function Algorithm({
   editable,
   delay = 400,
 }) {
-  let { entryPoint, params, code } = algorithm
-
-  const algorithmContext = useAlgorithm(entryPoint, initialInputs)
-  const playerContext = usePlayer(algorithmContext.models.steps, { delay })
+  if (!Array.isArray(algorithm)) {
+    algorithm = [algorithm]
+  }
+  let { params } = algorithm[0]
+  params = JSON.parse(params)
 
   const [showForm, toggle] = React.useReducer((show) => !show, false)
+  const [inputs, setInputs] = React.useState(initialInputs)
 
-  const { steps, inputs } = algorithmContext.models
+  const steps = React.useMemo(
+    () => zip(...algorithm.map(({ entryPoint }) => exec(entryPoint, inputs))),
+    [algorithm, inputs]
+  )
+
+  const playerContext = usePlayer(steps, { delay })
   const { state, isPlaying } = playerContext.models
-
-  const { reset } = playerContext.actions
-  React.useEffect(() => reset(), [inputs, reset])
-
-  params = JSON.parse(params)
 
   return (
     <>
       <div className="py-16 md:rounded-2xl relative z-20 bg-gray-200">
-        <div className="z-0">{children({ state, inputs })}</div>
+        <div className="z-0">
+          {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
+        </div>
         <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
           <div className="flex">
             <Button className="mr-1" onClick={playerContext.actions.toggle}>
               {isPlaying ? (
                 <BsPauseFill />
-              ) : state.__done ? (
+              ) : state.every((subState) => subState.__done) ? (
                 <span className="text-sm">
                   <FaUndo />
                 </span>
@@ -108,9 +113,10 @@ function Algorithm({
       {showForm && (
         <InputForm
           inputs={params.map((name, index) => [name, inputs[index]])}
-          onSubmit={(inputs) =>
-            algorithmContext.actions.setInputs(inputs.map((entry) => entry[1]))
-          }
+          onSubmit={(inputs) => {
+            playerContext.actions.reset()
+            setInputs(inputs.map((entry) => entry[1]))
+          }}
           className="z-10"
           variants={{
             show: {

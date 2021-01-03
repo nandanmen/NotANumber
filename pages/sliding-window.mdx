@@ -189,26 +189,66 @@ With this key insight let's rewrite the algorithm. Remember that the algorithm r
   {({ state }) => <Figures.Optimal state={state} />}
 </Visualizer>
 
-And that's the find all averages problem using the sliding window pattern! Notice how this implementation only needs 7 steps to calculate the sum instead of 13 with the previous implementation. Now that doesn't seem to be too big of a difference, but look at how the two implementations compare when we add just 3 elements:
+And that's the find all averages problem using the sliding window pattern! Notice how this implementation only needs 7 steps to calculate the sum instead of 13 with the previous implementation. Now that doesn't seem to be too big of a difference, but look how blazing fast the optimal implementation is compared to our previous one:
 
 <Visualizer
   initialInputs={[[1, 3, 2, 6, -1, 4, 1, 8, 2], 3]}
-  algorithm={snapshot((arr, k) => {
-    const result = []
-    let windowStart = 0
-    let windowSum = 0
-    for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
-      windowSum += arr[windowEnd]
-      debugger
-      if (windowEnd >= k - 1) {
-        result.push((windowSum / k).toFixed(2))
-        windowSum -= arr[windowStart]
-        windowStart++
+  caption="The animation speed is set to 400ms for both implementations!"
+  editable
+  algorithm={[
+    snapshot((arr, k) => {
+      const result = []
+      let windowStart = 0
+      let windowSum = 0
+      for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+        windowSum += arr[windowEnd]
+        debugger
+        if (windowEnd >= k - 1) {
+          result.push(windowSum / k)
+          windowSum -= arr[windowStart]
+          windowStart++
+        }
       }
-    }
-    debugger
-    return result
-  })}
+      debugger
+      return result
+    }),
+    snapshot((arr, k) => {
+      const result = []
+      for (let i = 0; i <= arr.length - k; i++) {
+        let sum = 0
+        for (let j = 0; j < k; j++) {
+          sum += arr[i + j]
+          debugger
+        }
+        result.push(sum / k)
+      }
+      debugger
+      return result
+    }),
+  ]}
 >
-  {({ state }) => <Figures.OptimalMin state={state} />}
+  {({ state: [optimal, quadratic], inputs }) => (
+    <React.Fragment>
+      <h3 className="text-gray-500 font-semibold text-center">Optimal 🏎</h3>
+      <Figures.OptimalMin state={optimal} />
+      <h3 className="text-gray-500 font-semibold text-center my-8">Naive 🐌</h3>
+      <Figures.Quadratic state={quadratic} />
+    </React.Fragment>
+  )}
 </Visualizer>
+
+While the window is building, both algorithms are going at the same pace (try changing the size of k to equal to the size of the array—both algorithms will finish at the same time!). However, once the window is complete, the optimal algorithm blazes off and terminates in less than half the time it takes for the naive algorithm to finish.
+
+## A note on time complexity
+
+Admittedly comparing the runtime of two algorithms from an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
+
+I wanted to avoid talking about time complexity for those not familiar with it, but I do think it's important to note what the time complexities actually _are_ for those who are curious.
+
+**TL;DR**—The naive implementation is `O(nk)` while the optimal implementation is `O(n)`, where `n` is the size of the given array `arr`.
+
+In the naive implementation, for every item in the array, we iterate `k` times to compute the subarray. This gives us a runtime of `O(nk)` where `n` is the size of the given array.
+
+In the optimal implementation, we broke down the algorithm into two concrete steps—the build step and the slide step. The time complexity of the algorithm is thus the sum of the build step and the slide step.
+
+The build step is simply `O(k)` because we're only iterating until we reach the window size `k`. At a quick glance, the slide step is `O(n)` because we're iterating until the end of the array. However, we don't start at index `0`—we start at index `k`. Therefore a more tight upper bound is `O(n - k)`. Adding the two together we get the final runtime of `O(n)`. A surprising find! Turns out the runtime of the optimal solution isn't reliant on the value of `k` at all.
