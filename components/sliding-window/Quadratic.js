@@ -2,7 +2,7 @@ import { motion, AnimateSharedLayout } from 'framer-motion'
 import { BsTriangleFill } from 'react-icons/bs'
 import Item from '../shared/Item'
 
-export default function Quadratic({ state, inputs }) {
+export default function Quadratic({ state }) {
   return (
     <>
       <div className="flex w-full justify-center">
@@ -10,7 +10,9 @@ export default function Quadratic({ state, inputs }) {
           {state.arr.map((item, index) => (
             <Item
               key={index}
-              active={index >= state.i && index <= state.i + state.j}
+              active={
+                state.__done || (index >= state.i && index <= state.i + state.j)
+              }
               className="relative"
             >
               {item}
@@ -29,10 +31,13 @@ export default function Quadratic({ state, inputs }) {
           ))}
         </AnimateSharedLayout>
       </div>
-      <p className="font-mono w-full text-center mt-4">k = {inputs[1]}</p>
-      <p className="font-mono w-full text-center">
-        {JSON.stringify(state.result)}
-      </p>
+      <code className="block font-mono w-full text-center whitespace-nowrap mt-8">
+        {JSON.stringify(
+          state.result.map((num) => Number(num.toFixed(2))),
+          null,
+          2
+        )}
+      </code>
     </>
   )
 }
