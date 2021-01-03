@@ -10,8 +10,8 @@ import useAlgorithm from '../lib/useAlgorithm'
 export default function Visualizer({ algorithm, caption, children, ...props }) {
   if (!children) {
     return (
-      <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
-        <div className="px-8 py-16 rounded-2xl relative z-20 bg-yellow-200">
+      <div className="full-width mt-4 mb-8 z-0">
+        <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-yellow-200">
           <p className="font-semibold text-center">Implement me!</p>
         </div>
       </div>
@@ -20,21 +20,25 @@ export default function Visualizer({ algorithm, caption, children, ...props }) {
 
   if (!algorithm) {
     return (
-      <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
-        <div className="px-8 py-16 rounded-2xl relative z-20 bg-gray-200">
+      <div className="full-width mt-4 mb-8 z-0">
+        <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-gray-200">
           {children}
         </div>
-        {caption && <p className="text-center text-sm mt-4">{caption}</p>}
+        {caption && (
+          <p className="px-8 md:px-0 text-center text-sm mt-4">{caption}</p>
+        )}
       </div>
     )
   }
 
   return (
-    <div style={{ gridColumn: '2 / -2' }} className="mt-4 mb-8 z-0">
+    <div className="full-width mt-4 mb-8 z-0">
       <Algorithm algorithm={algorithm} {...props}>
         {children}
       </Algorithm>
-      {caption && <p className="text-center text-sm mt-4">{caption}</p>}
+      {caption && (
+        <p className="px-8 md:px-0 text-center text-sm mt-4">{caption}</p>
+      )}
     </div>
   )
 }
@@ -55,7 +59,7 @@ function Algorithm({
 
   return (
     <>
-      <div className="px-8 py-16 rounded-2xl relative z-20 bg-gray-200">
+      <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-gray-200">
         <div>{children(context.models)}</div>
         <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
           <div>
@@ -152,7 +156,10 @@ function InputForm({ inputs, onSubmit, className, ...props }) {
 
   return (
     <motion.form
-      className={clsx('flex w-3/4 mx-auto mt-6', className)}
+      className={clsx(
+        'flex w-full md:w-3/4 mx-auto mt-6 px-8 md:px-0',
+        className
+      )}
       onSubmit={handleSubmit}
       {...props}
     >

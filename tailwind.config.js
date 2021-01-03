@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       fontFamily: {
         serif: ['PT Serif', 'serif'],
-        mono: ['Hasklig', 'Menlo', 'monospace'],
       },
     },
   },
