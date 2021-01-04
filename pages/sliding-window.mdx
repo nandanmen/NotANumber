@@ -230,9 +230,9 @@ And that's the find all averages problem using the sliding window pattern! Notic
 >
   {({ state: [optimal, quadratic], inputs }) => (
     <React.Fragment>
-      <h3 className="text-gray-500 font-semibold text-center">Optimal 🏎</h3>
+      <h4 className="text-gray-500 font-semibold text-center">Optimal 🏎</h4>
       <Figures.OptimalMin state={optimal} />
-      <h3 className="text-gray-500 font-semibold text-center my-8">Naive 🐌</h3>
+      <h4 className="text-gray-500 font-semibold text-center my-8">Naive 🐌</h4>
       <Figures.Quadratic state={quadratic} />
     </React.Fragment>
   )}
@@ -240,7 +240,7 @@ And that's the find all averages problem using the sliding window pattern! Notic
 
 While the window is building, both algorithms are going at the same pace (try changing the size of k to equal to the size of the array—both algorithms will finish at the same time!). However, once the window is complete, the optimal algorithm blazes off and terminates in less than half the time it takes for the naive algorithm to finish.
 
-<Details label="A note on time complexity">
+<Details label="⏱ A note on time complexity">
 
 Admittedly comparing the runtime of two algorithms using an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
 
@@ -258,4 +258,96 @@ The build step is simply `O(k)` because we're only iterating until we reach the 
 
 ## Generalizing the Pattern
 
-Of course we're not limited to only counting averages. The sliding window pattern can be generalized
+Of course we're not limited to only counting averages. The sliding window pattern can be generalized to any problem that involves computing _something_ in the subarray. As long as the problem has some definition of a window size, the pattern essentially boils down to:
+
+1. Maintaining some **state** in that window, and
+2. keeping that state in sync with the items in the window through **constant-time operations**.
+
+By "constant-time operations" I mean without using further iterations and only using the stuff that leaves/enters the window.
+
+In the case of the averages problem, the state that we're maintaining is the **sum of the items**. We're keeping this sum in sync with the items in the window by subtracting the item that's leaving and adding the item that's entering.
+
+### Permutation in a String
+
+Here's another problem that makes use of the same concept of maintaining state and synchronizing that state. The problem's pretty simple—given a string and some pattern, determine if the string contains any _permutation_ of that pattern. For example, given the string `aaacb` and the pattern `abc`, the algorithm should return `true` because the substring `acb` is a permutation of `abc`.
+
+This is not as obvious of a sliding window problem than the problem we just worked through, but if you think of a string as an array of characters and a substring as a subarray, then the similarities start to show.
+
+I'm not going to walk through each logical step to get to the optimal solution (that would take a minute!), but here are the main ideas:
+
+1. A string can only be a permutation of another if it's the same length. _This gives us the size of the window = `pattern.length`_.
+2. A string is **exactly** a permutation of another if it contains the exact same number of letters. A way to keep track of this is through a map of character -> count pairs. _This gives us the state that we have to maintain_.
+3. We need a way to update _and compare_ the map in constant time. _Through this we fulfill the second condition of synchronizing state through constant operations_.
+
+With those ideas, here's the final solution:
+
+<Visualizer
+  initialInputs={['aaacb', 'abc']}
+  caption="Notice how similar it is to the averages problem?"
+  algorithm={snapshot((str, pattern) => {
+    const patternFrequencies = {}
+    for (const char of pattern) {
+      if (patternFrequencies.hasOwnProperty(char)) {
+        patternFrequencies[char] = patternFrequencies[char] + 1
+      } else {
+        patternFrequencies[char] = 1
+      }
+    }
+    let nonZeroCount = Object.keys(patternFrequencies).length
+    let windowStart = 0
+    for (let windowEnd = 0; windowEnd < str.length; windowEnd++) {
+      const char = str[windowEnd]
+      if (patternFrequencies.hasOwnProperty(char)) {
+        const val = patternFrequencies[char]
+        patternFrequencies[char] = val - 1
+        if (val === 1) {
+          nonZeroCount--
+        } else if (val === 0) {
+          nonZeroCount++
+        }
+      }
+      debugger
+      if (nonZeroCount === 0) {
+        return true
+      }
+      if (windowEnd >= pattern.length - 1) {
+        const startChar = str[windowStart]
+        if (patternFrequencies.hasOwnProperty(startChar)) {
+          const val = patternFrequencies[startChar]
+          patternFrequencies[startChar] = val + 1
+          if (val === -1) {
+            nonZeroCount--
+          } else if (val === 0) {
+            nonZeroCount++
+          }
+        }
+        windowStart++
+      }
+    }
+    return false
+  })}
+  delay={600}
+  controls
+  editable
+>
+  {({ state }) => <Figures.Permutation state={state} />}
+</Visualizer>
+
+If you're interested in more details of the algorithm (particularly the constant-time updates and comparison), open the note below!
+
+<Details label="🗾 Constant time map comparisons">
+
+One way to check if two strings have the exact same number of letters would be to:
+
+1. Create a map of character -> count pairs for each string.
+2. Loop through each character in each map, comparing the counts in each iteration.
+
+Unfortunately this doesn't satisfy the "constant-time" condition because we have to loop through each character. It also doesn't take advantage of the fact that only _one_ letter is coming in and only _one_ letter is coming out of the window each time.
+
+Looking at it from a different perspective, we can think of two maps as being equal if their _difference_ is zero. We consider a map to be "zero" if all of its keys have value zero. This gives us a goal—if we start with the map that corresponds to the pattern, and if we update it in some way such that it ends up being zero, we know we've reached a permutation.
+
+At the start, this map is the state of the window. When we add a letter to the window, we _subtract_ that letter's count in the map. Conversely when we remove a letter from the window, we _add back_ that letter's count in the map. Since this sequence of updates can be performed in one iteration, we've satisfied the condition!
+
+</Details>
+
+## Non-Fixed Sliding Windows

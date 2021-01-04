@@ -35,9 +35,9 @@ article > .full-width {
   grid-column: 1 / -1;
 }
 
-@media screen and (min-width: 768px) {
+@screen md {
   article {
-    grid-template-columns: 1fr 2rem 40rem 2rem 1fr;
+    grid-template-columns: 1fr 2rem 38rem 2rem 1fr;
   }
 
   article > * {
@@ -58,7 +58,17 @@ h1 {
 }
 
 h2 {
-  @apply text-2xl font-semibold mt-8;
+  @apply text-2xl font-semibold mt-8 relative;
+}
+
+h2:before {
+  @apply bg-green-500 absolute bottom-full left-0 w-6 mb-1;
+  content: '';
+  height: 3px;
+}
+
+h3 {
+  @apply text-xl font-semibold mt-4;
 }
 
 ul,
@@ -82,10 +92,14 @@ code {
   margin-bottom: 1em;
 }
 
-.details code {
+.details.note code {
   @apply bg-green-500;
 }
 
 .details {
   line-height: 1.6;
+}
+
+a {
+  @apply font-semibold underline;
 }
