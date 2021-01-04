@@ -31,8 +31,10 @@ export default function Details({ label, children }) {
       </motion.button>
       {open && (
         <motion.section
-          layout
           className={clsx('px-4 pb-4', { 'px-8 pb-8': open })}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
           {children}
         </motion.section>

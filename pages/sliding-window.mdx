@@ -242,7 +242,7 @@ While the window is building, both algorithms are going at the same pace (try ch
 
 <Details label="A note on time complexity">
 
-Admittedly comparing the runtime of two algorithms from an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
+Admittedly comparing the runtime of two algorithms using an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
 
 I wanted to avoid talking about time complexity for those not familiar with it, but I do think it's important to note what the time complexities actually _are_ for those who are curious.
 
@@ -255,3 +255,7 @@ In the optimal implementation, we broke down the algorithm into two concrete ste
 The build step is simply `O(k)` because we're only iterating until we reach the window size `k`. At a quick glance, the slide step is `O(n)` because we're iterating until the end of the array. However, we don't start at index `0`—we start at index `k`. Therefore a more tight upper bound is `O(n - k)`. Adding the two together we get the final runtime of `O(n)`. A surprising find! Turns out the runtime of the optimal solution isn't reliant on the value of `k` at all.
 
 </Details>
+
+## Generalizing the Pattern
+
+Of course we're not limited to only counting averages. The sliding window pattern can be generalized
