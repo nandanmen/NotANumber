@@ -2,10 +2,8 @@ import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <main className="antialiased py-20">
-      <article>
-        <Component {...pageProps} />
-      </article>
+    <main className="py-40 antialiased bg-gray-100">
+      <Component {...pageProps} />
     </main>
   )
 }

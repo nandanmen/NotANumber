@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['PT Serif', 'serif'],
+        serif: ['Playfair Display', 'serif'],
+        mono: ['Ligalex Mono', 'monospace'],
       },
     },
   },

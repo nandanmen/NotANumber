@@ -12,8 +12,8 @@ import usePlayer from '../lib/usePlayer'
 export default function Visualizer({ algorithm, caption, children, ...props }) {
   if (!children) {
     return (
-      <div className="full-width mt-4 mb-8 z-0">
-        <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-yellow-200">
+      <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
+        <div className="relative z-20 px-8 py-16 bg-yellow-200 md:rounded-2xl">
           <p className="font-semibold text-center">Implement me!</p>
         </div>
       </div>
@@ -22,24 +22,24 @@ export default function Visualizer({ algorithm, caption, children, ...props }) {
 
   if (!algorithm) {
     return (
-      <div className="full-width mt-4 mb-8 z-0">
-        <div className="px-8 py-16 md:rounded-2xl relative z-20 bg-gray-200">
+      <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
+        <div className="relative z-20 px-8 py-16 bg-gray-200 md:rounded-2xl">
           {children}
         </div>
         {caption && (
-          <p className="px-8 md:px-0 text-center text-sm mt-4">{caption}</p>
+          <p className="px-8 mt-4 text-sm text-center md:px-0">{caption}</p>
         )}
       </div>
     )
   }
 
   return (
-    <div className="full-width mt-4 mb-8 z-0">
+    <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
       <Algorithm algorithm={algorithm} {...props}>
         {children}
       </Algorithm>
       {caption && (
-        <p className="px-8 md:px-0 text-center text-sm mt-4">{caption}</p>
+        <p className="px-8 mt-4 text-sm text-center md:px-0">{caption}</p>
       )}
     </div>
   )
@@ -68,20 +68,22 @@ function Algorithm({
   )
 
   const playerContext = usePlayer(steps, { delay })
-  const { state, isPlaying } = playerContext.models
+  const { activeStepIndex, state, isPlaying } = playerContext.models
+
+  const isDone = state.every((subState) => subState.__done)
 
   return (
     <>
-      <div className="py-16 md:rounded-2xl relative z-20 bg-gray-200">
+      <div className="relative z-20 block w-full py-16 bg-gray-200 md:rounded-2xl">
         <div className="z-0">
           {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
         </div>
-        <div className="absolute left-0 w-full px-4 text-gray-500 bottom-4 flex justify-between">
+        <div className="absolute left-0 flex justify-between w-full px-4 text-gray-500 bottom-4">
           <div className="flex">
             <Button className="mr-1" onClick={playerContext.actions.toggle}>
               {isPlaying ? (
                 <BsPauseFill />
-              ) : state.every((subState) => subState.__done) ? (
+              ) : isDone ? (
                 <span className="text-sm">
                   <FaUndo />
                 </span>
@@ -91,10 +93,18 @@ function Algorithm({
             </Button>
             {controls && (
               <>
-                <Button className="mr-1" onClick={playerContext.actions.prev}>
+                <Button
+                  className="mr-1"
+                  onClick={playerContext.actions.prev}
+                  disabled={activeStepIndex === 0}
+                >
                   <HiArrowLeft />
                 </Button>
-                <Button className="mr-1" onClick={playerContext.actions.next}>
+                <Button
+                  className="mr-1"
+                  onClick={playerContext.actions.next}
+                  disabled={isDone}
+                >
                   <HiArrowRight />
                 </Button>
               </>
@@ -106,7 +116,7 @@ function Algorithm({
             </Button>
           )}
         </div>
-        <p className="absolute right-5 top-4 text-gray-500">
+        <p className="absolute text-gray-500 right-5 top-4">
           {steps.indexOf(state) + 1} / {steps.length}
         </p>
       </div>
@@ -140,7 +150,11 @@ function Button({ className, ...props }) {
   return (
     <button
       className={clsx(
-        'shadow-md rounded-lg bg-gray-100 w-8 h-8 flex items-center justify-center font-semibold text-gray-500',
+        'flex items-center justify-center w-8 h-8 font-semibold text-gray-500 bg-gray-100 rounded-lg shadow-md',
+        'focus:outline-none focus:ring-2 focus:ring-current',
+        {
+          'opacity-50 cursor-not-allowed': props.disabled,
+        },
         className
       )}
       {...props}
@@ -173,17 +187,17 @@ function InputForm({ inputs, onSubmit, className, ...props }) {
   return (
     <motion.form
       className={clsx(
-        'flex w-full md:w-3/4 mx-auto mt-6 px-8 md:px-0',
+        'flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0',
         className
       )}
       onSubmit={handleSubmit}
       {...props}
     >
       {inputs.map(([name, value]) => (
-        <label key={name} className="font-mono flex-1 mx-1">
+        <label key={name} className="flex-1 mx-1 font-mono">
           <input
             name={name}
-            className="w-full p-2 rounded-lg border-2"
+            className="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
             type="text"
             defaultValue={JSON.stringify(value)}
             onBlur={(evt) => validate([name, evt.target.value])}

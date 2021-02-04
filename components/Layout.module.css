@@ -1,0 +1,10 @@
+.title {
+  font-size: clamp(5rem, 8vw, 8rem);
+  line-height: 0.9;
+  max-width: 12ch;
+}
+
+.header {
+  grid-column: 1 / -1;
+  width: min(140ch, 100%);
+}

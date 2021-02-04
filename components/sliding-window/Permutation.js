@@ -22,9 +22,9 @@ export default function Permutation({ state }) {
     : `Sliiide 🏂`
   return (
     <>
-      <p className="text-gray-500 font-semibold text-center">{step}</p>
+      <p className="font-semibold text-center text-gray-500">{step}</p>
       <div className="flex justify-center my-12">
-        <div className="flex justify-start items-center relative">
+        <div className="relative flex items-center justify-start">
           <SlidingWindow start={windowStart} end={windowEnd} />
           {[...str].map((item, index) => (
             <Item
@@ -50,11 +50,11 @@ export default function Permutation({ state }) {
 
 function Dictionary({ entries }) {
   return (
-    <ul className="list-none w-1/2 md:w-1/3 mx-auto mb-4">
+    <ul className="w-1/2 mx-auto mb-4 list-none md:w-1/3">
       {Object.entries(entries).map(([key, val]) => (
         <li key={key} className="flex mb-1 font-semibold">
-          <p className="flex-1 bg-gray-400 rounded-md mr-1 text-white">{key}</p>
-          <p className="flex-1 bg-gray-100 flex items-center justify-center rounded-md text-gray-500 font-mono text-sm">
+          <p className="flex-1 mr-1 text-white bg-gray-400 rounded-md">{key}</p>
+          <p className="flex items-center justify-center flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md">
             {val}
           </p>
         </li>

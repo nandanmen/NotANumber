@@ -3,13 +3,16 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400;1,700&family=PT+Serif:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:wght@500;600&display=swap');
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Karla', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+    sans-serif;
 }
 
 a {
@@ -22,8 +25,9 @@ a {
 }
 
 article {
-  @apply w-full grid pb-20;
+  @apply grid w-full pb-20 text-gray-900;
   grid-template-columns: 2rem 1fr 2rem;
+  line-height: 1.6;
 }
 
 article > * {
@@ -36,8 +40,12 @@ article > .full-width {
 }
 
 @screen md {
+  :root {
+    font-size: 18px;
+  }
+
   article {
-    grid-template-columns: 1fr 2rem 38rem 2rem 1fr;
+    grid-template-columns: 1fr 2rem min(65ch, calc(100% - 2rem)) 2rem 1fr;
   }
 
   article > * {
@@ -49,26 +57,18 @@ article > .full-width {
   }
 }
 
-article > p {
-  line-height: 1.6;
-}
-
-h1 {
-  @apply text-4xl font-serif font-semibold text-center;
-}
-
 h2 {
-  @apply text-2xl font-semibold mt-8 relative;
+  @apply relative mt-8 text-2xl font-semibold;
 }
 
 h2:before {
-  @apply bg-green-500 absolute bottom-full left-0 w-6 mb-1;
+  @apply absolute left-0 w-6 mb-1 bg-green-500 bottom-full;
   content: '';
   height: 3px;
 }
 
 h3 {
-  @apply text-xl font-semibold mt-4;
+  @apply mt-4 text-xl font-semibold;
 }
 
 ul,
@@ -85,7 +85,7 @@ ol {
 }
 
 code {
-  @apply bg-gray-200 rounded-md p-1 text-sm;
+  @apply p-1 text-sm bg-gray-200 rounded-md;
 }
 
 .details > section > *:not(:last-child) {

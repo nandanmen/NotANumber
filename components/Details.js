@@ -31,7 +31,8 @@ export default function Details({ variant = 'note', label, children }) {
           {
             'rounded-lg': !open,
             'rounded-none px-8 py-4 md:rounded-2xl': open,
-          }
+          },
+          'focus:outline-none focus:ring-green-300 focus:ring-4'
         )}
       >
         <motion.span layout>{label}</motion.span>
