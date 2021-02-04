@@ -1,0 +1,60 @@
+## Non-Fixed Sliding Windows
+
+So far we've been working through problems with **fixed** window sizes. Sure enough, we can use the same principles for when the window size varies. Typically these kinds of problems involve finding the longest or shortest subarrays.
+
+Let's walk through one such problem to demonstrate.
+
+Suppose I want to find the **smallest subarray** with a _sum_ greater than or equal to a given number `s`. Assume that the given array only contains **positive** numbers. If I have the array `[2, 1, 5, 2]` and `s = 7`, the smallest array with a sum greater than 7 is `[5, 2]`.
+
+Without the sliding window pattern we could use an approach similar to our previous naive implementation. We loop through each possible subarray, check if the sum is greater than `s`, and record the subarray if it is smaller than the minimum recorded.
+
+<Visualizer
+  initialInputs={[[2, 1, 5, 2], 7]}
+  algorithm={snapshot((arr, s) => {
+    let min = null
+    for (let i = 0; i <= arr.length; i++) {
+      let sum = 0
+      for (let j = i; j < arr.length; j++) {
+        sum += arr[j]
+        if (sum >= s) {
+          const subarrayLen = j - i + 1
+          if (!min || subarrayLen < min.length) {
+            min = arr.slice(i, j + 1)
+          }
+          debugger
+          break
+        }
+        debugger
+      }
+    }
+    debugger
+    return min
+  })}
+  delay={600}
+  editable
+>
+  {(context) => <Figures.SmallestSubarrayNaive {...context} />}
+</Visualizer>
+
+Awesome! This works, but it struggles with the same issues of the original averages solution. How can we use the sliding window pattern to improve this?
+
+We'll start off the same way—build our window. Since we're not given a particular window size this time, we will build based on our condition instead. That is, we will build the window until the sum of the items in our window is greater than or equal to 7. Since the array only contains positive numbers, we can end the search if we reach the end of the array and haven't found a matching subarray yet.
+
+<Visualizer
+  initialInputs={[[2, 1, 5, 2], 7]}
+  algorithm={snapshot((arr, s) => {
+    let windowEnd = 0
+    let sum = 0
+    while (windowEnd < arr.length && sum < s) {
+      sum += arr[windowEnd]
+      debugger
+      windowEnd++
+    }
+  })}
+  delay={600}
+  controls
+>
+  {(context) => <Figures.SmallestSubarrayWindow {...context} />}
+</Visualizer>
+
+In the fixed version of the pattern, we slide the window over once we're done building. In this case, doing so would be incorrect—if our window never changes size, we're stuck with the size of the first matching array.
