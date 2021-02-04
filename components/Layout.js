@@ -1,9 +1,13 @@
 import clsx from 'clsx'
+import Head from 'next/head'
 import styles from './Layout.module.css'
 
 export default function Layout({ meta, children }) {
   return (
     <article>
+      <Head>
+        <title>{meta.title}</title>
+      </Head>
       <header className={clsx('mb-36 mx-auto', styles.header)}>
         <h1
           className={clsx(
