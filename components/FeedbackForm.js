@@ -1,5 +1,7 @@
 import React from 'react'
+import { CgSpinner } from 'react-icons/cg'
 import { motion } from 'framer-motion'
+import clsx from 'clsx'
 
 const events = {
   Change: 0,
@@ -71,12 +73,21 @@ export default function FeedbackForm() {
         onChange={() => dispatch(events.Change)}
       />
       <motion.button
-        className="py-2 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl"
+        className={clsx(
+          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl',
+          { 'bg-opacity-50': state === formState.Loading }
+        )}
         whileTap={{ scale: 0.95 }}
+        disabled={state === formState.Loading}
       >
-        Submit
+        {state === formState.Start && 'Submit'}
+        {state === formState.Loading && (
+          <span className="text-xl animate-spin">
+            <CgSpinner />
+          </span>
+        )}
+        {state === formState.Done && 'Thanks! 🎉'}
       </motion.button>
-      <div>{state}</div>
     </form>
   )
 }
