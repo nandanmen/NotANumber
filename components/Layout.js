@@ -1,5 +1,8 @@
+import React from 'react'
 import clsx from 'clsx'
 import Head from 'next/head'
+
+import FeedbackForm from './FeedbackForm'
 import styles from './Layout.module.css'
 
 export default function Layout({ meta, children }) {
@@ -39,6 +42,9 @@ export default function Layout({ meta, children }) {
         </p>
       </div>
       {children}
+      <footer>
+        <FeedbackForm />
+      </footer>
     </article>
   )
 }
