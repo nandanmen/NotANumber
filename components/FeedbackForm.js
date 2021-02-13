@@ -31,7 +31,7 @@ const transition = (state, event) => {
   return machine[state][event] ?? state
 }
 
-export default function FeedbackForm({ slug }) {
+export default function FeedbackForm({ slug, className }) {
   const [state, dispatch] = React.useReducer(transition, formState.Start)
 
   const handleSubmit = async (evt) => {
@@ -42,7 +42,10 @@ export default function FeedbackForm({ slug }) {
 
   return (
     <form
-      className="flex flex-col max-w-md p-8 mx-auto space-y-4 border-2 rounded-lg shadow-lg"
+      className={clsx(
+        'flex flex-col max-w-md p-6 md:p-8 space-y-4 bg-gray-100 border-2 rounded-lg shadow-lg',
+        className
+      )}
       onSubmit={handleSubmit}
     >
       <h1 className="text-2xl font-semibold">Have feedback?</h1>
@@ -105,9 +108,14 @@ function submitFeedback(evt, slug) {
   }
 
   const { name, message } = feedback
+  const params = new URLSearchParams({
+    slug,
+    name,
+    message,
+  })
   return new Promise((resolve, reject) => {
     window
-      .fetch(`/api/feedback?slug=${slug}&name=${name}&message=${message}`, {
+      .fetch(`/api/feedback?${params}`, {
         method: 'POST',
       })
       .then((response) => {

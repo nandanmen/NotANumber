@@ -98,6 +98,16 @@ code {
   line-height: 1.6;
 }
 
-a {
+article a {
   @apply font-semibold underline;
+}
+
+.feedback-form {
+  width: calc(100% - 4rem);
+}
+
+@screen md {
+  .feedback-form {
+    width: auto;
+  }
 }
