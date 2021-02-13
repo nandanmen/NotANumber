@@ -43,7 +43,7 @@ export default function Layout({ meta, children }) {
       </div>
       {children}
       <footer>
-        <FeedbackForm />
+        <FeedbackForm slug={meta.slug} />
       </footer>
     </article>
   )

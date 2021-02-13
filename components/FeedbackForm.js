@@ -31,12 +31,12 @@ const transition = (state, event) => {
   return machine[state][event] ?? state
 }
 
-export default function FeedbackForm() {
+export default function FeedbackForm({ slug }) {
   const [state, dispatch] = React.useReducer(transition, formState.Start)
 
   const handleSubmit = async (evt) => {
     dispatch(events.Submit)
-    await submitFeedback(evt)
+    await submitFeedback(evt, slug)
     dispatch(events.Saved)
   }
 
@@ -92,7 +92,7 @@ export default function FeedbackForm() {
   )
 }
 
-function submitFeedback(evt) {
+function submitFeedback(evt, slug) {
   evt.preventDefault()
 
   const feedback = Object.fromEntries(new FormData(evt.target).entries())
@@ -104,20 +104,15 @@ function submitFeedback(evt) {
     feedback.name = 'Anonymous'
   }
 
+  const { name, message } = feedback
   return new Promise((resolve, reject) => {
     window
-      .fetch('https://notion-github-app.herokuapp.com/feedback', {
+      .fetch(`/api/feedback?slug=${slug}&name=${name}&message=${message}`, {
         method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        body: JSON.stringify(feedback),
       })
       .then((response) => {
         if (response.ok) {
-          resolve()
+          response.json().then(resolve)
         } else {
           reject(response)
         }
