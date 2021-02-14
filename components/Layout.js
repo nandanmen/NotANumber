@@ -10,6 +10,7 @@ import styles from './Layout.module.css'
 export default function Layout({ meta, children }) {
   return (
     <>
+      <Navigation className="px-8 mx-auto mb-32 text-gray-700 md:mb-36 lg:mb-44" />
       <article>
         <Head>
           <title>{meta.title}</title>
@@ -46,43 +47,54 @@ export default function Layout({ meta, children }) {
         </div>
         {children}
       </article>
-      <footer className="relative flex justify-center px-8 pt-64 pb-24 mt-48 bg-gray-200 h-80">
+      <footer className="relative flex justify-center px-8 pt-64 pb-24 bg-gray-200 mt-44 lg:mt-56 h-80">
         <FeedbackForm
           slug={meta.slug}
-          className="absolute -top-48 feedback-form"
+          className="absolute -top-56 feedback-form"
         />
-        <nav
-          style={{ width: `min(65ch, 100%)` }}
+        <Navigation
+          style={{ width: 'min(65ch, 100%)' }}
           className="mt-8 text-gray-500"
-        >
-          <ul className="flex items-center p-0 space-x-4 text-xl list-none">
-            <li className="font-serif font-bold">
-              <Link href="/">
-                <a>NaN</a>
-              </Link>
-            </li>
-            <div style={{ height: 1 }} className="flex-grow bg-gray-400"></div>
-            <li>
-              <a
-                href="https://github.com/narendrasss/blog"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaGithub />
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://twitter.com/nansdotio"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaTwitter />
-              </a>
-            </li>
-          </ul>
-        </nav>
+        />
       </footer>
     </>
+  )
+}
+
+function Navigation({ style, className }) {
+  return (
+    <nav style={style} className={className}>
+      <ul className="flex items-center p-0 text-xl list-none">
+        <li className="font-serif font-bold">
+          <Link href="/">
+            <a className="hover:text-green-600">NaN</a>
+          </Link>
+        </li>
+        <div
+          style={{ height: 1 }}
+          className="flex-grow mx-12 bg-gray-400 lg:mx-8"
+        ></div>
+        <li className="mr-4">
+          <a
+            href="https://github.com/narendrasss/blog"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-green-600"
+          >
+            <FaGithub />
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://twitter.com/nansdotio"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-green-600"
+          >
+            <FaTwitter />
+          </a>
+        </li>
+      </ul>
+    </nav>
   )
 }

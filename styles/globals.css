@@ -69,16 +69,16 @@ h3 {
   @apply mt-4 text-xl font-semibold;
 }
 
-ul,
-ol {
+article ul,
+article ol {
   padding: 0 1.1em;
 }
 
-ul {
+article ul {
   list-style: initial;
 }
 
-ol {
+article ol {
   list-style: decimal;
 }
 
