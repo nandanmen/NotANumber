@@ -1,21 +1,19 @@
 import React from 'react'
 import clsx from 'clsx'
 import Head from 'next/head'
-import Link from 'next/link'
-import { FaGithub, FaTwitter } from 'react-icons/fa'
 
 import FeedbackForm from './FeedbackForm'
+import Navigation from './Navigation'
 import styles from './Layout.module.css'
 
 export default function Layout({ meta, children }) {
   return (
     <>
-      <Navigation className="px-8 mx-auto mb-32 text-gray-700 md:mb-36 lg:mb-44" />
       <article>
         <Head>
           <title>{meta.title}</title>
         </Head>
-        <header className={clsx('mb-36 mx-auto', styles.header)}>
+        <header className={clsx('mb-36 mx-auto mt-32', styles.header)}>
           <h1
             className={clsx(
               'font-serif font-semibold text-center mb-10 mx-auto',
@@ -58,43 +56,5 @@ export default function Layout({ meta, children }) {
         />
       </footer>
     </>
-  )
-}
-
-function Navigation({ style, className }) {
-  return (
-    <nav style={style} className={className}>
-      <ul className="flex items-center p-0 text-xl list-none">
-        <li className="font-serif font-bold">
-          <Link href="/">
-            <a className="hover:text-green-600">NaN</a>
-          </Link>
-        </li>
-        <div
-          style={{ height: 1 }}
-          className="flex-grow mx-12 bg-gray-400 lg:mx-8"
-        ></div>
-        <li className="mr-4">
-          <a
-            href="https://github.com/narendrasss/blog"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-green-600"
-          >
-            <FaGithub />
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://twitter.com/nansdotio"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-green-600"
-          >
-            <FaTwitter />
-          </a>
-        </li>
-      </ul>
-    </nav>
   )
 }
