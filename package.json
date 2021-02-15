@@ -12,6 +12,7 @@
     "@next/mdx": "^10.0.4",
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
+    "babel-plugin-styled-components": "^1.12.0",
     "clsx": "^1.1.1",
     "faunadb": "^4.0.3",
     "framer-motion": "^3.1.1",
