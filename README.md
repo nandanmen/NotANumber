@@ -37,3 +37,5 @@ To get the feedback form working using Fauna:
 ```
 FAUNA_SECRET_KEY=<my api key>
 ```
+
+Alternatively, you can change where the feedback form submits by modifying the `submitFeedback` function in [FeedbackForm.js](https://github.com/narendrasss/NotANumber/blob/23cdaa5e0b5f75bbdabb8a53690061f2a6f84595/components/FeedbackForm.js#L98).
