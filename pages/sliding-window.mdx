@@ -9,6 +9,7 @@ export const meta = {
   title: 'The Sliding Window Pattern',
   blurb: 'A method to optimize subarray problems.',
   publishDate: '2021-02-04',
+  slug: 'sliding-window',
 }
 
 export default ({ children }) => <Layout meta={meta}>{children}</Layout>
@@ -358,3 +359,7 @@ Looking at it from a different perspective, we can think of two maps as being eq
 At the start, this map is the state of the window. When we add a letter to the window, we _subtract_ that letter's count in the map. Conversely when we remove a letter from the window, we _add back_ that letter's count in the map. Since this sequence of updates can be performed in one iteration, we've satisfied the condition!
 
 </Details>
+
+## Summary
+
+In conclusion, the sliding window pattern is a neat way to improve the runtime of problems involving subarrays. A lot of problems can be solved using this pattern, but the tricky part is finding how the pattern can fit into the problem. Once you're there, you're golden.

@@ -28,6 +28,7 @@ module.exports = {
   rules: {
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/no-unescaped-entities': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
     'prettier/prettier': ['error', {}, { usePrettierrc: true }], // Use our .prettierrc file as source
   },

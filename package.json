@@ -13,6 +13,7 @@
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
     "clsx": "^1.1.1",
+    "faunadb": "^4.0.3",
     "framer-motion": "^3.1.1",
     "next": "10.0.4",
     "postcss": "^8.2.2",
@@ -20,7 +21,9 @@
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
     "rfdc": "^1.1.4",
-    "tailwindcss": "^2.0.2"
+    "styled-components": "^5.2.1",
+    "tailwindcss": "^2.0.2",
+    "twin.macro": "^2.2.3"
   },
   "devDependencies": {
     "babel-plugin-macros": "^3.0.1",
@@ -31,5 +34,10 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.2.1"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "styled-components"
+    }
   }
 }

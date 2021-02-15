@@ -1,9 +1,15 @@
 import React from 'react'
 import clsx from 'clsx'
-import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from 'react-icons/hi'
+import {
+  HiArrowLeft,
+  HiArrowRight,
+  HiPencil,
+  HiX,
+  HiCheck,
+} from 'react-icons/hi'
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import exec from '../lib/exec'
 import zip from '../lib/zip'
@@ -61,6 +67,8 @@ function Algorithm({
 
   const [showForm, toggle] = React.useReducer((show) => !show, false)
   const [inputs, setInputs] = React.useState(initialInputs)
+  const [errors, setErrors] = React.useState({})
+  const formRef = React.useRef()
 
   const steps = React.useMemo(
     () => zip(...algorithm.map(({ entryPoint }) => exec(entryPoint, inputs))),
@@ -71,6 +79,25 @@ function Algorithm({
   const { activeStepIndex, state, isPlaying } = playerContext.models
 
   const isDone = state.every((subState) => subState.__done)
+
+  const handleSubmit = (form) => {
+    const entries = [...new FormData(form).entries()]
+    if (entries.every(validate)) {
+      playerContext.actions.reset()
+      setInputs(entries.map(([, value]) => JSON.parse(value)))
+    }
+  }
+
+  const validate = ([name, value]) => {
+    try {
+      JSON.parse(value)
+      setErrors({ ...errors, [name]: null })
+      return true
+    } catch (err) {
+      setErrors({ ...errors, [name]: `Please enter a serializable value.` })
+      return false
+    }
+  }
 
   return (
     <>
@@ -111,9 +138,36 @@ function Algorithm({
             )}
           </div>
           {editable && (
-            <Button onClick={toggle}>
-              {showForm ? <HiX /> : <HiPencil />}
-            </Button>
+            <div className="flex space-x-1">
+              <AnimatePresence>
+                {showForm && (
+                  <Button
+                    onClick={() => {
+                      handleSubmit(formRef.current)
+                      toggle()
+                    }}
+                    variants={{
+                      hidden: {
+                        x: '100%',
+                        opacity: 0,
+                      },
+                      shown: {
+                        x: 0,
+                        opacity: 1,
+                      },
+                    }}
+                    initial="hidden"
+                    animate="shown"
+                    exit="hidden"
+                  >
+                    <HiCheck />
+                  </Button>
+                )}
+              </AnimatePresence>
+              <Button onClick={toggle} className="relative">
+                {showForm ? <HiX /> : <HiPencil />}
+              </Button>
+            </div>
           )}
         </div>
         <p className="absolute text-gray-500 right-5 top-4">
@@ -121,13 +175,13 @@ function Algorithm({
         </p>
       </div>
       {showForm && (
-        <InputForm
-          inputs={params.map((name, index) => [name, inputs[index]])}
-          onSubmit={(inputs) => {
-            playerContext.actions.reset()
-            setInputs(inputs.map((entry) => entry[1]))
+        <motion.form
+          ref={formRef}
+          onSubmit={(evt) => {
+            evt.preventDefault()
+            handleSubmit(evt.target)
           }}
-          className="z-10"
+          className="z-10 flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0"
           variants={{
             show: {
               y: 0,
@@ -140,7 +194,24 @@ function Algorithm({
           }}
           initial="hide"
           animate="show"
-        />
+        >
+          {params
+            .map((name, index) => [name, inputs[index]])
+            .map(([name, value]) => (
+              <label key={name} className="flex-1 mx-1 font-mono">
+                <input
+                  name={name}
+                  className="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
+                  type="text"
+                  defaultValue={JSON.stringify(value)}
+                  onBlur={(evt) => validate([name, evt.target.value])}
+                />
+                <span className="block">{name}</span>
+                {errors[name] && <p>{errors[name]}</p>}
+              </label>
+            ))}
+          <button type="submit"></button>
+        </motion.form>
       )}
     </>
   )
@@ -148,7 +219,7 @@ function Algorithm({
 
 function Button({ className, ...props }) {
   return (
-    <button
+    <motion.button
       className={clsx(
         'flex items-center justify-center w-8 h-8 font-semibold text-gray-500 bg-gray-100 rounded-lg shadow-md',
         'focus:outline-none focus:ring-2 focus:ring-current',
@@ -159,54 +230,5 @@ function Button({ className, ...props }) {
       )}
       {...props}
     />
-  )
-}
-
-function InputForm({ inputs, onSubmit, className, ...props }) {
-  const [errors, setErrors] = React.useState({})
-
-  const handleSubmit = (evt) => {
-    evt.preventDefault()
-    const entries = [...new FormData(evt.target).entries()]
-    if (entries.every(validate)) {
-      onSubmit(entries.map(([name, value]) => [name, JSON.parse(value)]))
-    }
-  }
-
-  const validate = ([name, value]) => {
-    try {
-      JSON.parse(value)
-      setErrors({ ...errors, [name]: null })
-      return true
-    } catch (err) {
-      setErrors({ ...errors, [name]: `Please enter a serializable value.` })
-      return false
-    }
-  }
-
-  return (
-    <motion.form
-      className={clsx(
-        'flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0',
-        className
-      )}
-      onSubmit={handleSubmit}
-      {...props}
-    >
-      {inputs.map(([name, value]) => (
-        <label key={name} className="flex-1 mx-1 font-mono">
-          <input
-            name={name}
-            className="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
-            type="text"
-            defaultValue={JSON.stringify(value)}
-            onBlur={(evt) => validate([name, evt.target.value])}
-          />
-          <span className="block">{name}</span>
-          {errors[name] && <p>{errors[name]}</p>}
-        </label>
-      ))}
-      <button type="submit"></button>
-    </motion.form>
   )
 }

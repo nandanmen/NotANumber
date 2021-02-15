@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400;1,700&family=PT+Serif:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:wght@500;600&display=swap');
 
 html,
@@ -32,7 +30,7 @@ article {
 
 article > * {
   grid-column: 2 / span 1;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 article > .full-width {
@@ -71,16 +69,16 @@ h3 {
   @apply mt-4 text-xl font-semibold;
 }
 
-ul,
-ol {
+article ul,
+article ol {
   padding: 0 1.1em;
 }
 
-ul {
+article ul {
   list-style: initial;
 }
 
-ol {
+article ol {
   list-style: decimal;
 }
 
@@ -100,6 +98,16 @@ code {
   line-height: 1.6;
 }
 
-a {
+article a {
   @apply font-semibold underline;
+}
+
+.feedback-form {
+  width: calc(100% - 4rem);
+}
+
+@screen md {
+  .feedback-form {
+    width: auto;
+  }
 }
