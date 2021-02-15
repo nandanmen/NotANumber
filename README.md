@@ -1,30 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![NaN homepage](nan_homepage.png)
+
+Hello! This repository contains the source code for [Not a Number](https://nan.fyi/), my personal blog on computer science and web development with a focus on interactive articles. Feel free to look around 🎉
 
 ## Getting Started
 
-First, run the development server:
+This blog is built with [Next.js](https://nextjs.org/), [MDX](https://mdxjs.com/) and [Tailwind](https://tailwindcss.com/), supercharged with [styled-components](https://styled-components.com/) and [twin.macro](https://github.com/ben-rogerson/twin.macro). The backend for collecting feedback is built with Next.js and [Fauna](https://fauna.com/).
+
+To get started:
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
+git clone https://github.com/narendrasss/NotANumber.git
+```
+
+2. Cd into the directory and install dependencies:
+
+```bash
+cd NotANumber
+yarn install
+```
+
+3. Run the development server:
+
+```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. Note that at this point, the feedback form will NOT work.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+To get the feedback form working using Fauna:
 
-## Learn More
+1. Get the API key from [Fauna](https://fauna.com/) by creating an account and provisioning a database
+2. Add the API key to a `.env.local` file in the root directory:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+FAUNA_SECRET_KEY=<my api key>
+```
