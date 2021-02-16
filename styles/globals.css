@@ -56,7 +56,7 @@ article > .full-width {
 }
 
 h2 {
-  @apply relative mt-8 text-2xl font-semibold;
+  @apply relative mt-8 font-serif text-3xl font-semibold;
 }
 
 h2:before {

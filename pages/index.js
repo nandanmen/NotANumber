@@ -6,6 +6,9 @@ import { HiArrowRight } from 'react-icons/hi'
 import posts from '../posts'
 
 export default function HomePage() {
+  posts.sort((a, b) =>
+    new Date(a.publishDate) < new Date(b.publishDate) ? 1 : -1
+  )
   return (
     <>
       <Head>
@@ -66,7 +69,7 @@ const Title = styled.h1`
 const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600`
 
 const Posts = styled.ul`
-  ${tw`pt-12`}
+  ${tw`pt-12 space-y-4`}
 
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
