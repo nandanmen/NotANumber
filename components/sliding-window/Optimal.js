@@ -8,39 +8,37 @@ export default function Optimal({ state }) {
     windowEnd,
     windowSum,
     result,
-    arr,
-    k,
+    chocolates,
+    period,
   } = state
   const isActive = (index) =>
     done ? true : index >= windowStart && index <= windowEnd
   const step = done
     ? 'Done! 🥳'
-    : windowEnd < k
+    : windowEnd < period
     ? `Building window 🚧`
     : `Sliiide 🏂`
   return (
     <>
-      <p className="text-gray-500 font-semibold text-center">{step}</p>
+      <p className="font-semibold text-center text-gray-500">{step}</p>
       <div className="flex justify-center my-12">
-        <div className="flex justify-start items-center relative">
+        <div className="relative flex items-center justify-start">
           <SlidingWindow
             start={windowStart}
-            end={done ? arr.length - 1 : windowEnd}
+            end={done ? chocolates.length - 1 : windowEnd}
           />
-          {arr.map((item, index) => (
+          {chocolates.map((item, index) => (
             <Item key={item} active={isActive(index)}>
               {item}
             </Item>
           ))}
         </div>
       </div>
-      <section className="text-center">
-        <code className="block">Window sum: {windowSum}</code>
-        <code className="block">Subarray size: {k}</code>
-        <code className="block">
-          Result: {JSON.stringify(result.map(Number), null, 2)}
-        </code>
-      </section>
+      <p className="mt-16 font-mono text-center">period: 3</p>
+      <p className="font-mono text-center">sum: {windowSum}</p>
+      <p className="font-mono text-center">
+        result: {JSON.stringify(result.map(Number), null, 2)}
+      </p>
     </>
   )
 }

@@ -2,17 +2,17 @@ import Item from '../shared/Item'
 import SlidingWindow from './shared/SlidingWindow'
 
 export default function OptimalMin({ state }) {
-  const { __done: done, windowStart, windowEnd, result, arr } = state
+  const { __done: done, windowStart, windowEnd, result, chocolates } = state
   const isActive = (index) =>
     done ? true : index >= windowStart && index <= windowEnd
   return (
-    <div className="flex flex-col items-start md:items-center overflow-x-scroll px-4">
-      <div className="flex justify-start items-center relative py-12">
+    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center">
+      <div className="relative flex items-center justify-start py-12">
         <SlidingWindow
           start={windowStart}
-          end={done ? arr.length - 1 : windowEnd}
+          end={done ? chocolates.length - 1 : windowEnd}
         />
-        {arr.map((item, index) => (
+        {chocolates.map((item, index) => (
           <Item key={index} active={isActive(index)}>
             {item}
           </Item>

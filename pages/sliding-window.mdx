@@ -1,7 +1,9 @@
 import Visualizer from '../components/Visualizer'
 import Details from '../components/Details'
+import Callout from '../components/Callout'
 import Layout from '../components/Layout'
 import Item from '../components/shared/Item'
+import SlidingWindow from '../components/sliding-window/shared/SlidingWindow'
 import * as Figures from '../components/sliding-window'
 import snapshot from '../lib/snapshot.macro'
 
@@ -14,30 +16,52 @@ export const meta = {
 
 export default ({ children }) => <Layout meta={meta}>{children}</Layout>
 
-## A Subarray Problem
+After multiple failed coding assessment tests last summer, I enrolled in the [Grokking the Coding Interview course](https://www.educative.io/courses/grokking-the-coding-interview). The course was different from other data structures and algorithms courses because it focused on common algorithmic _patterns_. The main idea behind the patterns is this: if you're able to _reduce_ a coding problem to match one of the patterns, you're well on your way to reaching an optimal solution.
 
-The sliding window pattern is a neat and simple pattern to optimize problems involving _subarrays_. Let's go over a simple problem to see how this can be useful.
+While the course itself is incredibly informative, I felt that _visualizing_ the patterns themselves makes them just a bit more clear to understand.
 
-For this problem, we are given an array `arr`, and a subarray size `k`, and we are asked to find the _average_ of _each_ subarray in `arr` of size `k`. So given an array like `[1, 2, 3, 4]` and a subarray size `k = 2`, the correct answer would be `[1.5, 2.5, 3.5]` because:
+In this post, I talk about the first pattern that they cover — the sliding window pattern. We'll first walk through a problem without the pattern, then we'll try to iteratively improve our solution, revealing the final pattern in the end.
 
-1. `[1, 2, 3, 4]` has three subarrays of size 2, namely `[1, 2]`, `[2, 3]`, and `[3, 4]`.
-2. Taking the average of each subarray we get `[1.5, 2.5, 3.5]`.
+## An Addicted Data Scientist
 
-How do we create an algorithm to solve this problem? Generally speaking, we would have to (1) divide up the array into subarrays of size `k`, then (2) take the average of each, and finally (3) put them together.
+Let's pretend that I'm a data scientist that absolutely _loves_ chocolate. As a data scientist, I _naturally_ keep track of the number of chocolate that I eat on a daily basis. One day I wondered — how many chocolates do I eat on average over any consecutive 3 day period? (an every-day question to ask, of course).
 
-A straightforward way to find every subarray of an array is to iterate through each index of the array and _construct_ the subarray that begins at that index by iterating `k` more times. In this second iteration we can also sum up the numbers to compute the resulting average. Here's what that would look like:
+I could do this by hand, but I'm lazy. I also want it to work with _any_ period of consecutive days **and** with any number of data points I may have. So I decide to write an algorithm to answer this question for me.
+
+The algorithm takes in two parameters — a list of data points `chocolates`, where each number represents the number of chocolates I eat on a given day, and a number `period` that represents the period of consecutive days I want to take the average from. The algorithm should put out another list of numbers, where each number represents the average number of chocolates eaten over a consecutive `period` number of days.
+
+```
+averageChocolatesEaten(chocolates: number[], period: number): number[]
+```
+
+For example, if we give the algorithm the list `[1, 2, 3, 4]` and the period `3`, the algorithm's going to return the list `[2, 3]`. `[1, 2, 3, 4]` breaks down into two 3-day periods, `[1, 2, 3]`, and `[2, 3, 4]`, with an average of 2 and 3 respectively..
+
+How do we design the algorithm?
+
+## First Approach
+
+My first approach to this would be to follow the steps logically:
+
+1. Break down the list of numbers to sublists with length `period` each
+2. Take the average of each sublist
+3. Put the averages together
+
+To build the sublists, we repeatedly take `period` elements from the list until we hit the end of the list:
 
 <Visualizer
-  initialInputs={[[1, 2, 3, 4]]}
-  algorithm={snapshot((arr) => {
-    let sum = 0
-    const window = []
-    for (let i = 1; i < 4; i++) {
-      sum += arr[i]
-      window.push(i)
+  initialInputs={[[1, 2, 3, 4], 3]}
+  algorithm={snapshot((arr, k) => {
+    const sublists = []
+    for (let i = 0; i <= arr.length - k; i++) {
+      const window = []
+      for (let j = 0; j < k; j++) {
+        window.push(i + j)
+        debugger
+      }
+      sublists.push(window)
       debugger
     }
-    return sum
+    return sublists
   })}
 >
   {({ state }) => (
@@ -49,17 +73,21 @@ A straightforward way to find every subarray of an array is to iterate through e
           </Item>
         ))}
       </div>
-      <p className="font-mono w-full text-center mt-4">
-        k = 2 sum: {state.sum}
-      </p>
+      <div className="font-mono text-center mt-8 text-sm">
+        {JSON.stringify(
+          state.sublists.map((list) => list.map((index) => state.arr[index])),
+          null,
+          2
+        )}
+      </div>
     </React.Fragment>
   )}
 </Visualizer>
 
-Doing that for _every_ index in the array, we get the final algorithm:
+Since we're already going through each sublist one at a time, we may as well count the sum (and subsequently, the average) as we go. Once we've done that, we have the completed algorithm:
 
 <Visualizer
-  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  initialInputs={[[1, 2, 3, 4], 3]}
   algorithm={snapshot((arr, k) => {
     const result = []
     for (let i = 0; i <= arr.length - k; i++) {
@@ -73,57 +101,177 @@ Doing that for _every_ index in the array, we get the final algorithm:
     debugger
     return result
   })}
-  caption="This is an interactive demo! Press the pencil icon to change the values of arr and k."
+  delay={650}
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex w-full justify-center">
+        {state.arr.map((item, index) => (
+          <Item
+            key={index}
+            active={
+              state.__done || (index >= state.i && index <= state.i + state.j)
+            }
+          >
+            {item}
+          </Item>
+        ))}
+      </div>
+      <div className="font-mono text-center mt-8 text-sm">
+        {JSON.stringify(state.result, null, 2)}
+      </div>
+      <div className="font-mono text-center mt-4 text-sm">
+        {state.__done ? 'Done 🥳' : `sum = ${state.sum}`}
+      </div>
+    </React.Fragment>
+  )}
+</Visualizer>
+
+That was easy! We’re not _quite_ done yet though. We can do better.
+
+On the top right of the animation box you’ll see a number. This number represents the total number of steps the algorithm needs to do to compute its result. Given the list of numbers `[1,2,3,4]` for example, the algorithm needs 7 steps to get to the final result.
+
+Let's see what happens to the number of steps when we change the size of the inputs. In the box below, I doubled the size of the data to 8 numbers:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 0, 9, 12, 5], 3]}
+  algorithm={snapshot((chocolates, period) => {
+    const result = []
+    for (let i = 0; i <= chocolates.length - period; i++) {
+      let sum = 0
+      for (let j = 0; j < period; j++) {
+        sum += chocolates[i + j]
+        debugger
+      }
+      result.push(sum / period)
+    }
+    debugger
+    return result
+  })}
+  caption="This is an interactive demo! Press the pencil icon to change the values of chocolates and period."
   editable
 >
   {(context) => <Figures.Quadratic {...context} />}
 </Visualizer>
 
-Notice the number on the top right of the animation. This number represents the total number of steps required to compute the result given the inputs `arr` and `k`. Try adding two more items and see how that number changes—it went up, by a _lot_.
+Notice the number on the top right again — it jumped up to 19 steps! It makes sense for the number to go up, but maybe there's a way so that it doesn't go up _as_ much as it did.
 
-Is there a better way?
+<Callout label="Not quite right">
 
-Looking back at the algorithm, notice that most of the time we're counting numbers that we've already included before. Let's look at the animation again, this time highlighting all the double counts in red:
+Ok I admit — claiming an algorithm is slow based on two inputs isn't necessarily correct. A more robust and standard way to check how fast an algorithm is is to look at its **time complexity**.
+
+I wanted to avoid talking about time complexity for those not familiar with it, but I do think it's good to note what the time complexity actually _is_ for those who are.
+
+<Callout.Details>
+
+To reiterate, the algorithm works by repeatedly taking a `period` number of elements from the `chocolates` list until we hit the end of the list. To build _one_ sublist of `period` numbers, we would have to iterate a `period` number of times. To build the _entire_ list of sublists, we would have to iterate at most `length(chocolates)` times. Putting both together gives us a total time complexity of `O(period * length(chocolates))`.
+
+Keep this in mind — we'll revisit this when we get to the end.
+
+</Callout.Details>
+
+</Callout>
+
+## A Window of Opportunity
+
+Here's the algorithm again. Do you see anything that seems wasteful or unnecessary? Here's a hint — try to see what happens when we _transition_ from one sublist to the next.
 
 <Visualizer
-  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  initialInputs={[[1, 2, 3, 4, 0, 9], 3]}
+  algorithm={snapshot((chocolates, period) => {
+    const result = []
+    for (let i = 0; i <= chocolates.length - period; i++) {
+      let sum = 0
+      for (let j = 0; j < period; j++) {
+        sum += chocolates[i + j]
+        debugger
+      }
+      result.push(sum / period)
+    }
+    debugger
+    return result
+  })}
+  editable
+  controls
+>
+  {(context) => <Figures.Quadratic {...context} />}
+</Visualizer>
+
+Let's look at that transition step one more time:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 0, 9], 3]}
   algorithm={snapshot((arr, k) => {
+    let window = [0, 1]
+    debugger
+    window = [0, 1, 2]
+    debugger
+    window = [1]
+    debugger
+    window = [1, 2]
+    debugger
+    window = [1, 2, 3]
+    debugger
+  })}
+  delay={650}
+>
+  {({ state }) => (
+    <div className="flex w-full justify-center">
+      {state.arr.map((item, index) => (
+        <Item key={index} active={state.window.includes(index)}>
+          {item}
+        </Item>
+      ))}
+    </div>
+  )}
+</Visualizer>
+
+When we move from one sublist to the next, we are (quite literally) dropping elements that we have already counted, only to count it again in the next iteration.
+
+This effect is especially pronounced when the size of `period` is close to the size of the list of chocolates:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 0, 9], 5]}
+  algorithm={snapshot((chocolates, period) => {
     const result = []
     const counted = []
     const doubleCounted = []
-    for (let i = 0; i <= arr.length - k; i++) {
+    for (let i = 0; i <= chocolates.length - period; i++) {
       const subarray = [i]
       let sum = 0
-      for (let j = 0; j < k; j++) {
+      for (let j = 0; j < period; j++) {
         subarray.push(i + j)
-        sum += arr[i + j]
+        sum += chocolates[i + j]
         if (counted.includes(i + j)) {
           doubleCounted.push(i + j)
         }
         debugger
       }
       subarray.forEach((item) => counted.push(item))
-      result.push(sum / k)
+      result.push(sum / period)
     }
     debugger
     return result
   })}
+  caption="The numbers in red are double counted!"
   editable
 >
   {(context) => <Figures.DoubleCount {...context} />}
 </Visualizer>
 
-When the algorithm finishes, only 2 elements **were not double counted!** It turns out that no matter what inputs, this implementation will _always_ double count every element except for the first and the last (try playing around with the inputs to convince yourself).
+It turns out that no matter what inputs you give the algorithm, this approach will _always_ double count every element except for the first and the last (try playing around with the inputs to convince yourself!)
 
-So why are we double counting in the first place? If we look at the first two subarrays, we see there's a lot of overlap:
+So why are we double counting in the first place? If we look at the first two sublists, we see that there's a lot of similarity between the two lists:
 
 <Visualizer>
   <Figures.Comparison />
 </Visualizer>
 
-What if, on each step, we only take into account the _differences_ instead? In other words, is there a way to get the sum of the second subarray from the sum of the first? If so, we would be able to _derive_ the sum of the second subarray rather than recounting every element again.
+By starting over every time we reach a new element, we don't take advantage of this similarity. If we're somehow able to calculate the average for both sublists without double counting, we would be able to cut down on a lot of needless steps.
 
-In the example above, we can get the sum of the **second subarray by subtracting 1 and adding 5** to the sum of the first.
+As a matter of fact, there's a way to do exactly that!
+
+Notice that for the example above, the sum of the second sublist is equal to **the sum of the _first_ sublist minus one and plus four**:
 
 <Visualizer
   initialInputs={[[1, 2, 3, 4]]}
@@ -146,9 +294,9 @@ In the example above, we can get the sum of the **second subarray by subtracting
   {({ state }) => <Figures.Derive state={state} />}
 </Visualizer>
 
-This reduces the sum computation from `k` iterations to only one iteration! This is also where the sliding window namesake comes from—it's as if we have a window of 4 items that we _slide_ to the next subarray.
+Generally speaking, the sum of the second sublist is the sum of the first sublist, minus the first element of the first sublist, plus the last element of the second sublist. Using this formula, we can _derive_ the sum of the next sublist from the current one, ultimately avoiding the need to recount everything all over again. By doing this, we reduce the number of steps needed to count the sum from `period` steps to only one step!
 
-Maybe adding a border around the items would make the window more clear:
+If we do the subtraction and addition in one step, it's as if we're _sliding_ a _window_ (see where I'm getting at here?) of elements from one sublist to the next:
 
 <Visualizer
   initialInputs={[[1, 2, 3, 4]]}
@@ -168,69 +316,209 @@ Maybe adding a border around the items would make the window more clear:
   {({ state }) => <Figures.Window state={state} />}
 </Visualizer>
 
-With this key insight let's rewrite the algorithm. Remember that the algorithm receives two inputs - an array of numbers `arr` and a size of subarray `k`.
+## Rewriting the Algorithm
 
-1. At the start, we _build_ the window—iterate until our window contains `k` items—while keeping track of the sum.
-2. Then, we _slide_ the window one item over, updating the sum by subtracting the item no longer in the window and adding the item that was added to the window. By doing this we ensure that the sum stays in sync with the items that are in the window.
-3. With this sum we can compute the average as before.
+With this key insight let's rewrite the algorithm. Remember that the algorithm receives two inputs - a list of numbers `chocolates` and the period of consecutive days `period`.
+
+The sliding window trick only takes into effect when we transition from one sublist to the next. At the start, we don't even have a sublist, so we have to build the sublist as we did before — by iterating through the first `period` elements.
 
 <Visualizer
   initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
-  algorithm={snapshot((arr, k) => {
+  algorithm={snapshot((chocolates, period) => {
     const result = []
     let windowStart = 0
     let windowSum = 0
-    for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
-      windowSum += arr[windowEnd]
+    for (let windowEnd = 0; windowEnd <= period - 1; windowEnd++) {
+      windowSum += chocolates[windowEnd]
       debugger
-      if (windowEnd >= k - 1) {
-        result.push((windowSum / k).toFixed(2))
-        windowSum -= arr[windowStart]
+      if (windowEnd >= period - 1) {
+        result.push((windowSum / period).toFixed(2))
+        windowSum -= chocolates[windowStart]
+        windowStart++
+      }
+    }
+    return result
+  })}
+  controls
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex justify-center">
+        <div className="relative flex items-center justify-start">
+          <SlidingWindow start={state.windowStart} end={state.windowEnd} />
+          {state.chocolates.map((item, index) => (
+            <Item
+              key={item}
+              active={index >= state.windowStart && index <= state.windowEnd}
+            >
+              {item}
+            </Item>
+          ))}
+        </div>
+      </div>
+      <p className="text-center mt-16 font-mono">period: 3</p>
+      <p className="text-center font-mono">sum: {state.windowSum}</p>
+    </React.Fragment>
+  )}
+</Visualizer>
+
+Then, we use our sliding window trick to slide to the next sublist. Again, what we're really doing here is subtracting the first element of the original sublist and adding the last element of the next sublist. We use this sum to calculate the average of the list and add that average to the final result.
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  algorithm={snapshot((chocolates, period) => {
+    const result = []
+    let windowStart = 0
+    let windowSum = 3
+    let windowEnd = 2
+    while (windowEnd <= 3) {
+      windowSum += chocolates[windowEnd]
+      debugger
+      if (windowEnd >= period - 1) {
+        result.push(Number((windowSum / period).toFixed(2)))
+        debugger
+        windowSum -= chocolates[windowStart]
+        windowStart++
+      }
+      windowEnd++
+    }
+    return result
+  })}
+  controls
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex justify-center">
+        <div className="relative flex items-center justify-start">
+          <SlidingWindow start={state.windowStart} end={state.windowEnd} />
+          {state.chocolates.map((item, index) => (
+            <Item
+              key={item}
+              active={index >= state.windowStart && index <= state.windowEnd}
+            >
+              {item}
+            </Item>
+          ))}
+        </div>
+      </div>
+      <p className="text-center mt-16 font-mono">period: 3</p>
+      <p className="text-center font-mono">sum: {state.windowSum}</p>
+      <p className="text-center font-mono">
+        result: {JSON.stringify(state.result, null, 2)}
+      </p>
+    </React.Fragment>
+  )}
+</Visualizer>
+
+Finally, we keep sliding until we hit the end of the chocolates list.
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  algorithm={snapshot((chocolates, period) => {
+    const result = [2]
+    let windowStart = 1
+    let windowSum = 5
+    let windowEnd = 3
+    while (windowEnd <= chocolates.length - 1) {
+      windowSum += chocolates[windowEnd]
+      debugger
+      if (windowEnd >= period - 1) {
+        result.push(Number((windowSum / period).toFixed(2)))
+        windowSum -= chocolates[windowStart]
+        windowStart++
+      }
+      windowEnd++
+    }
+    return result
+  })}
+  controls
+>
+  {({ state }) => (
+    <React.Fragment>
+      <div className="flex justify-center">
+        <div className="relative flex items-center justify-start">
+          <SlidingWindow start={state.windowStart} end={state.windowEnd} />
+          {state.chocolates.map((item, index) => (
+            <Item
+              key={item}
+              active={index >= state.windowStart && index <= state.windowEnd}
+            >
+              {item}
+            </Item>
+          ))}
+        </div>
+      </div>
+      <p className="text-center mt-16 font-mono">period: 3</p>
+      <p className="text-center font-mono">sum: {state.windowSum}</p>
+      <p className="text-center font-mono">
+        result: {JSON.stringify(state.result, null, 2)}
+      </p>
+    </React.Fragment>
+  )}
+</Visualizer>
+
+Putting all three steps together, we get the final algorithm:
+
+<Visualizer
+  initialInputs={[[1, 2, 3, 4, 5, 6], 3]}
+  algorithm={snapshot((chocolates, period) => {
+    const result = []
+    let windowStart = 0
+    let windowSum = 0
+    for (let windowEnd = 0; windowEnd < chocolates.length; windowEnd++) {
+      windowSum += chocolates[windowEnd]
+      debugger
+      if (windowEnd >= period - 1) {
+        result.push((windowSum / period).toFixed(2))
+        windowSum -= chocolates[windowStart]
         windowStart++
       }
     }
     debugger
     return result
   })}
-  delay={600}
   controls
   editable
 >
   {({ state }) => <Figures.Optimal state={state} />}
 </Visualizer>
 
-And that's the find all averages problem using the sliding window pattern! Notice how this implementation only needs 7 steps to calculate the sum instead of 13 with the previous implementation. Now that doesn't seem to be too big of a difference, but look how blazing fast the optimal implementation is compared to our previous one:
+And there you have it — the sliding window pattern!
+
+Based on these examples alone, we see that this new version does seem faster — the original algorithm takes 7 steps for a 4-length input, while the sliding window algorithm takes the same amount of steps for a 6-length input.
+
+This doesn't seem like a fair comparison though, so let's do a test. How would the two algorithms compare when we give it the exact same inputs?
 
 <Visualizer
   initialInputs={[[1, 3, 2, 6, -1, 4, 1, 8, 2], 3]}
   caption="The animation speed is set to 400ms for both implementations!"
   editable
   algorithm={[
-    snapshot((arr, k) => {
+    snapshot((chocolates, period) => {
       const result = []
       let windowStart = 0
       let windowSum = 0
-      for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
-        windowSum += arr[windowEnd]
+      for (let windowEnd = 0; windowEnd < chocolates.length; windowEnd++) {
+        windowSum += chocolates[windowEnd]
         debugger
-        if (windowEnd >= k - 1) {
-          result.push(windowSum / k)
-          windowSum -= arr[windowStart]
+        if (windowEnd >= period - 1) {
+          result.push(windowSum / period)
+          windowSum -= chocolates[windowStart]
           windowStart++
         }
       }
       debugger
       return result
     }),
-    snapshot((arr, k) => {
+    snapshot((chocolates, period) => {
       const result = []
-      for (let i = 0; i <= arr.length - k; i++) {
+      for (let i = 0; i <= chocolates.length - period; i++) {
         let sum = 0
-        for (let j = 0; j < k; j++) {
-          sum += arr[i + j]
+        for (let j = 0; j < period; j++) {
+          sum += chocolates[i + j]
           debugger
         }
-        result.push(sum / k)
+        result.push(sum / period)
       }
       debugger
       return result
@@ -239,31 +527,53 @@ And that's the find all averages problem using the sliding window pattern! Notic
 >
   {({ state: [optimal, quadratic], inputs }) => (
     <React.Fragment>
-      <h4 className="text-gray-500 font-semibold text-center">Optimal 🏎</h4>
+      <h4 className="text-gray-500 font-semibold text-center">
+        Sliding Window 🏎
+      </h4>
       <Figures.OptimalMin state={optimal} />
-      <h4 className="text-gray-500 font-semibold text-center my-8">Naive 🐌</h4>
+      <h4 className="text-gray-500 font-semibold text-center my-8">
+        Old Algorithm 🐌
+      </h4>
       <Figures.Quadratic state={quadratic} />
     </React.Fragment>
   )}
 </Visualizer>
 
-While the window is building, both algorithms are going at the same pace (try changing the size of k to equal to the size of the array—both algorithms will finish at the same time!). However, once the window is complete, the optimal algorithm blazes off and terminates in less than half the time it takes for the naive algorithm to finish.
+While the window is building, both algorithms are going at the same pace (try changing the size of `period` to the size of the list — both algorithms will finish at the same time!). However, once the window is complete, the optimal algorithm blazes off and terminates in less than half the time it takes for the old algorithm to finish.
 
-<Details label="⏱ A note on time complexity">
+<Callout label="Done in linear time">
 
-Admittedly comparing the runtime of two algorithms using an animated graphic isn't necessarily correct. Some algorithms naturally perform better on some inputs than others. The correct approach is to compare the algorithms' respective [time complexities](https://en.wikipedia.org/wiki/Time_complexity#:~:text=In%20computer%20science%2C%20the%20time,takes%20to%20run%20an%20algorithm.).
+How does the time complexity of the sliding window pattern compare to the time complexity of the old algorithm?
 
-I wanted to avoid talking about time complexity for those not familiar with it, but I do think it's important to note what the time complexities actually _are_ for those who are curious.
+<Callout.Details>
 
-**TL;DR**—The naive implementation is `O(nk)` while the optimal implementation is `O(n)`, where `n` is the size of the given array `arr`.
+Recall that if the size of the chocolates list is `n`, then the time complexity of the old algorithm is `O(n * period)`.
 
-In the naive implementation, for every item in the array, we iterate `k` times to compute the subarray. This gives us a runtime of `O(nk)` where `n` is the size of the given array.
+Previously, we defined the sliding window algorithm to have three concrete steps:
 
-In the optimal implementation, we broke down the algorithm into two concrete steps—the build step and the slide step. The time complexity of the algorithm is thus the sum of the build step and the slide step.
+1. Building the initial window
+2. Sliding the window from one sublist to the next
+3. Repeatedly sliding until the end of the list
 
-The build step is simply `O(k)` because we're only iterating until we reach the window size `k`. At a quick glance, the slide step is `O(n)` because we're iterating until the end of the array. However, we don't start at index `0`—we start at index `k`. Therefore a more tight upper bound is `O(n - k)`. Adding the two together we get the final runtime of `O(n)`. A surprising find! Turns out the runtime of the optimal solution isn't reliant on the value of `k` at all.
+The time complexity of the whole algorithm is then the total time it takes for all three steps. Let's look into them one by one.
 
-</Details>
+1. Building the initial window
+
+To build the initial window, we iterate exactly `period` times. Naturally, we can conclude that the time complexity is `O(period)`.
+
+2. Sliding the window from one sublist to the next
+
+To slide the window, we subtract one item and add another item. Since we're always going to subtract only _one_ item and add _one_ item every time, this step has a time complexity of `O(1)`.
+
+3. Repeatedly sliding until the end of the list
+
+The time complexity of this step is entirely dependent on the number of times we slide. We have to slide until we reach the `n`th index, and we start sliding from index `period`. This means that we would need to slide `n - period` times, implying a time complexity of `O(n - period)`.
+
+The time complexity of the whole algorithm is then `O(period) + O(1) + O(n - period)`. Simplifying a bit, we get `O(period + n - period) = O(n)`. Look at that! The algorithm doesn't depend on the size of the period at all.
+
+</Callout.Details>
+
+</Callout>
 
 ## Generalizing the Pattern
 

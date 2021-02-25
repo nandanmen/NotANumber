@@ -71,19 +71,23 @@ h3 {
 
 article ul,
 article ol {
-  padding: 0 1.1em;
+  list-style-position: inside;
 }
 
 article ul {
-  list-style: initial;
+  list-style-type: initial;
 }
 
 article ol {
-  list-style: decimal;
+  list-style-type: decimal;
 }
 
 code {
   @apply p-1 text-sm bg-gray-200 rounded-md;
+}
+
+pre {
+  @apply p-2 overflow-x-scroll bg-gray-200 rounded-md;
 }
 
 .details > section > *:not(:last-child) {
@@ -91,7 +95,7 @@ code {
 }
 
 .details.note code {
-  @apply bg-green-500;
+  @apply bg-blue-100;
 }
 
 .details {

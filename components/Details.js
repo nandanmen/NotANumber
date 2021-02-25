@@ -4,7 +4,7 @@ import { FaExpandAlt, FaCompressAlt } from 'react-icons/fa'
 import clsx from 'clsx'
 
 const variants = {
-  note: 'bg-green-600 text-white note',
+  note: 'bg-blue-200 note',
   optional: 'bg-gray-200 optional',
 }
 
