@@ -4,10 +4,10 @@ import Item from '../shared/Item'
 
 export default function Quadratic({ state }) {
   return (
-    <div className="flex flex-col items-start md:items-center overflow-x-scroll px-4">
+    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center">
       <div className="flex justify-start pb-4">
         <AnimateSharedLayout>
-          {state.arr.map((item, index) => (
+          {state.chocolates.map((item, index) => (
             <Item
               key={index}
               active={
@@ -19,7 +19,7 @@ export default function Quadratic({ state }) {
               {index === state.i && (
                 <motion.div
                   layoutId="caret"
-                  className="absolute top-full mt-1 text-green-500"
+                  className="absolute mt-1 text-green-500 top-full"
                   style={{
                     fontSize: '8px',
                   }}
@@ -31,7 +31,7 @@ export default function Quadratic({ state }) {
           ))}
         </AnimateSharedLayout>
       </div>
-      <code className="block font-mono w-full text-center whitespace-nowrap mt-4">
+      <code className="block w-full mt-4 font-mono text-center whitespace-nowrap">
         {JSON.stringify(
           state.result.map((num) => Number(num.toFixed(2))),
           null,

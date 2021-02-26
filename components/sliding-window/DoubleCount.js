@@ -6,9 +6,9 @@ export default function DoubleCount({ state, inputs }) {
   const doubleCounted = (index) => state.doubleCounted.includes(index)
   return (
     <>
-      <div className="flex w-full justify-center">
+      <div className="flex justify-center w-full">
         <AnimateSharedLayout>
-          {state.arr.map((item, index) => (
+          {state.chocolates.map((item, index) => (
             <Item
               key={index}
               active={(state.subarray || []).includes(index) || state.__done}
@@ -19,7 +19,7 @@ export default function DoubleCount({ state, inputs }) {
               {index === state.i && (
                 <motion.div
                   layoutId="caret"
-                  className="absolute top-full mt-1 text-green-500"
+                  className="absolute mt-1 text-green-500 top-full"
                   style={{
                     fontSize: '8px',
                   }}
@@ -31,9 +31,11 @@ export default function DoubleCount({ state, inputs }) {
           ))}
         </AnimateSharedLayout>
       </div>
-      <p className="font-mono w-full text-center mt-4">k = {inputs[1]}</p>
-      <p className="font-mono w-full text-center">
-        {JSON.stringify(state.result)}
+      <p className="w-full mt-8 font-mono text-sm text-center">
+        period = {inputs[1]}
+      </p>
+      <p className="w-full mt-6 font-mono text-sm text-center">
+        {JSON.stringify(state.result, null, 2)}
       </p>
     </>
   )

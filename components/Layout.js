@@ -6,7 +6,7 @@ import FeedbackForm from './FeedbackForm'
 import Navigation from './Navigation'
 import styles from './Layout.module.css'
 
-export default function Layout({ meta, children }) {
+export default function Layout({ meta = {}, children }) {
   return (
     <>
       <article>
@@ -40,12 +40,12 @@ export default function Layout({ meta, children }) {
               month: 'long',
               year: 'numeric',
               day: 'numeric',
-            }).format(new Date(meta.publishDate))}
+            }).format(new Date())}
           </p>
         </div>
         {children}
       </article>
-      <footer className="relative flex justify-center px-8 pt-64 pb-24 bg-gray-200 mt-44 lg:mt-56 h-80">
+      <footer className="relative flex justify-center px-8 pt-64 pb-24 mt-56 bg-gray-200 h-80">
         <FeedbackForm
           slug={meta.slug}
           className="absolute -top-56 feedback-form"

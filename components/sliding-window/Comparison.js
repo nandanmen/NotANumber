@@ -42,7 +42,6 @@ export default function Comparison() {
           </Item>
         ))}
       </div>
-      <p className="font-mono w-full text-center mt-4">k = 3</p>
     </>
   )
 }
