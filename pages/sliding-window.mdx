@@ -4,8 +4,11 @@ import Callout from '../components/Callout'
 import Layout from '../components/Layout'
 import Item from '../components/shared/Item'
 import SlidingWindow from '../components/sliding-window/shared/SlidingWindow'
+import Dictionary from '../components/sliding-window/shared/Dictionary'
 import * as Figures from '../components/sliding-window'
 import snapshot from '../lib/snapshot.macro'
+import { motion } from 'framer-motion'
+import 'twin.macro'
 
 export const meta = {
   title: 'The Sliding Window Pattern',
@@ -16,11 +19,21 @@ export const meta = {
 
 export default ({ children }) => <Layout meta={meta}>{children}</Layout>
 
-After multiple failed coding assessment tests last summer, I enrolled in the [Grokking the Coding Interview course](https://www.educative.io/courses/grokking-the-coding-interview). The course was different from other data structures and algorithms courses because it focused on common algorithmic _patterns_. The main idea behind the patterns is this: if you're able to _reduce_ a coding problem to match one of the patterns, you're well on your way to reaching an optimal solution.
+After multiple failed coding assessment tests last summer, I enrolled in the [Grokking the Coding Interview course](https://www.educative.io/courses/grokking-the-coding-interview). The course was different from other data structures and algorithms courses because it focused on common algorithmic _patterns_. The main idea behind the patterns is this: if you're able to _frame_ a coding problem to match one of the patterns, you're well on your way to reaching an optimal solution.
 
 While the course itself is incredibly informative, I felt that _visualizing_ the patterns themselves makes them just a bit more clear to understand.
 
 In this post, I talk about the first pattern that they cover — the sliding window pattern. We'll first walk through a problem without the pattern, then we'll try to iteratively improve our solution, revealing the final pattern in the end.
+
+<Callout label="Intended Audience">
+
+I've tried to make the wording in this post as accessible as possible, however it would be useful to have some knowledge of simple data structures (arrays, lists and maps) before you continue reading!
+
+I also talk about time complexity and Big O notation, however I've separated those conversations into optional blocks (like this one!) as to not make the post super technical.
+
+With that out of the way, let's get started!
+
+</Callout>
 
 ## An Addicted Data Scientist
 
@@ -66,14 +79,14 @@ To build the sublists, we repeatedly take `period` elements from the list until 
 >
   {({ state }) => (
     <React.Fragment>
-      <div className="flex w-full justify-center">
+      <div tw="flex w-full justify-center">
         {state.arr.map((item, index) => (
           <Item key={index} active={state.window.includes(index)}>
             {item}
           </Item>
         ))}
       </div>
-      <div className="font-mono text-center mt-8 text-sm">
+      <div tw="font-mono text-center mt-8 text-sm">
         {JSON.stringify(
           state.sublists.map((list) => list.map((index) => state.arr[index])),
           null,
@@ -388,8 +401,8 @@ Then, we use our sliding window trick to slide to the next sublist. Again, what 
 >
   {({ state }) => (
     <React.Fragment>
-      <div className="flex justify-center">
-        <div className="relative flex items-center justify-start">
+      <div tw="flex justify-center">
+        <div tw="relative flex items-center justify-start">
           <SlidingWindow start={state.windowStart} end={state.windowEnd} />
           {state.chocolates.map((item, index) => (
             <Item
@@ -401,9 +414,9 @@ Then, we use our sliding window trick to slide to the next sublist. Again, what 
           ))}
         </div>
       </div>
-      <p className="text-center mt-16 font-mono">period: 3</p>
-      <p className="text-center font-mono">sum: {state.windowSum}</p>
-      <p className="text-center font-mono">
+      <p tw="text-center mt-16 font-mono">period: 3</p>
+      <p tw="text-center font-mono">sum: {state.windowSum}</p>
+      <p tw="text-center font-mono">
         result: {JSON.stringify(state.result, null, 2)}
       </p>
     </React.Fragment>
@@ -435,8 +448,8 @@ Finally, we keep sliding until we hit the end of the chocolates list.
 >
   {({ state }) => (
     <React.Fragment>
-      <div className="flex justify-center">
-        <div className="relative flex items-center justify-start">
+      <div tw="flex justify-center">
+        <div tw="relative flex items-center justify-start">
           <SlidingWindow start={state.windowStart} end={state.windowEnd} />
           {state.chocolates.map((item, index) => (
             <Item
@@ -448,9 +461,9 @@ Finally, we keep sliding until we hit the end of the chocolates list.
           ))}
         </div>
       </div>
-      <p className="text-center mt-16 font-mono">period: 3</p>
-      <p className="text-center font-mono">sum: {state.windowSum}</p>
-      <p className="text-center font-mono">
+      <p tw="text-center mt-16 font-mono">period: 3</p>
+      <p tw="text-center font-mono">sum: {state.windowSum}</p>
+      <p tw="text-center font-mono">
         result: {JSON.stringify(state.result, null, 2)}
       </p>
     </React.Fragment>
@@ -527,11 +540,9 @@ This doesn't seem like a fair comparison though, so let's do a test. How would t
 >
   {({ state: [optimal, quadratic], inputs }) => (
     <React.Fragment>
-      <h4 className="text-gray-500 font-semibold text-center">
-        Sliding Window 🏎
-      </h4>
+      <h4 tw="text-gray-500 font-semibold text-center">Sliding Window 🏎</h4>
       <Figures.OptimalMin state={optimal} />
-      <h4 className="text-gray-500 font-semibold text-center my-8">
+      <h4 tw="text-gray-500 font-semibold text-center my-8">
         Old Algorithm 🐌
       </h4>
       <Figures.Quadratic state={quadratic} />
@@ -577,32 +588,242 @@ The time complexity of the whole algorithm is then `O(period) + O(1) + O(n - per
 
 ## Generalizing the Pattern
 
-Of course we're not limited to only counting averages. The sliding window pattern can be generalized to any problem that involves computing _something_ in the subarray. As long as the problem has some definition of a window size, the pattern essentially boils down to:
+A pattern wouldn't be much of a pattern if it works for only one use case. What makes the sliding window pattern a pattern is that it secretly hides in a bunch of other similar problems — typically those that involve sublists, subarrays, or substrings. The chocolates problem is just one costume the sliding window pattern puts on.
 
-1. Maintaining some **state** in that window, and
-2. keeping that state in sync with the items in the window through **constant-time operations**.
+Generally speaking, the pattern needs:
 
-By "constant-time operations" I mean without using further iterations and only using the stuff that leaves/enters the window.
+1. A window, i.e. a fixed range of elements
+2. A **state** to maintain in that window
+3. A way to _derive_ the next state using _only_ the current state and the stuff that enters or leaves the window
 
-In the case of the averages problem, the state that we're maintaining is the **sum of the items**. We're keeping this sum in sync with the items in the window by subtracting the item that's leaving and adding the item that's entering.
+"Only" is the keyword here — if we need to go through the _entire_ window again, the pattern wouldn't be any faster than the way we were doing it before.
+
+The chocolates problem that we were working through meets all of this criteria:
+
+1. _A window_ — the consecutive period of days
+2. _A state to maintain in that window_ — the total sum of the numbers in the period of days
+3. _A way to derive the next state solely by the stuff that enters or leaves the window_ — to get the next sum, take the current sum, subtract the number that leaves the window and add the number that enters the window
+
+To end it off, let's look at one more problem that, unfortunately, has _nothing_ to do with chocolates.
+
+---
 
 ### Permutation in a String
 
-Here's another problem that makes use of the same concept of maintaining state and synchronizing that state. The problem's pretty simple—given a string and some pattern, determine if the string contains any _permutation_ of that pattern. For example, given the string `aaacb` and the pattern `abc`, the algorithm should return `true` because the substring `acb` is a permutation of `abc`.
+Given a string and some pattern, determine if the string contains any permutation of that pattern.
 
-This is not as obvious of a sliding window problem than the problem we just worked through, but if you think of a string as an array of characters and a substring as a subarray, then the similarities start to show.
+<Callout label="Permutation?">
 
-I'm not going to walk through each logical step to get to the optimal solution (that would take a minute!), but here are the main ideas:
+Two strings are considered permutations of one another if the characters of one string can be rearranged to form the other string.
 
-1. A string can only be a permutation of another if it's the same length. _This gives us the size of the window = `pattern.length`_.
-2. A string is **exactly** a permutation of another if it contains the exact same number of letters. A way to keep track of this is through a map of character -> count pairs. _This gives us the state that we have to maintain_.
-3. We need a way to update _and compare_ the map in constant time. _Through this we fulfill the second condition of synchronizing state through constant operations_.
+</Callout>
 
-With those ideas, here's the final solution:
+For example, given the string aaacb and the pattern abc, the algorithm should return true because aaacb contains acb, which is a permutation of abc.
+
+Before I show you the solution, see if you can frame this problem to fit the sliding window pattern in. Try to use the criteria that we've defined in the previous section.
+
+---
+
+Done? Awesome. A bit stuck? No worries. We'll go through the criteria one-by-one to see if we can use the sliding window pattern to solve this problem.
+
+**1. The window**
+
+Figuring out what the window would be is a bit tricky because the problem doesn't explicitly tell you what the size of the substring is.
+
+If we look back at the definition of a permutation though, we can conclude that two strings of _different sizes_ can never be permutations of one another! After all, the longer string will _always_ have more characters than the other, so you can never rearrange it to create a shorter string.
+
+Since we're trying to match substrings with the pattern, we can conclude that **the window is the substring of length `pattern.length`**.
+
+**2. A state to maintain in the window**
+
+One way to figure out what state to maintain is to trace back from the result you want — what information do I need to determine if the substring in this window is a permutation of the pattern?
+
+A way to check if two strings are permutations of each other is to see if they have the exact same characters and the exact same number of those characters. We can do this by keeping track of the _frequencies_ of each character for each string and comparing them on a per-character basis:
+
+<Visualizer
+  initialInputs={['acb', 'abc']}
+  algorithm={snapshot((string, pattern) => {
+    const getFrequencies = (str) => {
+      const frequencies = {}
+      for (const char of str) {
+        if (frequencies.hasOwnProperty(char)) {
+          frequencies[char] = frequencies[char] + 1
+        } else {
+          frequencies[char] = 1
+        }
+      }
+      return frequencies
+    }
+    const stringFrequencies = getFrequencies(string)
+    const patternFrequencies = getFrequencies(pattern)
+    const checked = {}
+    debugger
+    for (const character in stringFrequencies) {
+      const stringCount = stringFrequencies[character]
+      const patternCount = patternFrequencies[character]
+      checked[character] = stringCount === patternCount
+      debugger
+      if (stringCount !== patternCount) {
+        return false
+      }
+    }
+    return true
+  })}
+  delay={700}
+  editable
+>
+  {({ state }) => <Figures.FrequencyComparison state={state} />}
+</Visualizer>
+
+If everything matches, then we know that our strings are permutations of each other. If any one of the counts _don't_ match, then we know that the strings cannot be permutations.
+
+Great — this means **the state we would have to maintain is the character frequency table of the current window**.
+
+**3. A way to derive the next state solely by the stuff that enters or leaves the window**
+
+The simplest way to do this is to ignore it altogether! By recounting everything every time we try a different substring, we get an algorithm that works:
 
 <Visualizer
   initialInputs={['aaacb', 'abc']}
-  caption="Notice how similar it is to the averages problem?"
+  algorithm={snapshot((fullString, pattern) => {
+    const getFrequencies = (str) => {
+      const frequencies = {}
+      for (const char of str) {
+        if (frequencies.hasOwnProperty(char)) {
+          frequencies[char] = frequencies[char] + 1
+        } else {
+          frequencies[char] = 1
+        }
+      }
+      return frequencies
+    }
+    const patternFrequencies = getFrequencies(pattern)
+    const k = pattern.length
+    for (let i = k; i <= fullString.length; i++) {
+      const string = fullString.slice(i - k, i)
+      const stringFrequencies = getFrequencies(string)
+      const checked = {}
+      let match = true
+      debugger
+      for (const character in stringFrequencies) {
+        const stringCount = stringFrequencies[character]
+        const patternCount = patternFrequencies[character]
+        checked[character] = stringCount === patternCount
+        debugger
+        if (stringCount !== patternCount) {
+          match = false
+          break
+        }
+      }
+      if (match) {
+        return true
+      }
+    }
+    return false
+  })}
+  delay={700}
+  editable
+  controls
+>
+  {({ state }) => (
+    <React.Fragment>
+      <h1 tw="text-3xl font-serif text-center mb-6">
+        {[...state.fullString].map((char, index) => (
+          <motion.span
+            tw="inline-block"
+            animate={{
+              opacity: index >= state.i - state.k && index < state.i ? 1 : 0.1,
+              y: index >= state.i - state.k && index < state.i ? 0 : 4,
+            }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </h1>
+      <Figures.FrequencyComparison state={state} />
+    </React.Fragment>
+  )}
+</Visualizer>
+
+But of course you don't _just_ want an algorithm that works, you want a _fast_ algorithm that works. Let's think about the bottlenecks. Whenever we move from one substring to another, we have to do two things:
+
+1. Calculate the frequency table for the new substring, and
+2. compare this new frequency table with the pattern's table.
+
+We can optimize (1) by simply adding the letter entering the window and subtracting the letter leaving the window; but how do we optimize (2)?
+
+If you think about it, we don't actually care about the character counts of the substring — we only care if those counts match the one in the pattern. What if, instead of having to handle two tables, we handle only _one table_—the pattern's table—and make the updates on _it_ instead?
+
+Here's the plan: every time a letter enters the window, you _subtract_ that letter's count in the _pattern's_ frequency table. Whenever a letter leaves, you do the opposite—_add back_ that letter's count in the pattern's frequency table. In a sense we're turning the pattern's frequency table to a table of the _difference_ between the pattern and the current window. This means that when the count for the **whole table is zero**, the window is a permutation of the pattern.
+
+<Visualizer
+  initialInputs={['acb']}
+  algorithm={snapshot((str) => {
+    const patternFrequencies = {
+      a: 1,
+      b: 1,
+      c: 1,
+    }
+    let prevFrequencies = null
+    debugger
+    for (const char of str) {
+      prevFrequencies = { ...patternFrequencies }
+      patternFrequencies[char]--
+      debugger
+    }
+  })}
+  delay={700}
+  controls
+>
+  {({ state }) => {
+    const isActive = (index) => index <= state.str.indexOf(state.char)
+    const getLast = (char, count) =>
+      state.prevFrequencies &&
+      state.patternFrequencies[char] - state.prevFrequencies[char]
+    return (
+      <React.Fragment>
+        <h1 tw="text-3xl font-serif text-center mb-6">
+          {[...state.str].map((char, index) => (
+            <motion.span
+              tw="inline-block"
+              animate={{
+                opacity: isActive(index) ? 1 : 0.1,
+                y: isActive(index) ? 0 : 4,
+              }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </h1>
+        <p tw="text-center font-mono mb-6">Pattern: abc</p>
+        <ul tw="list-none text-center w-1/2 mx-auto">
+          {Object.entries(state.patternFrequencies).map(([key, val]) => (
+            <li key={key} tw="flex mb-1 font-semibold items-center relative">
+              {getLast(key, val) ? (
+                <motion.p
+                  tw="absolute -right-8 text-gray-500"
+                  animate={{ y: 0, opacity: 1 }}
+                  initial={{ y: 4, opacity: 0 }}
+                >
+                  {getLast(key, val)}
+                </motion.p>
+              ) : null}
+              <p tw="flex-1 mr-1 text-white bg-gray-400 rounded-md">{key}</p>
+              <p tw="flex items-center justify-center self-stretch flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md">
+                {val}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </React.Fragment>
+    )
+  }}
+</Visualizer>
+
+Finally, everything put together:
+
+<Visualizer
+  initialInputs={['aaacb', 'abc']}
   algorithm={snapshot((str, pattern) => {
     const patternFrequencies = {}
     for (const char of pattern) {
@@ -652,23 +873,8 @@ With those ideas, here's the final solution:
   {({ state }) => <Figures.Permutation state={state} />}
 </Visualizer>
 
-If you're interested in more details of the algorithm (particularly the constant-time updates and comparison), open the note below!
-
-<Details label="🗾 Constant time map comparisons">
-
-One way to check if two strings have the exact same number of letters would be to:
-
-1. Create a map of character -> count pairs for each string.
-2. Loop through each character in each map, comparing the counts in each iteration.
-
-Unfortunately this doesn't satisfy the "constant-time" condition because we have to loop through each character. It also doesn't take advantage of the fact that only _one_ letter is coming in and only _one_ letter is coming out of the window each time.
-
-Looking at it from a different perspective, we can think of two maps as being equal if their _difference_ is zero. We consider a map to be "zero" if all of its keys have value zero. This gives us a goal—if we start with the map that corresponds to the pattern, and if we update it in some way such that it ends up being zero, we know we've reached a permutation.
-
-At the start, this map is the state of the window. When we add a letter to the window, we _subtract_ that letter's count in the map. Conversely when we remove a letter from the window, we _add back_ that letter's count in the map. Since this sequence of updates can be performed in one iteration, we've satisfied the condition!
-
-</Details>
-
 ## Summary
 
-In conclusion, the sliding window pattern is a neat way to improve the runtime of problems involving subarrays. A lot of problems can be solved using this pattern, but the tricky part is finding how the pattern can fit into the problem. Once you're there, you're golden.
+Overall, the sliding window pattern is a cool way to think about problems involving subcollections by optimizing the way you move from one candidate to the next. There's more we can talk about here (e.g. what happens if the different sublists are _not_ the same size?) but this post is long enough as is so we'll leave it for next time :)
+
+Thanks for reading!

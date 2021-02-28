@@ -1,5 +1,5 @@
-import Item from '../shared/Item'
-import SlidingWindow from './shared/SlidingWindow'
+import { motion } from 'framer-motion'
+import 'twin.macro'
 
 export default function Permutation({ state }) {
   const {
@@ -7,7 +7,6 @@ export default function Permutation({ state }) {
     __returnValue,
     windowStart,
     windowEnd,
-    str,
     patternFrequencies,
     pattern,
   } = state
@@ -22,26 +21,23 @@ export default function Permutation({ state }) {
     : `Sliiide 🏂`
   return (
     <>
-      <p className="font-semibold text-center text-gray-500">{step}</p>
-      <div className="flex justify-center my-12">
-        <div className="relative flex items-center justify-start">
-          <SlidingWindow start={windowStart} end={windowEnd} />
-          {[...str].map((item, index) => (
-            <Item
-              key={`${item}-${index}`}
-              active={isActive(index)}
-              variant={done ? (__returnValue ? 'base' : 'danger') : 'base'}
-            >
-              {item}
-            </Item>
-          ))}
-        </div>
-      </div>
-      <section className="text-center">
-        <code className="block">Pattern: {pattern}</code>
-        <code className="block my-4">
-          {pattern} - {str.slice(windowStart, windowEnd + 1)}
-        </code>
+      <p tw="font-semibold text-center text-gray-500">{step}</p>
+      <h1 tw="text-4xl font-serif text-center my-10">
+        {[...state.str].map((char, index) => (
+          <motion.span
+            key={`${char}-${index}`}
+            tw="inline-block"
+            animate={{
+              opacity: isActive(index) ? 1 : 0.1,
+              y: isActive(index) ? 0 : 4,
+            }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </h1>
+      <section tw="text-center">
+        <code tw="block mb-4">Pattern: {pattern}</code>
         <Dictionary entries={patternFrequencies} />
       </section>
     </>
@@ -50,11 +46,11 @@ export default function Permutation({ state }) {
 
 function Dictionary({ entries }) {
   return (
-    <ul className="w-1/2 mx-auto mb-4 list-none md:w-1/3">
+    <ul tw="w-1/2 mx-auto mb-4 list-none md:w-1/3">
       {Object.entries(entries).map(([key, val]) => (
-        <li key={key} className="flex mb-1 font-semibold">
-          <p className="flex-1 mr-1 text-white bg-gray-400 rounded-md">{key}</p>
-          <p className="flex items-center justify-center flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md">
+        <li key={key} tw="flex mb-1 font-semibold">
+          <p tw="flex-1 mr-1 text-white bg-gray-400 rounded-md">{key}</p>
+          <p tw="flex items-center justify-center flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md">
             {val}
           </p>
         </li>

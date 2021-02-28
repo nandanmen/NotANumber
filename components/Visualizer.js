@@ -107,33 +107,37 @@ function Algorithm({
         </div>
         <div className="absolute left-0 flex justify-between w-full px-4 text-gray-500 bottom-4">
           <div className="flex">
-            <Button className="mr-1" onClick={playerContext.actions.toggle}>
-              {isPlaying ? (
-                <BsPauseFill />
-              ) : isDone ? (
-                <span className="text-sm">
-                  <FaUndo />
-                </span>
-              ) : (
-                <BsPlayFill />
-              )}
-            </Button>
-            {controls && (
+            {steps.length > 1 && (
               <>
-                <Button
-                  className="mr-1"
-                  onClick={playerContext.actions.prev}
-                  disabled={activeStepIndex === 0}
-                >
-                  <HiArrowLeft />
+                <Button className="mr-1" onClick={playerContext.actions.toggle}>
+                  {isPlaying ? (
+                    <BsPauseFill />
+                  ) : isDone ? (
+                    <span className="text-sm">
+                      <FaUndo />
+                    </span>
+                  ) : (
+                    <BsPlayFill />
+                  )}
                 </Button>
-                <Button
-                  className="mr-1"
-                  onClick={playerContext.actions.next}
-                  disabled={isDone}
-                >
-                  <HiArrowRight />
-                </Button>
+                {controls && (
+                  <>
+                    <Button
+                      className="mr-1"
+                      onClick={playerContext.actions.prev}
+                      disabled={activeStepIndex === 0}
+                    >
+                      <HiArrowLeft />
+                    </Button>
+                    <Button
+                      className="mr-1"
+                      onClick={playerContext.actions.next}
+                      disabled={isDone}
+                    >
+                      <HiArrowRight />
+                    </Button>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -170,9 +174,11 @@ function Algorithm({
             </div>
           )}
         </div>
-        <p className="absolute text-gray-500 right-5 top-4">
-          {steps.indexOf(state) + 1} / {steps.length}
-        </p>
+        {steps.length > 1 && (
+          <p className="absolute text-gray-500 right-5 top-4">
+            {steps.indexOf(state) + 1} / {steps.length}
+          </p>
+        )}
       </div>
       {showForm && (
         <motion.form
