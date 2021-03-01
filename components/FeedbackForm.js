@@ -57,7 +57,7 @@ export default function FeedbackForm({ slug, className }) {
         id="message"
         type="text"
         name="message"
-        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-gray-600"
+        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
         onChange={() => dispatch(events.Change)}
       />
       <p>
@@ -72,7 +72,7 @@ export default function FeedbackForm({ slug, className }) {
         type="text"
         name="name"
         placeholder="@johndoe"
-        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-gray-600"
+        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
         onChange={() => dispatch(events.Change)}
       />
       <motion.button

@@ -2,7 +2,7 @@ import tw from 'twin.macro'
 
 const Figure = (props) => (
   <figure
-    tw="z-0 max-w-full mt-4 mb-8 overflow-x-scroll"
+    tw="z-0 max-w-full mt-4 mb-8 overflow-x-scroll md:overflow-x-hidden"
     className="full-width"
     {...props}
   />

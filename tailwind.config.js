@@ -3,7 +3,7 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'media', // or 'media' or 'class'
+  darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {
@@ -15,6 +15,7 @@ module.exports = {
           700: '#16171C',
           500: '#262730',
           300: '#373844',
+          100: '#474857',
         },
       },
     },
