@@ -1,6 +1,11 @@
+---
+title: 'The Sliding Window Pattern'
+blurb: 'Chocolates and a way to make your array algorithms a bit faster.'
+publishDate: '2021-03-02'
+---
+
 import Visualizer from '../components/Visualizer'
 import Callout from '../components/Callout'
-import Layout from '../components/Layout'
 import Figure from '../components/Figure'
 import Item from '../components/shared/Item'
 import SlidingWindow from '../components/sliding-window/shared/SlidingWindow'
@@ -9,15 +14,6 @@ import * as Figures from '../components/sliding-window'
 import snapshot from '../lib/snapshot.macro'
 import { motion } from 'framer-motion'
 import 'twin.macro'
-
-export const meta = {
-  title: 'The Sliding Window Pattern',
-  blurb: 'A method to optimize subarray problems.',
-  publishDate: '2021-03-02',
-  slug: 'sliding-window',
-}
-
-export default ({ children }) => <Layout meta={meta}>{children}</Layout>
 
 After multiple failed coding assessment tests last summer, I enrolled in the [Grokking the Coding Interview course](https://www.educative.io/courses/grokking-the-coding-interview). The course was different from other data structures and algorithms courses because it focused on common algorithmic _patterns_. The main idea behind the patterns is this: if you're able to _frame_ a coding problem to match one of the patterns, you're well on your way to reaching an optimal solution.
 

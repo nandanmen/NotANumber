@@ -3,7 +3,13 @@ import Link from 'next/link'
 import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
-import posts from '../posts'
+import { frontMatter as slidingWindow } from './sliding-window.mdx'
+
+const posts = [slidingWindow]
+
+function formatPath(path) {
+  return path.replace(/\.mdx$/, '')
+}
 
 export default function HomePage() {
   posts.sort((a, b) =>
@@ -32,12 +38,12 @@ export default function HomePage() {
         </header>
         <Posts>
           <Divider />
-          {posts.map(({ title, slug, blurb, publishDate }) => (
+          {posts.map(({ title, __resourcePath, blurb, publishDate }) => (
             <li
-              key={slug}
+              key={__resourcePath}
               tw="px-8 py-4 hover:bg-gray-200 rounded-xl dark:hover:bg-blacks-500"
             >
-              <Link href={slug}>
+              <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
                     <h1 tw="text-3xl font-semibold font-serif">{title}</h1>
