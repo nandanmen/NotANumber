@@ -3,11 +3,20 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
+      },
+      colors: {
+        blacks: {
+          900: '#09090b',
+          700: '#16171C',
+          500: '#262730',
+          300: '#373844',
+          100: '#474857',
+        },
       },
     },
   },

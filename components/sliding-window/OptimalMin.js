@@ -6,7 +6,7 @@ export default function OptimalMin({ state }) {
   const isActive = (index) =>
     done ? true : index >= windowStart && index <= windowEnd
   return (
-    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center">
+    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center md:overflow-x-hidden">
       <div className="relative flex items-center justify-start py-12">
         <SlidingWindow
           start={windowStart}

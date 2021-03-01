@@ -14,7 +14,7 @@ export default function HomePage() {
       <Head>
         <title>Not a Number</title>
       </Head>
-      <div tw="pb-32">
+      <div tw="pb-32 dark:text-white">
         <header className="mx-auto mt-32 mb-24">
           <Title tw="mx-auto mb-16">Not a Number</Title>
           <p tw="text-center max-w-md mx-auto px-8">
@@ -33,13 +33,16 @@ export default function HomePage() {
         <Posts>
           <Divider />
           {posts.map(({ title, slug, blurb, publishDate }) => (
-            <li key={slug} tw="px-8 py-4 hover:bg-gray-200 rounded-xl">
+            <li
+              key={slug}
+              tw="px-8 py-4 hover:bg-gray-200 rounded-xl dark:hover:bg-blacks-500"
+            >
               <Link href={slug}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
                     <h1 tw="text-3xl font-semibold font-serif">{title}</h1>
                     <p tw="italic">{blurb}</p>
-                    <p tw="text-sm text-gray-600">
+                    <p tw="text-sm text-gray-600 dark:text-gray-300">
                       {new Intl.DateTimeFormat('en-US', {
                         month: 'long',
                         year: 'numeric',
@@ -47,7 +50,7 @@ export default function HomePage() {
                       }).format(new Date(publishDate))}
                     </p>
                   </div>
-                  <p tw="text-2xl text-gray-600">
+                  <p tw="text-2xl text-gray-600 dark:text-gray-300">
                     <HiArrowRight />
                   </p>
                 </a>
@@ -66,7 +69,7 @@ const Title = styled.h1`
   line-height: 0.9;
 `
 
-const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600`
+const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-300`
 
 const Posts = styled.ul`
   ${tw`pt-12 space-y-4`}

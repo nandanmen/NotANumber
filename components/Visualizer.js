@@ -1,5 +1,4 @@
 import React from 'react'
-import clsx from 'clsx'
 import {
   HiArrowLeft,
   HiArrowRight,
@@ -10,44 +9,21 @@ import {
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
+import tw from 'twin.macro'
 
+import Figure from './Figure'
 import exec from '../lib/exec'
 import zip from '../lib/zip'
 import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
-  if (!children) {
-    return (
-      <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
-        <div className="relative z-20 px-8 py-16 bg-yellow-200 md:rounded-2xl">
-          <p className="font-semibold text-center">Implement me!</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!algorithm) {
-    return (
-      <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
-        <div className="relative z-20 px-8 py-16 bg-gray-200 md:rounded-2xl">
-          {children}
-        </div>
-        {caption && (
-          <p className="px-8 mt-4 text-sm text-center md:px-0">{caption}</p>
-        )}
-      </div>
-    )
-  }
-
   return (
-    <div className="z-0 max-w-full mt-4 mb-8 overflow-x-scroll full-width">
+    <Figure>
       <Algorithm algorithm={algorithm} {...props}>
         {children}
       </Algorithm>
-      {caption && (
-        <p className="px-8 mt-4 text-sm text-center md:px-0">{caption}</p>
-      )}
-    </div>
+      {caption && <Figure.Caption>{caption}</Figure.Caption>}
+    </Figure>
   )
 }
 
@@ -101,19 +77,19 @@ function Algorithm({
 
   return (
     <>
-      <div className="relative z-20 block w-full py-16 bg-gray-200 md:rounded-2xl">
-        <div className="z-0">
+      <Figure.Content>
+        <div tw="z-0">
           {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
         </div>
-        <div className="absolute left-0 flex justify-between w-full px-4 text-gray-500 bottom-4">
-          <div className="flex">
+        <div tw="absolute left-0 flex justify-between w-full px-4 text-gray-500 bottom-4">
+          <div tw="flex">
             {steps.length > 1 && (
               <>
-                <Button className="mr-1" onClick={playerContext.actions.toggle}>
+                <Button tw="mr-1" onClick={playerContext.actions.toggle}>
                   {isPlaying ? (
                     <BsPauseFill />
                   ) : isDone ? (
-                    <span className="text-sm">
+                    <span tw="text-sm">
                       <FaUndo />
                     </span>
                   ) : (
@@ -123,14 +99,14 @@ function Algorithm({
                 {controls && (
                   <>
                     <Button
-                      className="mr-1"
+                      tw="mr-1"
                       onClick={playerContext.actions.prev}
                       disabled={activeStepIndex === 0}
                     >
                       <HiArrowLeft />
                     </Button>
                     <Button
-                      className="mr-1"
+                      tw="mr-1"
                       onClick={playerContext.actions.next}
                       disabled={isDone}
                     >
@@ -142,7 +118,7 @@ function Algorithm({
             )}
           </div>
           {editable && (
-            <div className="flex space-x-1">
+            <div tw="flex space-x-1">
               <AnimatePresence>
                 {showForm && (
                   <Button
@@ -168,18 +144,18 @@ function Algorithm({
                   </Button>
                 )}
               </AnimatePresence>
-              <Button onClick={toggle} className="relative">
+              <Button onClick={toggle} tw="relative">
                 {showForm ? <HiX /> : <HiPencil />}
               </Button>
             </div>
           )}
         </div>
         {steps.length > 1 && (
-          <p className="absolute text-gray-500 right-5 top-4">
+          <p tw="absolute text-gray-500 right-5 top-4">
             {steps.indexOf(state) + 1} / {steps.length}
           </p>
         )}
-      </div>
+      </Figure.Content>
       {showForm && (
         <motion.form
           ref={formRef}
@@ -187,7 +163,7 @@ function Algorithm({
             evt.preventDefault()
             handleSubmit(evt.target)
           }}
-          className="z-10 flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0"
+          tw="z-10 flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0"
           variants={{
             show: {
               y: 0,
@@ -204,15 +180,15 @@ function Algorithm({
           {params
             .map((name, index) => [name, inputs[index]])
             .map(([name, value]) => (
-              <label key={name} className="flex-1 mx-1 font-mono">
+              <label key={name} tw="flex-1 mx-1 font-mono">
                 <input
                   name={name}
-                  className="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
+                  tw="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-500 dark:border-blacks-300"
                   type="text"
                   defaultValue={JSON.stringify(value)}
                   onBlur={(evt) => validate([name, evt.target.value])}
                 />
-                <span className="block">{name}</span>
+                <span tw="block">{name}</span>
                 {errors[name] && <p>{errors[name]}</p>}
               </label>
             ))}
@@ -223,17 +199,13 @@ function Algorithm({
   )
 }
 
-function Button({ className, ...props }) {
+function Button(props) {
   return (
     <motion.button
-      className={clsx(
-        'flex items-center justify-center w-8 h-8 font-semibold text-gray-500 bg-gray-100 rounded-lg shadow-md',
-        'focus:outline-none focus:ring-2 focus:ring-current',
-        {
-          'opacity-50 cursor-not-allowed': props.disabled,
-        },
-        className
-      )}
+      css={[
+        tw`flex items-center justify-center w-8 h-8 font-semibold text-gray-500 bg-gray-100 rounded-lg shadow-md dark:bg-blacks-300 dark:text-gray-300`,
+        props.disabled && tw`opacity-50 cursor-not-allowed`,
+      ]}
       {...props}
     />
   )

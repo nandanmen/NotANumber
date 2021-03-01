@@ -4,7 +4,7 @@ import Item from '../shared/Item'
 
 export default function Quadratic({ state }) {
   return (
-    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center">
+    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center md:overflow-x-hidden">
       <div className="flex justify-start pb-4">
         <AnimateSharedLayout>
           {state.chocolates.map((item, index) => (

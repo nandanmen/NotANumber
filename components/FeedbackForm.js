@@ -43,7 +43,7 @@ export default function FeedbackForm({ slug, className }) {
   return (
     <form
       className={clsx(
-        'flex flex-col max-w-md p-6 md:p-8 space-y-4 bg-gray-100 border-2 rounded-lg shadow-lg',
+        'flex flex-col max-w-md p-6 md:p-8 space-y-4 bg-gray-100 border-2 rounded-lg shadow-lg dark:bg-blacks-300 dark:text-white dark:border-blacks-300',
         className
       )}
       onSubmit={handleSubmit}
@@ -57,7 +57,7 @@ export default function FeedbackForm({ slug, className }) {
         id="message"
         type="text"
         name="message"
-        className="p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
+        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
         onChange={() => dispatch(events.Change)}
       />
       <p>
@@ -72,12 +72,12 @@ export default function FeedbackForm({ slug, className }) {
         type="text"
         name="name"
         placeholder="@johndoe"
-        className="p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
+        className="p-2 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
         onChange={() => dispatch(events.Change)}
       />
       <motion.button
         className={clsx(
-          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl',
+          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl dark:bg-green-800',
           { 'bg-opacity-50': state === formState.Loading }
         )}
         whileTap={{ scale: 0.95 }}
