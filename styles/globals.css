@@ -21,3 +21,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+@screen md {
+  :root {
+    font-size: 18px;
+  }
+}

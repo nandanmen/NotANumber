@@ -68,10 +68,6 @@ const Article = styled.article`
   }
 
   @media screen and (min-width: ${theme`screens.md`}) {
-    :root {
-      font-size: 18px;
-    }
-
     grid-template-columns: 1fr 2rem min(65ch, calc(100% - 2rem)) 2rem 1fr;
 
     > * {
