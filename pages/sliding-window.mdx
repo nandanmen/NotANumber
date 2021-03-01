@@ -1,7 +1,7 @@
 import Visualizer from '../components/Visualizer'
-import Details from '../components/Details'
 import Callout from '../components/Callout'
 import Layout from '../components/Layout'
+import Figure from '../components/Figure'
 import Item from '../components/shared/Item'
 import SlidingWindow from '../components/sliding-window/shared/SlidingWindow'
 import Dictionary from '../components/sliding-window/shared/Dictionary'
@@ -276,9 +276,11 @@ It turns out that no matter what inputs you give the algorithm, this approach wi
 
 So why are we double counting in the first place? If we look at the first two sublists, we see that there's a lot of similarity between the two lists:
 
-<Visualizer>
-  <Figures.Comparison />
-</Visualizer>
+<Figure>
+  <Figure.Content>
+    <Figures.Comparison />
+  </Figure.Content>
+</Figure>
 
 By starting over every time we reach a new element, we don't take advantage of this similarity. If we're somehow able to calculate the average for both sublists without double counting, we would be able to cut down on a lot of needless steps.
 
