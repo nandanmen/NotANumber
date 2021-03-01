@@ -37,17 +37,17 @@ With that out of the way, let's get started!
 
 ## An Addicted Data Scientist
 
-Let's pretend that I'm a data scientist that absolutely _loves_ chocolate. As a data scientist, I _naturally_ keep track of the number of chocolate that I eat on a daily basis. One day I wondered — how many chocolates do I eat on average over any consecutive 3 day period? (an every-day question to ask, of course).
+Let's pretend that I'm a data scientist that absolutely _loves_ chocolate. As a data scientist, I _naturally_ keep track of the number of chocolates that I eat on a daily basis. One day I wondered — how many chocolates do I eat on average over any consecutive 3 day period? (an every-day question to ask, of course).
 
 I could do this by hand, but I'm lazy. I also want it to work with _any_ period of consecutive days **and** with any number of data points I may have. So I decide to write an algorithm to answer this question for me.
 
-The algorithm takes in two parameters — a list of data points `chocolates`, where each number represents the number of chocolates I eat on a given day, and a number `period` that represents the period of consecutive days I want to take the average from. The algorithm should put out another list of numbers, where each number represents the average number of chocolates eaten over a consecutive `period` number of days.
+The algorithm takes in two parameters — a list of data points `chocolates`, where each number represents the number of chocolates I ate on a given day, and a number `period` that represents the period of consecutive days I want to take the average from. The algorithm should output another list of numbers, where each number represents the average number of chocolates eaten over a consecutive `period` number of days.
 
 ```
 averageChocolatesEaten(chocolates: number[], period: number): number[]
 ```
 
-For example, if we give the algorithm the list `[1, 2, 3, 4]` and the period `3`, the algorithm's going to return the list `[2, 3]`. `[1, 2, 3, 4]` breaks down into two 3-day periods, `[1, 2, 3]`, and `[2, 3, 4]`, with an average of 2 and 3 respectively..
+For example, if we give the algorithm the list `[1, 2, 3, 4]` and the period `3`, the algorithm's going to return the list `[2, 3]`. `[1, 2, 3, 4]` breaks down into two 3-day periods, `[1, 2, 3]`, and `[2, 3, 4]`, with an average of 2 and 3 respectively.
 
 How do we design the algorithm?
 
