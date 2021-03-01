@@ -2,20 +2,20 @@ import React from 'react'
 import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 
-import FeedbackForm from './FeedbackForm'
-import Navigation from './Navigation'
+import FeedbackForm from '../components/FeedbackForm'
+import Navigation from '../components/Navigation'
 
-export default function Layout({ meta = {}, children }) {
+export default function Layout({ frontMatter = {}, children }) {
   return (
     <>
       <Article>
         <Head>
-          <title>{meta.title}</title>
+          <title>{frontMatter.title}</title>
         </Head>
         <Header>
-          <Title>{meta.title}</Title>
+          <Title>{frontMatter.title}</Title>
           <p tw="italic font-semibold text-center text-gray-600 dark:text-gray-100">
-            {meta.blurb}
+            {frontMatter.blurb}
           </p>
         </Header>
         <div tw="flex items-center justify-between mb-12! text-sm text-gray-600 dark:text-gray-100">
@@ -32,13 +32,13 @@ export default function Layout({ meta = {}, children }) {
               month: 'long',
               year: 'numeric',
               day: 'numeric',
-            }).format(new Date(meta.publishDate))}
+            }).format(new Date(frontMatter.publishDate))}
           </p>
         </div>
         {children}
       </Article>
       <footer tw="relative flex justify-center px-8 pt-64 pb-24 mt-56 bg-gray-200 h-80 dark:bg-blacks-500">
-        <StyledFeedbackForm slug={meta.slug} tw="absolute -top-56" />
+        <StyledFeedbackForm slug={frontMatter.slug} tw="absolute -top-56" />
         <Navigation
           style={{ width: 'min(65ch, 100%)' }}
           tw="mt-8 text-gray-500 dark:text-gray-200"
