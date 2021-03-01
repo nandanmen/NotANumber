@@ -31,8 +31,8 @@ export default function Item({
       className={clsx(
         'w-12 h-12 rounded-lg text-white font-semibold flex items-center justify-center mr-2',
         {
-          'bg-green-400': variant === 'base',
-          'bg-red-500': variant === 'danger',
+          'bg-green-400 dark:bg-green-800': variant === 'base',
+          'bg-red-500 dark:bg-red-900': variant === 'danger',
         },
         className
       )}

@@ -47,7 +47,7 @@ Callout.Details = CalloutDetails
 // --
 
 const Aside = styled.aside`
-  ${tw`relative p-8 bg-purple-200 md:rounded-2xl`}
+  ${tw`relative p-8 bg-purple-200 md:rounded-2xl dark:bg-purple-800`}
 
   > * {
     margin-bottom: 1.5em;

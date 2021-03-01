@@ -8,7 +8,7 @@ const Figure = (props) => (
   />
 )
 
-Figure.Content = tw.div`relative z-20 px-8 py-16 bg-gray-200 md:rounded-2xl`
+Figure.Content = tw.div`relative z-20 px-8 py-16 bg-gray-200 md:rounded-2xl dark:bg-blacks-500`
 
 Figure.Caption = tw.div`px-8 mt-4 text-sm text-center md:px-0`
 

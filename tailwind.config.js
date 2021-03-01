@@ -9,6 +9,14 @@ module.exports = {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
       },
+      colors: {
+        blacks: {
+          900: '#09090b',
+          700: '#16171C',
+          500: '#262730',
+          300: '#373844',
+        },
+      },
     },
   },
   variants: {
