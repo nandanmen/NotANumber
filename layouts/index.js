@@ -38,7 +38,10 @@ export default function Layout({ frontMatter = {}, children }) {
         {children}
       </Article>
       <footer tw="relative flex justify-center px-8 pt-64 pb-24 mt-56 bg-gray-200 h-80 dark:bg-blacks-500">
-        <StyledFeedbackForm slug={frontMatter.slug} tw="absolute -top-56" />
+        <StyledFeedbackForm
+          slug={frontMatter.__resourcePath}
+          tw="absolute -top-56"
+        />
         <Navigation
           style={{ width: 'min(65ch, 100%)' }}
           tw="mt-8 text-gray-500 dark:text-gray-200"
