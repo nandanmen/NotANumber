@@ -4,8 +4,9 @@ import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
+import { frontMatter as debuggerCodeAnalysis } from './building-a-debugger-code-analysis.mdx'
 
-const posts = [slidingWindow]
+const posts = [slidingWindow, debuggerCodeAnalysis]
 
 function formatPath(path) {
   return path.replace(/\.mdx$/, '')

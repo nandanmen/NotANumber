@@ -14,7 +14,7 @@ export default function Layout({ frontMatter = {}, children }) {
         </Head>
         <Header>
           <Title>{frontMatter.title}</Title>
-          <p tw="italic font-semibold text-center text-gray-600 dark:text-gray-100">
+          <p tw="italic font-semibold text-center text-gray-600 dark:text-gray-400">
             {frontMatter.blurb}
           </p>
         </Header>
@@ -118,7 +118,7 @@ const Article = styled.article`
   }
 
   a {
-    ${tw`font-semibold text-gray-700 dark:text-gray-400 hover:dark:text-green-300`}
+    ${tw`font-semibold text-gray-700 dark:text-gray-400 hover:dark:text-blue-500`}
   }
 `
 
