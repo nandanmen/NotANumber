@@ -1,0 +1,126 @@
+---
+title: 'Building a Debugger: Code Analysis'
+blurb: 'Exploring the power of the Babel plugin ecosystem.'
+publishDate: '2021-03-15'
+---
+
+import Callout from '../../components/Callout'
+import Architecture from '../../components/building-a-debugger-code-analysis/Architecture'
+import AstSandbox from '../../components/building-a-debugger-code-analysis/AstSandbox'
+import Figure from '../../components/Figure'
+import 'twin.macro'
+
+A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
+
+I learned a _ton_, and in the next little bit I want to talk about what exactly I found out. I'll first go over the overall architecture of the app, then I'll dive deep into the specifics behind the two components that make up the core app logic.
+
+In this post, I'll go over the first core piece: the transpiler. Let's get started!
+
+## Architecture
+
+Before we dive too deeply, let's look at the architecture of the app from a bird's eye view:
+
+<Architecture />
+
+The app is split into four different parts, orchestrated as a "pipeline" that takes in user code and outputs debug data. Each component of the pipeline has its own responsibilities:
+
+1. **Editor** — Allow users to input code
+2. **Transpiler** — Takes the user's code and transforms it
+3. **Evaluator** — Takes the transformed code and runs it, returning the debug state
+4. **Debug Panel** — Takes the debug state and displays it to the user
+
+For the rest of this article, we're going to be focusing our attention to that "Transpiler" component. What exactly does it do? How does it work? Read on to find out.
+
+## Taking a Peek
+
+The main responsibility of the transpiler is to modify the code so that the rest of the app can know what's going on inside the function as it's running. For debuggers, knowing "what's going on" inside a function typically means knowing the values of local variables at any given time. Now the question becomes: how do we get those values out of a function?
+
+If you're doing it manually, you can update the implementation of your function to save the data to some external variable:
+
+```js
+const variables = []
+
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    variables.push({ num, arr, sum })
+    sum += num
+  }
+  return sum
+}
+
+sum([1, 2, 3])
+// here, variables is an array of {num, arr, sum}
+```
+
+This is great, but it's tedious — every time you want to record the local variables, you have to add that `variables.push` code as well as list down all of the variables you want to record. It would be nice if we can generate this code automatically; the only thing we need to do is tell the computer when we want the variables to be recorded. In fact, this is precisely what the transpiler does.
+
+The transpiler makes use of the lesser known `debugger` keyword in JavaScript to indicate when local variables should be recorded. Once it sees a `debugger` keyword, it turns it into something like the `variables.push` code that we just wrote.
+
+<Callout label="The transpiler powers this blog!">
+
+The animations in my [sliding window post](../sliding-window) is powered, in part, by a module very similar to the transpiler. Each animation begins with a function, just like the sum function we wrote above. At build time, the module transforms all of these functions in the exact same way the transpiler transforms your code. When the transformed code is called, the resulting states becomes the animation steps that you see on the page!
+
+</Callout>
+
+## Automatic Transformation
+
+So how exactly would we write something to transform the code automatically? At the end of the day, the code you write is just a very long string, so let's start with that. Using this string, you could _technically_ use regex to replace all instances of `debugger` with something else:
+
+```jsx
+code.replace(/debugger/ /* some code */)
+```
+
+This kinda works, but then you have more problems — how do you know which variables are in scope? Which of those variables are declared _and_ in scope? So you start over, use more regex to find `const`, `let`, `var`, ....
+
+### Abstract Syntax Trees
+
+Ok — working with strings kinda suck. Instead, let's try to convert the code string into a structure that's a lot easier to work with. How about trees?
+
+The recursive structure of code fits quite nicely with the recursive structure of trees. Take the snippet that we used earlier:
+
+```jsx
+const variables = []
+
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    variables.push({ num, arr, sum })
+    sum += num
+  }
+  return sum
+}
+
+sum([1, 2, 3])
+```
+
+You can say the whole snippet is a "Program" that has three "children" — the variable declaration at the top, the function definition in the middle, and the function call at the end. Going a level deeper, you have:
+
+- The variable name and the array literal in the variable declaration;
+- The various lines of code in the function definition;
+- The function name and list of parameters in the function call;
+
+Putting it all together, you get something like:
+
+<Figure tw="font-mono" className="full-width">
+  <Figure.Content>
+    <AstSandbox
+      initialCode={`const variables = []
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    variables.push({ num, arr, sum })
+    sum += num
+  }
+  return sum
+}
+sum([1, 2, 3])`}
+    />
+  </Figure.Content>
+</Figure>
+
+This tree-like representation of code is commonly known as an abstract syntax tree or AST for short. In an AST, code is represented as nodes where each node has a type property describing the kind of code that it corresponds to. By representing the code in this way, you have access to a lot more information about the code and its semantic meaning — making it much easier to manipulate it in the way that you want.
+
+### Wait, don't we still have to deal with strings?
+
+Technically, yes. After all, you have to convert the string to the tree in the first place! However, by making use of Babel's plugin API (which we'll talk about later), we don't have to worry about this — we pass in code, and Babel gives us back the AST for us to work with.

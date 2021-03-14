@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@babel/parser": "^7.13.10",
     "@mdx-js/loader": "^1.6.22",
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
@@ -18,9 +19,11 @@
     "next": "10.0.4",
     "next-mdx-enhanced": "^5.0.0",
     "postcss": "^8.2.2",
+    "prismjs": "^1.23.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
+    "react-simple-code-editor": "^0.11.0",
     "rfdc": "^1.1.4",
     "styled-components": "^5.2.1",
     "tailwindcss": "^2.0.2",
