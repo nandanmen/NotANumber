@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
-        mono: ['Ligalex Mono', 'ui-monospace'],
+        mono: ['JetBrains Mono', 'ui-monospace'],
       },
       colors: {
         blacks: {

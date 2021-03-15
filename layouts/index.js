@@ -1,13 +1,15 @@
 import React from 'react'
 import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
+import { MDXProvider } from '@mdx-js/react'
 
+import CodeBlock from './components/CodeBlock'
 import FeedbackForm from '../components/FeedbackForm'
 import Navigation from '../components/Navigation'
 
 export default function Layout({ frontMatter = {}, children }) {
   return (
-    <>
+    <MDXProvider components={{ code: CodeBlock }}>
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -47,7 +49,7 @@ export default function Layout({ frontMatter = {}, children }) {
           tw="mt-8 text-gray-500 dark:text-gray-200"
         />
       </footer>
-    </>
+    </MDXProvider>
   )
 }
 
@@ -66,18 +68,30 @@ const Article = styled.article`
     margin-bottom: 2rem;
   }
 
-  > .full-width {
+  > .full-width,
+  > .full-width-2x,
+  > .full-width-3x {
     grid-column: 1 / -1;
   }
 
-  @media screen and (min-width: ${theme`screens.md`}) {
-    grid-template-columns: 1fr 2rem min(65ch, calc(100% - 2rem)) 2rem 1fr;
+  @media screen and (min-width: 770px) {
+    grid-template-columns:
+      1fr minmax(0, 6rem) minmax(0, 4rem) 2rem min(65ch, calc(100% - 2rem))
+      2rem minmax(0, 4rem) minmax(0, 6rem) 1fr;
 
     > * {
-      grid-column: 3 / span 1;
+      grid-column: 5 / span 1;
     }
 
     > .full-width {
+      grid-column: 4 / -4;
+    }
+
+    > .full-width-2x {
+      grid-column: 3 / -3;
+    }
+
+    > .full-width-3x {
       grid-column: 2 / -2;
     }
   }
@@ -114,12 +128,27 @@ const Article = styled.article`
   }
 
   > pre {
-    ${tw`p-2 overflow-x-scroll bg-gray-200 rounded-md dark:bg-blacks-500`}
+    grid-column: 1 / -1;
+
+    @media screen and (min-width: 770px) {
+      grid-column: 4 / -4;
+    }
   }
 
   a {
     ${tw`font-semibold text-gray-700 dark:text-gray-400 hover:dark:text-blue-500`}
   }
+
+  /* Tokens */
+  --token-color-keyword: ${theme`textColor.green.600`};
+  --token-style-keyword: italic;
+
+  --token-color-function: ${theme`textColor.green.600`};
+  --token-color-string: ${theme`textColor.yellow.600`};
+  --token-color-number: ${theme`textColor.gray.600`};
+
+  --token-color-comment: ${theme`textColor.gray.600`};
+  --token-style-comment: italic;
 `
 
 const Header = styled.header`

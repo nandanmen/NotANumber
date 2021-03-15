@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/parser": "^7.13.10",
     "@mdx-js/loader": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
     "babel-plugin-styled-components": "^1.12.0",
@@ -19,6 +20,7 @@
     "next": "10.0.4",
     "next-mdx-enhanced": "^5.0.0",
     "postcss": "^8.2.2",
+    "prism-react-renderer": "^1.2.0",
     "prismjs": "^1.23.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",

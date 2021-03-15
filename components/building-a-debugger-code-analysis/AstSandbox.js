@@ -58,7 +58,7 @@ const isVisible = ([key, value]) => {
 function Tree({ className, tree }) {
   const visibleKeys = Object.entries(tree).filter(isVisible)
   return (
-    <ul className={className}>
+    <ul tw="list-none!" className={className}>
       {visibleKeys.map(([key, value]) => (
         <Entry key={key} item={[key, value]} path={[key]} />
       ))}
@@ -129,6 +129,18 @@ function Entry({ item: [key, value], path = [] }) {
   )
 }
 
+function ListItem(props) {
+  return (
+    <motion.li
+      tw="pl-4"
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      {...props}
+    />
+  )
+}
+
 function toText(item) {
   const lookup = {
     number: item,
@@ -139,10 +151,9 @@ function toText(item) {
 
 const ItemKey = tw(motion.p)`text-gray-600 relative`
 
-const ListItem = tw(motion.li)`pl-4`
-
 const List = styled.ul`
   position: relative;
+  list-style: none !important;
 
   &:after {
     ${tw`bg-gray-200`}
@@ -162,7 +173,7 @@ const StyledTree = styled(Tree)`
 `
 
 const EditorWrapper = styled.div`
-  ${tw`flex-1 p-4 bg-white border-2 border-gray-300 rounded-xl`}
+  ${tw`flex-1 p-4 bg-white border-2 border-gray-300 rounded-md`}
 
   .keyword {
     ${tw`italic text-green-600`}
