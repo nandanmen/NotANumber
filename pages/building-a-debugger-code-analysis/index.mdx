@@ -1,12 +1,13 @@
 ---
 title: 'Building a Debugger: Code Analysis'
 blurb: 'Exploring the power of the Babel plugin ecosystem.'
-publishDate: '2021-03-15'
+publishDate: '2021-03-31'
 ---
 
 import Callout from '../../components/Callout'
 import Architecture from '../../components/building-a-debugger-code-analysis/Architecture'
 import EmbeddedSandbox from '../../components/building-a-debugger-code-analysis/EmbeddedSandbox'
+import TranspilerSandbox from '../../components/building-a-debugger-code-analysis/TranspilerSandbox'
 import 'twin.macro'
 
 A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
@@ -56,6 +57,10 @@ This is great, but it's tedious — every time you want to record the local vari
 
 The transpiler makes use of the lesser known `debugger` keyword in JavaScript to indicate when local variables should be recorded. Once it sees a `debugger` keyword, it turns it into something like the `variables.push` code that we just wrote.
 
+Try to add some more `debugger` statements around the code below to see how the transpiler converts it:
+
+<TranspilerSandbox />
+
 <Callout label="The transpiler powers this blog!">
 
 The animations in my [sliding window post](../sliding-window) is powered, in part, by a module very similar to the transpiler. Each animation begins with a function, just like the sum function we wrote above. At build time, the module transforms all of these functions in the exact same way the transpiler transforms your code. When the transformed code is called, the resulting states becomes the animation steps that you see on the page!
@@ -72,9 +77,9 @@ code.replace(/debugger/, 'variables.push({ ... })')
 
 This kinda works, but then you have more problems — how do you know which variables are in scope? Which of those variables are declared _and_ in scope? So you start over, use more regex to find `const`, `let`, `var`, ....
 
-### Abstract Syntax Trees
-
 Ok — working with strings kinda suck. Instead, let's try to convert the code string into a structure that's a lot easier to work with. How about trees?
+
+### Abstract Syntax Trees
 
 The recursive structure of code fits quite nicely with the recursive structure of trees. Take the snippet that we used earlier:
 
@@ -119,3 +124,27 @@ This tree-like representation of code is commonly known as an abstract syntax tr
 ### Wait, don't we still have to deal with strings?
 
 Technically, yes. After all, you have to convert the string to the tree in the first place! However, by making use of Babel's plugin API (which we'll talk about later), we don't have to worry about this — we pass in code, and Babel gives us back the AST for us to work with.
+
+## Be My Guest
+
+Just like how you can convert code into ASTs, you can convert ASTs _back_ into code. This means that transforming code is a matter of transforming one AST to another. "Transforming" in this case means to visit each node of the tree and do something with it, e.g. changing the node to another node, adding child nodes, removing child nodes, removing the node itself, etc. There's various ways to do this, but the recommended way is to use something called a **visitor**.
+
+A visitor is a lookup table of functions where each function corresponds to a particular node type. Each one of these functions takes in a node and does something with it. For example, a visitor to modify all `const` variables to `let` variables would look something like:
+
+```jsx
+const visitor = {
+  VariableDeclaration(node) {
+    if (node.kind === 'const') {
+      node.kind = 'let'
+    }
+  },
+}
+```
+
+We use `VariableDeclaration` as the function name because we're interested in modifying nodes with the type `VariableDeclaration`.
+
+Every time we reach a node in the tree, we check the visitor object to see if there's a function that corresponds to the current node type. If there is, that function gets called. Otherwise, we skip the node and move on to the next one.
+
+### Paths
+
+Often, it's important to know the location of a node when you want to modify it. For example, if we want to change only the `const` declarations in a particular function, we're not able to do it just from the node alone. For this reason, Babel provides a `path` object instead that has a bunch of properties describing the _context_ of the node we're currently visiting.

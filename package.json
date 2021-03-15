@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@babel/parser": "^7.13.10",
+    "@babel/standalone": "^7.13.10",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@use-it/interval": "^1.0.0",

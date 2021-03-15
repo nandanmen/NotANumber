@@ -1,11 +1,9 @@
 import React from 'react'
-import Editor from 'react-simple-code-editor'
-import { motion } from 'framer-motion'
+import { motion, AnimateSharedLayout } from 'framer-motion'
 import { parse } from '@babel/parser'
-import { highlight, languages } from 'prismjs/components/prism-core'
 import tw, { styled } from 'twin.macro'
-import 'prismjs/components/prism-clike'
-import 'prismjs/components/prism-javascript'
+
+import LiveEditor from './LiveEditor'
 
 export default function AstSandbox({ initialCode = '' }) {
   const [code, setCode] = React.useState(initialCode)
@@ -22,14 +20,10 @@ export default function AstSandbox({ initialCode = '' }) {
 
   return (
     <>
-      <EditorWrapper>
-        <Editor
-          value={code}
-          onValueChange={(code) => setCode(code)}
-          highlight={(code) => highlight(code, languages.js)}
-        />
-      </EditorWrapper>
-      <div tw="overflow-y-scroll -mb-8 flex-1">
+      <div tw="font-mono flex-1">
+        <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
+      </div>
+      <div tw="font-mono overflow-y-scroll -mb-8 flex-1">
         <StyledTree tree={tree} />
       </div>
     </>
@@ -58,11 +52,13 @@ const isVisible = ([key, value]) => {
 function Tree({ className, tree }) {
   const visibleKeys = Object.entries(tree).filter(isVisible)
   return (
-    <ul tw="list-none!" className={className}>
-      {visibleKeys.map(([key, value]) => (
-        <Entry key={key} item={[key, value]} path={[key]} />
-      ))}
-    </ul>
+    <motion.ul layout tw="list-none!" className={className}>
+      <AnimateSharedLayout>
+        {visibleKeys.map(([key, value]) => (
+          <Entry key={key} item={[key, value]} path={[key]} />
+        ))}
+      </AnimateSharedLayout>
+    </motion.ul>
   )
 }
 
@@ -73,8 +69,8 @@ function Entry({ item: [key, value], path = [] }) {
   if (Array.isArray(value)) {
     return (
       <ListItem>
-        <ItemKey as="button" onClick={() => setIsOpen((open) => !open)}>
-          {key}
+        <ItemKey onClick={() => setIsOpen((open) => !open)}>
+          <motion.span layout>{key}</motion.span>
           <ExpandIcon>{isOpen ? '-' : '+'}</ExpandIcon>
         </ItemKey>
         {isOpen && (
@@ -99,8 +95,8 @@ function Entry({ item: [key, value], path = [] }) {
     const validEntries = Object.entries(value).filter(isVisible)
     return (
       <ListItem>
-        <ItemKey as="button" onClick={() => setIsOpen((open) => !open)}>
-          {key}
+        <ItemKey onClick={() => setIsOpen((open) => !open)}>
+          <motion.span layout>{key}</motion.span>
           <ExpandIcon>{isOpen ? '-' : '+'}</ExpandIcon>
         </ItemKey>
         {isOpen && (
@@ -124,7 +120,7 @@ function Entry({ item: [key, value], path = [] }) {
   return (
     <ListItem tw="flex space-x-2">
       <ItemKey>{key}:</ItemKey>
-      <p>{toText(value)}</p>
+      <motion.p layout="position">{toText(value)}</motion.p>
     </ListItem>
   )
 }
@@ -135,7 +131,35 @@ function ListItem(props) {
       tw="pl-4"
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      layout
+      {...props}
+    />
+  )
+}
+
+function ItemKey(props) {
+  if (props.onClick) {
+    return (
+      <motion.button
+        layout
+        tw="text-gray-600 relative dark:text-gray-400"
+        {...props}
+      />
+    )
+  }
+  return (
+    <motion.p
+      layout
+      tw="text-gray-600 relative dark:text-gray-400"
+      {...props}
+    />
+  )
+}
+
+function ExpandIcon(props) {
+  return (
+    <motion.span
+      tw="w-4 h-4 font-semibold flex items-center justify-center absolute -right-6 top-1/2 transform -translate-y-1/2"
       {...props}
     />
   )
@@ -149,14 +173,12 @@ function toText(item) {
   return lookup[typeof item]
 }
 
-const ItemKey = tw(motion.p)`text-gray-600 relative`
-
-const List = styled.ul`
+const List = styled(motion.ul).attrs({ layout: true })`
   position: relative;
   list-style: none !important;
 
   &:after {
-    ${tw`bg-gray-200`}
+    ${tw`bg-gray-200 dark:bg-blacks-500`}
     position: absolute;
     content: '';
     height: 100%;
@@ -171,21 +193,3 @@ const StyledTree = styled(Tree)`
     margin-bottom: 2rem;
   }
 `
-
-const EditorWrapper = styled.div`
-  ${tw`flex-1 p-4 bg-white border-2 border-gray-300 rounded-md`}
-
-  .keyword {
-    ${tw`italic text-green-600`}
-  }
-
-  .string {
-    ${tw`text-yellow-600`}
-  }
-
-  .function {
-    ${tw`text-green-600`}
-  }
-`
-
-const ExpandIcon = tw.span`w-4 h-4 font-semibold flex items-center justify-center absolute -right-6 top-1/2 transform -translate-y-1/2`

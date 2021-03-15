@@ -3,7 +3,7 @@ import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
 
-import CodeBlock from './components/CodeBlock'
+import CodeBlock from '../components/CodeBlock'
 import FeedbackForm from '../components/FeedbackForm'
 import Navigation from '../components/Navigation'
 
@@ -136,12 +136,13 @@ const Article = styled.article`
   }
 
   a {
-    ${tw`font-semibold text-gray-700 dark:text-gray-400 hover:dark:text-blue-500`}
+    ${tw`font-semibold text-gray-700 hover:text-blue-500 dark:text-gray-400`}
   }
 
   /* Tokens */
+  --code-background: white;
+  --code-border-color: ${theme`colors.gray.200`};
   --token-color-keyword: ${theme`textColor.green.600`};
-  --token-style-keyword: italic;
 
   --token-color-function: ${theme`textColor.green.600`};
   --token-color-string: ${theme`textColor.yellow.600`};
@@ -149,6 +150,18 @@ const Article = styled.article`
 
   --token-color-comment: ${theme`textColor.gray.600`};
   --token-style-comment: italic;
+
+  @media (prefers-color-scheme: dark) {
+    --code-background: ${theme`colors.blacks.500`};
+    --code-border-color: ${theme`colors.blacks.300`};
+    --token-color-keyword: ${theme`textColor.green.400`};
+
+    --token-color-function: ${theme`textColor.green.400`};
+    --token-color-string: ${theme`textColor.yellow.300`};
+    --token-color-number: ${theme`textColor.gray.500`};
+
+    --token-color-comment: ${theme`textColor.gray.500`};
+  }
 `
 
 const Header = styled.header`

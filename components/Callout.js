@@ -60,6 +60,10 @@ const Aside = styled.aside`
   code {
     ${tw`bg-blue-100 dark:bg-purple-700 py-0.5 px-1 rounded-md text-sm`}
   }
+
+  a {
+    ${tw`underline dark:text-blue-100`}
+  }
 `
 
 const Details = styled(motion.div)`
