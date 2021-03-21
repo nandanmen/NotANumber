@@ -1,13 +1,14 @@
 ---
 title: 'Building a Debugger: Code Analysis'
 blurb: 'Exploring the power of the Babel plugin ecosystem.'
-publishDate: '2021-03-31'
+publishDate: '2021-03-22'
 ---
 
 import Callout from '../../components/Callout'
 import Architecture from '../../components/building-a-debugger-code-analysis/Architecture'
 import EmbeddedSandbox from '../../components/building-a-debugger-code-analysis/EmbeddedSandbox'
-import TranspilerSandbox from '../../components/building-a-debugger-code-analysis/TranspilerSandbox'
+import EmbeddedTranspiler from '../../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
+import VisitorSandbox from '../../components/building-a-debugger-code-analysis/VisitorSandbox'
 import 'twin.macro'
 
 A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
@@ -59,7 +60,7 @@ The transpiler makes use of the lesser known `debugger` keyword in JavaScript to
 
 Try to add some more `debugger` statements around the code below to see how the transpiler converts it:
 
-<TranspilerSandbox />
+<EmbeddedTranspiler />
 
 <Callout label="The transpiler powers this blog!">
 
@@ -129,22 +130,117 @@ Technically, yes. After all, you have to convert the string to the tree in the f
 
 Just like how you can convert code into ASTs, you can convert ASTs _back_ into code. This means that transforming code is a matter of transforming one AST to another. "Transforming" in this case means to visit each node of the tree and do something with it, e.g. changing the node to another node, adding child nodes, removing child nodes, removing the node itself, etc. There's various ways to do this, but the recommended way is to use something called a **visitor**.
 
-A visitor is a lookup table of functions where each function corresponds to a particular node type. Each one of these functions takes in a node and does something with it. For example, a visitor to modify all `const` variables to `let` variables would look something like:
+A visitor is a lookup table of functions where each function corresponds to a particular node type. Each one of these functions takes in a node and does something with it. For example, if we want to do something with the `Identifier` node, we would write a function called `Identifier()`.
 
-```jsx
+```js
 const visitor = {
-  VariableDeclaration(node) {
-    if (node.kind === 'const') {
-      node.kind = 'let'
-    }
+  Identifier(node) {
+    // do stuff with the Identifier node
   },
+  VariableDeclaration(node) {
+    // do stuff with the VariableDeclaration node
+  }
+  /* do more stuff with more nodes */
 }
 ```
 
-We use `VariableDeclaration` as the function name because we're interested in modifying nodes with the type `VariableDeclaration`.
-
-Every time we reach a node in the tree, we check the visitor object to see if there's a function that corresponds to the current node type. If there is, that function gets called. Otherwise, we skip the node and move on to the next one.
+The visitor object gets checked every time we reach a node while traversing the tree. If the visitor contains a function for the current node type, that function gets called. Otherwise, we skip the node and move on to the next one.
 
 ### Paths
 
-Often, it's important to know the location of a node when you want to modify it. For example, if we want to change only the `const` declarations in a particular function, we're not able to do it just from the node alone. For this reason, Babel provides a `path` object instead that has a bunch of properties describing the _context_ of the node we're currently visiting.
+Often, it's important to know the location of a node when you want to modify it. For example, if we want to change only the `const` declarations in a particular function, we're not able to do it just from the node alone. For this reason, Babel provides a `path` object instead that has a bunch of properties describing the _context_ of the node we're currently visiting. You can still access the current node using `path.node`.
+
+I highly recommend [Jamie Kyle's Babel Plugin Handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-visitors) for more on visitors, paths, and AST traversals.
+
+## Refactoring Legacy Code
+
+Let's put our newfound knowledge of visitors and the Babel APIs to work.
+
+### No `var`s, Please
+
+Nowadays, it's generally best practice to use only `const` or `let` to declare variables in JavaScript. However, any code written before ES2015 was around would've used `var` to declare its variables. You've been a JS developer for a while, and one day you decide to modernize one of your old codebases. The first step is to change all `var` variables to `let` variables.
+
+You recently read up on ASTs and Babel plugins, so you know you could write a custom babel plugin to do this. You also know that you should write a "visitor" of some kind. The question is, what does that visitor look like?
+
+To start off, let's play around with the AST to see what nodes our intended code maps to:
+
+<EmbeddedSandbox
+  initialCode={`var a = 10`}
+/>
+
+It looks like the node type we're looking for is the `VariableDeclaration` node, since it's the node that corresponds to the `var a = 10` code. It also has a `kind` property that tells you what type of variable it is. How convenient!
+
+Let's see what the AST looks like when we use `let` instead:
+
+<EmbeddedSandbox
+  initialCode={`let a = 10`}
+/>
+
+Looks like the difference is only in the `kind` property! Cool, that means all we need the visitor to do is (1) target the `VariableDeclaration` node type and (2) change the `kind` property from `"var"` to `"let"`:
+
+<VisitorSandbox
+  initialCode={`var a = 10
+const b = 20
+var c = 60`} 
+  visitor={`export default () => ({
+  visitor: {
+    VariableDeclaration(path) {
+      if (path.node.kind === 'var') {
+        path.node.kind = 'let'
+      }
+    },
+  }
+})`}
+/>
+
+And sure enough, that works great.
+
+### `import`s too, please!
+
+As of version 13.2, Node supports ECMAScript modules. This means you're able to use `import` and `export` instead of `require` and `module.exports` as long as you set the appropriate type field in `package.json`.
+
+Let's see if we can make a Babel plugin that converts all **top-level** imports and exports from the CommonJS spec to the ECMAScript spec. 
+
+## Building the Visitor
+
+Now that we have access to these new tools, let's try to piece together the visitor for our debugger. To recap, we want to turn code that looks like this:
+
+```js
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    debugger
+    sum += num
+  }
+  return sum
+}
+```
+
+To code that looks like this:
+
+```js
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    _variables.push({ num, arr, sum })
+    sum += num
+  }
+  return sum
+}
+```
+
+Ultimately, we want to change every instance of `debugger` with code that adds all variables in scope to some global array (in this case, an array called `_variables`). Something like:
+
+```js
+_variables.push({ /* all variables in scope */ })
+```
+
+### Try it for Yourself!
+
+Before I go over the solution, try to build it for yourself! A couple things to keep in mind about the API:
+
+- **Plugin API** — A Babel plugin is a function that returns an object with a `visitor` property. This boilerplate is done for you in the sandbox below; all you need to do is fill in the visitor object.
+- **@babel/types** — The visitor has access to a variable called `utils` which is a collection of helper functions from the [@babel/types]() library. Each node type has an associated "builder" function with the same name, e.g. you can build an `Identifier` node using the `utils.identifier()` function. I **strongly recommend** using these when creating new nodes.
+- **Scope** — The `path` object passed to each visitor function contains a very useful `scope` property; use the `scope.getAllBindings()` function to get an array of all variables in scope.
+
+> Placeholder: add visitor sandbox

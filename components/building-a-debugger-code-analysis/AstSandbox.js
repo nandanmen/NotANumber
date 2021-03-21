@@ -1,11 +1,11 @@
 import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import { parse } from '@babel/parser'
-import tw, { styled } from 'twin.macro'
+import { styled } from 'twin.macro'
 
 import LiveEditor from './LiveEditor'
 
-export default function AstSandbox({ initialCode = '' }) {
+export default function AstSandbox({ initialCode = '', depth = 2 }) {
   const [code, setCode] = React.useState(initialCode)
   const [tree, setTree] = React.useState(parse(initialCode))
 
@@ -20,11 +20,11 @@ export default function AstSandbox({ initialCode = '' }) {
 
   return (
     <>
-      <div tw="font-mono flex-1">
+      <div tw="flex-1">
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
-      <div tw="font-mono overflow-y-scroll -mb-8 flex-1">
-        <StyledTree tree={tree} />
+      <div tw="flex-1">
+        <Tree tree={tree} depth={depth} />
       </div>
     </>
   )
@@ -49,28 +49,35 @@ const isVisible = ([key, value]) => {
   return false
 }
 
-function Tree({ className, tree }) {
+const TreeContext = React.createContext()
+
+const useTreeContext = () => React.useContext(TreeContext)
+
+function Tree({ className, tree, depth = 2 }) {
   const visibleKeys = Object.entries(tree).filter(isVisible)
   return (
-    <motion.ul layout tw="list-none!" className={className}>
-      <AnimateSharedLayout>
-        {visibleKeys.map(([key, value]) => (
-          <Entry key={key} item={[key, value]} path={[key]} />
-        ))}
-      </AnimateSharedLayout>
+    <motion.ul layout="position" tw="list-none!" className={className}>
+      <TreeContext.Provider value={{ depth }}>
+        <AnimateSharedLayout>
+          {visibleKeys.map(([key, value]) => (
+            <Entry key={key} item={[key, value]} path={[key]} depth={0} />
+          ))}
+        </AnimateSharedLayout>
+      </TreeContext.Provider>
     </motion.ul>
   )
 }
 
-function Entry({ item: [key, value], path = [] }) {
-  const [isOpen, setIsOpen] = React.useState(false)
+function Entry({ item: [key, value], path = [], depth }) {
+  const { depth: initialDepth } = useTreeContext()
+  const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
   const newPath = [...path, key]
 
   if (Array.isArray(value)) {
     return (
       <ListItem>
         <ItemKey onClick={() => setIsOpen((open) => !open)}>
-          <motion.span layout>{key}</motion.span>
+          <motion.span layout="position">{key}</motion.span>
           <ExpandIcon>{isOpen ? '-' : '+'}</ExpandIcon>
         </ItemKey>
         {isOpen && (
@@ -82,6 +89,7 @@ function Entry({ item: [key, value], path = [] }) {
                   key={currentPath.join('.')}
                   item={[node.type, node]}
                   path={currentPath}
+                  depth={depth + 1}
                 />
               )
             })}
@@ -96,7 +104,7 @@ function Entry({ item: [key, value], path = [] }) {
     return (
       <ListItem>
         <ItemKey onClick={() => setIsOpen((open) => !open)}>
-          <motion.span layout>{key}</motion.span>
+          <motion.span layout="position">{key}</motion.span>
           <ExpandIcon>{isOpen ? '-' : '+'}</ExpandIcon>
         </ItemKey>
         {isOpen && (
@@ -108,6 +116,7 @@ function Entry({ item: [key, value], path = [] }) {
                   key={currentPath.join('.')}
                   item={[key, value]}
                   path={currentPath}
+                  depth={depth + 1}
                 />
               )
             })}
@@ -131,7 +140,7 @@ function ListItem(props) {
       tw="pl-4"
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
-      layout
+      layout="position"
       {...props}
     />
   )
@@ -141,7 +150,7 @@ function ItemKey(props) {
   if (props.onClick) {
     return (
       <motion.button
-        layout
+        layout="position"
         tw="text-gray-600 relative dark:text-gray-400"
         {...props}
       />
@@ -149,7 +158,7 @@ function ItemKey(props) {
   }
   return (
     <motion.p
-      layout
+      layout="position"
       tw="text-gray-600 relative dark:text-gray-400"
       {...props}
     />
@@ -173,23 +182,7 @@ function toText(item) {
   return lookup[typeof item]
 }
 
-const List = styled(motion.ul).attrs({ layout: true })`
-  position: relative;
+const List = styled(motion.ul).attrs({ layout: 'position' })`
   list-style: none !important;
-
-  &:after {
-    ${tw`bg-gray-200 dark:bg-blacks-500`}
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 2px;
-    left: 0;
-    top: 0;
-  }
-`
-
-const StyledTree = styled(Tree)`
-  > *:last-child {
-    margin-bottom: 2rem;
-  }
+  will-change: transform;
 `

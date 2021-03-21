@@ -9,6 +9,7 @@ export default function LiveEditor({ className, ...delegated }) {
   return (
     <EditorWrapper className={className}>
       <Editor
+        tw="w-full h-full"
         highlight={(code) => highlight(code, languages.js)}
         {...delegated}
       />
@@ -20,7 +21,7 @@ export default function LiveEditor({ className, ...delegated }) {
 }
 
 const EditorWrapper = styled.div`
-  ${tw`relative h-full p-6 border-4 rounded-md`}
+  ${tw`relative h-full p-6 font-mono text-sm border-2 rounded-md`}
 
   background: var(--code-background);
   border-color: var(--code-border-color);

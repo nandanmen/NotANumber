@@ -26,3 +26,9 @@ a {
     font-size: 18px;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    @apply bg-yellow-800;
+  }
+}

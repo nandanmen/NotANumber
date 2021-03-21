@@ -58,7 +58,7 @@ const Aside = styled.aside`
   }
 
   code {
-    ${tw`bg-blue-100 dark:bg-purple-700 py-0.5 px-1 rounded-md text-sm`}
+    ${tw`bg-blue-100 dark:bg-purple-700 py-0.5 px-1 rounded-sm text-sm`}
   }
 
   a {

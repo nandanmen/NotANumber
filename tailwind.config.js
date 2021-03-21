@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   purge: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,6 +10,7 @@ module.exports = {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
+        mono: ['Input Mono', ...defaultTheme.fontFamily.mono],
       },
       colors: {
         blacks: {

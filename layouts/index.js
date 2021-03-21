@@ -110,9 +110,9 @@ const Article = styled.article`
     ${tw`mt-4 text-xl font-semibold`}
   }
 
-  ul,
-  ol {
-    ${tw`list-inside`}
+  > ul,
+  > ol {
+    ${tw`pl-4 space-y-2`}
   }
 
   ul {
@@ -123,8 +123,9 @@ const Article = styled.article`
     ${tw`list-decimal`}
   }
 
-  > code {
-    ${tw`p-1 text-sm bg-gray-200 rounded-md dark:bg-blacks-500`}
+  code {
+    ${tw`p-1 bg-gray-200 rounded-sm dark:bg-blacks-500`}
+    font-size: 0.875em;
   }
 
   > pre {
