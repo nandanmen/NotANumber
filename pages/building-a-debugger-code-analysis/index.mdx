@@ -199,7 +199,40 @@ And sure enough, that works great.
 
 As of version 13.2, Node supports ECMAScript modules. This means you're able to use `import` and `export` instead of `require` and `module.exports` as long as you set the appropriate type field in `package.json`.
 
-Let's see if we can make a Babel plugin that converts all **top-level** imports and exports from the CommonJS spec to the ECMAScript spec. 
+Let's see if we can make a Babel plugin that converts imports using `require` to imports using `import`. As a quick primer, importing using `require` looks like:
+
+```js
+const myModule = require('./my-module')
+```
+
+Whereas importing using `import` looks like:
+
+```js
+import * as myModule from './myModule'
+```
+
+To keep it simple, we're only going to convert **top-level** imports. This means we're going to ignore any `require` calls that happen dynamically, such as in a function body.
+
+Let's start by taking a look at the AST for the `require` way of importing modules:
+
+<EmbeddedSandbox
+  initialCode={`const myModule = require('./my-module')`}
+/>
+
+Now let's compare that to the `import` way:
+
+<EmbeddedSandbox
+  initialCode={`import * as myModule from './my-module'`}
+/>
+
+Using `require`, importing a module is no different than calling a function. This means that, unlike the `var` example from before, we can't simply point to a `Require` node type — we have to check for ourselves if the function call is a call to `require`.
+
+Looking at the AST for just the `require` call, we find that we can identify the name of the function being called using the `CallExpression` node type and checking its `callee` property.
+
+<EmbeddedSandbox
+  initialCode={`require('./my-module')`}
+  depth={4}
+/>
 
 ## Building the Visitor
 

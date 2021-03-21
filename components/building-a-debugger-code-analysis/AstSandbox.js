@@ -7,13 +7,15 @@ import LiveEditor from './LiveEditor'
 
 export default function AstSandbox({ initialCode = '', depth = 2 }) {
   const [code, setCode] = React.useState(initialCode)
-  const [tree, setTree] = React.useState(parse(initialCode))
+  const [tree, setTree] = React.useState(
+    parse(initialCode, { sourceType: 'module' })
+  )
 
   React.useEffect(() => {
     try {
-      const tree = parse(code)
+      const tree = parse(code, { sourceType: 'module' })
       setTree(tree)
-    } catch {
+    } catch (e) {
       // syntax error
     }
   }, [code])
