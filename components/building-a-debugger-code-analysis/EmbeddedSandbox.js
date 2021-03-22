@@ -1,13 +1,21 @@
-import AstSandbox from '../sandboxes/AstSandbox'
+import React from 'react'
 import 'twin.macro'
 
-export default function EmbeddedSandbox(props) {
+import LiveEditor from '../shared/LiveEditor'
+import { Tree, useSyntaxTree } from '../sandboxes/AstSandbox'
+
+export default function EmbeddedSandbox({ initialCode = '', depth = 2 }) {
+  const [code, setCode] = React.useState(initialCode)
+  const tree = useSyntaxTree(code)
+
   return (
-    <div
-      tw="font-mono space-y-4 text-sm md:(flex space-x-4 space-y-0) mb-12! mt-6"
-      className="full-width-2x"
-    >
-      <AstSandbox {...props} />
-    </div>
+    <>
+      <div tw="flex-1">
+        <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
+      </div>
+      <div tw="flex-1 font-mono text-sm" className="full-width-2x">
+        <Tree tree={tree} depth={depth} code={code} />
+      </div>
+    </>
   )
 }

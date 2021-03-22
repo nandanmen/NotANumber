@@ -1,20 +1,31 @@
+import React from 'react'
 import tw, { styled } from 'twin.macro'
-import AstSandbox from '../../components/sandboxes/AstSandbox'
+
+import LiveEditor from '../../components/shared/LiveEditor'
+import { Tree, useSyntaxTree } from '../../components/sandboxes/AstSandbox'
 
 const starterCode = `function sum(a, b) {
   return a + b
 }`
 
 export default function AstSandboxPage() {
+  const [code, setCode] = React.useState(starterCode)
+  const tree = useSyntaxTree(code)
+
   return (
-    <SandboxWrapper tw="font-mono">
-      <AstSandbox initialCode={starterCode} />
+    <SandboxWrapper>
+      <div tw="flex-1">
+        <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
+      </div>
+      <div tw="flex-1 font-mono text-sm" className="full-width-2x">
+        <Tree tree={tree} code={code} />
+      </div>
     </SandboxWrapper>
   )
 }
 
 const SandboxWrapper = styled.div`
-  ${tw`flex w-full p-8 space-x-2 overflow-hidden dark:text-white`}
+  ${tw`w-full p-8 dark:text-white`}
 
-  height: calc(100vh - 4rem);
+  min-height: calc(100vh - 4rem);
 `

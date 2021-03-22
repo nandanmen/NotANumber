@@ -2,6 +2,8 @@ import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import { styled } from 'twin.macro'
 
+import CodeBlock from '../../CodeBlock'
+
 const TreeContext = React.createContext()
 
 const useTreeContext = () => React.useContext(TreeContext)
@@ -13,11 +15,11 @@ const useTreeContext = () => React.useContext(TreeContext)
  *
  * The given tree is assumed to be an AST produced by @babel/parse.
  */
-export default function Tree({ className, tree, depth = 2 }) {
+export default function Tree({ className, tree, code, depth = 2 }) {
   const visibleKeys = Object.entries(tree).filter(isVisible)
   return (
     <motion.ul layout="position" tw="list-none!" className={className}>
-      <TreeContext.Provider value={{ depth }}>
+      <TreeContext.Provider value={{ depth, code }}>
         <AnimateSharedLayout>
           {visibleKeys.map(([key, value]) => (
             <Entry key={key} item={[key, value]} path={[key]} depth={0} />
@@ -36,7 +38,7 @@ export default function Tree({ className, tree, depth = 2 }) {
  * Otherwise, the component renders a simple key -> value pair.
  */
 function Entry({ item: [key, value], path = [], depth }) {
-  const { depth: initialDepth } = useTreeContext()
+  const { depth: initialDepth, code } = useTreeContext()
   const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
   const newPath = [...path, key]
 
@@ -71,7 +73,9 @@ function Entry({ item: [key, value], path = [], depth }) {
   }
 
   if (value != null && typeof value === 'object') {
+    const { start, end } = value
     const validEntries = Object.entries(value).filter(isVisible)
+    validEntries.unshift(['code', code.slice(start, end)])
     return (
       <ListItem>
         <ItemKey onClick={() => setIsOpen((open) => !open)}>
@@ -93,6 +97,14 @@ function Entry({ item: [key, value], path = [], depth }) {
             })}
           </List>
         )}
+      </ListItem>
+    )
+  }
+
+  if (key === 'code') {
+    return (
+      <ListItem tw="flex justify-start">
+        <CodeBlock tw="p-4!">{value}</CodeBlock>
       </ListItem>
     )
   }
