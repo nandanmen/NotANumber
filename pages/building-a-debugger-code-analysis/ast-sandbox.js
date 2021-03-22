@@ -1,5 +1,5 @@
 import tw, { styled } from 'twin.macro'
-import AstSandbox from '../../components/building-a-debugger-code-analysis/AstSandbox'
+import AstSandbox from '../../components/sandboxes/AstSandbox'
 
 const starterCode = `function sum(a, b) {
   return a + b

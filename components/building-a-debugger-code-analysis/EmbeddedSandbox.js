@@ -1,4 +1,4 @@
-import AstSandbox from './AstSandbox'
+import AstSandbox from '../sandboxes/AstSandbox'
 import 'twin.macro'
 
 export default function EmbeddedSandbox(props) {

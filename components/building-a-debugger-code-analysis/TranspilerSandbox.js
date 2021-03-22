@@ -2,8 +2,8 @@ import React from 'react'
 import { HiArrowRight } from 'react-icons/hi'
 import tw, { styled, theme } from 'twin.macro'
 
+import LiveEditor from '../shared/LiveEditor'
 import CodeBlock from '../CodeBlock'
-import LiveEditor from './LiveEditor'
 import useBabelPlugin from './useBabelPlugin'
 
 const starterCode = `function sum(arr) {

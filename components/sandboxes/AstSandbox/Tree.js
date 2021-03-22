@@ -1,61 +1,12 @@
 import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
-import { parse } from '@babel/parser'
 import { styled } from 'twin.macro'
-
-import LiveEditor from './LiveEditor'
-
-export default function AstSandbox({ initialCode = '', depth = 2 }) {
-  const [code, setCode] = React.useState(initialCode)
-  const [tree, setTree] = React.useState(
-    parse(initialCode, { sourceType: 'module' })
-  )
-
-  React.useEffect(() => {
-    try {
-      const tree = parse(code, { sourceType: 'module' })
-      setTree(tree)
-    } catch (e) {
-      // syntax error
-    }
-  }, [code])
-
-  return (
-    <>
-      <div tw="flex-1">
-        <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
-      </div>
-      <div tw="flex-1">
-        <Tree tree={tree} depth={depth} />
-      </div>
-    </>
-  )
-}
-
-const isVisible = ([key, value]) => {
-  const whitelist = new Set(['type', 'kind', 'value', 'name', 'operator'])
-  if (whitelist.has(key)) {
-    return true
-  }
-  if (value && typeof value === 'object') {
-    if (Array.isArray(value)) {
-      const [first] = value
-      if (first && typeof first === 'object' && !Array.isArray(first)) {
-        return first.hasOwnProperty('type')
-      }
-      return false
-    } else {
-      return value.hasOwnProperty('type')
-    }
-  }
-  return false
-}
 
 const TreeContext = React.createContext()
 
 const useTreeContext = () => React.useContext(TreeContext)
 
-function Tree({ className, tree, depth = 2 }) {
+export default function Tree({ className, tree, depth = 2 }) {
   const visibleKeys = Object.entries(tree).filter(isVisible)
   return (
     <motion.ul layout="position" tw="list-none!" className={className}>
@@ -174,6 +125,25 @@ function ExpandIcon(props) {
       {...props}
     />
   )
+}
+
+function isVisible([key, value]) {
+  const whitelist = new Set(['type', 'kind', 'value', 'name', 'operator'])
+  if (whitelist.has(key)) {
+    return true
+  }
+  if (value && typeof value === 'object') {
+    if (Array.isArray(value)) {
+      const [first] = value
+      if (first && typeof first === 'object' && !Array.isArray(first)) {
+        return first.hasOwnProperty('type')
+      }
+      return false
+    } else {
+      return value.hasOwnProperty('type')
+    }
+  }
+  return false
 }
 
 function toText(item) {

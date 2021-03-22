@@ -2,7 +2,7 @@ import React from 'react'
 import { styled } from 'twin.macro'
 
 import TranspilerSandbox from './TranspilerSandbox'
-import LiveEditor from './LiveEditor'
+import LiveEditor from '../shared/LiveEditor'
 import useBabelPlugin from './useBabelPlugin'
 
 /**
