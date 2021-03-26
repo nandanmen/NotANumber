@@ -2,7 +2,7 @@ import React from 'react'
 import { parse } from '@babel/parser'
 
 export default function useSyntaxTree(code) {
-  const [tree, setTree] = React.useState(parse(code, { sourceType: 'module' }))
+  const [tree, setTree] = React.useState({})
 
   React.useEffect(() => {
     try {
@@ -13,5 +13,5 @@ export default function useSyntaxTree(code) {
     }
   }, [code])
 
-  return tree.program
+  return tree?.program || {}
 }

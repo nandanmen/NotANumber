@@ -40,19 +40,30 @@ function AstNode({ node, path, depth }) {
   const source = code.slice(node.start, node.end)
 
   const label = hasChildren ? (
-    <button tw="block text-gray-500" onClick={() => setIsOpen((open) => !open)}>
+    <motion.button
+      layout="position"
+      tw="block text-gray-500"
+      onClick={() => setIsOpen((open) => !open)}
+    >
       {node.type} {isOpen ? '-' : '+'}
-    </button>
+    </motion.button>
   ) : (
-    <p tw="text-gray-500">{node.type}</p>
+    <motion.p layout="position" tw="text-gray-500">
+      {node.type}
+    </motion.p>
   )
 
   return (
-    <li tw="space-y-2">
+    <motion.li
+      tw="space-y-2"
+      layout="position"
+      animate={{ y: 0, opacity: 1 }}
+      initial={{ y: -4, opacity: 0 }}
+    >
       {label}
       <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
       {isOpen && hasChildren && (
-        <ul tw="list-none! space-y-4 pl-12">
+        <ul tw="list-none! space-y-4 pl-8">
           {children.map(([key, value]) =>
             Array.isArray(value) ? (
               value.map((node, index) => (
@@ -74,7 +85,7 @@ function AstNode({ node, path, depth }) {
           )}
         </ul>
       )}
-    </li>
+    </motion.li>
   )
 }
 
