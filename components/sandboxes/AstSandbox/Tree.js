@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
+import 'twin.macro'
 
 import CodeBlock from '../../CodeBlock'
 
