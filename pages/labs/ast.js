@@ -17,7 +17,7 @@ export default function AstSandboxPage() {
       <div tw="flex-1">
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
-      <div tw="flex-1 font-mono text-sm" className="full-width-2x">
+      <div tw="flex-1 font-mono text-sm overflow-y-scroll bg-gray-200 rounded-md p-8">
         <Tree tree={tree} code={code} />
       </div>
     </SandboxWrapper>
@@ -25,7 +25,7 @@ export default function AstSandboxPage() {
 }
 
 const SandboxWrapper = styled.div`
-  ${tw`w-full p-8 dark:text-white`}
+  ${tw`flex w-full p-8 pt-24 space-x-8 overflow-hidden dark:text-white`}
 
-  min-height: calc(100vh - 4rem);
+  height: calc(100vh - 4rem);
 `

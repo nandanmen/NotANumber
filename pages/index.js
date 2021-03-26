@@ -22,7 +22,7 @@ export default function HomePage() {
         <title>Not a Number</title>
       </Head>
       <div tw="pb-32 dark:text-white">
-        <header className="mx-auto mt-32 mb-24">
+        <header className="pt-32 mx-auto mb-24">
           <Title tw="mx-auto mb-16">Not a Number</Title>
           <p tw="text-center max-w-md mx-auto px-8">
             An interactive blog on computer science and web development, by

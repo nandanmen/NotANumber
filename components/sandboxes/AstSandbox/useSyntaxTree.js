@@ -13,5 +13,5 @@ export default function useSyntaxTree(code) {
     }
   }, [code])
 
-  return tree
+  return tree.program
 }

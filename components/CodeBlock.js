@@ -1,7 +1,10 @@
 import Highlight, { defaultProps } from 'prism-react-renderer'
 import { styled } from 'twin.macro'
 
-export default function CodeBlock({ children, className: containerClass }) {
+export default function CodeBlock({
+  children = '',
+  className: containerClass,
+}) {
   return (
     <Highlight {...defaultProps} code={children.trim()} language="jsx">
       {({ className, tokens, getTokenProps }) => {

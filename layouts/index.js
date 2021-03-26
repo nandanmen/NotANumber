@@ -16,7 +16,7 @@ export default function Layout({ frontMatter = {}, children }) {
         </Head>
         <Header>
           <Title>{frontMatter.title}</Title>
-          <p tw="italic font-semibold text-center text-gray-600 dark:text-gray-400">
+          <p tw="italic font-semibold text-center px-8 text-gray-600">
             {frontMatter.blurb}
           </p>
         </Header>
@@ -52,6 +52,17 @@ export default function Layout({ frontMatter = {}, children }) {
     </MDXProvider>
   )
 }
+
+const Header = styled.header`
+  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
+
+  height: 700px;
+  grid-column: 1 / -1 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`
 
 const Article = styled.article`
   ${tw`grid w-full pb-20 text-gray-900 dark:text-white`}
@@ -141,19 +152,12 @@ const Article = styled.article`
   }
 `
 
-const Header = styled.header`
-  ${tw`mx-auto mt-32 mb-36`}
-
-  grid-column: 1 / -1;
-  width: min(140ch, 100%);
-`
-
 const Title = styled.h1`
-  ${tw`mx-auto mb-10 font-serif font-semibold text-center`}
+  ${tw`px-8 mx-auto mb-12 font-serif font-semibold text-center lg:mb-24`}
 
-  font-size: clamp(5rem, 8vw, 8rem);
+  font-size: clamp(5rem, 15vw, 8rem);
   line-height: 0.9;
-  max-width: 12ch;
+  max-width: 14ch;
 `
 
 const StyledFeedbackForm = styled(FeedbackForm)`

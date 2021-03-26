@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { FaGithub, FaTwitter } from 'react-icons/fa'
+import 'twin.macro'
 
 export default function Navigation({ style, className }) {
   return (
@@ -10,8 +11,7 @@ export default function Navigation({ style, className }) {
             <a className="hover:text-green-600">NaN</a>
           </Link>
         </li>
-        <div className="flex-grow h-px mx-12 bg-gray-400 lg:mx-8"></div>
-        <li className="mr-4">
+        <li tw="ml-auto" className="mr-4">
           <a
             href="https://github.com/narendrasss/blog"
             target="_blank"
