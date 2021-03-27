@@ -166,6 +166,8 @@ To start off, let's play around with the AST to see what nodes our intended code
 
 <EmbeddedSandbox
   initialCode={`var a = 10`}
+  whitelist={new Set(["kind"])}
+  depth={2}
 />
 
 It looks like the node type we're looking for is the `VariableDeclaration` node, since it's the node that corresponds to the `var a = 10` code. It also has a `kind` property that tells you what type of variable it is. How convenient!
@@ -174,6 +176,8 @@ Let's see what the AST looks like when we use `let` instead:
 
 <EmbeddedSandbox
   initialCode={`let a = 10`}
+  whitelist={new Set(["kind"])}
+  depth={2}
 />
 
 Looks like the difference is only in the `kind` property! Cool, that means all we need the visitor to do is (1) target the `VariableDeclaration` node type and (2) change the `kind` property from `"var"` to `"let"`:

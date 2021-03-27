@@ -15,12 +15,13 @@ const useTreeContext = () => React.useContext(TreeContext)
  *
  * The given tree is assumed to be an AST produced by @babel/parse.
  */
-export default function Tree({
+function Tree({
   className,
   tree,
   code,
   variant = Tree.variants.Node,
   depth = 0,
+  whitelist = new Set(),
 }) {
   return (
     <motion.ul
@@ -28,7 +29,7 @@ export default function Tree({
       tw="list-none! space-y-4"
       className={className}
     >
-      <TreeContext.Provider value={{ depth, code, variant }}>
+      <TreeContext.Provider value={{ depth, code, variant, whitelist }}>
         <AnimateSharedLayout>
           <AstNode node={tree} path={[]} depth={0} />
         </AnimateSharedLayout>
@@ -42,14 +43,19 @@ Tree.variants = {
   Node: 'node',
 }
 
+export default Tree
+
 function AstNode({ node, path, depth }) {
-  const { depth: initialDepth, code, variant } = useTreeContext()
+  const { depth: initialDepth, code, variant, whitelist } = useTreeContext()
   const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
 
   if (isAstNode(node)) {
-    const children = Object.entries(node).filter(([, value]) =>
-      variant === Tree.variants.Detail ? true : isAstNode(value)
-    )
+    const children = Object.entries(node).filter(([key, value]) => {
+      if (variant === Tree.variants.Detail) {
+        return true
+      }
+      return isAstNode(value) || whitelist.has(key)
+    })
     const hasChildren = children.length > 0
     const source = code.slice(node.start, node.end)
 
