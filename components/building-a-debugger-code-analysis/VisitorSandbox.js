@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled } from 'twin.macro'
+import { styled, theme } from 'twin.macro'
 
 import TranspilerSandbox from './TranspilerSandbox'
 import LiveEditor from '../shared/LiveEditor'
@@ -19,7 +19,7 @@ export default function VisitorSandbox({ visitor, initialCode }) {
 
   return (
     <SandboxWrapper className="full-width-2x">
-      <div>
+      <div tw="mb-4 md:mb-0">
         <LiveEditor value={pluginCode} onValueChange={setPluginCode} />
       </div>
       <aside tw="flex flex-col">
@@ -48,7 +48,9 @@ function exportDefaultToReturn({ types: t }) {
 }
 
 const SandboxWrapper = styled.figure`
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 1rem;
+  @media screen and (min-width: ${theme`screens.md`}) {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1rem;
+  }
 `

@@ -56,7 +56,7 @@ export default function Layout({ frontMatter = {}, children }) {
 const Header = styled.header`
   ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
 
-  height: 700px;
+  height: 600px;
   grid-column: 1 / -1 !important;
   display: flex;
   flex-direction: column;
@@ -155,9 +155,13 @@ const Article = styled.article`
 const Title = styled.h1`
   ${tw`px-8 mx-auto mb-12 font-serif font-semibold text-center lg:mb-24`}
 
-  font-size: clamp(5rem, 15vw, 8rem);
+  font-size: 4rem;
   line-height: 0.9;
-  max-width: 14ch;
+  max-width: min(100vw, 14ch);
+
+  @media screen and (min-width: ${theme`screens.md`}) {
+    font-size: clamp(5rem, 15vw, 8rem);
+  }
 `
 
 const StyledFeedbackForm = styled(FeedbackForm)`

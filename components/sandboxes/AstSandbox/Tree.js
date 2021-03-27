@@ -60,32 +60,53 @@ function AstNode({ node, path, depth }) {
       </div>
       {isOpen && hasChildren && (
         <ul tw="list-none! pl-8">
-          {children.map(([key, value]) =>
-            Array.isArray(value) ? (
-              value.map((node, index) => (
-                <AstNode
-                  key={toKey([...path, key, index])}
-                  node={node}
-                  path={[...path, key, index]}
-                  depth={depth + 1}
-                />
-              ))
-            ) : (
-              <AstNode
-                key={toKey([...path, key])}
-                node={value}
-                path={[...path, key]}
-                depth={depth + 1}
-              />
-            )
-          )}
+          {children.map(([key, value]) => (
+            <AstNodeGroup
+              key={toKey([...path, key])}
+              name={key}
+              nodes={Array.isArray(value) ? value : [value]}
+              path={[...path, key]}
+              depth={depth + 1}
+            />
+          ))}
         </ul>
       )}
     </Node>
   )
 }
 
-// --
+function AstNodeGroup({ name, nodes, path, depth }) {
+  const { depth: initialDepth } = useTreeContext()
+  const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
+  const hasChildren = nodes.length > 0
+  return (
+    <Node>
+      <NodeLabel
+        tw="text-gray-700 dark:text-gray-300 bg-gray-100 mb-2 dark:bg-blacks-700 relative z-10"
+        showLine
+      >
+        <button tw="space-x-1" onClick={() => setIsOpen((open) => !open)}>
+          <span tw="rounded-sm bg-gray-200 dark:bg-blacks-500 p-1">{name}</span>
+          {hasChildren && <span>{isOpen ? '-' : '+'}</span>}
+        </button>
+      </NodeLabel>
+      {isOpen && hasChildren && (
+        <ul tw="list-none! pl-8">
+          {nodes.map((node, index) => (
+            <AstNode
+              key={toKey([...path, index])}
+              node={node}
+              path={[...path, index]}
+              depth={depth}
+            />
+          ))}
+        </ul>
+      )}
+    </Node>
+  )
+}
+
+// -- Styled --
 
 const Node = styled(motion.li).attrs({
   layout: 'position',
@@ -112,8 +133,8 @@ const Node = styled(motion.li).attrs({
       position: absolute;
       height: 100%;
       background: ${theme`colors.gray.100`};
-      width: 2px;
-      left: -1rem;
+      width: 4px;
+      left: calc(-1rem - 1px);
       z-index: 10;
 
       @media (prefers-color-scheme: dark) {
@@ -156,7 +177,7 @@ const NodeLabel = styled(motion.div).attrs({
   `}
 `
 
-// -- Helpers
+// -- Helpers --
 
 function toKey(path) {
   return path.join('.')

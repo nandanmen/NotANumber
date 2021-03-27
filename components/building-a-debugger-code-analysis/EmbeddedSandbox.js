@@ -13,7 +13,7 @@ export default function EmbeddedSandbox({ initialCode = '', depth = 0 }) {
       <div tw="flex-1">
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
-      <div tw="flex-1 font-mono text-sm">
+      <div tw="flex-1 font-mono text-sm overflow-x-scroll">
         <Tree tree={tree} depth={depth} code={code} />
       </div>
     </>
