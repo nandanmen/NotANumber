@@ -138,7 +138,9 @@ function AstNodeGroup({ name, nodes, path, depth }) {
           {hasChildren ? (
             <span>{isOpen ? '-' : '+'}</span>
           ) : (
-            <span>{toText(nodes)}</span>
+            <span>
+              {nodes === undefined ? 'undefined' : JSON.stringify(nodes)}
+            </span>
           )}
         </button>
       </NodeLabel>
@@ -156,22 +158,6 @@ function AstNodeGroup({ name, nodes, path, depth }) {
       )}
     </Node>
   )
-}
-
-function toText(item) {
-  if (item === null) {
-    return 'null'
-  }
-
-  if (item === undefined) {
-    return 'undefined'
-  }
-
-  const lookup = {
-    number: item,
-    string: `"${item}"`,
-  }
-  return lookup[typeof item]
 }
 
 // -- Styled --
