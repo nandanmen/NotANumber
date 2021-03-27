@@ -18,8 +18,8 @@ export default function AstSandboxPage() {
       <div>
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
-      <div tw="flex-1 font-mono text-sm overflow-y-scroll rounded-md relative">
-        <label tw="absolute top-0 right-0 z-20 text-gray-500">
+      <div tw="flex-1 flex flex-col font-mono text-sm overflow-y-scroll rounded-md relative">
+        <label tw="sticky place-self-end top-0 z-20 text-gray-500">
           Show all properties
           <input
             tw="ml-2"
