@@ -15,14 +15,20 @@ const useTreeContext = () => React.useContext(TreeContext)
  *
  * The given tree is assumed to be an AST produced by @babel/parse.
  */
-export default function Tree({ className, tree, code, depth = 0 }) {
+export default function Tree({
+  className,
+  tree,
+  code,
+  variant = Tree.variants.Node,
+  depth = 0,
+}) {
   return (
     <motion.ul
       layout="position"
       tw="list-none! space-y-4"
       className={className}
     >
-      <TreeContext.Provider value={{ depth, code }}>
+      <TreeContext.Provider value={{ depth, code, variant }}>
         <AnimateSharedLayout>
           <AstNode node={tree} path={[]} depth={0} />
         </AnimateSharedLayout>
@@ -31,63 +37,103 @@ export default function Tree({ className, tree, code, depth = 0 }) {
   )
 }
 
+Tree.variants = {
+  Detail: 'detail',
+  Node: 'node',
+}
+
 function AstNode({ node, path, depth }) {
-  const { depth: initialDepth, code } = useTreeContext()
+  const { depth: initialDepth, code, variant } = useTreeContext()
   const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
 
-  const children = Object.entries(node).filter(([, value]) => isAstNode(value))
-  const hasChildren = children.length > 0
-  const source = code.slice(node.start, node.end)
+  if (isAstNode(node)) {
+    const children = Object.entries(node).filter(([, value]) =>
+      variant === Tree.variants.Detail ? true : isAstNode(value)
+    )
+    const hasChildren = children.length > 0
+    const source = code.slice(node.start, node.end)
 
-  const label = hasChildren ? (
-    <button tw="block" onClick={() => setIsOpen((open) => !open)}>
-      {node.type} {isOpen ? '-' : '+'}
-    </button>
-  ) : (
-    <p>{node.type}</p>
-  )
+    const label = hasChildren ? (
+      <button tw="block" onClick={() => setIsOpen((open) => !open)}>
+        {node.type} {isOpen ? '-' : '+'}
+      </button>
+    ) : (
+      <p>{node.type}</p>
+    )
 
-  return (
-    <Node>
-      <NodeLabel
-        tw="text-gray-500 bg-gray-100 dark:bg-blacks-700 relative z-10"
-        showLine={path.length !== 0}
-      >
-        {label}
-      </NodeLabel>
-      <div tw="relative z-10 pt-2 mb-2 bg-gray-100 dark:bg-blacks-700">
-        <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
-      </div>
-      {isOpen && hasChildren && (
-        <ul tw="list-none! pl-8">
-          {children.map(([key, value]) => (
-            <AstNodeGroup
-              key={toKey([...path, key])}
-              name={key}
-              nodes={Array.isArray(value) ? value : [value]}
-              path={[...path, key]}
-              depth={depth + 1}
-            />
-          ))}
-        </ul>
-      )}
-    </Node>
-  )
+    return (
+      <Node>
+        <NodeLabel
+          tw="text-gray-500 bg-gray-100 dark:bg-blacks-700 relative z-10"
+          showLine={path.length !== 0}
+        >
+          {label}
+        </NodeLabel>
+        <div tw="relative z-10 pt-2 mb-2 bg-gray-100 dark:bg-blacks-700">
+          <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
+        </div>
+        {isOpen && hasChildren && (
+          <ul tw="list-none! pl-8">
+            {children.map(([key, value]) => (
+              <AstNodeGroup
+                key={toKey([...path, key])}
+                name={key}
+                nodes={
+                  Array.isArray(value)
+                    ? value
+                    : value && typeof value === 'object'
+                    ? [value]
+                    : value
+                }
+                path={[...path, key]}
+                depth={depth + 1}
+              />
+            ))}
+          </ul>
+        )}
+      </Node>
+    )
+  }
+
+  if (typeof node === 'object') {
+    return Object.entries(node).map(([key, value]) => {
+      return (
+        <AstNodeGroup
+          key={toKey([...path, key])}
+          name={key}
+          nodes={
+            Array.isArray(value)
+              ? value
+              : value && typeof value === 'object'
+              ? [value]
+              : value
+          }
+          path={[...path, key]}
+          depth={depth + 1}
+        />
+      )
+    })
+  }
 }
 
 function AstNodeGroup({ name, nodes, path, depth }) {
   const { depth: initialDepth } = useTreeContext()
   const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
-  const hasChildren = nodes.length > 0
+
+  const hasChildren = Array.isArray(nodes) && nodes.length > 0
   return (
     <Node>
       <NodeLabel
-        tw="text-gray-700 dark:text-gray-300 bg-gray-100 mb-2 dark:bg-blacks-700 relative z-10"
+        tw="text-gray-700 dark:text-gray-300 bg-gray-100 mb-4 dark:bg-blacks-700 relative z-10"
         showLine
       >
         <button tw="space-x-1" onClick={() => setIsOpen((open) => !open)}>
           <span tw="rounded-sm bg-gray-200 dark:bg-blacks-500 p-1">{name}</span>
-          {hasChildren && <span>{isOpen ? '-' : '+'}</span>}
+          {hasChildren ? (
+            <span>{isOpen ? '-' : '+'}</span>
+          ) : (
+            <span>{toText(nodes)}</span>
+          )}
         </button>
       </NodeLabel>
       {isOpen && hasChildren && (
@@ -104,6 +150,22 @@ function AstNodeGroup({ name, nodes, path, depth }) {
       )}
     </Node>
   )
+}
+
+function toText(item) {
+  if (item === null) {
+    return 'null'
+  }
+
+  if (item === undefined) {
+    return 'undefined'
+  }
+
+  const lookup = {
+    number: item,
+    string: `"${item}"`,
+  }
+  return lookup[typeof item]
 }
 
 // -- Styled --
