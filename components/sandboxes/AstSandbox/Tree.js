@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
-import 'twin.macro'
+import { styled, theme } from 'twin.macro'
 
 import CodeBlock from '../../CodeBlock'
 
@@ -40,30 +40,26 @@ function AstNode({ node, path, depth }) {
   const source = code.slice(node.start, node.end)
 
   const label = hasChildren ? (
-    <motion.button
-      layout="position"
-      tw="block text-gray-500"
-      onClick={() => setIsOpen((open) => !open)}
-    >
+    <button tw="block" onClick={() => setIsOpen((open) => !open)}>
       {node.type} {isOpen ? '-' : '+'}
-    </motion.button>
+    </button>
   ) : (
-    <motion.p layout="position" tw="text-gray-500">
-      {node.type}
-    </motion.p>
+    <p>{node.type}</p>
   )
 
   return (
-    <motion.li
-      tw="space-y-2"
-      layout="position"
-      animate={{ y: 0, opacity: 1 }}
-      initial={{ y: -4, opacity: 0 }}
-    >
-      {label}
-      <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
+    <Node>
+      <NodeLabel
+        tw="text-gray-500 bg-gray-100 dark:bg-blacks-700 relative z-10"
+        showLine={path.length !== 0}
+      >
+        {label}
+      </NodeLabel>
+      <div tw="relative z-10 pt-2 mb-2 bg-gray-100 dark:bg-blacks-700">
+        <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
+      </div>
       {isOpen && hasChildren && (
-        <ul tw="list-none! space-y-4 pl-8">
+        <ul tw="list-none! pl-8">
           {children.map(([key, value]) =>
             Array.isArray(value) ? (
               value.map((node, index) => (
@@ -85,9 +81,80 @@ function AstNode({ node, path, depth }) {
           )}
         </ul>
       )}
-    </motion.li>
+    </Node>
   )
 }
+
+// --
+
+const Node = styled(motion.li).attrs({
+  layout: 'position',
+  animate: {
+    y: 0,
+    opacity: 1,
+  },
+  initial: {
+    y: -4,
+    opacity: 0,
+  },
+})`
+  position: relative;
+
+  --line-color: ${theme`colors.gray.400`};
+
+  @media (prefers-color-scheme: dark) {
+    --line-color: ${theme`colors.gray.700`};
+  }
+
+  > ul > li:last-child {
+    &:before {
+      content: '';
+      position: absolute;
+      height: 100%;
+      background: ${theme`colors.gray.100`};
+      width: 2px;
+      left: -1rem;
+      z-index: 10;
+
+      @media (prefers-color-scheme: dark) {
+        background: ${theme`colors.blacks.700`};
+      }
+    }
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: var(--line-color);
+    left: 1rem;
+    z-index: -1;
+  }
+`
+
+const NodeLabel = styled(motion.div).attrs({
+  layout: 'position',
+})`
+  position: relative;
+
+  ${({ showLine }) =>
+    showLine &&
+    `
+    &:after {
+      content: '';
+      position: absolute;
+      height: 0.75rem;
+      width: 0.75rem;
+      top: -2px;
+      left: -1rem;
+      border-bottom: 2px solid var(--line-color);
+      border-left: 2px solid var(--line-color);
+      border-bottom-left-radius: 0.5rem;
+    }
+  `}
+`
 
 // -- Helpers
 

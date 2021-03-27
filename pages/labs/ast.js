@@ -17,7 +17,7 @@ export default function AstSandboxPage() {
       <div tw="flex-1">
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
-      <div tw="flex-1 font-mono text-sm overflow-y-scroll bg-gray-200 rounded-md p-8">
+      <div tw="flex-1 font-mono text-sm overflow-y-scroll rounded-md px-8">
         <Tree tree={tree} code={code} />
       </div>
     </SandboxWrapper>
