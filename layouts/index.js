@@ -7,9 +7,13 @@ import CodeBlock from '../components/CodeBlock'
 import FeedbackForm from '../components/FeedbackForm'
 import Navigation from '../components/Navigation'
 
+function CodeWidget(props) {
+  return <CodeBlock tw="my-4!" {...props} />
+}
+
 export default function Layout({ frontMatter = {}, children }) {
   return (
-    <MDXProvider components={{ code: CodeBlock }}>
+    <MDXProvider components={{ code: CodeWidget }}>
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -34,7 +38,7 @@ export default function Layout({ frontMatter = {}, children }) {
               month: 'long',
               year: 'numeric',
               day: 'numeric',
-            }).format(new Date(frontMatter.publishDate))}
+            }).format(new Date(frontMatter.publishDate || new Date()))}
           </p>
         </div>
         {children}
@@ -54,7 +58,7 @@ export default function Layout({ frontMatter = {}, children }) {
 }
 
 const Header = styled.header`
-  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
+  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-50 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
 
   height: 600px;
   grid-column: 1 / -1 !important;
@@ -62,6 +66,7 @@ const Header = styled.header`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 100vw;
 `
 
 const Article = styled.article`
@@ -108,7 +113,8 @@ const Article = styled.article`
   }
 
   h2 {
-    ${tw`relative mt-8 font-serif text-3xl font-semibold`}
+    ${tw`relative mt-16 font-serif text-3xl font-semibold`}
+    margin-bottom: 1em;
 
     &:before {
       ${tw`absolute left-0 w-6 mb-1 bg-green-500 bottom-full dark:bg-green-800`}
@@ -118,7 +124,9 @@ const Article = styled.article`
   }
 
   h3 {
-    ${tw`mt-4 text-xl font-semibold`}
+    ${tw`mt-8 text-xl`}
+    font-weight: 500;
+    margin-bottom: 1em;
   }
 
   > ul,
@@ -141,14 +149,20 @@ const Article = styled.article`
 
   > pre {
     grid-column: 1 / -1;
+    max-width: 100vw;
 
     @media screen and (min-width: 770px) {
-      grid-column: 4 / -4;
+      grid-column: 5 / span 1;
     }
   }
 
   a {
-    ${tw`font-semibold text-gray-700 hover:text-blue-500 dark:text-gray-400`}
+    ${tw`text-yellow-600 hover:text-gray-700 dark:(text-yellow-300 hover:text-gray-400)`}
+    font-weight: 500;
+  }
+
+  strong {
+    font-weight: 500;
   }
 `
 

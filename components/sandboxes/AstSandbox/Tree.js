@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
-import { styled, theme } from 'twin.macro'
+import tw, { styled, theme } from 'twin.macro'
 
 import CodeBlock from '../../CodeBlock'
 
@@ -26,7 +26,7 @@ function Tree({
   return (
     <motion.ul
       layout="position"
-      tw="list-none! space-y-4"
+      tw="list-none! space-y-4 max-w-full"
       className={className}
     >
       <TreeContext.Provider value={{ depth, code, variant, whitelist }}>
@@ -70,14 +70,14 @@ function AstNode({ node, path, depth }) {
     return (
       <Node>
         <NodeLabel
-          tw="text-gray-500 bg-gray-100 dark:bg-blacks-700 relative z-10"
+          tw="text-gray-500 relative z-10"
           showLine={path.length !== 0}
         >
           {label}
         </NodeLabel>
-        <div tw="relative z-10 pt-2 mb-2 bg-gray-100 dark:bg-blacks-700">
+        <CodeWrapper>
           <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
-        </div>
+        </CodeWrapper>
         {isOpen && hasChildren && (
           <ul tw="list-none! pl-8">
             {children.map(([key, value]) => (
@@ -130,7 +130,7 @@ function AstNodeGroup({ name, nodes, path, depth }) {
   return (
     <Node>
       <NodeLabel
-        tw="text-gray-700 dark:text-gray-300 bg-gray-100 mb-4 dark:bg-blacks-700 relative z-10"
+        tw="text-gray-700 dark:text-gray-300 pb-2 mb-2 relative z-10"
         showLine
       >
         <button tw="space-x-1" onClick={() => setIsOpen((open) => !open)}>
@@ -162,6 +162,11 @@ function AstNodeGroup({ name, nodes, path, depth }) {
 
 // -- Styled --
 
+const CodeWrapper = styled.div`
+  ${tw`relative z-10 pt-1 mb-2`}
+  background: var(--color-background);
+`
+
 const Node = styled(motion.li).attrs({
   layout: 'position',
   animate: {
@@ -186,14 +191,10 @@ const Node = styled(motion.li).attrs({
       content: '';
       position: absolute;
       height: 100%;
-      background: ${theme`colors.gray.100`};
+      background: var(--color-background);
       width: 4px;
       left: calc(-1rem - 1px);
       z-index: 10;
-
-      @media (prefers-color-scheme: dark) {
-        background: ${theme`colors.blacks.700`};
-      }
     }
   }
 
@@ -213,6 +214,7 @@ const NodeLabel = styled(motion.div).attrs({
   layout: 'position',
 })`
   position: relative;
+  background: var(--color-background);
 
   ${({ showLine }) =>
     showLine &&

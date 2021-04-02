@@ -11,6 +11,7 @@ module.exports = {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
         mono: ['Input Mono', ...defaultTheme.fontFamily.mono],
+        sans: ['Rubik', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         blacks: {

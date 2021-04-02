@@ -29,7 +29,7 @@ export default function TranspilerSandbox({
     <>
       <div
         css={[
-          tw`relative flex-1 h-full mb-4 text-sm`,
+          tw`relative flex-1 mb-4 text-sm`,
           mode === 'horizontal' && tw`md:(mr-4 mb-0)`,
         ]}
       >

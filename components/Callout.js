@@ -3,17 +3,21 @@ import { FaChevronDown, FaQuestion } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import tw, { styled } from 'twin.macro'
 
+import Widget from './Widget'
+
 export default function Callout({ label, children }) {
   return (
-    <Aside className="full-width">
-      <div tw="absolute right-8 -top-4 bg-purple-500 rounded-full w-10 h-10 flex items-center justify-center text-white">
-        <FaQuestion />
-      </div>
-      <p>
-        <strong>{label}</strong>
-      </p>
-      {children}
-    </Aside>
+    <Widget className="full-width">
+      <Aside>
+        <div tw="absolute right-8 -top-4 bg-purple-500 rounded-full w-10 h-10 flex items-center justify-center text-white">
+          <FaQuestion />
+        </div>
+        <p>
+          <strong>{label}</strong>
+        </p>
+        {children}
+      </Aside>
+    </Widget>
   )
 }
 

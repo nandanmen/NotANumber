@@ -1,10 +1,13 @@
-import TranspilerSandbox from './TranspilerSandbox'
 import 'twin.macro'
 
-export default function EmbeddedTranspiler(props) {
+import TranspilerSandbox from './TranspilerSandbox'
+import Widget from '../Widget'
+
+export default function EmbeddedTranspiler({ children, ...props }) {
   return (
-    <figure tw="font-mono md:flex" className="full-width-2x">
+    <Widget tw="font-mono md:(flex flex-wrap)" className="full-width-2x">
       <TranspilerSandbox {...props} />
-    </figure>
+      <Widget.Caption tw="px-8 md:px-0">{children}</Widget.Caption>
+    </Widget>
   )
 }

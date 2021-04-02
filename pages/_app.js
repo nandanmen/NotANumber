@@ -17,7 +17,12 @@ export default MyApp
 // --
 
 const Main = styled.main`
-  ${tw`min-h-screen antialiased bg-gray-100 dark:bg-blacks-700`}
+  ${tw`min-h-screen font-sans antialiased`}
+
+  --color-background: ${theme`colors.gray.50`};
+  --color-highlight: ${theme`textColor.yellow.600`};
+
+  background: var(--color-background);
 
   /* Tokens */
   --code-background: white;
@@ -25,19 +30,21 @@ const Main = styled.main`
   --token-color-keyword: ${theme`textColor.green.600`};
 
   --token-color-function: ${theme`textColor.green.600`};
-  --token-color-string: ${theme`textColor.yellow.600`};
+  --token-color-string: var(--color-highlight);
   --token-color-number: ${theme`textColor.gray.600`};
 
   --token-color-comment: ${theme`textColor.gray.600`};
   --token-style-comment: italic;
 
   @media (prefers-color-scheme: dark) {
+    --color-background: ${theme`colors.blacks.700`};
+    --color-highlight: ${theme`textColor.yellow.300`};
+
     --code-background: ${theme`colors.blacks.500`};
     --code-border-color: ${theme`colors.blacks.300`};
     --token-color-keyword: ${theme`textColor.green.400`};
 
     --token-color-function: ${theme`textColor.green.400`};
-    --token-color-string: ${theme`textColor.yellow.300`};
     --token-color-number: ${theme`textColor.gray.500`};
 
     --token-color-comment: ${theme`textColor.gray.500`};

@@ -15,7 +15,7 @@ export default function AstSandboxPage() {
 
   return (
     <SandboxWrapper>
-      <div>
+      <div tw="xl:flex-1">
         <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
       </div>
       <div tw="flex-1 flex flex-col font-mono text-sm overflow-y-scroll rounded-md relative">
@@ -39,7 +39,7 @@ export default function AstSandboxPage() {
 }
 
 const SandboxWrapper = styled.div`
-  ${tw`flex flex-col w-full p-8 pt-24 space-y-8 overflow-hidden dark:text-white`}
+  ${tw`flex flex-col w-full p-8 pt-24 space-y-8 overflow-hidden xl:(flex-row space-x-8 space-y-0) dark:text-white`}
 
   height: calc(100vh - 4rem);
 `

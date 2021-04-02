@@ -3,6 +3,7 @@ import { styled, theme } from 'twin.macro'
 
 import TranspilerSandbox from './TranspilerSandbox'
 import LiveEditor from '../shared/LiveEditor'
+import Widget from '../Widget'
 import useBabelPlugin from './useBabelPlugin'
 
 /**
@@ -13,7 +14,7 @@ import useBabelPlugin from './useBabelPlugin'
  * evaluated using the function constructor. The evaluated code is a valid Babel
  * plugin which then gets passed to the TranspilerSandbox.
  */
-export default function VisitorSandbox({ visitor, initialCode }) {
+export default function VisitorSandbox({ children, visitor, initialCode }) {
   const [pluginCode, setPluginCode] = React.useState(visitor)
   const plugin = useBabelPlugin(pluginCode, exportDefaultToReturn)
 
@@ -29,6 +30,7 @@ export default function VisitorSandbox({ visitor, initialCode }) {
           plugin={execute(plugin)}
         />
       </aside>
+      {children && <Widget.Caption>{children}</Widget.Caption>}
     </SandboxWrapper>
   )
 }
@@ -47,7 +49,7 @@ function exportDefaultToReturn({ types: t }) {
   }
 }
 
-const SandboxWrapper = styled.figure`
+const SandboxWrapper = styled(Widget)`
   @media screen and (min-width: ${theme`screens.md`}) {
     display: grid;
     grid-template-columns: 3fr 2fr;

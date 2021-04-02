@@ -10,7 +10,7 @@ export default function CodeBlock({
       {({ className, tokens, getTokenProps }) => {
         return (
           <StyledBlock
-            className={`${className} ${containerClass} full-width`}
+            className={`${className} ${containerClass}`}
             tw="rounded-md overflow-x-scroll text-sm p-6 border-4"
           >
             {tokens.map((line, i) => (

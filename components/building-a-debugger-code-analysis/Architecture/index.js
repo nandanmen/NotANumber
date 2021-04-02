@@ -4,11 +4,12 @@ import { motion } from 'framer-motion'
 
 import Editor from './Editor'
 import Transpiler from './Transpiler'
+import Widget from '../../Widget'
 
 export default function Architecture() {
   const [done, setDone] = React.useState(true)
   return (
-    <>
+    <Widget>
       <div
         tw="flex justify-between relative mb-8 mt-4"
         key={done}
@@ -33,7 +34,7 @@ export default function Architecture() {
       <button tw="mb-8!" onClick={() => setDone((done) => !done)}>
         Play
       </button>
-    </>
+    </Widget>
   )
 }
 
