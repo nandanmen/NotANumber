@@ -3,7 +3,7 @@ import { HiArrowRight } from 'react-icons/hi'
 import tw, { styled, theme } from 'twin.macro'
 
 import LiveEditor from '../shared/LiveEditor'
-import CodeBlock from '../CodeBlock'
+import CodeBlock from '../elements/CodeBlock'
 import useBabelPlugin from './useBabelPlugin'
 
 const starterCode = `function sum(arr) {
@@ -52,12 +52,7 @@ function transpile({ types: t }) {
     visitor: {
       DebuggerStatement(path) {
         const scope = Object.keys(path.scope.getAllBindings())
-        path.replaceWith(
-          createSnapshot(
-            t,
-            scope.map((variable) => [variable, variable])
-          )
-        )
+        path.replaceWith(createSnapshot(t, scope))
       },
     },
   }
@@ -72,10 +67,10 @@ function createSnapshot(t, scope) {
   )
 }
 
-function createObjectExpression(t, entries) {
+function createObjectExpression(t, variables) {
   return t.objectExpression(
-    entries.map(([key, val]) =>
-      t.objectProperty(t.identifier(key), t.identifier(val))
+    variables.map((variableName) =>
+      t.objectProperty(t.identifier(variableName), t.identifier(variableName))
     )
   )
 }

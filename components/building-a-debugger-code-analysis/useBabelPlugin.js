@@ -12,8 +12,9 @@ export default function useBabelPlugin(code, plugin) {
     try {
       const result = Babel.transform(code, { plugins: [plugin] })
       setResult(result.code)
-    } catch {
+    } catch (err) {
       // syntax error
+      console.error(err)
     }
   }, [code, plugin])
 

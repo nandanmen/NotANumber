@@ -21,11 +21,12 @@ export default function HomePage() {
       <Head>
         <title>Not a Number</title>
       </Head>
-      <div tw="pb-32 dark:text-white">
-        <header className="pt-32 mx-auto mb-24">
-          <Title tw="mx-auto mb-16">Not a Number</Title>
-          <p tw="text-center max-w-md mx-auto px-8">
-            An interactive blog on computer science and web development, by
+      <div tw="dark:text-white">
+        <header className="flex flex-col items-start justify-center h-screen px-8">
+          <Title tw="mb-16">Not a Number</Title>
+          <p>
+            Computer science is scary, but it doesn't have to be. An interactive
+            blog on computer science and web development, by
             {` `}
             <ExternalLink
               href="https://narendras.io"
@@ -47,7 +48,7 @@ export default function HomePage() {
               <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
-                    <h1 tw="text-3xl font-semibold font-serif">{title}</h1>
+                    <h1 tw="text-3xl font-serif">{title}</h1>
                     <p tw="italic">{blurb}</p>
                     <p tw="text-sm text-gray-600 dark:text-gray-300">
                       {new Intl.DateTimeFormat('en-US', {
@@ -71,15 +72,15 @@ export default function HomePage() {
 }
 
 const Title = styled.h1`
-  ${tw`font-serif font-semibold text-center`}
-  font-size: clamp(5rem, 8vw, 8rem);
+  ${tw`font-serif text-center`}
+  font-size: 12rem;
   line-height: 0.9;
 `
 
 const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-300`
 
 const Posts = styled.ul`
-  ${tw`pt-12 space-y-4`}
+  ${tw`space-y-4`}
 
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;

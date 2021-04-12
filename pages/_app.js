@@ -17,9 +17,9 @@ export default MyApp
 // --
 
 const Main = styled.main`
-  ${tw`min-h-screen font-sans antialiased`}
+  ${tw`min-h-screen antialiased`}
 
-  --color-background: ${theme`colors.gray.50`};
+  --color-background: ${theme`colors.gray.100`};
   --color-highlight: ${theme`textColor.yellow.600`};
 
   background: var(--color-background);

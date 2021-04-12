@@ -13,10 +13,11 @@ export default function EmbeddedSandbox({
   hideEditor = false,
   whitelist = new Set(),
   children,
+  getParent,
 }) {
   const [code, setCode] = React.useState(initialCode)
   const [showAllProps, toggle] = React.useReducer((state) => !state, showProps)
-  const tree = useSyntaxTree(code)
+  const tree = useSyntaxTree(code, { getParent })
 
   return (
     <Widget tw="space-y-6 overflow-hidden">

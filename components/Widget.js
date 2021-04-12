@@ -2,9 +2,9 @@ import tw, { styled } from 'twin.macro'
 
 const Widget = styled.figure`
   ${tw`mt-6! mb-12!`}
-  max-width: 100vw;
+  overflow-x: hidden;
 `
 
-Widget.Caption = tw.caption`w-full text-left mt-4 text-gray-500 text-sm`
+Widget.Caption = tw.figcaption`text-center w-full font-sans mt-4 text-gray-500 text-sm`
 
 export default Widget

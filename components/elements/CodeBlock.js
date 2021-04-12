@@ -1,12 +1,14 @@
 import Highlight, { defaultProps } from 'prism-react-renderer'
 import { styled } from 'twin.macro'
 
-export default function CodeBlock({
+function CodeBlock({
   children = '',
+  highlight = '',
   className: containerClass,
 }) {
+  const lineNumbers = getLineNumbers(highlight)
   return (
-    <Highlight {...defaultProps} code={children.trim()} language="jsx">
+    <Highlight {...defaultProps} code={getCode(children).trim()} language="jsx">
       {({ className, tokens, getTokenProps }) => {
         return (
           <StyledBlock
@@ -14,7 +16,10 @@ export default function CodeBlock({
             tw="rounded-md overflow-x-scroll text-sm p-6 border-4"
           >
             {tokens.map((line, i) => (
-              <div key={i} animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+              <Line
+                key={i}
+                style={{ '--bg-opacity': lineNumbers.includes(i) ? 0.1 : 0 }}
+              >
                 {line.map((token, key) => {
                   const { children, className } = getTokenProps({
                     token,
@@ -33,7 +38,7 @@ export default function CodeBlock({
                     </span>
                   )
                 })}
-              </div>
+              </Line>
             ))}
           </StyledBlock>
         )
@@ -42,7 +47,41 @@ export default function CodeBlock({
   )
 }
 
+export default styled(CodeBlock)``
+
+function getCode(children) {
+  if (typeof children === 'string') {
+    return children
+  }
+
+  if (children.props?.mdxType === 'code') {
+    return children.props.children
+  }
+
+  return ''
+}
+
+function getLineNumbers(highlight) {
+  const numbers = highlight.split(',').map(Number)
+  return {
+    /**
+     * @param {number} lineNumber
+     * @returns {boolean} whether the given line number should be highlighted
+     */
+    includes(lineNumber) {
+      if (!highlight.length) {
+        return false
+      }
+      return numbers.includes(lineNumber)
+    },
+  }
+}
+
 const StyledBlock = styled.pre`
   background: var(--code-background);
   border-color: var(--code-background);
+`
+
+const Line = styled.div`
+  background: hsla(0, 0%, 100%, var(--bg-opacity, 0));
 `

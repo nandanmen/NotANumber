@@ -241,7 +241,11 @@ var c = 60`}
     },
   }
 })`}
-/>
+>
+
+This is an editable sandbox! Edit the visitor code and watch what happens to the output code.
+
+</VisitorSandbox>
 
 And sure enough, that works great.
 
@@ -249,72 +253,600 @@ And sure enough, that works great.
 
 As of version 13.2, Node supports ECMAScript modules. This means you're able to use `import` and `export` instead of `require` and `module.exports` as long as you set the appropriate type field in `package.json`.
 
-Let's see if we can make a Babel plugin that converts imports using `require` to imports using `import`. As a quick primer, importing using `require` looks like:
-
-```js
-const myModule = require('./my-module')
-```
-
-Whereas importing using `import` looks like:
-
-```js
-import * as myModule from './myModule'
-```
-
-To keep it simple, we're only going to convert **top-level** imports. This means we're going to ignore any `require` calls that happen dynamically, such as in a function body.
-
-```js
-const myModule = require('./my-module') // convert this
-
-function helloWorld() {
-  const printer = require('./printer') // don't convert this
-  printer.print('hello world!')
-}
-```
-
-Let's start by taking a look at the AST for the `import` way of importing modules:
-
-<EmbeddedSandbox
-  initialCode={`import * as myModule from './my-module'`}
-  depth={Number.POSITIVE_INFINITY}
-/>
-
-Now let's compare that to the `require` way:
+Let's see if we can make a Babel plugin that converts imports using `require` to imports using `import`. Let's start by looking at how we import modules using `require`:
 
 <EmbeddedSandbox
   initialCode={`const myModule = require('./my-module')`}
   depth={Number.POSITIVE_INFINITY}
+  hideDetailView
 />
 
-Immediately it's clear that, based on the AST alone, there's no similarity between the two ways of importing modules. Using `require`, importing a module is no different than calling a function. Unlike the `var` example from before, we can't simply point to a "Require" node type — we have to check for ourselves if the function call is a call to `require`. We also have to keep note of the name that we're assigning to the imported module.
+Using `require`, importing a module is no different than calling a function. Unlike the `var` example from before, we can't simply point to a "Require" node type — we have to check for ourselves if the function call is a call to `require`.
 
-With that in mind, which **node type** should we target in our visitor to get this information? Keep in mind that:
+Next, let's take a look at the ES6 way of importing modules:
 
-- We're starting from the `require` AST, and
-- Each node has access to all of its children (e.g. a `Program` node has access to all of the nodes in its body)
+<EmbeddedSandbox
+  initialCode={`import * as myModule from './my-module'`}
+  depth={Number.POSITIVE_INFINITY}
+  hideDetailView
+/>
 
-<SelectQuestion>
-  <SelectQuestion.Option value="CallExpression"></SelectQuestion.Option>
-  <SelectQuestion.Option value="Program"></SelectQuestion.Option>
-  <SelectQuestion.Option value="VariableDeclaration"></SelectQuestion.Option>
-</SelectQuestion>
+There's another key difference from the variable example from before — there's no similar nodes! The node type for the `require` call isn't the same type as the one for the `import` call, meaning we can't modify the node — we have to replace it altogether.
 
-## Building the Visitor
+Cool. With both ASTs in hand, we can get started with building our plugin. To start off, which **node type** should we target in the original AST so we can build our import statement? Keep in mind that, to build the import statement, we need the following information:
 
-Now that we have access to these new tools, let's try to piece together the visitor for our debugger. To recap, we want to change every instance of `debugger` with code that adds all variables in scope to some global array (in this case, an array called `_variables`). Something like:
+- The path to the module we're importing, and
+- The name we're assigning to the imported module.
+
+<Widget>
+  <EmbeddedSandbox
+    initialCode={`const myModule = require('./my-module')`}
+    depth={Number.POSITIVE_INFINITY}
+    hideEditor
+    hideDetailView
+  />
+  <SelectQuestion
+    options={[
+      {
+        value: 'CallExpression',
+        hint: `Not quite! The CallExpression node lets you check if we're calling the require function, but we have no idea what name the user gave that module.`,
+      },
+      {
+        value: 'Program',
+        hint: `Not quite there! The Program node is a bit too broad — yes, you have access to all the information that we need, but we can get more specific.`,
+      },
+      {
+        value: 'VariableDeclaration',
+        hint: `Perfect! Using the VariableDeclaration node, we're able to get a list of declarations, each of which has the name of the import (through its id property) and whether we're calling require (through the init property).`,
+        correct: true,
+      },
+    ]}
+  />
+</Widget>
+
+Here's the start of our plugin:
 
 ```js
-_variables.push({
-  /* all variables in scope */
+export default () => ({
+  visitor: {
+    VariableDeclaration(path) {
+      // stuff here
+    },
+  },
 })
 ```
 
+This node doesn't quite have the information we need — rather, we have to go through each node in the `declarations` list, turning _each_ into an individual import statement.
+
+Let's code that boilerplate out:
+
+```js
+export default () => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations.map((declaration) => {
+        // do stuff with VariableDeclarator
+      })
+    },
+  },
+})
+```
+
+For each node in the declaration, we would have to:
+
+1. Check if the node is an import, i.e. it's calling `require`.
+2. If it is, get the module path and the module name; if it's not, skip the node entirely.
+3. Finally, if the node is an import, replace it with the import statement.
+
+<Callout label="Can we target VariableDeclarator instead?">
+
+One thing I noticed when I initially started playing around with ASTs is that declaring a variable is represented as _two_ node levels — a `VariableDeclaration` node, and a _list of declarations_. This seemed strange to me; after all, can't you only declare one variable at a time?
+
+<Callout.Details>
+
+Nope. As it turns out, this is perfectly valid JavaScript:
+
+```js
+const a = require('./a'),
+  b = require('./b'),
+  c = require('./c')
+```
+
+When you look at the AST for this, you'll find that it gets represented as one `VariableDeclaration` with three declarations:
+
+<EmbeddedSandbox
+  initialCode={`const a = require('./a'),
+  b = require('./b'),
+  c = require('./c')`}
+  depth={3}
+  hideEditor
+  hideDetailView
+/>
+
+The more you know!
+
+Let's jump back to the question. In short, you _can't_, or at least it's not straightforward to do so. Notice that the `VariableDeclarator` node only represents a part of the entire statement e.g. `a = require('./a')` vs `const a = require('./a')`. This means that if we were to replace this node with an import statement, we would get something like:
+
+```js
+const import * as a from './a'
+```
+
+Which isn't valid JS syntax!
+
+We can theoretically access the parent from VariableDeclarator through `path.parent`, but at that point we may as well target the parent node directly.
+
+</Callout.Details>
+
+</Callout>
+
+Let's work through these steps one at a time.
+
+**1. Check if a node is an import**
+
+Each `VariableDeclarator` has an `init` property that contains information about how the variable is declared. We can use this property to check if the node is an import or not. Remember that an import is simply a call to the `require` function, so let's take a look at that node individually:
+
+<EmbeddedSandbox
+  initialCode={`require('./a')`}
+  depth={3}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0].expression}
+/>
+
+Great! All we have to do is check if the `init` property is a `CallExpression`, and if it is, if its `callee` property is equal to `require`. To do this, we're going to take advantage of the `types` object passed in to all babel plugins:
+
+```js
+export default ({ types }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations.map((declaration) => {
+        // do stuff with VariableDeclarator
+      })
+    },
+  },
+})
+```
+
+This `types` object contains [a lot of utility functions for handling Babel AST nodes](https://babeljs.io/docs/en/babel-types.html), grouped into **validators** and **builders**. Validators are used to check the correctness of AST nodes, while builders are used to create new nodes altogether.
+
+To start, we're going to use two validator functions – the `isCallExpression` and `isIdentifier` functions. As you might have guessed, you can use these functions to check if the given node is the right node type:
+
+```js
+export default ({ types: t }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations.map((declaration) => {
+        if (t.isCallExpression(declaration.init)) {
+          // ...
+        }
+      })
+    },
+  },
+})
+```
+
+<Callout label="What's t?">
+
+Since we're going to be using the `types` object a lot, we typically rename it to just `t` for conciseness.
+
+</Callout>
+
+You can even use them to check for specific properties, such as checking the name of the identifier:
+
+```js
+if (t.isCallExpression(declaration.init)) {
+  if (t.isIdentifier(declaration.init.callee, { name: 'require' })) {
+    // node is an import!
+  }
+}
+```
+
+Before we continue, let's change the `map` to a `filter` so our next steps don't have to worry about checking the node type:
+
+```js
+export default ({ types: t }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations
+        .filter((declaration) => {
+          return (
+            t.isCallExpression(declaration.init) &&
+            t.isIdentifier(declaration.init.callee, { name: 'require' })
+          )
+        })
+        .map((declaration) => {
+          /* do stuff */
+        })
+    },
+  },
+})
+```
+
+**2. Get module information**
+
+Now that we know if the node is an import or not, the next thing we have to do is to extract the import information out of the node. Recall that we need two things – the name of the module and the path to the module.
+
+Here's a `VariableDeclarator` node again for reference:
+
+<EmbeddedSandbox
+  initialCode={`const a = require('./a')`}
+  depth={3}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0].declarations[0]}
+/>
+
+The name of the imported module is the name of the `id` property, and the path to the module is the first argument to require. Awesome, let's add that in:
+
+```js
+const moduleName = declaration.id.name
+const modulePath = declaration.init.arguments[0].value
+```
+
+**3. Replace and build the import statement**
+
+Now that we have all of the information we need, it's time to build the import AST. Here's the import node that we want to build:
+
+<EmbeddedSandbox
+  initialCode={`import * as a from './a'`}
+  depth={3}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0]}
+/>
+
+To build this, we're going to use the `importDeclaration`, `importNamespaceSpecifier`, `identifier` and `stringLiteral` builder functions from the types object we talked about before.
+
+<Callout label="So many functions!">
+
+The `types` object has a _lot_ of functions to remember, and it can be a bit overwhelming to think about the number of functions you need to know. Thankfully, the Babel team named all the functions off the node type that it corresponds to so it's quite easy to know which function you need.
+
+Generally speaking, each node type has three functions: the two validator functions `t.is{node-type}`, and `t.assert{node-type}`, and the builder function `t.{node-type}`. For example, the `StringLiteral` node type has the three functions `t.isStringLiteral`, `t.assertStringLiteral`, and `t.stringLiteral`.
+
+Of course I don't actually recommend memorizing these functions — that's what the docs and code complete is for — but it's useful nevertheless to immediately know what you need to look for.
+
+</Callout>
+
+From the [documentation](https://babeljs.io/docs/en/babel-types.html#importdeclaration), it looks like the `importDeclaration` builder requires us to pass in an array of `specifiers` and the module `source` (as you would expect from looking at the node!). Let's do that:
+
+```js
+map((declaration) => {
+  const moduleName = declaration.id.name
+  const modulePath = declaration.init.arguments[0].value
+
+  const importNode = t.importDeclaration(
+    [t.importNamespaceSpecifier(t.identifier(moduleName))],
+    t.stringLiteral(modulePath)
+  )
+})
+```
+
+In fact, since `declaration.id` and `declaration.init.arguments[0]` are already the AST nodes we want, we don't even need the `identifier` and `stringLiteral` builders:
+
+```js
+map((declaration) => {
+  return t.importDeclaration(
+    [t.importNamespaceSpecifier(declaration.id)],
+    declaration.init.arguments[0]
+  )
+})
+```
+
+And here's everything together:
+
+```js
+export default ({ types: t }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations
+        /* Check for imports */
+        .filter((declaration) => {
+          return (
+            t.isCallExpression(declaration.init) &&
+            t.isIdentifier(declaration.init.callee, { name: 'require' })
+          )
+        })
+        /* Create import nodes */
+        .map((declaration) => {
+          return t.importDeclaration(
+            [t.importNamespaceSpecifier(declaration.id)],
+            declaration.init.arguments[0]
+          )
+        })
+    },
+  },
+})
+```
+
+At this point, we have a list of `import` nodes, but we haven't modified the AST yet. Since we want to replace the `require` call with an array of imports, we use the `replaceWithMultiple` method of the path object:
+
+```js highlight=18
+export default ({ types: t }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations
+        /* Check for imports */
+        .filter((declaration) => {
+          return (
+            t.isCallExpression(declaration.init) &&
+            t.isIdentifier(declaration.init.callee, { name: 'require' })
+          )
+        })
+        /* Create import nodes */
+        .map((declaration) => {
+          return t.importDeclaration(
+            [t.importNamespaceSpecifier(declaration.id)],
+            declaration.init.arguments[0]
+          )
+        })
+      path.replaceWithMultiple(imports)
+    },
+  },
+})
+```
+
+If we were replacing the node with only one node, we would use the `replaceWith` method instead.
+
+And there we have it, the finished plugin:
+
+<VisitorSandbox
+  initialCode={`const a = require('./a')`}
+  visitor={`export default ({ types: t }) => ({
+  visitor: {
+    VariableDeclaration(path) {
+      const imports = path.node.declarations
+        /* Check for imports */
+        .filter((declaration) => {
+          return (
+            t.isCallExpression(declaration.init) &&
+            t.isIdentifier(
+              declaration.init.callee, 
+              { name: 'require' }
+            )
+          )
+        })
+        /* Create import nodes */
+        .map((declaration) => {
+          return t.importDeclaration(
+            [t.importNamespaceSpecifier(declaration.id)],
+            declaration.init.arguments[0]
+          )
+        })
+      path.replaceWithMultiple(imports)
+    },
+  },
+})`}
+/>
+
+<Callout label="Edge cases">
+
+We're gonna talk about edge cases more a bit later, but for the sake of getting the point across I've skipped over some edge cases in the previous exercise. Can you think of anything that could potentially break our plugin?
+
+Try playing around with the input box to see if you can get the output to be not quite what you expect.
+
+<Callout.Details>
+
+Here's one:
+
+```js
+function hello() {
+  const a = require('./b')
+}
+```
+
+Our plugin will transform this into:
+
+```js
+function hello() {
+  import a from './b'
+}
+```
+
+This is invalid syntax because imports can only occur at the top-most level. Here's another one:
+
+```js
+const path = './a'
+const a = require(path)
+```
+
+This time our plugin won't even compile — it would error out with the following message:
+
+```
+TypeError: unknown: Property source of ImportDeclaration expected
+node to be of a type ["StringLiteral"] but instead got "Identifier"
+```
+
+Can you think of a way to fix the plugin to make both of these cases work? I'd love to see what you come up with!
+
+</Callout.Details>
+
+</Callout>
+
+## Building the Visitor
+
+Now that we have access to these new tools, let's try to piece together the visitor for our debugger. To recap, we want to change every instance of `debugger` with code that adds all variables in scope to some global array (in this case, an array called `_variables`):
+
+<EmbeddedTranspiler />
+
 ### Try it for Yourself!
 
-Before I go over the solution, try to build it for yourself! A couple things to keep in mind about the API:
+Before I go over the solution, try to build it for yourself! You should be able to build the plugin using everything we've discussed so far, but I'll give you one more hint:
 
-- **Plugin API** — A Babel plugin is a function that returns an object with a `visitor` property. This boilerplate is done for you in the sandbox below; all you need to do is fill in the visitor object.
-- **@babel/types** — The visitor has access to a variable called `utils` which is a collection of helper functions from the [@babel/types]() library. Each node type has an associated "builder" function with the same name, e.g. you can build an `Identifier` node using the `utils.identifier()` function. I **strongly recommend** using these when creating new nodes.
-- **Scope** — The `path` object passed to each visitor function contains a very useful `scope` property; use the `scope.getAllBindings()` function to get an array of all variables in scope.
+- **Scope** — The `path` object passed to each visitor function contains a very useful `scope` property that contains methods dealing with all variables in scope. One method that could be useful is the `path.scope.getAllBindings()` method which returns an array of all variables currently in scope.
 
-> Placeholder: add visitor sandbox
+I've embedded a visitor and AST playground for you to use, and of course feel free to refer to the [babel types documentation](https://babeljs.io/docs/en/babel-types.html) if you need more information.
+
+<VisitorSandbox
+  initialCode={`function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    debugger
+    sum += num
+  }
+  return sum
+}`}
+  visitor={`export default ({ types: t }) => ({
+  visitor: {
+    /* todo */
+  },
+})`}
+/>
+
+<EmbeddedSandbox
+  initialCode={`function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    debugger
+    sum += num
+  }
+  return sum
+}`}
+  depth={2}
+/>
+
+---
+
+### Solution
+
+Let's work through this together. The first thing we have to do is figure out which node type(s) we should target in the visitor. Thankfully, there's a dedicated node type specifically for the `debugger` statement we're interested in:
+
+<EmbeddedSandbox
+  initialCode={`const a = b
+debugger`}
+  depth={2}
+  hideDetailView
+/>
+
+So we can target that in our visitor:
+
+```js
+export default ({ types: t }) => {
+  return {
+    visitor: {
+      DebuggerStatement(path) {
+        /* todo */
+      },
+    },
+  }
+}
+```
+
+Our next step is to get all the variables in scope. As I mentioned in the hint, Babel makes this really easy using the `getAllBindings` method. This method returns an object where the keys are the names of the variables in scope, and the values contain metadata about the variables.
+
+For now, we only need the names of the variables so let's start with that:
+
+```js
+DebuggerStatement(path) {
+  const variables = Object.keys(path.scope.getAllBindings())
+}
+```
+
+And with that, we're _almost_ done! All that's left is to push these variables to the global `_variables` array. Here's what that code might look like:
+
+<EmbeddedSandbox
+  initialCode={`_variables.push({ a })`}
+  depth={2}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0].expression}
+/>
+
+This is where the docs come in handy since we're going to be using quite a few builder functions to construct this node. Since most of this process is going back and forth between the docs and the code, I'll skip to the end result:
+
+```js
+/* Builds the _variables.push({ ... }) call */
+function createSnapshot(t, scope) {
+  return t.expressionStatement(
+    t.callExpression(
+      t.memberExpression(t.identifier('_variables'), t.identifier('push')),
+      [createObjectExpression(t, scope)]
+    )
+  )
+}
+
+/* Builds the object expression { ... } */
+function createObjectExpression(t, variables) {
+  return t.objectExpression(
+    variables.map((variableName) =>
+      t.objectProperty(t.identifier(variableName), t.identifier(variableName))
+    )
+  )
+}
+```
+
+I broke down the builders into two distinct sections — the call expression itself, and the object expression passed as an argument. The first function, the `createSnapshot` function, deals with building the call expression. In particular, it's building this part of the AST:
+
+<EmbeddedSandbox
+  initialCode={`_variables.push(/* todo */)`}
+  depth={2}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0].expression}
+/>
+
+The second function, the `createObjectExpression`, builds the object passed in as the argument to the `push` call:
+
+<EmbeddedSandbox
+  initialCode={`_variables.push({ a })`}
+  depth={2}
+  hideEditor
+  hideDetailView
+  getParent={(tree) => tree?.program?.body[0].expression.arguments[0]}
+/>
+
+Finally, all that's left is to replace the `debugger` statement with this new node:
+
+```js
+DebuggerStatement(path) {
+  const variables = Object.keys(path.scope.getAllBindings())
+  path.replaceWith(createSnapshot(t, variables))
+}
+```
+
+Putting everything together, we get the final result:
+
+<VisitorSandbox
+  initialCode={`function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    debugger
+    sum += num
+  }
+  return sum
+}`}
+  visitor={`export default ({ types: t }) => {
+  return {
+    visitor: {
+      DebuggerStatement(path) {
+        const variables = Object.keys(path.scope.getAllBindings())
+        path.replaceWith(createSnapshot(t, variables))
+      },
+    },
+  }
+}
+  
+/* Builds the _variables.push({ ... }) call */ 
+function createSnapshot(t, scope) {
+  return t.expressionStatement(
+    t.callExpression(
+      t.memberExpression(
+        t.identifier('_variables'), 
+        t.identifier('push')
+      ),
+      [createObjectExpression(t, scope)]
+    )
+  )
+}
+ 
+/* Builds the object expression { ... } */
+function createObjectExpression(t, variables) {
+  return t.objectExpression(
+    variables.map((variableName) =>
+      t.objectProperty(
+        t.identifier(variableName), 
+        t.identifier(variableName)
+      )
+    )
+  )
+}`}
+/>

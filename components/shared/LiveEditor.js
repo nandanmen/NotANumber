@@ -35,6 +35,11 @@ const EditorWrapper = styled.div`
     font-style: var(--token-style-keyword);
   }
 
+  .comment {
+    color: var(--token-color-comment);
+    font-style: var(--token-style-comment);
+  }
+
   .string {
     color: var(--token-color-string);
   }

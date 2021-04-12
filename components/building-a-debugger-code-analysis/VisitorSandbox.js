@@ -19,7 +19,7 @@ export default function VisitorSandbox({ children, visitor, initialCode }) {
   const plugin = useBabelPlugin(pluginCode, exportDefaultToReturn)
 
   return (
-    <SandboxWrapper className="full-width-2x">
+    <SandboxWrapper className="full-width-3x">
       <div tw="mb-4 md:mb-0">
         <LiveEditor value={pluginCode} onValueChange={setPluginCode} />
       </div>
@@ -30,7 +30,11 @@ export default function VisitorSandbox({ children, visitor, initialCode }) {
           plugin={execute(plugin)}
         />
       </aside>
-      {children && <Widget.Caption>{children}</Widget.Caption>}
+      {children && (
+        <Widget.Caption tw="col-start-1 col-end-3 text-center">
+          {children}
+        </Widget.Caption>
+      )}
     </SandboxWrapper>
   )
 }

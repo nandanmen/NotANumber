@@ -9,9 +9,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
-        mono: ['Input Mono', ...defaultTheme.fontFamily.mono],
-        sans: ['Rubik', ...defaultTheme.fontFamily.sans],
+        serif: ['Recoleta', ...defaultTheme.fontFamily.serif],
+        mono: [
+          'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+        ],
       },
       colors: {
         blacks: {

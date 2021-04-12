@@ -2,7 +2,7 @@ import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import tw, { styled, theme } from 'twin.macro'
 
-import CodeBlock from '../../CodeBlock'
+import CodeBlock from '../../elements/CodeBlock'
 
 const TreeContext = React.createContext()
 
@@ -151,7 +151,7 @@ function AstNodeGroup({ name, nodes, path, depth }) {
               key={toKey([...path, index])}
               node={node}
               path={[...path, index]}
-              depth={depth}
+              depth={depth + 1}
             />
           ))}
         </ul>

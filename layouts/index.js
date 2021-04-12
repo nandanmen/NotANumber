@@ -3,17 +3,14 @@ import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
 
-import CodeBlock from '../components/CodeBlock'
 import FeedbackForm from '../components/FeedbackForm'
 import Navigation from '../components/Navigation'
-
-function CodeWidget(props) {
-  return <CodeBlock tw="my-4!" {...props} />
-}
+import CodeBlock from '../components/elements/CodeBlock'
+import ThematicBreak from '../components/elements/ThematicBreak'
 
 export default function Layout({ frontMatter = {}, children }) {
   return (
-    <MDXProvider components={{ code: CodeWidget }}>
+    <MDXProvider components={{ pre: CodeBlock, hr: ThematicBreak }}>
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -58,7 +55,7 @@ export default function Layout({ frontMatter = {}, children }) {
 }
 
 const Header = styled.header`
-  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-50 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
+  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
 
   height: 600px;
   grid-column: 1 / -1 !important;
@@ -82,6 +79,16 @@ const Article = styled.article`
 
   > figure {
     margin-bottom: 2rem;
+  }
+
+  > ${CodeBlock} {
+    margin-top: 8px;
+    margin-bottom: 32px;
+  }
+
+  > ${ThematicBreak} {
+    margin-top: 24px;
+    margin-bottom: 48px;
   }
 
   > .full-width,
@@ -113,19 +120,18 @@ const Article = styled.article`
   }
 
   h2 {
-    ${tw`relative mt-16 font-serif text-3xl font-semibold`}
+    ${tw`relative mt-16 font-serif text-3xl`}
     margin-bottom: 1em;
 
     &:before {
-      ${tw`absolute left-0 w-6 mb-1 bg-green-500 bottom-full dark:bg-green-800`}
+      ${tw`absolute left-0 w-6 bg-green-500 -top-4 dark:bg-green-800`}
       content: '';
       height: 3px;
     }
   }
 
   h3 {
-    ${tw`mt-8 text-xl`}
-    font-weight: 500;
+    ${tw`mt-8 text-xl text-gray-800 dark:text-current`}
     margin-bottom: 1em;
   }
 
@@ -157,8 +163,9 @@ const Article = styled.article`
   }
 
   a {
-    ${tw`text-yellow-600 hover:text-gray-700 dark:(text-yellow-300 hover:text-gray-400)`}
-    font-weight: 500;
+    ${tw`hover:text-gray-700 dark:hover:text-gray-400`}
+    font-weight: 600;
+    color: var(--color-highlight);
   }
 
   strong {
@@ -167,11 +174,12 @@ const Article = styled.article`
 `
 
 const Title = styled.h1`
-  ${tw`px-8 mx-auto mb-12 font-serif font-semibold text-center lg:mb-24`}
+  ${tw`px-8 mx-auto mb-12 font-serif text-center lg:mb-24`}
 
   font-size: 4rem;
   line-height: 0.9;
   max-width: min(100vw, 14ch);
+  font-weight: 400;
 
   @media screen and (min-width: ${theme`screens.md`}) {
     font-size: clamp(5rem, 15vw, 8rem);
