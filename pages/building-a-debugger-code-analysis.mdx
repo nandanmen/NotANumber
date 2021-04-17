@@ -6,7 +6,7 @@ publishDate: '2021-04-15'
 
 import Callout from '../components/Callout'
 import Widget from '../components/Widget'
-import SelectQuestion from '../components/quiz/SelectQuestion'
+import Video from '../components/shared/Video'
 import Architecture from '../components/building-a-debugger-code-analysis/Architecture'
 import EmbeddedSandbox from '../components/building-a-debugger-code-analysis/EmbeddedSandbox'
 import EmbeddedTranspiler from '../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
@@ -15,22 +15,19 @@ import 'twin.macro'
 
 A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
 
-I learned a _ton_, and in the next little bit I want to talk about what exactly I found out. I'll first go over the overall architecture of the app, then I'll dive deep into the specifics behind the two components that make up the core app logic.
-
-In this post, I'll go over the first core piece: the transpiler. Let's get started!
+I learned a _ton_, and in the next little bit I want to talk about how exactly it works. In the process, we're going to build our own mini-debugger using Babel's APIs. Let's get started!
 
 ## Architecture
 
-Before we dive too deeply, let's look at the architecture of the app from a bird's eye view:
+<Widget className="full-width">
+  <Video src="/playground.mp4" autoPlay playsInline loop />
+</Widget>
 
-The app is split into four different parts, orchestrated as a "pipeline" that takes in user code and outputs debug data. Each component of the pipeline has its own responsibilities:
+At a high level, the app is structured as a pipeline with two parts, the **code transpiler** and the **code runner**, all wrapped inside a React UI. When a user types in code in the editor on the left, the code is sent into the pipeline and the React app receives back a list of debug states, shown on the panel on the right.
 
-1. **Editor** — Allow users to input code
-2. **Transpiler** — Takes the user's code and transforms it
-3. **Evaluator** — Takes the transformed code and runs it, returning the debug state
-4. **Debug Panel** — Takes the debug state and displays it to the user
+Within the pipeline, the transpiler transforms the code into code that is "debuggable", and the runner evaluates that code and passes on the result back to the React app.
 
-For the rest of this article, we're going to be focusing our attention to that "Transpiler" component. What exactly does it do? How does it work? Read on to find out.
+But how do you transform code? What does "debuggable" even mean? Let's find out by rebuilding it ourselves.
 
 ## Taking a Peek
 
@@ -273,38 +270,12 @@ Next, let's take a look at the ES6 way of importing modules:
 
 There's another key difference from the variable example from before — there's no similar nodes! The node type for the `require` call isn't the same type as the one for the `import` call, meaning we can't modify the node — we have to replace it altogether.
 
-Cool. With both ASTs in hand, we can get started with building our plugin. To start off, which **node type** should we target in the original AST so we can build our import statement? Keep in mind that, to build the import statement, we need the following information:
+Cool. With both ASTs in hand, we can get started with building our plugin. We'll start by picking a node type to target in our visitor. Keep in mind that we're going to use this node to build the import statement, meaning we would need the following information:
 
 - The path to the module we're importing, and
 - The name we're assigning to the imported module.
 
-<Widget>
-  <EmbeddedSandbox
-    initialCode={`const myModule = require('./my-module')`}
-    depth={Number.POSITIVE_INFINITY}
-    hideEditor
-    hideDetailView
-  />
-  <SelectQuestion
-    options={[
-      {
-        value: 'CallExpression',
-        hint: `Not quite! The CallExpression node lets you check if we're calling the require function, but we have no idea what name the user gave that module.`,
-      },
-      {
-        value: 'Program',
-        hint: `Not quite there! The Program node is a bit too broad — yes, you have access to all the information that we need, but we can get more specific.`,
-      },
-      {
-        value: 'VariableDeclaration',
-        hint: `Perfect! Using the VariableDeclaration node, we're able to get a list of declarations, each of which has the name of the import (through its id property) and whether we're calling require (through the init property).`,
-        correct: true,
-      },
-    ]}
-  />
-</Widget>
-
-Here's the start of our plugin:
+As it happens, the `VariableDeclaration` node type is perfect for this. Here's the start of our plugin:
 
 ```js
 export default () => ({
