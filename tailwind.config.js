@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Recoleta', ...defaultTheme.fontFamily.serif],
+        serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
         mono: [
           'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
         ],

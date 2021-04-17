@@ -4,13 +4,13 @@ blurb: 'Exploring the power of the Babel plugin ecosystem.'
 publishDate: '2021-04-15'
 ---
 
-import Callout from '../../components/Callout'
-import Widget from '../../components/Widget'
-import SelectQuestion from '../../components/quiz/SelectQuestion'
-import Architecture from '../../components/building-a-debugger-code-analysis/Architecture'
-import EmbeddedSandbox from '../../components/building-a-debugger-code-analysis/EmbeddedSandbox'
-import EmbeddedTranspiler from '../../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
-import VisitorSandbox from '../../components/building-a-debugger-code-analysis/VisitorSandbox'
+import Callout from '../components/Callout'
+import Widget from '../components/Widget'
+import SelectQuestion from '../components/quiz/SelectQuestion'
+import Architecture from '../components/building-a-debugger-code-analysis/Architecture'
+import EmbeddedSandbox from '../components/building-a-debugger-code-analysis/EmbeddedSandbox'
+import EmbeddedTranspiler from '../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
+import VisitorSandbox from '../components/building-a-debugger-code-analysis/VisitorSandbox'
 import 'twin.macro'
 
 A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
@@ -850,3 +850,29 @@ function createObjectExpression(t, variables) {
   )
 }`}
 />
+
+## Edge Cases
+
+A big part in building your own Babel plugin is handling edge cases. After all, there's so many ways of writing code — you're bound to miss something on your first try!
+
+In the visitor we just wrote, we missed one pretty big edge case. Can you spot it? Here's a hint: what happens if you add a `debugger` statement _before_ you declare a variable?
+
+<EmbeddedTranspiler
+  initialCode={`const a = 10
+debugger
+const b = 20`}
+/>
+
+Taking a look at the output code, our transpiled code is referring to `b` before it's been declared! If we try to run this code, we're going to get a runtime error. Unfortunately, we can't ask Babel to help us here since it doesn't have any APIs to detect whether a variable has been declared or not.
+
+Talking about how to solve this particular edge case is a bit out of scope of this post, but if you're interested you can take a look at the [actual plugin code used in Playground](https://github.com/narendrasss/playground/blob/master/src/lib/transform/visitor.js). In short, I had to keep track of the variables declared so far and filter out all the variables that weren't declared when replacing the `debugger` statement.
+
+## Applications
+
+If you've written code for the web before you've probably used or heard of [eslint](https://eslint.org/) and [prettier](https://prettier.io/) before. For those of you who haven't, these tools let you lint and format your code so that it's more readable and adheres to best practices.
+
+What's cool about these tools is that they're implemented using the exact same principles of visitors and ASTs that we've worked on throughout this post! Take eslint for example. Like Babel, eslint lets you write your own plugin through their rules API. If you take a look at the source code for a rule, you'll find that [rules are essentially visitors themselves](https://github.com/eslint/eslint/blob/07d14c304c358fbc9c3d318e1377d2b2bda9179f/lib/rules/camelcase.js#L213-L322), just like the one we wrote in the last section.
+
+I think the most important use case of ASTs is one that we, as programmers, probably use on a daily basis without thinking — compilers and interpreters. These tools take human-readable code like JavaScript, and turns them (through ASTs!) to machine code, a low level language understandable by our computers.
+
+Thanks for reading!
