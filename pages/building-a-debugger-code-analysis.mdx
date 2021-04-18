@@ -13,7 +13,7 @@ import EmbeddedTranspiler from '../components/building-a-debugger-code-analysis/
 import VisitorSandbox from '../components/building-a-debugger-code-analysis/VisitorSandbox'
 import 'twin.macro'
 
-A couple of months ago, I shipped [Playground]() — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
+A couple of months ago, I shipped [Playground](https://playground.narendras.vercel.app/) — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
 
 I learned a _ton_, and in the next little bit I want to talk about how exactly it works. In the process, we're going to build our own mini-debugger using Babel's APIs. Let's get started!
 
@@ -35,7 +35,7 @@ The main responsibility of the transpiler is to modify the code so that the rest
 
 If you're doing it manually, you can update the implementation of your function to save the data to some external variable:
 
-```js
+```js highlight=6
 const variables = []
 
 function sum(arr) {
@@ -46,20 +46,35 @@ function sum(arr) {
   }
   return sum
 }
-
-sum([1, 2, 3])
-// here, variables is an array of {num, arr, sum}
 ```
 
-This is great, but it's tedious — every time you want to record the local variables, you have to add that `variables.push` code as well as list down all of the variables you want to record. It would be nice if we can generate this code automatically; the only thing we need to do is tell the computer when we want the variables to be recorded. In fact, this is precisely what the transpiler does.
+Then, when you call the function, you can read that variable to know what's going on inside:
 
-The transpiler makes use of the lesser known `debugger` keyword in JavaScript to indicate when local variables should be recorded. Once it sees a `debugger` keyword, it turns it into something like the `variables.push` code that we just wrote.
+```js
+sum([1, 2, 3])
+
+console.log(variables) // { num: 1, arr: [1,2,3], sum: 0 }, ...
+```
+
+This works totally fine for small and one-of functions, but it doesn't scale too well. When you have large functions and lots of internal variables, you have to scan through each one and add them yourself. In terms of Playground, it also doesn't make sense to make the user do this themselves — there's too much friction!
+
+**Wouldn't it be nice if you can generate these save calls?** Sure enough, we can, and we're going to explore exactly how in the next section.
+
+### Where to put it?
+
+Before getting into that though, we have another problem. If we're generating these save calls automatically, _where_ in the function should we put them?
+
+I messed around with ways to automatically inject these calls, but ultimately I felt it made more sense for the users themselves to specify where they want to debug. I wanted this indicator to be easy to write, otherwise we're back to the original problem. In the end, I landed on using the [debugger](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) keyword as the indicator.
+
+As a whole, the transpiler turns any `debugger` statement into a save call like `variables.push({ ... })`. Here's a demo of the final product:
 
 <EmbeddedTranspiler>
 
 Try to add some more `debugger` statements in the code to see how the transpiler converts it.
 
 </EmbeddedTranspiler>
+
+In the next section, we'll get started on building one ourselves!
 
 <Callout label="The transpiler powers this blog!">
 

@@ -76,7 +76,7 @@ function AstNode({ node, path, depth }) {
           {label}
         </NodeLabel>
         <CodeWrapper>
-          <CodeBlock tw="p-2! inline-block">{source}</CodeBlock>
+          <CodeBlock tw="p-2! inline-block shadow-md">{source}</CodeBlock>
         </CodeWrapper>
         {isOpen && hasChildren && (
           <ul tw="list-none! pl-8">

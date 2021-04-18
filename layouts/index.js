@@ -167,10 +167,6 @@ const Article = styled.article`
     font-weight: 600;
     color: var(--color-highlight);
   }
-
-  strong {
-    font-weight: 500;
-  }
 `
 
 const Title = styled.h1`
