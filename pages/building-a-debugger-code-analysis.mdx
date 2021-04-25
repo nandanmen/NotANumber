@@ -1,21 +1,24 @@
 ---
 title: 'Building a Debugger: Code Analysis'
-blurb: 'Exploring the power of the Babel plugin ecosystem.'
-publishDate: '2021-04-15'
+blurb: 'A crash course in writing your own Babel plugin.'
+publishDate: '2021-05-02'
 ---
 
+import Aside from '../components/Aside'
 import Callout from '../components/Callout'
 import Widget from '../components/Widget'
 import Video from '../components/shared/Video'
-import Architecture from '../components/building-a-debugger-code-analysis/Architecture'
 import EmbeddedSandbox from '../components/building-a-debugger-code-analysis/EmbeddedSandbox'
 import EmbeddedTranspiler from '../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
 import VisitorSandbox from '../components/building-a-debugger-code-analysis/VisitorSandbox'
+import BabelPipeline from '../components/building-a-debugger-code-analysis/BabelPipeline'
+import TraverseTree from '../components/building-a-debugger-code-analysis/TraverseTree'
+import TraverseVisitor from '../components/building-a-debugger-code-analysis/TraverseVisitor'
 import 'twin.macro'
 
 A couple of months ago, I shipped [Playground](https://playground.narendras.vercel.app/) — a web-based JavaScript debugger that lets you write JS code and attach breakpoints using the `debugger` statement. It was the first personal project that I saw through to completion, and it was an incredible opportunity for me to dip my toes in web technologies I've never used before.
 
-I learned a _ton_, and in the next little bit I want to talk about how exactly it works. In the process, we're going to build our own mini-debugger using Babel's APIs. Let's get started!
+I learned a _ton_, and in the next little bit, I want to talk about how exactly it works. In the process, we're going to build our own mini-debugger using Babel's plugin APIs. Let's get started!
 
 ## Architecture
 
@@ -23,15 +26,15 @@ I learned a _ton_, and in the next little bit I want to talk about how exactly i
   <Video src="/playground.mp4" autoPlay playsInline loop />
 </Widget>
 
-At a high level, the app is structured as a pipeline with two parts, the **code transpiler** and the **code runner**, all wrapped inside a React UI. When a user types in code in the editor on the left, the code is sent into the pipeline and the React app receives back a list of debug states, shown on the panel on the right.
+The app consists of a React UI and a pipeline with two parts: the **code transpiler** and the **code runner**. When a user types in code in the editor on the left, the code is sent into the pipeline and gets processed by both the transpiler and the runner. After the code is processed, the result (a list of variable values) gets sent back to the React app to display.
 
-Within the pipeline, the transpiler transforms the code into code that is "debuggable", and the runner evaluates that code and passes on the result back to the React app.
+Within the pipeline, the transpiler transforms the code into code that is "debuggable". Then, the runner evaluates that code and passes on the result back to the React app.
 
 But how do you transform code? What does "debuggable" even mean? Let's find out by rebuilding it ourselves.
 
 ## Taking a Peek
 
-The main responsibility of the transpiler is to modify the code so that the rest of the app can know what's going on inside the function as it's running. For debuggers, knowing "what's going on" inside a function typically means knowing the values of local variables at any given time. Now the question becomes: how do we get those values out of a function?
+The sole responsibility of the transpiler is to modify the code so that the rest of the app can know what's going on inside the function as it's running. For debuggers, knowing "what's going on" inside a function typically means knowing the values of local variables at any given time. Now the question becomes: how do we get those values out of a function?
 
 If you're doing it manually, you can update the implementation of your function to save the data to some external variable:
 
@@ -58,45 +61,47 @@ console.log(variables) // { num: 1, arr: [1,2,3], sum: 0 }, ...
 
 This works totally fine for small and one-of functions, but it doesn't scale too well. When you have large functions and lots of internal variables, you have to scan through each one and add them yourself. In terms of Playground, it also doesn't make sense to make the user do this themselves — there's too much friction!
 
-**Wouldn't it be nice if you can generate these save calls?** Sure enough, we can, and we're going to explore exactly how in the next section.
+This brings us to our problem:
 
-### Where to put it?
+<Aside title="The Problem">
+  
+How do we automatically record the values of variables inside a function?
 
-Before getting into that though, we have another problem. If we're generating these save calls automatically, _where_ in the function should we put them?
+</Aside>
 
-I messed around with ways to automatically inject these calls, but ultimately I felt it made more sense for the users themselves to specify where they want to debug. I wanted this indicator to be easy to write, otherwise we're back to the original problem. In the end, I landed on using the [debugger](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) keyword as the indicator.
+## Problem 1: Where to put it?
 
-As a whole, the transpiler turns any `debugger` statement into a save call like `variables.push({ ... })`. Here's a demo of the final product:
+Our first problem is a simple one – if we're generating these save calls automatically, _where_ in the function should we put them?
+
+I messed around with ways to automatically inject these calls, but ultimately I felt it made more sense for the users to specify where they want to debug. Of course, this indicator to be easy to write, otherwise we're back to the original problem. In the end, I landed on using the [debugger](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) keyword as the indicator.
+
+Before we jump into the _how_, here's a demo of the _what_. As a whole, the transpiler turns any `debugger` statement into a save call like `variables.push({ ... })`:
 
 <EmbeddedTranspiler>
 
-Try to add some more `debugger` statements in the code to see how the transpiler converts it.
+Try to add some more `debugger` statements in the left panel to see how the transpiler converts it.
 
 </EmbeddedTranspiler>
 
-In the next section, we'll get started on building one ourselves!
+## Problem 2: Automatic Transformation
 
-<Callout label="The transpiler powers this blog!">
+So how exactly would we write something to transform the code automatically?
 
-The animations in my [sliding window post](../sliding-window) is powered, in part, by a module very similar to the transpiler. Each animation begins with a function, just like the sum function we wrote above. At build time, the module transforms all of these functions in the exact same way the transpiler transforms your code. When the transformed code is called, the resulting states becomes the animation steps that you see on the page!
-
-</Callout>
-
-## Automatic Transformation
-
-So how exactly would we write something to transform the code automatically? At the end of the day, the code you write is just a very long string, so let's start with that. Using this string, you could _technically_ use regex to replace all instances of `debugger` with something else:
+Since code is ultimately a very long string, we'll use strings as a starting point. Then, we can use a regex matcher to change every instance of `debugger` with our save call:
 
 ```jsx
-code.replace(/debugger/, 'variables.push({ ... })')
+code.replace(/debugger/, 'variables.push(/* stuff */)')
 ```
 
-This kinda works, but then you have more problems — how do you know which variables are in scope? Which of those variables are declared _and_ in scope? So you start over, use more regex to find `const`, `let`, `var`, ....
+This is a promising start, but this approach really breaks down when you start needing information from the code. What are the variables in scope _right now_? What are the names of those variables? Are those variables declared? Can we safely use them?
 
-Ok — working with strings kinda suck. Instead, let's try to convert the code string into a structure that's a lot easier to work with. How about trees?
+Can you think of a way to answer these questions using solely regex operations? (I can't). Clearly, we need a better way to represent code — ideally, one that lets us easily answer questions like these.
 
 ### Abstract Syntax Trees
 
-The recursive structure of code fits quite nicely with the recursive structure of trees. Take the snippet that we used earlier:
+The _de facto_ way of representing code uses something called an **abstract syntax tree**, or AST for short. In an AST, source code is broken apart and grouped into "nodes" based on the structure that they represent.
+
+...That probably sounds a bit cryptic, so let's look at an example. Here, I have the `sum` function from before:
 
 ```jsx
 const variables = []
@@ -113,16 +118,10 @@ function sum(arr) {
 sum([1, 2, 3])
 ```
 
-You can say the whole snippet is a "Program" that has three "children" — the variable declaration at the top, the function definition in the middle, and the function call at the end. Going a level deeper, you have:
-
-- The variable name and the array literal in the variable declaration;
-- The various lines of code in the function definition;
-- The function name and list of parameters in the function call;
-
-If we try to draw this hierarchy out and put labels on each code structure, you might get something like:
+ASTs always start with the entire source code as one node called the Program node:
 
 <EmbeddedSandbox
-  initialCode={`const variables = []
+  initialCode={`const variables = []\n
 function sum(arr) {
   let sum = 0
   for (const num of arr) {
@@ -130,68 +129,134 @@ function sum(arr) {
     sum += num
   }
   return sum
-}
+}\n
+sum([1, 2, 3])`}
+  depth={0}
+  hideEditor
+  hideDetailView
+/>
+
+Next, we break down this source code into smaller nodes based on the code structure it represents. Here, our code consists of three parts — declaring the variable at the top, defining a function in the middle, and calling the function at the end. So let's add three more nodes to the Program node:
+
+<EmbeddedSandbox
+  initialCode={`const variables = []\n
+function sum(arr) {
+  let sum = 0
+  for (const num of arr) {
+    variables.push({ num, arr, sum })
+    sum += num
+  }
+  return sum
+}\n
 sum([1, 2, 3])`}
   depth={1}
   hideEditor
   hideDetailView
->
+/>
 
-This goes deeper! Try pressing the + icons to see what's next.
+This process gets repeated until you can't break down the code any further. Try pressing the '+' button next to the node labels to see how that node gets broken down.
 
-</EmbeddedSandbox>
+By representing the code in this way, we have access to a lot more information about the code and its semantic meaning — making it much easier to manipulate it in the way you want (like to write a debugger, perhaps?).
 
-This tree-like representation of code is commonly known as an abstract syntax tree or AST for short. In an AST, code is represented as nodes where each node has a type property describing the kind of code that it corresponds to. By representing the code in this way, you have access to a lot more information about the code and its semantic meaning — making it much easier to manipulate it in the way that you want.
+## The Babel APIs
 
-### Wait, don't we still have to deal with strings?
+<Aside title="The Problem">
+  
+How do we take our original code string and turn it into an AST? I talked briefly about what ASTs are, but I never solved the actual problem — we still have to deal with strings anyway!
 
-You might be thinking, "Hey Nanda, you still have to turn the code into the tree somehow. Don't you have to use regex nevertheless?" You're exactly right! That entire process, also known as lexing and parsing, warrants an entire article on its own; we won't talk about it much here. For the rest of this article, we'll talk about and make use of Babel's parsing APIs, which generously takes care of the difficult parsing for us. All we have to do is think about what to do with the tree once we have it.
+</Aside>
 
-## Babel's APIs
+To solve this problem, we're going to take advantage of [the Babel library](https://babeljs.io/).
 
-Let's diverge a bit here and talk about Babel's API.
+Fundamentally, Babel is a JavaScript compiler — it's a program that takes in JS code and outputs JS code, potentially modifying it in the process. It does this by parsing the code into an AST, manipulating that AST through plugins, and finally converting the AST back into code.
 
-Fundamentally, Babel is a JavaScript compiler. It takes in JS code, applies transformations to the code, and outputs JS code. It does this by parsing the code into an AST (just like the one we saw in the previous section!), manipulating the AST, and finally converting the AST back into code.
+<Widget>
+  <BabelPipeline />
+</Widget>
 
-Babel's ASTs are quite expressive; take a look at the representation for a function call when you show all available properties:
+In fact, the AST that we saw in the previous section was an AST generated by Babel; although admittedly, I've cut out a bunch of properties to make the concept more clear. In truth, Babel's ASTs are a lot more expressive. For example, here's the 'raw' AST for a function call with all the original properties shown:
 
 <EmbeddedSandbox initialCode={`helloWorld()`} hideEditor showProps />
 
-Out of the box, Babel doesn't apply any transformations to your code — you would need to provide it a series of plugins for it to do anything. A Babel plugin is a regular function that returns an object with a visitor property:
+If you want to see what kind of AST Babel generates for other pieces of code, play around with the sandbox here:
+
+<EmbeddedSandbox
+  initialCode={`function hello() {
+  console.log('hello world')
+}`}
+/>
+
+We're going to leverage Babel's compiler here to convert our code string into the AST and the AST back into code. The only thing we're going to concern ourselves with is in modifying the AST.
+
+### Plugins
+
+Out of the box, Babel doesn't apply any transformations to your code — you would need to provide it a series of plugins for it to do anything. A Babel plugin is a function that modifies an AST using something called a visitor. It looks something like this:
 
 ```js
-export default function (babel) {
+export default function (babelInstance) {
   return {
     visitor: {
-      /* ... */
+      Identifier(node) {
+        // do stuff with the Identifier node
+      },
+      VariableDeclaration(node) {
+        // do stuff with the VariableDeclaration node
+      },
+      /* do more stuff with more nodes */
     },
   }
 }
 ```
 
-The function receives the babel object as an argument, which includes a very handy `types` property that we'll take advantage of later on. We'll talk about visitors in more detail next.
+Most, if not all, of the logic of modifying the AST lies in this visitor object — we're going to focus the rest of this post on talking about what it is and how it works.
 
 ## Be My Guest
 
-Just like how you can convert code into ASTs, you can convert ASTs _back_ into code. This means that transforming code is a matter of transforming one AST to another. "Transforming" in this case means to visit each node of the tree and do something with it, e.g. changing the node to another node, adding child nodes, removing child nodes, removing the node itself, etc. There's various ways to traverse a tree, but Babel makes it easy by using something called a **visitor**.
+<Aside title="The Problem">
+  
+How do you modify an AST?
 
-A visitor is a lookup table of functions where each function corresponds to a particular node type:
+</Aside>
+
+To transform an AST, you have to _traverse_ through the tree, modifying each node one at a time as you visit them. It might look something like this:
+
+<Widget>
+  <TraverseTree />
+</Widget>
+
+The problem with this approach is that you're coupling the traversal of the tree with modifying the tree. If you want to change the tree differently, you have to change the traversal algorithm!
+
+### The Visitor Design Pattern
+
+The visitor design pattern solves this problem by taking the transformation logic out of the traversal algorithm. Here's how it works.
+
+First, we define a visitor object. It has **node types** as keys and **handler functions** as values. The idea is simple — if the node type matches one of the types we defined in the object, then call the handler function.
+
+For example, here's a visitor that has handlers for the `Identifier` node type and the `VariableDeclaration` node type:
 
 ```js
 const visitor = {
-  Identifier(node) {
+  Identifier: function (node) {
     // do stuff with the Identifier node
   },
-  VariableDeclaration(node) {
+  VariableDeclaration: function (node) {
     // do stuff with the VariableDeclaration node
   },
   /* do more stuff with more nodes */
 }
 ```
 
-As Babel visits each node in the tree, it looks at the visitor object to see if that node has a corresponding function. If it does, Babel calls the function, potentially modifying the node in the process.
+Next, we modify the traversal algorithm to check in this visitor object for what to do. If there's a match, great — we call the handler function with the current node. Otherwise, no problem — we'll move on to the next node.
+
+<Widget>
+  <TraverseVisitor />
+</Widget>
+
+Great! We've successfully decoupled the traversal of the AST with the transformation of the AST. [The real implementation](https://github.com/babel/babel/blob/10f4d08efbba49b4085f0756b59c835f97783fa7/packages/babel-traverse/src/index.ts#L41) is a bit more complex, but the core concept still holds. Nevertheless, the visitor pattern is especially useful for libraries like Babel because plugin authors don't have to worry about _how_ the tree traversal works.
 
 ### Paths
+
+Admittedly, I lied a bit in the last section. A visitor in a Babel plugin doesn't take in the current node, but rather the current _path_.
 
 Often, the node alone isn't enough information to do what you want. If you want to modify just one part of the code for example, you would also need to know _where_ the node is relative to everything else. For this reason, Babel provides a `path` object instead that has a bunch of properties describing the _context_ of the node we're currently visiting. This means it's more accurate to show the visitor as:
 

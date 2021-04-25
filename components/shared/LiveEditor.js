@@ -8,8 +8,7 @@ import 'prismjs/components/prism-javascript'
 export default function LiveEditor({ className, ...delegated }) {
   return (
     <EditorWrapper className={className}>
-      <Editor
-        tw="w-full h-full"
+      <StyledEditor
         highlight={(code) => highlight(code, languages.js)}
         {...delegated}
       />
@@ -20,8 +19,17 @@ export default function LiveEditor({ className, ...delegated }) {
   )
 }
 
+const StyledEditor = styled(Editor)`
+  width: 100%;
+  height: 100%;
+
+  textarea {
+    outline: none;
+  }
+`
+
 const EditorWrapper = styled.div`
-  ${tw`relative h-full p-6 font-mono text-sm border-2 rounded-md`}
+  ${tw`relative h-full p-6 font-mono text-sm border-2 rounded-md focus-within:shadow-md`}
 
   background: var(--code-background);
   border-color: var(--code-border-color);
