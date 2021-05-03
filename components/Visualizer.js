@@ -9,6 +9,7 @@ import {
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
+import 'twin.macro'
 
 import Figure from './Figure'
 import Button from './elements/Button'
