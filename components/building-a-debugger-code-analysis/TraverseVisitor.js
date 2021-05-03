@@ -80,10 +80,43 @@ const Controls = styled.div`
   padding: 0 32px;
   margin-bottom: 24px;
   display: flex;
+  column-gap: 16px;
 `
 
 const Slider = styled.input.attrs({ type: 'range' })`
-  width: 100%;
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 24px;
+    background: white;
+    border: 2px solid var(--code-border-color);
+    border-radius: 50%;
+    ${tw`shadow-sm`};
+    margin-top: -10px;
+  }
+
+  &::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+    background: white;
+    border: 2px solid var(--code-border-color);
+    border-radius: 50%;
+    ${tw`shadow-sm`};
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 4px;
+    ${tw`bg-gray-300`};
+  }
+
+  &::-moz-range-track {
+    height: 4px;
+    ${tw`bg-gray-300`};
+  }
 `
 
 const ContentWrapper = styled.div`
