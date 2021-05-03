@@ -12,7 +12,6 @@ import EmbeddedSandbox from '../components/building-a-debugger-code-analysis/Emb
 import EmbeddedTranspiler from '../components/building-a-debugger-code-analysis/EmbeddedTranspiler'
 import VisitorSandbox from '../components/building-a-debugger-code-analysis/VisitorSandbox'
 import BabelPipeline from '../components/building-a-debugger-code-analysis/BabelPipeline'
-import TraverseTree from '../components/building-a-debugger-code-analysis/TraverseTree'
 import TraverseVisitor from '../components/building-a-debugger-code-analysis/TraverseVisitor'
 import 'twin.macro'
 
@@ -99,7 +98,7 @@ Can you think of a way to answer these questions using solely regex operations? 
 
 ### Abstract Syntax Trees
 
-The _de facto_ way of representing code uses something called an **abstract syntax tree**, or AST for short. In an AST, source code is broken apart and grouped into "nodes" based on the structure that they represent.
+By far the most common way of representing code uses something called an **abstract syntax tree**, or AST for short. In an AST, source code is broken apart and grouped into "nodes" based on the structure that they represent.
 
 ...That probably sounds a bit cryptic, so let's look at an example. Here, I have the `sum` function from before:
 
@@ -158,6 +157,8 @@ This process gets repeated until you can't break down the code any further. Try 
 
 By representing the code in this way, we have access to a lot more information about the code and its semantic meaning — making it much easier to manipulate it in the way you want (like to write a debugger, perhaps?).
 
+But our original problem still holds — don't we have to manipulate the code string to generate this tree in the first place?
+
 ## The Babel APIs
 
 <Aside title="The Problem">
@@ -186,7 +187,7 @@ If you want to see what kind of AST Babel generates for other pieces of code, pl
 }`}
 />
 
-We're going to leverage Babel's compiler here to convert our code string into the AST and the AST back into code. The only thing we're going to concern ourselves with is in modifying the AST.
+To answer the original question, **we're not going to convert the code into an AST ourselves**. Rather, we're going to leverage Babel's compiler to do this part of the process for us. The only thing we're going to concern ourselves with is in modifying the AST.
 
 ### Plugins
 
@@ -218,19 +219,9 @@ How do you modify an AST?
 
 </Aside>
 
-To transform an AST, you have to _traverse_ through the tree, modifying each node one at a time as you visit them. It might look something like this:
+To transform an AST, you have to _traverse_ through the tree, modifying each node one at a time as you visit them. A visitor is used to describe _how_ different node types are modified as you visit each one. Here's how it works.
 
-<Widget>
-  <TraverseTree />
-</Widget>
-
-The problem with this approach is that you're coupling the traversal of the tree with modifying the tree. If you want to change the tree differently, you have to change the traversal algorithm!
-
-### The Visitor Design Pattern
-
-The visitor design pattern solves this problem by taking the transformation logic out of the traversal algorithm. Here's how it works.
-
-First, we define a visitor object. It has **node types** as keys and **handler functions** as values. The idea is simple — if the node type matches one of the types we defined in the object, then call the handler function.
+A visitor is an ordinary object with **node types** as keys and **handler functions** as values. The idea is simple — if the current node type matches one of the types we defined in the object, then call the handler function to modify the node.
 
 For example, here's a visitor that has handlers for the `Identifier` node type and the `VariableDeclaration` node type:
 
@@ -246,476 +237,27 @@ const visitor = {
 }
 ```
 
-Next, we modify the traversal algorithm to check in this visitor object for what to do. If there's a match, great — we call the handler function with the current node. Otherwise, no problem — we'll move on to the next node.
+Whenever the traversal algorithm reaches a node, the algorithm checks in this visitor object for what to do. If there's a match, great — we call the handler function with the current node. Otherwise, we'll move on to the next node.
 
-<Widget>
+<Widget className="full-width">
   <TraverseVisitor />
 </Widget>
 
-Great! We've successfully decoupled the traversal of the AST with the transformation of the AST. [The real implementation](https://github.com/babel/babel/blob/10f4d08efbba49b4085f0756b59c835f97783fa7/packages/babel-traverse/src/index.ts#L41) is a bit more complex, but the core concept still holds. Nevertheless, the visitor pattern is especially useful for libraries like Babel because plugin authors don't have to worry about _how_ the tree traversal works.
+This method of separating the traversal algorithm with the transformation process isn't unique to Babel — in fact, it's a classic design pattern called the aptly named [visitor design pattern](https://en.wikipedia.org/wiki/Visitor_pattern). By separating these concerns, plugin authors can focus solely on how they want to modify the tree — they never have to worry about how the tree traversal actually works.
 
 ### Paths
 
-Admittedly, I lied a bit in the last section. A visitor in a Babel plugin doesn't take in the current node, but rather the current _path_.
+Admittedly, I lied a bit in the last section. A visitor in a Babel plugin doesn't take in the current node, but rather the current _path_. A path is a wrapper around an AST node with methods that let you figure out things like:
 
-Often, the node alone isn't enough information to do what you want. If you want to modify just one part of the code for example, you would also need to know _where_ the node is relative to everything else. For this reason, Babel provides a `path` object instead that has a bunch of properties describing the _context_ of the node we're currently visiting. This means it's more accurate to show the visitor as:
+- The parent of the current node,
+- The siblings (if any) of the current node,
+- Which variables are in scope at the current node
 
-```js
-const visitor = {
-  Identifier(path) {
-    const node = path.node
-    // do stuff with the Identifier node
-  },
-  VariableDeclaration(path) {
-    // do stuff with the VariableDeclaration node
-  },
-  /* do more stuff with more nodes */
-}
-```
-
-I highly recommend [Jamie Kyle's Babel Plugin Handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-visitors) for more on visitors, paths, and AST traversals.
-
-## Refactoring Legacy Code
-
-Let's put our newfound knowledge of visitors and the Babel APIs to work by going through some scenarios.
-
-### No `var`s, Please
-
-Nowadays, it's generally best practice to use only `const` or `let` to declare variables in JavaScript. However, any code written before ES2015 was around would've used `var` to declare its variables. You've been a JS developer for a while, and one day you decide to modernize one of your old codebases. The first step is to change all `var` variables to `let` variables.
-
-You recently read up on ASTs and Babel plugins, so you know you could write a custom babel plugin to do this. You also know that you should write a "visitor" of some kind. The question is, what does that visitor look like?
-
-To start off, let's play around with the code to see what AST our intended code maps to:
-
-<EmbeddedSandbox
-  initialCode={`var a = 10`}
-  whitelist={new Set(['kind'])}
-  depth={2}
-/>
-
-It looks like the node type we're looking for is the `VariableDeclaration` node, since it's the node that corresponds to the `var a = 10` code. It also has a `kind` property that tells you what type of variable it is. How convenient!
-
-Let's see what the AST looks like when we use `let` instead:
-
-<EmbeddedSandbox
-  initialCode={`let a = 10`}
-  whitelist={new Set(['kind'])}
-  depth={2}
-/>
-
-Looks like the difference is only in the `kind` property! Cool, that means all we need the visitor to do is (1) target the `VariableDeclaration` node type and (2) change the `kind` property from `"var"` to `"let"`:
-
-<VisitorSandbox
-  initialCode={`var a = 10
-const b = 20
-var c = 60`}
-  visitor={`export default () => ({
-  visitor: {
-    VariableDeclaration(path) {
-      if (path.node.kind === 'var') {
-        path.node.kind = 'let'
-      }
-    },
-  }
-})`}
->
-
-This is an editable sandbox! Edit the visitor code and watch what happens to the output code.
-
-</VisitorSandbox>
-
-And sure enough, that works great.
-
-### `import`s too, please!
-
-As of version 13.2, Node supports ECMAScript modules. This means you're able to use `import` and `export` instead of `require` and `module.exports` as long as you set the appropriate type field in `package.json`.
-
-Let's see if we can make a Babel plugin that converts imports using `require` to imports using `import`. Let's start by looking at how we import modules using `require`:
-
-<EmbeddedSandbox
-  initialCode={`const myModule = require('./my-module')`}
-  depth={Number.POSITIVE_INFINITY}
-  hideDetailView
-/>
-
-Using `require`, importing a module is no different than calling a function. Unlike the `var` example from before, we can't simply point to a "Require" node type — we have to check for ourselves if the function call is a call to `require`.
-
-Next, let's take a look at the ES6 way of importing modules:
-
-<EmbeddedSandbox
-  initialCode={`import * as myModule from './my-module'`}
-  depth={Number.POSITIVE_INFINITY}
-  hideDetailView
-/>
-
-There's another key difference from the variable example from before — there's no similar nodes! The node type for the `require` call isn't the same type as the one for the `import` call, meaning we can't modify the node — we have to replace it altogether.
-
-Cool. With both ASTs in hand, we can get started with building our plugin. We'll start by picking a node type to target in our visitor. Keep in mind that we're going to use this node to build the import statement, meaning we would need the following information:
-
-- The path to the module we're importing, and
-- The name we're assigning to the imported module.
-
-As it happens, the `VariableDeclaration` node type is perfect for this. Here's the start of our plugin:
-
-```js
-export default () => ({
-  visitor: {
-    VariableDeclaration(path) {
-      // stuff here
-    },
-  },
-})
-```
-
-This node doesn't quite have the information we need — rather, we have to go through each node in the `declarations` list, turning _each_ into an individual import statement.
-
-Let's code that boilerplate out:
-
-```js
-export default () => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations.map((declaration) => {
-        // do stuff with VariableDeclarator
-      })
-    },
-  },
-})
-```
-
-For each node in the declaration, we would have to:
-
-1. Check if the node is an import, i.e. it's calling `require`.
-2. If it is, get the module path and the module name; if it's not, skip the node entirely.
-3. Finally, if the node is an import, replace it with the import statement.
-
-<Callout label="Can we target VariableDeclarator instead?">
-
-One thing I noticed when I initially started playing around with ASTs is that declaring a variable is represented as _two_ node levels — a `VariableDeclaration` node, and a _list of declarations_. This seemed strange to me; after all, can't you only declare one variable at a time?
-
-<Callout.Details>
-
-Nope. As it turns out, this is perfectly valid JavaScript:
-
-```js
-const a = require('./a'),
-  b = require('./b'),
-  c = require('./c')
-```
-
-When you look at the AST for this, you'll find that it gets represented as one `VariableDeclaration` with three declarations:
-
-<EmbeddedSandbox
-  initialCode={`const a = require('./a'),
-  b = require('./b'),
-  c = require('./c')`}
-  depth={3}
-  hideEditor
-  hideDetailView
-/>
-
-The more you know!
-
-Let's jump back to the question. In short, you _can't_, or at least it's not straightforward to do so. Notice that the `VariableDeclarator` node only represents a part of the entire statement e.g. `a = require('./a')` vs `const a = require('./a')`. This means that if we were to replace this node with an import statement, we would get something like:
-
-```js
-const import * as a from './a'
-```
-
-Which isn't valid JS syntax!
-
-We can theoretically access the parent from VariableDeclarator through `path.parent`, but at that point we may as well target the parent node directly.
-
-</Callout.Details>
-
-</Callout>
-
-Let's work through these steps one at a time.
-
-**1. Check if a node is an import**
-
-Each `VariableDeclarator` has an `init` property that contains information about how the variable is declared. We can use this property to check if the node is an import or not. Remember that an import is simply a call to the `require` function, so let's take a look at that node individually:
-
-<EmbeddedSandbox
-  initialCode={`require('./a')`}
-  depth={3}
-  hideEditor
-  hideDetailView
-  getParent={(tree) => tree?.program?.body[0].expression}
-/>
-
-Great! All we have to do is check if the `init` property is a `CallExpression`, and if it is, if its `callee` property is equal to `require`. To do this, we're going to take advantage of the `types` object passed in to all babel plugins:
-
-```js
-export default ({ types }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations.map((declaration) => {
-        // do stuff with VariableDeclarator
-      })
-    },
-  },
-})
-```
-
-This `types` object contains [a lot of utility functions for handling Babel AST nodes](https://babeljs.io/docs/en/babel-types.html), grouped into **validators** and **builders**. Validators are used to check the correctness of AST nodes, while builders are used to create new nodes altogether.
-
-To start, we're going to use two validator functions – the `isCallExpression` and `isIdentifier` functions. As you might have guessed, you can use these functions to check if the given node is the right node type:
-
-```js
-export default ({ types: t }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations.map((declaration) => {
-        if (t.isCallExpression(declaration.init)) {
-          // ...
-        }
-      })
-    },
-  },
-})
-```
-
-<Callout label="What's t?">
-
-Since we're going to be using the `types` object a lot, we typically rename it to just `t` for conciseness.
-
-</Callout>
-
-You can even use them to check for specific properties, such as checking the name of the identifier:
-
-```js
-if (t.isCallExpression(declaration.init)) {
-  if (t.isIdentifier(declaration.init.callee, { name: 'require' })) {
-    // node is an import!
-  }
-}
-```
-
-Before we continue, let's change the `map` to a `filter` so our next steps don't have to worry about checking the node type:
-
-```js
-export default ({ types: t }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations
-        .filter((declaration) => {
-          return (
-            t.isCallExpression(declaration.init) &&
-            t.isIdentifier(declaration.init.callee, { name: 'require' })
-          )
-        })
-        .map((declaration) => {
-          /* do stuff */
-        })
-    },
-  },
-})
-```
-
-**2. Get module information**
-
-Now that we know if the node is an import or not, the next thing we have to do is to extract the import information out of the node. Recall that we need two things – the name of the module and the path to the module.
-
-Here's a `VariableDeclarator` node again for reference:
-
-<EmbeddedSandbox
-  initialCode={`const a = require('./a')`}
-  depth={3}
-  hideEditor
-  hideDetailView
-  getParent={(tree) => tree?.program?.body[0].declarations[0]}
-/>
-
-The name of the imported module is the name of the `id` property, and the path to the module is the first argument to require. Awesome, let's add that in:
-
-```js
-const moduleName = declaration.id.name
-const modulePath = declaration.init.arguments[0].value
-```
-
-**3. Replace and build the import statement**
-
-Now that we have all of the information we need, it's time to build the import AST. Here's the import node that we want to build:
-
-<EmbeddedSandbox
-  initialCode={`import * as a from './a'`}
-  depth={3}
-  hideEditor
-  hideDetailView
-  getParent={(tree) => tree?.program?.body[0]}
-/>
-
-To build this, we're going to use the `importDeclaration`, `importNamespaceSpecifier`, `identifier` and `stringLiteral` builder functions from the types object we talked about before.
-
-<Callout label="So many functions!">
-
-The `types` object has a _lot_ of functions to remember, and it can be a bit overwhelming to think about the number of functions you need to know. Thankfully, the Babel team named all the functions off the node type that it corresponds to so it's quite easy to know which function you need.
-
-Generally speaking, each node type has three functions: the two validator functions `t.is{node-type}`, and `t.assert{node-type}`, and the builder function `t.{node-type}`. For example, the `StringLiteral` node type has the three functions `t.isStringLiteral`, `t.assertStringLiteral`, and `t.stringLiteral`.
-
-Of course I don't actually recommend memorizing these functions — that's what the docs and code complete is for — but it's useful nevertheless to immediately know what you need to look for.
-
-</Callout>
-
-From the [documentation](https://babeljs.io/docs/en/babel-types.html#importdeclaration), it looks like the `importDeclaration` builder requires us to pass in an array of `specifiers` and the module `source` (as you would expect from looking at the node!). Let's do that:
-
-```js
-map((declaration) => {
-  const moduleName = declaration.id.name
-  const modulePath = declaration.init.arguments[0].value
-
-  const importNode = t.importDeclaration(
-    [t.importNamespaceSpecifier(t.identifier(moduleName))],
-    t.stringLiteral(modulePath)
-  )
-})
-```
-
-In fact, since `declaration.id` and `declaration.init.arguments[0]` are already the AST nodes we want, we don't even need the `identifier` and `stringLiteral` builders:
-
-```js
-map((declaration) => {
-  return t.importDeclaration(
-    [t.importNamespaceSpecifier(declaration.id)],
-    declaration.init.arguments[0]
-  )
-})
-```
-
-And here's everything together:
-
-```js
-export default ({ types: t }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations
-        /* Check for imports */
-        .filter((declaration) => {
-          return (
-            t.isCallExpression(declaration.init) &&
-            t.isIdentifier(declaration.init.callee, { name: 'require' })
-          )
-        })
-        /* Create import nodes */
-        .map((declaration) => {
-          return t.importDeclaration(
-            [t.importNamespaceSpecifier(declaration.id)],
-            declaration.init.arguments[0]
-          )
-        })
-    },
-  },
-})
-```
-
-At this point, we have a list of `import` nodes, but we haven't modified the AST yet. Since we want to replace the `require` call with an array of imports, we use the `replaceWithMultiple` method of the path object:
-
-```js highlight=18
-export default ({ types: t }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations
-        /* Check for imports */
-        .filter((declaration) => {
-          return (
-            t.isCallExpression(declaration.init) &&
-            t.isIdentifier(declaration.init.callee, { name: 'require' })
-          )
-        })
-        /* Create import nodes */
-        .map((declaration) => {
-          return t.importDeclaration(
-            [t.importNamespaceSpecifier(declaration.id)],
-            declaration.init.arguments[0]
-          )
-        })
-      path.replaceWithMultiple(imports)
-    },
-  },
-})
-```
-
-If we were replacing the node with only one node, we would use the `replaceWith` method instead.
-
-And there we have it, the finished plugin:
-
-<VisitorSandbox
-  initialCode={`const a = require('./a')`}
-  visitor={`export default ({ types: t }) => ({
-  visitor: {
-    VariableDeclaration(path) {
-      const imports = path.node.declarations
-        /* Check for imports */
-        .filter((declaration) => {
-          return (
-            t.isCallExpression(declaration.init) &&
-            t.isIdentifier(
-              declaration.init.callee, 
-              { name: 'require' }
-            )
-          )
-        })
-        /* Create import nodes */
-        .map((declaration) => {
-          return t.importDeclaration(
-            [t.importNamespaceSpecifier(declaration.id)],
-            declaration.init.arguments[0]
-          )
-        })
-      path.replaceWithMultiple(imports)
-    },
-  },
-})`}
-/>
-
-<Callout label="Edge cases">
-
-We're gonna talk about edge cases more a bit later, but for the sake of getting the point across I've skipped over some edge cases in the previous exercise. Can you think of anything that could potentially break our plugin?
-
-Try playing around with the input box to see if you can get the output to be not quite what you expect.
-
-<Callout.Details>
-
-Here's one:
-
-```js
-function hello() {
-  const a = require('./b')
-}
-```
-
-Our plugin will transform this into:
-
-```js
-function hello() {
-  import a from './b'
-}
-```
-
-This is invalid syntax because imports can only occur at the top-most level. Here's another one:
-
-```js
-const path = './a'
-const a = require(path)
-```
-
-This time our plugin won't even compile — it would error out with the following message:
-
-```
-TypeError: unknown: Property source of ImportDeclaration expected
-node to be of a type ["StringLiteral"] but instead got "Identifier"
-```
-
-Can you think of a way to fix the plugin to make both of these cases work? I'd love to see what you come up with!
-
-</Callout.Details>
-
-</Callout>
+As well as various methods to replace, remove, and insert nodes. For more on paths (and Babel's APIs in general), I highly recommend [Jamie Kyle's Babel Plugin Handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-visitors).
 
 ## Building the Visitor
 
-Now that we have access to these new tools, let's try to piece together the visitor for our debugger. To recap, we want to change every instance of `debugger` with code that adds all variables in scope to some global array (in this case, an array called `_variables`):
+Now that we know a bit about visitors and ASTs, let's try to piece together our own Babel plugin to debug our code. To recap, we want to change every instance of `debugger` with code that records the values of all variables in scope:
 
 <EmbeddedTranspiler />
 

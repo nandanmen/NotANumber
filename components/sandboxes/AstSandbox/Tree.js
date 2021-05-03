@@ -19,6 +19,7 @@ function Tree({
   className,
   tree,
   code,
+  activeNodeType = null,
   variant = Tree.variants.Node,
   depth = 0,
   whitelist = new Set(),
@@ -26,10 +27,12 @@ function Tree({
   return (
     <motion.ul
       layout="position"
-      tw="list-none! space-y-4 max-w-full"
+      tw="list-none! space-y-4 max-w-full font-mono text-sm"
       className={className}
     >
-      <TreeContext.Provider value={{ depth, code, variant, whitelist }}>
+      <TreeContext.Provider
+        value={{ depth, code, variant, whitelist, activeNodeType }}
+      >
         <AnimateSharedLayout>
           <AstNode node={tree} path={[]} depth={0} />
         </AnimateSharedLayout>
@@ -46,7 +49,13 @@ Tree.variants = {
 export default Tree
 
 function AstNode({ node, path, depth }) {
-  const { depth: initialDepth, code, variant, whitelist } = useTreeContext()
+  const {
+    depth: initialDepth,
+    code,
+    variant,
+    whitelist,
+    activeNodeType,
+  } = useTreeContext()
   const [isOpen, setIsOpen] = React.useState(depth <= initialDepth)
 
   if (isAstNode(node)) {
@@ -57,12 +66,13 @@ function AstNode({ node, path, depth }) {
       return isAstNode(value) || whitelist.has(key)
     })
     const hasChildren = children.length > 0
+    const isActive = node.type === activeNodeType
     const source = code.slice(node.start, node.end)
 
     const label = hasChildren ? (
-      <button tw="block" onClick={() => setIsOpen((open) => !open)}>
+      <NodeToggle onClick={() => setIsOpen((open) => !open)}>
         {node.type} {isOpen ? '-' : '+'}
-      </button>
+      </NodeToggle>
     ) : (
       <p>{node.type}</p>
     )
@@ -76,7 +86,14 @@ function AstNode({ node, path, depth }) {
           {label}
         </NodeLabel>
         <CodeWrapper>
-          <CodeBlock tw="p-2! inline-block shadow-md">{source}</CodeBlock>
+          <CodeBlock
+            css={[
+              tw`p-2! inline-block shadow-md`,
+              isActive && tw`ring-2 ring-green-600`,
+            ]}
+          >
+            {source}
+          </CodeBlock>
         </CodeWrapper>
         {isOpen && hasChildren && (
           <ul tw="list-none! pl-8">
@@ -167,6 +184,11 @@ const CodeWrapper = styled.div`
   background: var(--color-background);
 `
 
+const NodeToggle = styled.button`
+  display: block;
+  position: relative;
+`
+
 const Node = styled(motion.li).attrs({
   layout: 'position',
   animate: {
@@ -230,7 +252,7 @@ const NodeLabel = styled(motion.div).attrs({
       border-left: 2px solid var(--line-color);
       border-bottom-left-radius: 0.5rem;
     }
-  `}
+  `};
 `
 
 // -- Helpers --

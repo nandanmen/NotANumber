@@ -47,32 +47,15 @@ export default function TranspilerSandbox({
 
 // -- Default plugin --
 
-function transpile({ types: t }) {
+function transpile() {
   return {
     visitor: {
       DebuggerStatement(path) {
         const scope = Object.keys(path.scope.getAllBindings())
-        path.replaceWith(createSnapshot(t, scope))
+        path.replaceWithSourceString(`_variables.push({ ${scope.join()} })`)
       },
     },
   }
-}
-
-function createSnapshot(t, scope) {
-  return t.expressionStatement(
-    t.callExpression(
-      t.memberExpression(t.identifier('_variables'), t.identifier('push')),
-      [createObjectExpression(t, scope)]
-    )
-  )
-}
-
-function createObjectExpression(t, variables) {
-  return t.objectExpression(
-    variables.map((variableName) =>
-      t.objectProperty(t.identifier(variableName), t.identifier(variableName))
-    )
-  )
 }
 
 // -- Styles --
