@@ -33,10 +33,11 @@ export default function BabelPipeline() {
 }
 
 const Wrapper = styled.div`
+  ${tw`space-x-2`}
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  column-gap: 20px;
   overflow-x: scroll;
   padding: 0 32px;
 
@@ -64,7 +65,7 @@ const PluginWrapper = styled.ul`
 const Plugin = styled.li`
   ${tw`font-mono text-sm`}
 
-  background: white;
+  background: var(--code-background);
   padding: 8px;
   border-radius: 6px;
 `
@@ -74,31 +75,35 @@ const Plugin = styled.li`
 function Tree({ isSquare }) {
   return (
     <TreeWrapper>
-      <LeafWrapper>
+      <RootWrapper>
         <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
-      </LeafWrapper>
-      <LeafWrapper>
-        <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
-        <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
-      </LeafWrapper>
+      </RootWrapper>
+      <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
+      <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
     </TreeWrapper>
   )
 }
 
 const TreeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
 `
 
 const Node = styled.div`
-  background: white;
+  --border-color: ${theme`colors.gray.300`};
+
+  @media (prefers-color-scheme: dark) {
+    --border-color: ${theme`colors.blacks.300`};
+  }
+
+  background: var(--code-background);
   position: relative;
   width: 32px;
   height: 32px;
   border-radius: var(--radius);
-  border: 2px solid ${theme`colors.gray.300`};
+  border: 2px solid var(--border-color);
   z-index: 0;
 
   &:only-child {
@@ -111,7 +116,7 @@ const Node = styled.div`
       content: '';
       width: 40px;
       height: 4px;
-      background: ${theme`colors.gray.300`};
+      background: var(--border-color);
       top: 120%;
     }
 
@@ -127,9 +132,10 @@ const Node = styled.div`
   }
 `
 
-const LeafWrapper = styled.div`
+const RootWrapper = styled.div`
+  grid-column: 1 / -1;
   display: flex;
-  column-gap: 20px;
+  justify-content: center;
 `
 
 // --
@@ -156,9 +162,10 @@ function Section({ children, caption }) {
 }
 
 const SectionContent = styled.div`
+  ${tw`space-x-4`}
+
   display: flex;
   align-items: center;
-  column-gap: 16px;
 `
 
 const SectionCaption = styled.caption`

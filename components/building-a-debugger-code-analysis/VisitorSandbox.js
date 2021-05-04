@@ -19,16 +19,12 @@ export default function VisitorSandbox({ children, visitor, initialCode }) {
   const plugin = useBabelPlugin(pluginCode, exportDefaultToReturn)
 
   return (
-    <SandboxWrapper className="full-width-3x">
-      <div tw="mb-4 md:mb-0">
+    <SandboxWrapper className="full-width">
+      <div tw="mb-4">
         <LiveEditor value={pluginCode} onValueChange={setPluginCode} />
       </div>
-      <aside tw="flex flex-col">
-        <TranspilerSandbox
-          mode="vertical"
-          initialCode={initialCode}
-          plugin={execute(plugin)}
-        />
+      <aside tw="flex flex-col md:flex-row">
+        <TranspilerSandbox initialCode={initialCode} plugin={execute(plugin)} />
       </aside>
       {children && (
         <Widget.Caption tw="col-start-1 col-end-3 text-center">
@@ -53,10 +49,4 @@ function exportDefaultToReturn({ types: t }) {
   }
 }
 
-const SandboxWrapper = styled(Widget)`
-  @media screen and (min-width: ${theme`screens.md`}) {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 1rem;
-  }
-`
+const SandboxWrapper = styled(Widget)``

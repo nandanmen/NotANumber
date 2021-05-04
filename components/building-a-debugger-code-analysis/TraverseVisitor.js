@@ -80,7 +80,10 @@ const Controls = styled.div`
   padding: 0 32px;
   margin-bottom: 24px;
   display: flex;
-  column-gap: 16px;
+
+  > :first-child {
+    margin-right: 16px;
+  }
 `
 
 const Slider = styled.input.attrs({ type: 'range' })`
@@ -93,7 +96,7 @@ const Slider = styled.input.attrs({ type: 'range' })`
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm`};
+    ${tw`bg-green-400 shadow-sm dark:bg-green-600`};
     margin-top: -10px;
   }
 
@@ -101,7 +104,7 @@ const Slider = styled.input.attrs({ type: 'range' })`
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm`};
+    ${tw`bg-green-400 shadow-sm dark:bg-green-600`};
   }
 
   &::-webkit-slider-runnable-track {

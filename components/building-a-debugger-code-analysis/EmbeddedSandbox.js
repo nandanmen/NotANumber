@@ -14,6 +14,7 @@ export default function EmbeddedSandbox({
   whitelist = new Set(),
   children,
   getParent,
+  ...props
 }) {
   const [code, setCode] = React.useState(initialCode)
   const [showAllProps, toggle] = React.useReducer((state) => !state, showProps)
@@ -44,6 +45,7 @@ export default function EmbeddedSandbox({
           code={code}
           variant={showAllProps ? Tree.variants.Detail : Tree.variants.Node}
           whitelist={whitelist}
+          {...props}
         />
       </div>
       {children && <Caption>{children}</Caption>}
