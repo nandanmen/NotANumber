@@ -167,7 +167,7 @@ How do we take our original code string and turn it into an AST? I talked briefl
 
 </Aside>
 
-To solve this problem, we're going to take advantage of [the Babel library](https://babeljs.io/).
+To solve this problem, we're going to take advantage of [the Babel library](https://babeljs.io/). In particular, we're going to let Babel do the code parsing for us so that we can focus on manipulating the AST.
 
 Fundamentally, Babel is a JavaScript compiler — it's a program that takes in JS code and outputs JS code, potentially modifying it in the process. It does this by parsing the code into an AST, manipulating that AST through plugins, and finally converting the AST back into code.
 
@@ -186,8 +186,6 @@ If you want to see what kind of AST Babel generates for other pieces of code, pl
   console.log('hello world')
 }`}
 />
-
-To answer the original question, **we're not going to convert the code into an AST ourselves**. Rather, we're going to leverage Babel's compiler to do this part of the process for us. The only thing we're going to concern ourselves with is in modifying the AST.
 
 ### Plugins
 

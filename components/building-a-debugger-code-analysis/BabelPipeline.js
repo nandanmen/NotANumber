@@ -24,7 +24,7 @@ export default function BabelPipeline() {
         <Arrow />
       </Section>
       <Section caption="Generate">
-        <Tree />
+        <Tree isSquare />
         <Arrow />
         <CodeBlock tw="p-2!">{outputCode}</CodeBlock>
       </Section>
@@ -71,15 +71,15 @@ const Plugin = styled.li`
 
 // --
 
-function Tree() {
+function Tree({ isSquare }) {
   return (
     <TreeWrapper>
       <LeafWrapper>
-        <Node />
+        <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
       </LeafWrapper>
       <LeafWrapper>
-        <Node />
-        <Node />
+        <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
+        <Node style={{ '--radius': isSquare ? '8px' : '50%' }} />
       </LeafWrapper>
     </TreeWrapper>
   )
@@ -97,7 +97,7 @@ const Node = styled.div`
   position: relative;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--radius);
   border: 2px solid ${theme`colors.gray.300`};
   z-index: 0;
 
