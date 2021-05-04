@@ -7,10 +7,13 @@ import FeedbackForm from '../components/FeedbackForm'
 import Navigation from '../components/Navigation'
 import CodeBlock from '../components/elements/CodeBlock'
 import ThematicBreak from '../components/elements/ThematicBreak'
+import ExternalLink from '../components/elements/ExternalLink'
 
 export default function Layout({ frontMatter = {}, children }) {
   return (
-    <MDXProvider components={{ pre: CodeBlock, hr: ThematicBreak }}>
+    <MDXProvider
+      components={{ a: ExternalLink, pre: CodeBlock, hr: ThematicBreak }}
+    >
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -161,12 +164,6 @@ const Article = styled.article`
     @media screen and (min-width: 770px) {
       grid-column: 5 / span 1;
     }
-  }
-
-  a {
-    ${tw`hover:text-gray-700 dark:hover:text-gray-400`}
-    font-weight: 600;
-    color: var(--color-highlight);
   }
 `
 
