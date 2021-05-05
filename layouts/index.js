@@ -125,7 +125,6 @@ const Article = styled.article`
   h2 {
     ${tw`relative mt-16 font-serif text-3xl`}
     margin-bottom: 1em;
-    font-family: 'Roslindale Display Narrow Medium';
 
     &:before {
       ${tw`absolute left-0 w-6 bg-green-500 -top-4 dark:bg-green-800`}
@@ -173,8 +172,6 @@ const Title = styled.h1`
   font-size: 4rem;
   line-height: 0.9;
   max-width: min(100vw, 14ch);
-  font-weight: 400;
-  font-family: 'Roslindale Display Narrow Medium';
 
   @media screen and (min-width: ${theme`screens.md`}) {
     font-size: clamp(5rem, 15vw, 8rem);

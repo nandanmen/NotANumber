@@ -4,9 +4,9 @@ import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
-import { frontMatter as debuggerCodeAnalysis } from './building-a-debugger-code-analysis.mdx'
+import { frontMatter as debuggerPost } from './debugger.mdx'
 
-const posts = [slidingWindow, debuggerCodeAnalysis]
+const posts = [debuggerPost, slidingWindow]
 
 function formatPath(path) {
   return path.replace(/\.mdx$/, '')
@@ -21,10 +21,10 @@ export default function HomePage() {
       <Head>
         <title>Not a Number</title>
       </Head>
-      <div tw="dark:text-white">
-        <header className="flex flex-col items-start justify-center px-8">
-          <Title tw="mb-16">Not a Number</Title>
-          <p>
+      <div tw="py-32 dark:text-white">
+        <header className="mx-auto mb-24">
+          <Title tw="mx-auto mb-16">Not a Number</Title>
+          <p tw="text-center max-w-md mx-auto px-8">
             An interactive blog on computer science and web development, by
             {` `}
             <ExternalLink
@@ -47,7 +47,7 @@ export default function HomePage() {
               <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
-                    <PostTitle>{title}</PostTitle>
+                    <h1 tw="text-3xl font-semibold font-serif">{title}</h1>
                     <p tw="italic">{blurb}</p>
                     <p tw="text-sm text-gray-600 dark:text-gray-300">
                       {new Intl.DateTimeFormat('en-US', {
@@ -71,27 +71,18 @@ export default function HomePage() {
 }
 
 const Title = styled.h1`
-  ${tw`font-serif text-center`}
-  font-family: 'Roslindale Display Narrow Medium';
-  font-size: 12rem;
+  ${tw`font-serif font-semibold text-center`}
+  font-size: clamp(5rem, 8vw, 8rem);
   line-height: 0.9;
-`
-
-const PostTitle = styled.h1`
-  ${tw`text-3xl`}
-
-  font-family: 'Roslindale Display Narrow Medium';
 `
 
 const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-300`
 
 const Posts = styled.ul`
-  ${tw`space-y-4`}
-
+  ${tw`pt-12 space-y-4`}
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
   position: relative;
-
   > * {
     grid-column: 2;
   }
@@ -99,6 +90,5 @@ const Posts = styled.ul`
 
 const Divider = styled.div`
   ${tw`absolute top-0 w-24 h-px col-start-1 transform -translate-x-1/2 bg-gray-400 left-1/2`}
-
   grid-column: 1;
 `
