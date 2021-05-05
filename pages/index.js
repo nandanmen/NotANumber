@@ -3,6 +3,8 @@ import Link from 'next/link'
 import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
+import NewsletterForm from '../components/NewsletterForm'
+
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 
@@ -64,6 +66,7 @@ export default function HomePage() {
               </Link>
             </li>
           ))}
+          <NewsletterForm />
         </Posts>
       </div>
     </>
@@ -83,8 +86,13 @@ const Posts = styled.ul`
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
   position: relative;
+
   > * {
     grid-column: 2;
+  }
+
+  > :last-child {
+    margin-top: 3rem !important;
   }
 `
 
