@@ -23,7 +23,7 @@ export default function TranspilerSandbox({
   mode = 'horizontal',
 }) {
   const [code, setCode] = React.useState(initialCode)
-  const result = useBabelPlugin(code, plugin)
+  const [result, error] = useBabelPlugin(code, plugin)
 
   return (
     <>
@@ -34,6 +34,7 @@ export default function TranspilerSandbox({
         ]}
       >
         <LiveEditor value={code} onValueChange={setCode} />
+        {error && <pre>{error}</pre>}
         <Arrow mode={mode}>
           <HiArrowRight />
         </Arrow>

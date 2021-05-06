@@ -22,7 +22,7 @@ const algorithm = snapshot(function traverse(tree) {
 })
 
 export default function TraverseVisitor() {
-  const tree = useSyntaxTree(code)
+  const [tree] = useSyntaxTree(code)
   const steps = React.useMemo(() => exec(algorithm.entryPoint, [tree]), [tree])
   const { models, actions } = usePlayer(steps)
 

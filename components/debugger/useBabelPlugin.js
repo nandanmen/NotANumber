@@ -1,5 +1,6 @@
 import React from 'react'
 import * as Babel from '@babel/standalone'
+import { useDebouncedCallback } from 'use-debounce'
 
 /**
  * Given code and a Babel plugin, this hook transforms the code using the plugin,
@@ -7,16 +8,23 @@ import * as Babel from '@babel/standalone'
  */
 export default function useBabelPlugin(code, plugin) {
   const [result, setResult] = React.useState('')
+  const [error, setError] = React.useState(null)
+
+  const debouncedSetError = useDebouncedCallback(
+    (message) => setError(message),
+    750
+  )
 
   React.useEffect(() => {
     try {
+      setError(null)
       const result = Babel.transform(code, { plugins: [plugin] })
       setResult(result.code)
     } catch (err) {
       // syntax error
-      console.error(err)
+      debouncedSetError(err.message)
     }
-  }, [code, plugin])
+  }, [code, plugin, debouncedSetError])
 
-  return result
+  return [result, error]
 }

@@ -14,7 +14,7 @@ import 'twin.macro'
 import Figure from './Figure'
 import Button from './elements/Button'
 import exec from '../lib/exec'
-import zip from '../lib/zip'
+import { zip } from '../lib/utils'
 import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled, theme } from 'twin.macro'
+import { styled } from 'twin.macro'
 
 import TranspilerSandbox from './TranspilerSandbox'
 import LiveEditor from '../shared/LiveEditor'
@@ -16,12 +16,13 @@ import useBabelPlugin from './useBabelPlugin'
  */
 export default function VisitorSandbox({ children, visitor, initialCode }) {
   const [pluginCode, setPluginCode] = React.useState(visitor)
-  const plugin = useBabelPlugin(pluginCode, exportDefaultToReturn)
+  const [plugin, error] = useBabelPlugin(pluginCode, exportDefaultToReturn)
 
   return (
     <SandboxWrapper className="full-width">
       <div tw="mb-4">
         <LiveEditor value={pluginCode} onValueChange={setPluginCode} />
+        {error && <pre>{error}</pre>}
       </div>
       <aside tw="flex flex-col md:flex-row">
         <TranspilerSandbox initialCode={initialCode} plugin={execute(plugin)} />

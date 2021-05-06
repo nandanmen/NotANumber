@@ -18,13 +18,14 @@ export default function EmbeddedSandbox({
 }) {
   const [code, setCode] = React.useState(initialCode)
   const [showAllProps, toggle] = React.useReducer((state) => !state, showProps)
-  const tree = useSyntaxTree(code, { getParent })
+  const [tree, error] = useSyntaxTree(code, { getParent })
 
   return (
     <Widget tw="space-y-6 overflow-hidden">
       {!hideEditor && (
         <div>
           <LiveEditor value={code} onValueChange={(code) => setCode(code)} />
+          {error && <pre>{error}</pre>}
         </div>
       )}
       <div tw="font-mono text-sm overflow-x-scroll relative">
