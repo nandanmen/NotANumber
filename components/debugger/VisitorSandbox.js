@@ -24,9 +24,7 @@ export default function VisitorSandbox({ children, visitor, initialCode }) {
         <LiveEditor value={pluginCode} onValueChange={setPluginCode} />
         {error && <pre>{error}</pre>}
       </div>
-      <aside tw="flex flex-col md:flex-row">
-        <TranspilerSandbox initialCode={initialCode} plugin={execute(plugin)} />
-      </aside>
+      <TranspilerSandbox initialCode={initialCode} plugin={execute(plugin)} />
       {children && (
         <Widget.Caption tw="col-start-1 col-end-3 text-center">
           {children}

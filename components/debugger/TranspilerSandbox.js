@@ -20,29 +20,23 @@ const starterCode = `function sum(arr) {
 export default function TranspilerSandbox({
   initialCode = starterCode,
   plugin = transpile,
-  mode = 'horizontal',
 }) {
   const [code, setCode] = React.useState(initialCode)
   const [result, error] = useBabelPlugin(code, plugin)
 
   return (
-    <>
-      <div
-        css={[
-          tw`relative flex-1 mb-4 text-sm`,
-          mode === 'horizontal' && tw`md:(mr-4 mb-0)`,
-        ]}
-      >
+    <SandboxWrapper>
+      <CodeInput>
         <LiveEditor value={code} onValueChange={setCode} />
-        {error && <pre>{error}</pre>}
-        <Arrow mode={mode}>
+        <Arrow>
           <HiArrowRight />
         </Arrow>
-      </div>
-      <div tw="flex-1">
-        <CodeBlock tw="h-full">{result}</CodeBlock>
-      </div>
-    </>
+      </CodeInput>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <CodeOutput>
+        <CodeBlock>{result}</CodeBlock>
+      </CodeOutput>
+    </SandboxWrapper>
   )
 }
 
@@ -61,6 +55,35 @@ function transpile() {
 
 // -- Styles --
 
+const SandboxWrapper = styled.div`
+  display: grid;
+  gap: 16px;
+  grid-template-areas:
+    'input'
+    'error'
+    'output';
+
+  @media screen and (min-width: ${theme`screens.md`}) {
+    grid-template-areas:
+      'input output'
+      'error error';
+  }
+`
+
+const CodeInput = styled.div`
+  grid-area: input;
+  position: relative;
+`
+
+const CodeOutput = styled.div`
+  grid-area: output;
+`
+
+const ErrorMessage = styled.pre`
+  ${tw`text-sm`};
+  grid-area: error;
+`
+
 const Arrow = styled.div`
   ${tw`flex items-center justify-center w-10 h-10 text-xl text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full dark:(bg-blacks-300 border-blacks-300 text-gray-200)`}
 
@@ -74,18 +97,14 @@ const Arrow = styled.div`
   bottom: var(--offset);
   transform: translate(var(--x), var(--y)) rotate(var(--angle));
 
-  ${({ mode }) =>
-    mode === 'horizontal' &&
-    `
-    @media screen and (min-width: ${theme`screens.md`}) {
-      --x: 0;
-      --y: -50%;
-      --angle: 0;
+  @media screen and (min-width: ${theme`screens.md`}) {
+    --x: 0;
+    --y: -50%;
+    --angle: 0;
 
-      left: auto;
-      bottom: auto;
-      right: var(--offset);
-      top: 50%;
-    }
-  `}
+    left: auto;
+    bottom: auto;
+    right: var(--offset);
+    top: 50%;
+  }
 `
