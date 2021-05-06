@@ -18,7 +18,7 @@
     "clsx": "^1.1.1",
     "faunadb": "^4.0.3",
     "framer-motion": "^3.1.1",
-    "next": "10.0.4",
+    "next": "10.0.6",
     "next-mdx-enhanced": "^5.0.0",
     "postcss": "^8.2.2",
     "prism-react-renderer": "^1.2.0",
@@ -33,6 +33,7 @@
     "twin.macro": "^2.2.3"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^3.2.2",
     "babel-plugin-macros": "^3.0.1",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
