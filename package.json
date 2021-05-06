@@ -27,6 +27,7 @@
     "twin.macro": "^2.2.3"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^3.2.2",
     "babel-plugin-macros": "^3.0.1",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
