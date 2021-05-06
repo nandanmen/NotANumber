@@ -2,6 +2,7 @@ import React from 'react'
 import { CgSpinner } from 'react-icons/cg'
 import { motion } from 'framer-motion'
 import clsx from 'clsx'
+import 'twin.macro'
 
 const events = {
   Change: 0,
@@ -31,12 +32,12 @@ const transition = (state, event) => {
   return machine[state][event] ?? state
 }
 
-export default function FeedbackForm({ slug, className }) {
+export default function NewsletterForm({ className }) {
   const [state, dispatch] = React.useReducer(transition, formState.Start)
 
   const handleSubmit = async (evt) => {
     dispatch(events.Submit)
-    await submitFeedback(evt, slug)
+    await subscribe(evt)
     dispatch(events.Saved)
   }
 
@@ -48,43 +49,32 @@ export default function FeedbackForm({ slug, className }) {
       )}
       onSubmit={handleSubmit}
     >
-      <h1 className="text-2xl font-semibold">Have feedback?</h1>
+      <h1 className="text-2xl font-semibold">Newsletter</h1>
       <p>
-        Was anything confusing, hard to follow, or out of date? Let me know what
-        you think of the article and I'll make sure to update it with your
-        advice.
+        If you like my content, consider signing up for my newsletter. You'll
+        receive updates on new posts, gain access to subscriber-exclusive posts
+        and little tidbits on whatever I find interesting!
       </p>
-      <label htmlFor="message" className="hidden">
-        Message
-      </label>
-      <textarea
-        id="message"
-        type="text"
-        name="message"
-        className="p-2 border-2 rounded-lg dark:border-gray-700 focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
-        onChange={() => dispatch(events.Change)}
-      />
-      <p>Email or twitter handle (optional)</p>
-      <label htmlFor="contact" className="hidden">
-        Contact
+      <label htmlFor="email" className="hidden">
+        Email
       </label>
       <input
-        id="contact"
-        type="text"
-        name="name"
-        placeholder="@johndoe"
+        id="email"
+        type="email"
+        name="email"
         className="p-2 border-2 rounded-lg dark:border-gray-700 focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
+        placeholder="john@doe.com"
         onChange={() => dispatch(events.Change)}
       />
       <motion.button
         className={clsx(
-          'flex items-center justify-center h-10 text-sm font-semibold bg-white border-2 border-gray-400 text-gray-500 rounded-xl',
+          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl dark:bg-green-800',
           { 'bg-opacity-50': state === formState.Loading }
         )}
         whileTap={{ scale: 0.95 }}
         disabled={state === formState.Loading}
       >
-        {state === formState.Start && 'Send feedback'}
+        {state === formState.Start && 'Subscribe'}
         {state === formState.Loading && (
           <span className="text-xl animate-spin">
             <CgSpinner />
@@ -92,39 +82,29 @@ export default function FeedbackForm({ slug, className }) {
         )}
         {state === formState.Done && 'Thanks! 🎉'}
       </motion.button>
+      {state === formState.Done && (
+        <p tw="text-center">We've sent you a confirmation letter.</p>
+      )}
     </form>
   )
 }
 
-function submitFeedback(evt, slug) {
+function subscribe(evt) {
   evt.preventDefault()
 
-  const feedback = Object.fromEntries(new FormData(evt.target).entries())
-  if (!feedback.message) {
+  const { email } = Object.fromEntries(new FormData(evt.target).entries())
+  if (!email) {
     return
   }
 
-  if (!feedback.name) {
-    feedback.name = 'Anonymous'
-  }
-
-  const { name, message } = feedback
-  const params = new URLSearchParams({
-    slug,
-    name,
-    message,
-  })
+  const params = new URLSearchParams({ email })
   return new Promise((resolve, reject) => {
-    window
-      .fetch(`/api/feedback?${params}`, {
-        method: 'POST',
-      })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then(resolve)
-        } else {
-          reject(response)
-        }
-      })
+    window.fetch(`/api/subscribe?${params}`).then((response) => {
+      if (response.ok) {
+        resolve(response)
+      } else {
+        reject(response)
+      }
+    })
   })
 }

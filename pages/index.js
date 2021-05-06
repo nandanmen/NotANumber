@@ -83,8 +83,13 @@ const Posts = styled.ul`
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
   position: relative;
+
   > * {
     grid-column: 2;
+  }
+
+  > :last-child {
+    margin-top: 3rem !important;
   }
 `
 

@@ -4,6 +4,7 @@ import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
 
 import FeedbackForm from '../components/FeedbackForm'
+import NewsletterForm from '../components/NewsletterForm'
 import Navigation from '../components/Navigation'
 import CodeBlock from '../components/elements/CodeBlock'
 import ThematicBreak from '../components/elements/ThematicBreak'
@@ -42,12 +43,12 @@ export default function Layout({ frontMatter = {}, children }) {
           </p>
         </div>
         {children}
+        <FormContainer>
+          <FeedbackForm slug={frontMatter.__resourcePath} />
+          <NewsletterForm />
+        </FormContainer>
       </Article>
-      <footer tw="relative flex justify-center px-8 pt-64 pb-24 mt-56 bg-gray-200 h-80 dark:bg-blacks-500">
-        <StyledFeedbackForm
-          slug={frontMatter.__resourcePath}
-          tw="absolute -top-56"
-        />
+      <footer tw="flex justify-center px-8 pt-64 pb-24 bg-gray-200 h-80 dark:bg-blacks-500">
         <Navigation
           style={{ width: 'min(65ch, 100%)' }}
           tw="mt-8 text-gray-500 dark:text-gray-200"
@@ -178,10 +179,9 @@ const Title = styled.h1`
   }
 `
 
-const StyledFeedbackForm = styled(FeedbackForm)`
-  width: calc(100% - 4rem);
+const FormContainer = styled.div`
+  ${tw`space-y-8`}
 
-  @media screen and (min-width: ${theme`screens.md`}) {
-    width: auto;
-  }
+  transform: translateY(14rem);
+  margin-top: -10rem;
 `
