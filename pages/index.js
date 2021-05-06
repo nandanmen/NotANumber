@@ -3,8 +3,6 @@ import Link from 'next/link'
 import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
-import NewsletterForm from '../components/NewsletterForm'
-
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 
@@ -66,7 +64,6 @@ export default function HomePage() {
               </Link>
             </li>
           ))}
-          <NewsletterForm />
         </Posts>
       </div>
     </>
