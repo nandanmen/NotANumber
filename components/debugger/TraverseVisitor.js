@@ -30,7 +30,7 @@ export default function TraverseVisitor() {
   return (
     <div>
       <Controls>
-        <Button tw="bg-white" onClick={actions.toggle}>
+        <Button onClick={actions.toggle}>
           {models.isPlaying ? <BsPauseFill /> : <BsPlayFill />}
         </Button>
         <Slider
