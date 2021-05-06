@@ -4,8 +4,9 @@ import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
+import { frontMatter as debuggerPost } from './debugger.mdx'
 
-const posts = [slidingWindow]
+const posts = [debuggerPost, slidingWindow]
 
 function formatPath(path) {
   return path.replace(/\.mdx$/, '')
@@ -20,8 +21,8 @@ export default function HomePage() {
       <Head>
         <title>Not a Number</title>
       </Head>
-      <div tw="pb-32 dark:text-white">
-        <header className="mx-auto mt-32 mb-24">
+      <div tw="py-32 dark:text-white">
+        <header className="mx-auto mb-24">
           <Title tw="mx-auto mb-16">Not a Number</Title>
           <p tw="text-center max-w-md mx-auto px-8">
             An interactive blog on computer science and web development, by
@@ -79,7 +80,6 @@ const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600 dark:
 
 const Posts = styled.ul`
   ${tw`pt-12 space-y-4`}
-
   display: grid;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
   position: relative;
@@ -87,10 +87,13 @@ const Posts = styled.ul`
   > * {
     grid-column: 2;
   }
+
+  > :last-child {
+    margin-top: 3rem !important;
+  }
 `
 
 const Divider = styled.div`
   ${tw`absolute top-0 w-24 h-px col-start-1 transform -translate-x-1/2 bg-gray-400 left-1/2`}
-
   grid-column: 1;
 `

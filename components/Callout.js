@@ -1,19 +1,21 @@
 import React from 'react'
-import { FaChevronDown, FaQuestion } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp, FaQuestion } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import tw, { styled } from 'twin.macro'
 
+import Widget from './Widget'
+
 export default function Callout({ label, children }) {
   return (
-    <Aside className="full-width">
-      <div tw="absolute right-8 -top-4 bg-purple-500 rounded-full w-10 h-10 flex items-center justify-center text-white">
-        <FaQuestion />
-      </div>
-      <p>
-        <strong>{label}</strong>
-      </p>
-      {children}
-    </Aside>
+    <Widget className="full-width">
+      <Aside>
+        <Icon>
+          <FaQuestion />
+        </Icon>
+        <p tw="font-semibold">{label}</p>
+        {children}
+      </Aside>
+    </Widget>
   )
 }
 
@@ -28,6 +30,15 @@ function CalloutDetails({ children }) {
         transition={{ delay: 0.1 }}
       >
         {children}
+        <button
+          tw="flex items-center font-semibold"
+          onClick={() => setOpen(false)}
+        >
+          Hide
+          <span tw="ml-2">
+            <FaChevronUp />
+          </span>
+        </button>
       </Details>
     )
   }
@@ -46,8 +57,17 @@ Callout.Details = CalloutDetails
 
 // --
 
+const Icon = styled.div`
+  ${tw`flex items-center justify-center w-10 h-10 text-white bg-purple-500`}
+
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  border-radius: 0 12px 0 12px;
+`
+
 const Aside = styled.aside`
-  ${tw`relative p-8 bg-purple-200 md:rounded-2xl dark:bg-purple-800`}
+  ${tw`relative p-8 border-4 border-purple-500 md:rounded-2xl`}
 
   > * {
     margin-bottom: 1.5em;
@@ -55,10 +75,6 @@ const Aside = styled.aside`
     &:last-child {
       margin-bottom: 0;
     }
-  }
-
-  code {
-    ${tw`bg-blue-100 dark:bg-purple-700 py-0.5 px-1 rounded-md text-sm`}
   }
 `
 

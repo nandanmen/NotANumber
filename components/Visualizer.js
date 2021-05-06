@@ -9,11 +9,12 @@ import {
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
-import tw from 'twin.macro'
+import 'twin.macro'
 
 import Figure from './Figure'
+import Button from './elements/Button'
 import exec from '../lib/exec'
-import zip from '../lib/zip'
+import { zip } from '../lib/utils'
 import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
@@ -196,17 +197,5 @@ function Algorithm({
         </motion.form>
       )}
     </>
-  )
-}
-
-function Button(props) {
-  return (
-    <motion.button
-      css={[
-        tw`flex items-center justify-center w-8 h-8 font-semibold text-gray-500 bg-gray-100 rounded-lg shadow-md dark:bg-blacks-300 dark:text-gray-300`,
-        props.disabled && tw`opacity-50 cursor-not-allowed`,
-      ]}
-      {...props}
-    />
   )
 }
