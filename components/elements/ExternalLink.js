@@ -1,7 +1,7 @@
 import tw, { styled } from 'twin.macro'
 
 export default function ExternalLink(props) {
-  return <Anchor target="_blank" {...props} />
+  return <Anchor target="_blank" rel="noreferrer" {...props} />
 }
 
 const Anchor = styled.a`

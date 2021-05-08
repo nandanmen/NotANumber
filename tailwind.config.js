@@ -10,9 +10,8 @@ module.exports = {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
-        mono: [
-          'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        ],
+        sans: ['Karla', ...defaultTheme.fontFamily.sans],
+        mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       },
       colors: {
         blacks: {

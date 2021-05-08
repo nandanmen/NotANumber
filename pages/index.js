@@ -3,6 +3,8 @@ import Link from 'next/link'
 import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
+import ExternalLink from '../components/elements/ExternalLink'
+
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 
@@ -27,11 +29,7 @@ export default function HomePage() {
           <p tw="text-center max-w-md mx-auto px-8">
             An interactive blog on computer science and web development, by
             {` `}
-            <ExternalLink
-              href="https://narendras.io"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ExternalLink href="https://narendras.io">
               Nanda Syahrasyad
             </ExternalLink>
             .
@@ -75,8 +73,6 @@ const Title = styled.h1`
   font-size: clamp(5rem, 8vw, 8rem);
   line-height: 0.9;
 `
-
-const ExternalLink = tw.a`font-semibold text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-300`
 
 const Posts = styled.ul`
   ${tw`pt-12 space-y-4`}
