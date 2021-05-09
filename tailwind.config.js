@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
+        serif: ['Recoleta', ...defaultTheme.fontFamily.serif],
         sans: ['Karla', ...defaultTheme.fontFamily.sans],
         mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       },

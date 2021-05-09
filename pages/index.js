@@ -45,7 +45,7 @@ export default function HomePage() {
               <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
-                    <h1 tw="text-3xl font-semibold font-serif">{title}</h1>
+                    <h1 tw="text-3xl font-serif">{title}</h1>
                     <p tw="italic">{blurb}</p>
                     <p tw="text-sm text-gray-600 dark:text-gray-300">
                       {new Intl.DateTimeFormat('en-US', {
@@ -69,7 +69,7 @@ export default function HomePage() {
 }
 
 const Title = styled.h1`
-  ${tw`font-serif font-semibold text-center`}
+  ${tw`font-serif text-center`}
   font-size: clamp(5rem, 8vw, 8rem);
   line-height: 0.9;
 `
