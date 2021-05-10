@@ -89,7 +89,7 @@ So how exactly would we write something to transform the code automatically?
 Since code is ultimately a very long string, we'll use strings as a starting point. Then, we can use a regex matcher to change every instance of `debugger` with our save call:
 
 ```jsx
-code.replace(/debugger/, 'variables.push(/* stuff */)')
+code.replaceAll(/debugger/, 'variables.push(/* stuff */)')
 ```
 
 This is a promising start, but this approach really breaks down when you start needing information from the code. What are the variables in scope _right now_? What are the names of those variables? Are those variables declared? Can we safely use them?
