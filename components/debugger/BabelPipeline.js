@@ -1,7 +1,7 @@
 import tw, { styled, theme } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
-import CodeBlock from '../elements/CodeBlock'
+import CodeBlock from '@/elements/CodeBlock'
 
 const inputCode = `var a = 10`
 const outputCode = `let a = 10`

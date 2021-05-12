@@ -3,7 +3,7 @@ import Link from 'next/link'
 import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
-import ExternalLink from '../components/elements/ExternalLink'
+import ExternalLink from '@/elements/ExternalLink'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'

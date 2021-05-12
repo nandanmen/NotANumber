@@ -1,16 +1,19 @@
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import { BsTriangleFill } from 'react-icons/bs'
-import Item from '../shared/Item'
 
-export default function SmallestSubarrayNaive({ state }) {
+import Item from '../Item'
+
+export default function Quadratic({ state }) {
   return (
-    <div className="flex flex-col px-4">
-      <div className="flex justify-center pb-4">
+    <div className="flex flex-col items-start px-4 overflow-x-scroll md:items-center md:overflow-x-hidden">
+      <div className="flex justify-start pb-4">
         <AnimateSharedLayout>
-          {state.arr.map((item, index) => (
+          {state.chocolates.map((item, index) => (
             <Item
               key={index}
-              active={state.__done || (index >= state.i && index <= state.j)}
+              active={
+                state.__done || (index >= state.i && index <= state.i + state.j)
+              }
               className="relative"
             >
               {item}
@@ -30,10 +33,11 @@ export default function SmallestSubarrayNaive({ state }) {
         </AnimateSharedLayout>
       </div>
       <code className="block w-full mt-4 font-mono text-center whitespace-nowrap">
-        s = {state.s}
-      </code>
-      <code className="block w-full font-mono text-center whitespace-nowrap">
-        min = {JSON.stringify(state.min, null, 2)}
+        {JSON.stringify(
+          state.result.map((num) => Number(num.toFixed(2))),
+          null,
+          2
+        )}
       </code>
     </div>
   )

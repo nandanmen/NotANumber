@@ -3,12 +3,13 @@ import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
 
-import FeedbackForm from '../components/FeedbackForm'
-import NewsletterForm from '../components/NewsletterForm'
-import Navigation from '../components/Navigation'
-import CodeBlock from '../components/elements/CodeBlock'
-import ThematicBreak from '../components/elements/ThematicBreak'
-import ExternalLink from '../components/elements/ExternalLink'
+import FeedbackForm from '@/components/FeedbackForm'
+import NewsletterForm from '@/components/NewsletterForm'
+import Navigation from '@/components/Navigation'
+
+import CodeBlock from '@/elements/CodeBlock'
+import ThematicBreak from '@/elements/ThematicBreak'
+import ExternalLink from '@/elements/ExternalLink'
 
 export default function Layout({ frontMatter = {}, children }) {
   return (

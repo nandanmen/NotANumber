@@ -2,7 +2,7 @@ import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import tw, { styled, theme } from 'twin.macro'
 
-import CodeBlock from '../../elements/CodeBlock'
+import CodeBlock from '@/elements/CodeBlock'
 
 const TreeContext = React.createContext()
 

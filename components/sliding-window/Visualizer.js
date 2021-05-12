@@ -11,11 +11,13 @@ import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import 'twin.macro'
 
+import Button from '@/elements/Button'
+
+import exec from '@/lib/exec'
+import { zip } from '@/lib/utils'
+import usePlayer from '@/lib/usePlayer'
+
 import Figure from './Figure'
-import Button from './elements/Button'
-import exec from '../lib/exec'
-import { zip } from '../lib/utils'
-import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
   return (

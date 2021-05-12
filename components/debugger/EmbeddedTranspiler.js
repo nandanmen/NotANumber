@@ -1,7 +1,8 @@
 import 'twin.macro'
 
-import TranspilerSandbox from './TranspilerSandbox'
-import Widget from '../Widget'
+import Widget from '@/elements/Widget'
+
+import TranspilerSandbox from './shared/TranspilerSandbox'
 
 export default function EmbeddedTranspiler({ children, ...props }) {
   return (

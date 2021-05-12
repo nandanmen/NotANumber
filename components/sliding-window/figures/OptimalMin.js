@@ -1,5 +1,5 @@
-import Item from '../shared/Item'
-import SlidingWindow from './shared/SlidingWindow'
+import Item from '../Item'
+import SlidingWindow from '../SlidingWindow'
 
 export default function OptimalMin({ state }) {
   const { __done: done, windowStart, windowEnd, result, chocolates } = state

@@ -1,4 +1,4 @@
-import Item from '../shared/Item'
+import Item from '../Item'
 
 const variants = {
   hide: {
