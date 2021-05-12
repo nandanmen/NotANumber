@@ -5,7 +5,7 @@ export default function ExternalLink(props) {
 }
 
 const Anchor = styled.a`
-  ${tw`hover:text-gray-700 dark:hover:text-gray-400`}
+  ${tw`hover:text-gray-700`}
   font-weight: 600;
   color: var(--color-highlight);
 `

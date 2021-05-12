@@ -27,7 +27,7 @@ const Title = styled.h1`
 `
 
 const Content = styled.div`
-  ${tw`bg-gray-300 dark:bg-blacks-500`}
+  ${tw`bg-gray-300`}
 
   padding: 16px;
   border-radius: 8px;

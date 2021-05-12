@@ -44,7 +44,7 @@ export default function NewsletterForm({ className }) {
   return (
     <form
       className={clsx(
-        'flex flex-col p-6 md:p-8 space-y-4 bg-gray-100 border-2 rounded-lg shadow-lg dark:bg-blacks-300 dark:text-white dark:border-blacks-300',
+        'flex flex-col p-6 md:p-8 space-y-4 bg-gray-100 border-2 rounded-lg shadow-lg',
         className
       )}
       onSubmit={handleSubmit}
@@ -62,13 +62,13 @@ export default function NewsletterForm({ className }) {
         id="email"
         type="email"
         name="email"
-        className="p-2 border-2 rounded-lg dark:border-gray-700 focus:outline-none focus:border-blue-400 dark:bg-blacks-100"
+        className="p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
         placeholder="john@doe.com"
         onChange={() => dispatch(events.Change)}
       />
       <motion.button
         className={clsx(
-          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl dark:bg-green-800',
+          'flex items-center justify-center h-10 text-sm font-semibold text-white bg-green-600 shadow-lg rounded-xl',
           { 'bg-opacity-50': state === formState.Loading }
         )}
         whileTap={{ scale: 0.95 }}

@@ -14,7 +14,7 @@ export default function SlidingWindow({ start, end, className }) {
         left: `${start * ItemWidth + start * ItemMargin}rem`,
       }}
       className={clsx(
-        'border-gray-400 border-4 h-28 rounded-xl absolute dark:border-blacks-300',
+        'border-gray-400 border-4 h-28 rounded-xl absolute',
         className
       )}
     ></motion.div>

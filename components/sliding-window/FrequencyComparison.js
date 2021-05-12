@@ -56,11 +56,11 @@ const Item = styled.li`
 const Key = styled.p`
   ${tw`flex-1 mr-1 text-white rounded-md`}
 
-  ${({ passed }) => passed === undefined && tw`bg-gray-400 dark:bg-blacks-300`}
+  ${({ passed }) => passed === undefined && tw`bg-gray-400`}
 
   ${({ passed }) => passed && tw`bg-green-500`}
 
   ${({ passed }) => passed === false && tw`bg-red-500`}
 `
 
-const Value = tw.p`flex items-center self-stretch justify-center flex-1 font-mono text-sm rounded-md text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-white`
+const Value = tw.p`flex items-center self-stretch justify-center flex-1 font-mono text-sm rounded-md text-gray-500 bg-gray-100`

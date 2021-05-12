@@ -23,7 +23,7 @@ export default function HomePage() {
       <Head>
         <title>Not a Number</title>
       </Head>
-      <div tw="py-32 dark:text-white">
+      <div tw="py-32">
         <header className="mx-auto mb-24">
           <Title tw="mx-auto mb-16">Not a Number</Title>
           <p tw="text-center max-w-md mx-auto px-8">
@@ -40,14 +40,14 @@ export default function HomePage() {
           {posts.map(({ title, __resourcePath, blurb, publishDate }) => (
             <li
               key={__resourcePath}
-              tw="px-8 py-4 hover:bg-gray-200 rounded-xl dark:hover:bg-blacks-500"
+              tw="px-8 py-4 hover:bg-gray-200 rounded-xl"
             >
               <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer">
                   <div tw="space-y-2">
                     <h1 tw="text-3xl font-serif">{title}</h1>
                     <p tw="italic">{blurb}</p>
-                    <p tw="text-sm text-gray-600 dark:text-gray-300">
+                    <p tw="text-sm text-gray-600">
                       {new Intl.DateTimeFormat('en-US', {
                         month: 'long',
                         year: 'numeric',
@@ -55,7 +55,7 @@ export default function HomePage() {
                       }).format(new Date(publishDate))}
                     </p>
                   </div>
-                  <p tw="text-2xl text-gray-600 dark:text-gray-300">
+                  <p tw="text-2xl text-gray-600">
                     <HiArrowRight />
                   </p>
                 </a>

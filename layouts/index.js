@@ -25,7 +25,7 @@ export default function Layout({ frontMatter = {}, children }) {
             {frontMatter.blurb}
           </p>
         </Header>
-        <div tw="flex items-center justify-between mb-12! text-sm text-gray-600 dark:text-gray-100">
+        <div tw="flex items-center justify-between mb-12! text-sm text-gray-600">
           <div tw="flex items-center">
             <img
               src="/avatar.jpg"
@@ -48,10 +48,10 @@ export default function Layout({ frontMatter = {}, children }) {
           <NewsletterForm />
         </FormContainer>
       </Article>
-      <footer tw="flex justify-center px-8 pt-64 pb-24 bg-gray-200 h-80 dark:bg-blacks-500">
+      <footer tw="flex justify-center px-8 pt-64 pb-24 bg-gray-200 h-80">
         <Navigation
           style={{ width: 'min(65ch, 100%)' }}
-          tw="mt-8 text-gray-500 dark:text-gray-200"
+          tw="mt-8 text-gray-500"
         />
       </footer>
     </MDXProvider>
@@ -59,7 +59,7 @@ export default function Layout({ frontMatter = {}, children }) {
 }
 
 const Header = styled.header`
-  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24! dark:(text-white from-blacks-900 to-blacks-700)`}
+  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24!`}
 
   height: 600px;
   grid-column: 1 / -1 !important;
@@ -71,7 +71,7 @@ const Header = styled.header`
 `
 
 const Article = styled.article`
-  ${tw`grid w-full pb-20 text-gray-900 dark:text-white`}
+  ${tw`grid w-full pb-20 text-gray-900`}
 
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
@@ -128,14 +128,14 @@ const Article = styled.article`
     margin-bottom: 1em;
 
     &:before {
-      ${tw`absolute left-0 w-6 bg-green-500 -top-4 dark:bg-green-800`}
+      ${tw`absolute left-0 w-6 bg-green-500 -top-4`}
       content: '';
       height: 3px;
     }
   }
 
   h3 {
-    ${tw`mt-8 text-xl text-gray-800 dark:text-current`}
+    ${tw`mt-8 text-xl text-gray-800`}
     margin-bottom: 1em;
   }
 
@@ -153,7 +153,7 @@ const Article = styled.article`
   }
 
   code {
-    ${tw`p-1 bg-gray-200 rounded-sm dark:bg-blacks-500`}
+    ${tw`p-1 bg-gray-200 rounded-sm`}
     font-size: 0.875em;
   }
 

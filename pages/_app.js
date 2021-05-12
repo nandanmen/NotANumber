@@ -6,7 +6,7 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   return (
     <Main>
-      <Navigation tw="w-full p-8 fixed top-0 z-50 dark:text-gray-100" />
+      <Navigation tw="w-full p-8 fixed top-0 z-50" />
       <Component {...pageProps} />
     </Main>
   )
@@ -35,18 +35,4 @@ const Main = styled.main`
 
   --token-color-comment: ${theme`textColor.gray.600`};
   --token-style-comment: italic;
-
-  @media (prefers-color-scheme: dark) {
-    --color-background: ${theme`colors.blacks.700`};
-    --color-highlight: ${theme`textColor.yellow.300`};
-
-    --code-background: ${theme`colors.blacks.500`};
-    --code-border-color: ${theme`colors.blacks.300`};
-    --token-color-keyword: ${theme`textColor.green.400`};
-
-    --token-color-function: ${theme`textColor.green.400`};
-    --token-color-number: ${theme`textColor.gray.500`};
-
-    --token-color-comment: ${theme`textColor.gray.500`};
-  }
 `

@@ -61,7 +61,7 @@ const Caption = styled(Widget.Caption)`
   display: block;
 
   &:after {
-    ${tw`bg-gray-400 dark:bg-gray-500`}
+    ${tw`bg-gray-400`}
 
     content: '';
     position: absolute;
