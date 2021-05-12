@@ -21,9 +21,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-@media (prefers-color-scheme: dark) {
-  ::selection {
-    @apply bg-yellow-800;
-  }
-}

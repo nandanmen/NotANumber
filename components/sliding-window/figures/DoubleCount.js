@@ -1,6 +1,7 @@
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import { BsTriangleFill } from 'react-icons/bs'
-import Item from '../shared/Item'
+
+import Item from '../Item'
 
 export default function DoubleCount({ state, inputs }) {
   const doubleCounted = (index) => state.doubleCounted.includes(index)

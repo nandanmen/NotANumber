@@ -1,4 +1,4 @@
-import Item from '../shared/Item'
+import Item from '../Item'
 
 export default function Derive({ state }) {
   const [start, end] = state.window
@@ -15,7 +15,7 @@ export default function Derive({ state }) {
           </Item>
         ))}
       </div>
-      <p className="w-full text-center mt-4 font-mono">
+      <p className="w-full mt-4 font-mono text-center">
         sum: {state.sum}{' '}
         {state.diff && `(${state.diff > 0 ? `+${state.diff}` : state.diff})`}
       </p>

@@ -2,11 +2,16 @@ import React from 'react'
 import tw, { styled, theme } from 'twin.macro'
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 
-import { Tree, useSyntaxTree } from '../sandboxes/AstSandbox'
-import exec from '../../lib/exec'
-import usePlayer from '../../lib/usePlayer'
+import Button from '@/elements/Button'
+
+import exec from '@/lib/exec'
+import usePlayer from '@/lib/usePlayer'
+
+// Macros can't use absolute imports because they get stripped out
 import snapshot from '../../lib/snapshot.macro'
-import Button from '../elements/Button'
+
+import Tree from './shared/Tree'
+import useSyntaxTree from './shared/useSyntaxTree'
 
 const code = `let a = 10`
 
@@ -96,7 +101,7 @@ const Slider = styled.input.attrs({ type: 'range' })`
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm dark:bg-green-600`};
+    ${tw`bg-green-400 shadow-sm`};
     margin-top: -10px;
   }
 
@@ -104,17 +109,17 @@ const Slider = styled.input.attrs({ type: 'range' })`
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm dark:bg-green-600`};
+    ${tw`bg-green-400 shadow-sm`};
   }
 
   &::-webkit-slider-runnable-track {
     height: 4px;
-    ${tw`bg-gray-300 dark:bg-blacks-500`};
+    ${tw`bg-gray-300`};
   }
 
   &::-moz-range-track {
     height: 4px;
-    ${tw`bg-gray-300 dark:bg-blacks-500`};
+    ${tw`bg-gray-300`};
   }
 `
 
@@ -132,7 +137,7 @@ const ContentWrapper = styled.div`
 `
 
 const Visitor = styled.ul`
-  ${tw`font-mono bg-gray-200 dark:bg-blacks-500`}
+  ${tw`font-mono bg-gray-200`}
 
   border-radius: 8px;
   padding: 16px;

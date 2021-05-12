@@ -11,11 +11,13 @@ import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import 'twin.macro'
 
+import Button from '@/elements/Button'
+
+import exec from '@/lib/exec'
+import { zip } from '@/lib/utils'
+import usePlayer from '@/lib/usePlayer'
+
 import Figure from './Figure'
-import Button from './elements/Button'
-import exec from '../lib/exec'
-import { zip } from '../lib/utils'
-import usePlayer from '../lib/usePlayer'
 
 export default function Visualizer({ algorithm, caption, children, ...props }) {
   return (
@@ -184,7 +186,7 @@ function Algorithm({
               <label key={name} tw="flex-1 mx-1 font-mono">
                 <input
                   name={name}
-                  tw="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400 dark:bg-blacks-500 dark:border-blacks-300"
+                  tw="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
                   type="text"
                   defaultValue={JSON.stringify(value)}
                   onBlur={(evt) => validate([name, evt.target.value])}

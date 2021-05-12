@@ -1,11 +1,13 @@
 import React from 'react'
 import tw, { styled } from 'twin.macro'
 
-import LiveEditor from '../shared/LiveEditor'
-import { Tree, useSyntaxTree } from '../sandboxes/AstSandbox'
-import Widget from '../Widget'
+import Widget from '@/elements/Widget'
 
-export default function EmbeddedSandbox({
+import LiveEditor from './shared/LiveEditor'
+import Tree from './shared/Tree'
+import useSyntaxTree from './shared/useSyntaxTree'
+
+export default function TreeSandbox({
   initialCode = '',
   depth = 0,
   showProps = false,
@@ -61,7 +63,7 @@ const Caption = styled(Widget.Caption)`
   display: block;
 
   &:after {
-    ${tw`bg-gray-400 dark:bg-gray-500`}
+    ${tw`bg-gray-400`}
 
     content: '';
     position: absolute;

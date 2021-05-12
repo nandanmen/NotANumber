@@ -2,7 +2,7 @@ import React from 'react'
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import tw, { styled, theme } from 'twin.macro'
 
-import CodeBlock from '../../elements/CodeBlock'
+import CodeBlock from '@/elements/CodeBlock'
 
 const TreeContext = React.createContext()
 
@@ -146,12 +146,9 @@ function AstNodeGroup({ name, nodes, path, depth }) {
   const hasChildren = Array.isArray(nodes) && nodes.length > 0
   return (
     <Node>
-      <NodeLabel
-        tw="text-gray-700 dark:text-gray-300 pb-2 mb-2 relative z-10"
-        showLine
-      >
+      <NodeLabel tw="text-gray-700 pb-2 mb-2 relative z-10" showLine>
         <button tw="space-x-1" onClick={() => setIsOpen((open) => !open)}>
-          <span tw="rounded-sm bg-gray-200 dark:bg-blacks-500 p-1">{name}</span>
+          <span tw="rounded-sm bg-gray-200 p-1">{name}</span>
           {hasChildren ? (
             <span>{isOpen ? '-' : '+'}</span>
           ) : (
@@ -203,10 +200,6 @@ const Node = styled(motion.li).attrs({
   position: relative;
 
   --line-color: ${theme`colors.gray.400`};
-
-  @media (prefers-color-scheme: dark) {
-    --line-color: ${theme`colors.gray.700`};
-  }
 
   > ul > li:last-child {
     &:before {

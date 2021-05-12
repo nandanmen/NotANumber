@@ -2,8 +2,9 @@ import React from 'react'
 import { HiArrowRight } from 'react-icons/hi'
 import tw, { styled, theme } from 'twin.macro'
 
-import LiveEditor from '../shared/LiveEditor'
-import CodeBlock from '../elements/CodeBlock'
+import CodeBlock from '@/elements/CodeBlock'
+
+import LiveEditor from './LiveEditor'
 import useBabelPlugin from './useBabelPlugin'
 
 const starterCode = `function sum(arr) {
@@ -85,7 +86,7 @@ const ErrorMessage = styled.pre`
 `
 
 const Arrow = styled.div`
-  ${tw`flex items-center justify-center w-10 h-10 text-xl text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full dark:(bg-blacks-300 border-blacks-300 text-gray-200)`}
+  ${tw`flex items-center justify-center w-10 h-10 text-xl text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full`}
 
   --x: -50%;
   --y: 0;

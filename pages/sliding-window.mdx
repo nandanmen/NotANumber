@@ -4,13 +4,15 @@ blurb: 'Chocolates and a way to make your array algorithms a bit faster.'
 publishDate: '2021-03-02'
 ---
 
-import Visualizer from '../components/Visualizer'
-import Callout from '../components/Callout'
-import Figure from '../components/Figure'
-import Item from '../components/shared/Item'
-import SlidingWindow from '../components/sliding-window/shared/SlidingWindow'
-import Dictionary from '../components/sliding-window/shared/Dictionary'
-import * as Figures from '../components/sliding-window'
+import Visualizer from '@/components/sliding-window/Visualizer'
+import Figure from '@/components/sliding-window/Figure'
+import Item from '@/components/sliding-window/Item'
+import SlidingWindow from '@/components/sliding-window/SlidingWindow'
+import Dictionary from '@/components/sliding-window/Dictionary'
+import * as Figures from '@/components/sliding-window/figures'
+
+import Callout from '@/elements/Callout'
+
 import snapshot from '../lib/snapshot.macro'
 import { motion } from 'framer-motion'
 import 'twin.macro'
@@ -797,17 +799,15 @@ Here's the plan: every time a letter enters the window, you _subtract_ that lett
             <li key={key} tw="flex mb-1 font-semibold items-center relative">
               {getLast(key, val) ? (
                 <motion.p
-                  tw="absolute -right-8 text-gray-500 dark:text-gray-200"
+                  tw="absolute -right-8 text-gray-500"
                   animate={{ y: 0, opacity: 1 }}
                   initial={{ y: 4, opacity: 0 }}
                 >
                   {getLast(key, val)}
                 </motion.p>
               ) : null}
-              <p tw="flex-1 mr-1 text-white bg-gray-400 rounded-md dark:bg-blacks-300">
-                {key}
-              </p>
-              <p tw="flex items-center justify-center self-stretch flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
+              <p tw="flex-1 mr-1 text-white bg-gray-400 rounded-md ">{key}</p>
+              <p tw="flex items-center justify-center self-stretch flex-1 font-mono text-sm text-gray-500 bg-gray-100 rounded-md">
                 {val}
               </p>
             </li>

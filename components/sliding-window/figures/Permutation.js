@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
-import Dictionary from './shared/Dictionary'
 import 'twin.macro'
+
+import Dictionary from '../Dictionary'
 
 export default function Permutation({ state }) {
   const {

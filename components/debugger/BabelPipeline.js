@@ -1,7 +1,7 @@
 import tw, { styled, theme } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
-import CodeBlock from '../elements/CodeBlock'
+import CodeBlock from '@/elements/CodeBlock'
 
 const inputCode = `var a = 10`
 const outputCode = `let a = 10`
@@ -94,10 +94,6 @@ const TreeWrapper = styled.div`
 const Node = styled.div`
   --border-color: ${theme`colors.gray.300`};
 
-  @media (prefers-color-scheme: dark) {
-    --border-color: ${theme`colors.blacks.300`};
-  }
-
   background: var(--code-background);
   position: relative;
   width: 32px;
@@ -148,7 +144,7 @@ function Arrow() {
   )
 }
 
-const ArrowWrapper = tw.div`flex items-center justify-center w-8 h-8 text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full dark:(bg-blacks-300 border-blacks-300 text-gray-200)`
+const ArrowWrapper = tw.div`flex items-center justify-center w-8 h-8 text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full`
 
 // --
 
