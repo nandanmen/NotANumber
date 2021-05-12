@@ -61,7 +61,7 @@ export default function FeedbackForm({ slug, className }) {
         id="message"
         type="text"
         name="message"
-        className="p-2 border-2 rounded-lgfocus:outline-none focus:border-blue-400"
+        className="p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
         onChange={() => dispatch(events.Change)}
       />
       <p>Email or twitter handle (optional)</p>
