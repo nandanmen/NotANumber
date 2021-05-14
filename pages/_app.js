@@ -53,8 +53,15 @@ const Main = styled.main`
   --token-color-comment: var(--brown);
   --token-style-comment: italic;
 
+  /* Fonts */
   --text-sm: 0.875rem;
   --text-base: 1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.875rem;
+
+  --text-serif: Recoleta, ui-serif, Georgia, serif;
+  --text-mono: DM Mono, Menlo, ui-monospace, monospace;
+  --text-sans: Karla, system-ui, -apple-system, sans-serif;
 
   background: var(--color-background);
   color: var(--color-text);

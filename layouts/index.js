@@ -10,6 +10,11 @@ import Navigation from '@/components/Navigation'
 import CodeBlock from '@/elements/CodeBlock'
 import ThematicBreak from '@/elements/ThematicBreak'
 import ExternalLink from '@/elements/ExternalLink'
+import InlineCode from '@/elements/InlineCode'
+import UnorderedList from '@/elements/UnorderedList'
+import OrderedList from '@/elements/OrderedList'
+import Heading from '@/elements/Heading'
+import Subheading from '@/elements/Subheading'
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
@@ -17,11 +22,20 @@ const formatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 })
 
+const mdxComponents = {
+  a: ExternalLink,
+  pre: CodeBlock,
+  hr: ThematicBreak,
+  inlineCode: InlineCode,
+  ul: UnorderedList,
+  ol: OrderedList,
+  h2: Heading,
+  h3: Subheading,
+}
+
 export default function Layout({ frontMatter = {}, children }) {
   return (
-    <MDXProvider
-      components={{ a: ExternalLink, pre: CodeBlock, hr: ThematicBreak }}
-    >
+    <MDXProvider components={mdxComponents}>
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -135,7 +149,13 @@ const Article = styled.article`
     border-right-width: 0;
     border-left-width: 0;
 
+    grid-column: 1 / -1;
+    max-width: 100vw;
+
     @media screen and (min-width: ${theme`screens.md`}) {
+      grid-column: 5 / span 1;
+
+      /* For some reason revert doesn't work here so I have to manually set it back */
       border-radius: 6px;
       border-right-width: 2px;
       border-left-width: 2px;
@@ -145,6 +165,15 @@ const Article = styled.article`
   > ${ThematicBreak} {
     margin-top: 24px;
     margin-bottom: 48px;
+  }
+
+  > ${Heading} {
+    margin-top: 4rem;
+    margin-bottom: 1em;
+  }
+
+  > ${Subheading} {
+    margin-bottom: 1em;
   }
 
   > .full-width,
@@ -172,50 +201,6 @@ const Article = styled.article`
 
     > .full-width-3x {
       grid-column: 2 / -2;
-    }
-  }
-
-  h2 {
-    ${tw`relative mt-16 font-serif text-3xl`}
-    margin-bottom: 1em;
-
-    &:before {
-      ${tw`absolute left-0 w-6 -top-4`}
-      content: '';
-      height: 3px;
-      background: var(--border-color);
-    }
-  }
-
-  h3 {
-    ${tw`mt-8 text-xl text-gray-800`}
-    margin-bottom: 1em;
-  }
-
-  > ul,
-  > ol {
-    ${tw`pl-4 space-y-2`}
-  }
-
-  ul {
-    ${tw`list-disc`}
-  }
-
-  ol {
-    ${tw`list-decimal`}
-  }
-
-  code {
-    ${tw`p-1 bg-gray-200 rounded-sm`}
-    font-size: 0.875em;
-  }
-
-  > pre {
-    grid-column: 1 / -1;
-    max-width: 100vw;
-
-    @media screen and (min-width: 770px) {
-      grid-column: 5 / span 1;
     }
   }
 `
