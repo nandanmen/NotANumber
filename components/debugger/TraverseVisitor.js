@@ -101,25 +101,29 @@ const Slider = styled.input.attrs({ type: 'range' })`
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm`};
     margin-top: -10px;
+    cursor: pointer;
+    background: var(--brown);
+    border: 2px solid var(--border-color);
   }
 
   &::-moz-range-thumb {
     height: 24px;
     width: 24px;
     border-radius: 50%;
-    ${tw`bg-green-400 shadow-sm`};
+    cursor: pointer;
+    background: var(--brown);
+    border: 2px solid var(--border-color);
   }
 
   &::-webkit-slider-runnable-track {
     height: 4px;
-    ${tw`bg-gray-300`};
+    background: hsl(var(--gray), 85%);
   }
 
   &::-moz-range-track {
     height: 4px;
-    ${tw`bg-gray-300`};
+    background: hsl(var(--gray), 85%);
   }
 `
 
@@ -137,11 +141,11 @@ const ContentWrapper = styled.div`
 `
 
 const Visitor = styled.ul`
-  ${tw`font-mono bg-gray-200`}
-
+  font-family: var(--text-mono);
+  background: var(--gray200);
   border-radius: 8px;
   padding: 16px;
-  list-style: none !important;
+  border: 2px solid var(--border-color);
 
   > li {
     margin-top: 4px;
@@ -154,7 +158,7 @@ const VisitorTitle = styled.h1`
 
 const Handler = styled.li`
   --color-background: ${({ active }) =>
-    active ? `var(--token-color-keyword)` : 'revert'};
+    active ? `var(--color-highlight-secondary)` : 'revert'};
   --color-text: ${({ active }) => (active ? 'white' : 'revert')};
 
   background: var(--color-background);

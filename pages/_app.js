@@ -6,7 +6,7 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   return (
     <Main>
-      <Navigation tw="w-full p-8 fixed top-0 z-50" />
+      <TopNavigation tw="w-full p-8 pb-0 fixed top-0 z-50" />
       <Component {...pageProps} />
     </Main>
   )
@@ -25,7 +25,9 @@ const Main = styled.main`
   --purple: hsl(291, 30%, 48%);
   --red: hsl(0, 72%, 62%);
   --orange: hsl(32, 100%, 51%);
-  --brown: hsla(13, 16%, 70%);
+  --brown: hsl(13, 16%, 70%);
+  --blue: hsl(250, 80%, 60%);
+  --teal: hsl(187, 55%, 71%);
 
   --gray: 220, 14%;
 
@@ -37,6 +39,7 @@ const Main = styled.main`
 
   --color-background: var(--gray100);
   --color-highlight: var(--red);
+  --color-highlight-secondary: var(--blue);
   --color-text: var(--black);
   --color-text-secondary: var(--gray600);
 
@@ -65,4 +68,8 @@ const Main = styled.main`
 
   background: var(--color-background);
   color: var(--color-text);
+`
+
+const TopNavigation = styled(Navigation)`
+  background: var(--color-background);
 `

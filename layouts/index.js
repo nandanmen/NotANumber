@@ -15,6 +15,7 @@ import UnorderedList from '@/elements/UnorderedList'
 import OrderedList from '@/elements/OrderedList'
 import Heading from '@/elements/Heading'
 import Subheading from '@/elements/Subheading'
+import ProblemStatement from '@/elements/ProblemStatement'
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
@@ -168,12 +169,17 @@ const Article = styled.article`
   }
 
   > ${Heading} {
-    margin-top: 4rem;
-    margin-bottom: 1em;
+    margin-top: 80px;
+    margin-bottom: 32px;
   }
 
   > ${Subheading} {
-    margin-bottom: 1em;
+    margin-top: 32px;
+    margin-bottom: 24px;
+  }
+
+  > ${ProblemStatement} {
+    margin-bottom: 48px;
   }
 
   > .full-width,

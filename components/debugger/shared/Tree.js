@@ -86,7 +86,9 @@ function AstNode({ node, path, depth }) {
           <CodeBlock
             tw="inline-block"
             style={{
-              '--code-border-color': isActive ? `#a786df` : undefined,
+              '--code-border-color': isActive
+                ? `var(--color-highlight-secondary)`
+                : undefined,
               '--space': '14px',
             }}
           >
@@ -188,7 +190,7 @@ const NodeToggle = styled.button`
 
   &:focus {
     outline: none;
-    color: var(--token-color-keyword);
+    color: var(--color-highlight-secondary);
   }
 `
 
@@ -201,7 +203,7 @@ const NodePropToggle = styled.button`
   }
 
   &:focus {
-    --bg-color: var(--token-color-keyword);
+    --bg-color: var(--color-highlight-secondary);
     --color-text: white;
     outline: none;
   }

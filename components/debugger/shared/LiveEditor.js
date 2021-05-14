@@ -35,7 +35,7 @@ const EditorWrapper = styled.div`
   border-color: var(--code-border-color);
 
   &:focus-within {
-    border-color: #6246ea;
+    border-color: var(--color-highlight-secondary);
   }
 
   .keyword {

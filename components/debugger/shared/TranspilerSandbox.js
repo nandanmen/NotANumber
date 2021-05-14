@@ -86,7 +86,7 @@ const ErrorMessage = styled.pre`
 `
 
 const Arrow = styled.div`
-  ${tw`flex items-center justify-center w-10 h-10 text-xl text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full`}
+  ${tw`flex items-center justify-center w-10 h-10 text-xl rounded-full`}
 
   --x: -50%;
   --y: 0;
@@ -97,6 +97,8 @@ const Arrow = styled.div`
   left: 50%;
   bottom: var(--offset);
   transform: translate(var(--x), var(--y)) rotate(var(--angle));
+  background: var(--brown);
+  border: 2px solid var(--border-color);
 
   @media screen and (min-width: ${theme`screens.md`}) {
     --x: 0;

@@ -15,20 +15,21 @@ function ProblemStatement({ children, className }) {
 export default styled(ProblemStatement)``
 
 const Title = styled.h1`
-  ${tw`font-mono bg-gray-800 shadow-md`};
-
+  font-family: var(--text-mono);
   margin-left: 16px;
   width: fit-content;
   padding: 4px 8px;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: var(--text-sm);
   transform: translateY(8px);
-  color: white;
+  background: var(--brown);
+  border: 2px solid var(--border-color);
 `
 
 const Content = styled.div`
-  ${tw`bg-gray-300`}
-
   padding: 16px;
   border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--teal);
 `
