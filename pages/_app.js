@@ -1,4 +1,4 @@
-import tw, { styled, theme } from 'twin.macro'
+import tw, { styled } from 'twin.macro'
 
 import Navigation from '../components/Navigation'
 import '../styles/globals.css'
@@ -19,20 +19,43 @@ export default MyApp
 const Main = styled.main`
   ${tw`min-h-screen antialiased`}
 
-  --color-background: ${theme`colors.gray.100`};
-  --color-highlight: ${theme`textColor.yellow.600`};
+  --white: hsl(60, 100%, 100%);
+  --navy: hsl(262, 49%, 14%);
+  --black: hsl(13, 22%, 13%);
+  --purple: hsl(291, 30%, 48%);
+  --red: hsl(0, 72%, 62%);
+  --orange: hsl(32, 100%, 51%);
+  --brown: hsla(13, 16%, 70%);
+
+  --gray: 220, 14%;
+
+  --gray100: hsl(var(--gray), 95%);
+  --gray200: hsl(var(--gray), 90%);
+  --gray300: hsl(var(--gray), 75%);
+  --gray400: hsl(var(--gray), 65%);
+  --gray600: hsl(var(--gray), 45%);
+
+  --color-background: var(--gray100);
+  --color-highlight: var(--red);
+  --color-text: var(--black);
+  --color-text-secondary: var(--gray600);
+
+  --border-color: var(--navy);
+
+  /* Code theme */
+  --code-background: var(--white);
+  --code-text-color: var(--black);
+  --code-border-color: var(--border-color);
+
+  --token-color-keyword: var(--purple);
+  --token-color-function: var(--purple);
+  --token-color-string: var(--red);
+  --token-color-comment: var(--brown);
+  --token-style-comment: italic;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
 
   background: var(--color-background);
-
-  /* Tokens */
-  --code-background: white;
-  --code-border-color: ${theme`colors.gray.200`};
-  --token-color-keyword: ${theme`textColor.green.600`};
-
-  --token-color-function: ${theme`textColor.green.600`};
-  --token-color-string: var(--color-highlight);
-  --token-color-number: ${theme`textColor.gray.600`};
-
-  --token-color-comment: ${theme`textColor.gray.600`};
-  --token-style-comment: italic;
+  color: var(--color-text);
 `

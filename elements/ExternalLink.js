@@ -1,11 +1,14 @@
-import tw, { styled } from 'twin.macro'
+import { styled } from 'twin.macro'
 
 export default function ExternalLink(props) {
   return <Anchor target="_blank" rel="noreferrer" {...props} />
 }
 
 const Anchor = styled.a`
-  ${tw`hover:text-gray-700`}
-  font-weight: 600;
   color: var(--color-highlight);
+  font-weight: 600;
+
+  &:hover {
+    --color-highlight: var(--color-text-secondary);
+  }
 `

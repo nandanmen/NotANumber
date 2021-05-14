@@ -11,6 +11,12 @@ import CodeBlock from '@/elements/CodeBlock'
 import ThematicBreak from '@/elements/ThematicBreak'
 import ExternalLink from '@/elements/ExternalLink'
 
+const formatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  year: 'numeric',
+  day: 'numeric',
+})
+
 export default function Layout({ frontMatter = {}, children }) {
   return (
     <MDXProvider
@@ -19,61 +25,84 @@ export default function Layout({ frontMatter = {}, children }) {
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
+          <meta name="description" content={frontMatter.description} />
+          <meta name="author" content="Nanda Syahrasyad" />
         </Head>
         <Header>
           <Title>{frontMatter.title}</Title>
-          <p tw="italic font-semibold text-center px-8 text-gray-600">
-            {frontMatter.blurb}
-          </p>
+          <Blurb>{frontMatter.blurb}</Blurb>
         </Header>
-        <div tw="flex items-center justify-between mb-12! text-sm text-gray-600">
-          <div tw="flex items-center">
-            <img
-              src="/avatar.jpg"
-              alt="Nanda Syahrasyad"
-              tw="object-cover w-8 h-8 mr-2 border-2 border-gray-400 rounded-full"
-            />
+        <Meta>
+          <Author>
+            <Avatar src="/avatar.jpg" alt="Nanda Syahrasyad" />
             <p>Nanda Syahrasyad</p>
-          </div>
-          <p>
-            {new Intl.DateTimeFormat('en-US', {
-              month: 'long',
-              year: 'numeric',
-              day: 'numeric',
-            }).format(new Date(frontMatter.publishDate || new Date()))}
-          </p>
-        </div>
+          </Author>
+          <p>Last updated {formatter.format(new Date(frontMatter.editedAt))}</p>
+        </Meta>
         {children}
         <FormContainer>
           <FeedbackForm slug={frontMatter.__resourcePath} />
           <NewsletterForm />
         </FormContainer>
       </Article>
-      <footer tw="flex justify-center px-8 pt-64 pb-24 bg-gray-200 h-80">
-        <Navigation
-          style={{ width: 'min(65ch, 100%)' }}
-          tw="mt-8 text-gray-500"
-        />
-      </footer>
+      <Footer>
+        <Navigation style={{ width: 'min(65ch, 100%)' }} tw="mt-8" />
+      </Footer>
     </MDXProvider>
   )
 }
 
-const Header = styled.header`
-  ${tw`mb-12! bg-gradient-to-b from-gray-200 to-gray-100 lg:h-screen lg:mb-24!`}
+const Avatar = styled.img`
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--gray400);
+`
 
+const Author = styled.div`
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+
+  > :first-child {
+    margin-right: 8px;
+  }
+`
+
+const Blurb = styled.p`
+  ${tw`font-serif text-2xl`}
+
+  text-align: center;
+  padding: 0 32px;
+`
+
+const Header = styled.header`
+  background: var(--color-background);
   height: 600px;
-  grid-column: 1 / -1 !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   max-width: 100vw;
+
+  @media screen and (min-width: ${theme`screens.lg`}) {
+    height: 100vh;
+  }
+`
+
+const Meta = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
 `
 
 const Article = styled.article`
-  ${tw`grid w-full pb-20 text-gray-900`}
-
+  display: grid;
+  width: 100%;
+  padding-bottom: 80px;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
 
@@ -82,13 +111,35 @@ const Article = styled.article`
     margin-bottom: 1.5em;
   }
 
+  > ${Header} {
+    grid-column: 1 / -1;
+  }
+
+  > ${Header}, > ${Meta} {
+    margin-bottom: 48px;
+
+    @media screen and (min-width: ${theme`screens.lg`}) {
+      margin-bottom: 96px;
+    }
+  }
+
   > figure {
     margin-bottom: 2rem;
   }
 
   > ${CodeBlock} {
-    margin-top: 8px;
-    margin-bottom: 32px;
+    margin-top: 24px;
+    margin-bottom: 48px;
+
+    border-radius: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+
+    @media screen and (min-width: ${theme`screens.md`}) {
+      border-radius: 6px;
+      border-right-width: 2px;
+      border-left-width: 2px;
+    }
   }
 
   > ${ThematicBreak} {
@@ -129,9 +180,10 @@ const Article = styled.article`
     margin-bottom: 1em;
 
     &:before {
-      ${tw`absolute left-0 w-6 bg-green-500 -top-4`}
+      ${tw`absolute left-0 w-6 -top-4`}
       content: '';
       height: 3px;
+      background: var(--border-color);
     }
   }
 
@@ -185,4 +237,15 @@ const FormContainer = styled.div`
 
   transform: translateY(14rem);
   margin-top: -10rem;
+`
+
+const Footer = styled.footer`
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+  padding-top: 16rem;
+  padding-bottom: 6rem;
+  background: var(--gray200);
+  color: var(--color-text-secondary);
+  height: 320px;
 `

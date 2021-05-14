@@ -79,18 +79,16 @@ function AstNode({ node, path, depth }) {
 
     return (
       <Node>
-        <NodeLabel
-          tw="text-gray-500 relative z-10"
-          showLine={path.length !== 0}
-        >
+        <NodeLabel tw="relative z-10" showLine={path.length !== 0}>
           {label}
         </NodeLabel>
         <CodeWrapper>
           <CodeBlock
-            css={[
-              tw`p-2! inline-block shadow-md`,
-              isActive && tw`ring-2 ring-green-600`,
-            ]}
+            tw="inline-block"
+            style={{
+              '--code-border-color': isActive ? `#a786df` : undefined,
+              '--space': '14px',
+            }}
           >
             {source}
           </CodeBlock>
@@ -146,9 +144,12 @@ function AstNodeGroup({ name, nodes, path, depth }) {
   const hasChildren = Array.isArray(nodes) && nodes.length > 0
   return (
     <Node>
-      <NodeLabel tw="text-gray-700 pb-2 mb-2 relative z-10" showLine>
-        <button tw="space-x-1" onClick={() => setIsOpen((open) => !open)}>
-          <span tw="rounded-sm bg-gray-200 p-1">{name}</span>
+      <NodeLabel tw="pb-2 mb-2 relative z-10" showLine>
+        <NodePropToggle
+          tw="space-x-1"
+          onClick={() => setIsOpen((open) => !open)}
+        >
+          <span tw="rounded-sm p-1">{name}</span>
           {hasChildren ? (
             <span>{isOpen ? '-' : '+'}</span>
           ) : (
@@ -156,7 +157,7 @@ function AstNodeGroup({ name, nodes, path, depth }) {
               {nodes === undefined ? 'undefined' : JSON.stringify(nodes)}
             </span>
           )}
-        </button>
+        </NodePropToggle>
       </NodeLabel>
       {isOpen && hasChildren && (
         <ul tw="list-none! pl-8">
@@ -184,6 +185,26 @@ const CodeWrapper = styled.div`
 const NodeToggle = styled.button`
   display: block;
   position: relative;
+
+  &:focus {
+    outline: none;
+    color: var(--token-color-keyword);
+  }
+`
+
+const NodePropToggle = styled.button`
+  --bg-color: ${theme`colors.gray.200`};
+
+  > :first-child {
+    background-color: var(--bg-color);
+    color: var(--color-text, revert);
+  }
+
+  &:focus {
+    --bg-color: var(--token-color-keyword);
+    --color-text: white;
+    outline: none;
+  }
 `
 
 const Node = styled(motion.li).attrs({
@@ -199,7 +220,7 @@ const Node = styled(motion.li).attrs({
 })`
   position: relative;
 
-  --line-color: ${theme`colors.gray.400`};
+  --line-color: black;
 
   > ul > li:last-child {
     &:before {
