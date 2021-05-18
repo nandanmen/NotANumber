@@ -4,15 +4,12 @@ import tw, { styled } from 'twin.macro'
 import { HiArrowRight } from 'react-icons/hi'
 
 import ExternalLink from '@/elements/ExternalLink'
+import { formatPath } from '@/lib/utils'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 
 const posts = [debuggerPost, slidingWindow]
-
-function formatPath(path) {
-  return path.replace(/\.mdx$/, '')
-}
 
 export default function HomePage() {
   posts.sort((a, b) => (new Date(a.editedAt) < new Date(b.editedAt) ? 1 : -1))

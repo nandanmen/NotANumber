@@ -17,6 +17,8 @@ import Heading from '@/elements/Heading'
 import Subheading from '@/elements/Subheading'
 import ProblemStatement from '@/elements/ProblemStatement'
 
+import { formatPath } from '@/lib/utils'
+
 const formatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   year: 'numeric',
@@ -35,6 +37,7 @@ const mdxComponents = {
 }
 
 export default function Layout({ frontMatter = {}, children }) {
+  const slug = formatPath(frontMatter.__resourcePath)
   return (
     <MDXProvider components={mdxComponents}>
       <Article>
@@ -42,6 +45,11 @@ export default function Layout({ frontMatter = {}, children }) {
           <title>{frontMatter.title}</title>
           <meta name="description" content={frontMatter.description} />
           <meta name="author" content="Nanda Syahrasyad" />
+          <meta property="og:title" content={frontMatter.title} />
+          <meta property="og:description" content={frontMatter.description} />
+          <meta property="og:image" content={`/og-image/${slug}.png`} />
+          <meta property="og:url" content={`https://nan.fyi/${slug}`} />
+          <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <Header>
           <Title>{frontMatter.title}</Title>
