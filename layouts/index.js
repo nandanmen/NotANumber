@@ -47,7 +47,10 @@ export default function Layout({ frontMatter = {}, children }) {
           <meta name="author" content="Nanda Syahrasyad" />
           <meta property="og:title" content={frontMatter.title} />
           <meta property="og:description" content={frontMatter.description} />
-          <meta property="og:image" content={`/og-image/${slug}.png`} />
+          <meta
+            property="og:image"
+            content={`https://nan.fyi/og-image/${slug}.png`}
+          />
           <meta property="og:url" content={`https://nan.fyi/${slug}`} />
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
