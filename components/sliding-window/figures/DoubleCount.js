@@ -1,5 +1,6 @@
 import { motion, AnimateSharedLayout } from 'framer-motion'
 import { BsTriangleFill } from 'react-icons/bs'
+import { styled } from 'twin.macro'
 
 import Item from '../Item'
 
@@ -18,15 +19,9 @@ export default function DoubleCount({ state, inputs }) {
             >
               {item}
               {index === state.i && (
-                <motion.div
-                  layoutId="caret"
-                  className="absolute mt-1 text-green-500 top-full"
-                  style={{
-                    fontSize: '8px',
-                  }}
-                >
+                <Caret layoutId="caret" tw="absolute mt-1 top-full">
                   <BsTriangleFill />
-                </motion.div>
+                </Caret>
               )}
             </Item>
           ))}
@@ -41,3 +36,8 @@ export default function DoubleCount({ state, inputs }) {
     </>
   )
 }
+
+const Caret = styled(motion.div)`
+  font-size: 8px;
+  background: var(--brown);
+`

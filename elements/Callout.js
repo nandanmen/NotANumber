@@ -58,16 +58,24 @@ Callout.Details = CalloutDetails
 // --
 
 const Icon = styled.div`
-  ${tw`flex items-center justify-center w-10 h-10 text-white bg-purple-500`}
+  ${tw`flex items-center justify-center w-10 h-10 text-white`}
 
+  background: var(--brown);
+  border: 2px solid var(--border-color);
   position: absolute;
-  top: -4px;
-  right: -4px;
-  border-radius: 0 12px 0 12px;
+  top: -20px;
+  right: 16px;
+  border-radius: 50%;
 `
 
 const Aside = styled.aside`
-  ${tw`relative p-8 border-4 border-purple-500 md:rounded-2xl`}
+  ${tw`relative p-8 border-4`}
+
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--teal);
+
+  --inline-code-background: hsl(187, 55%, 81%);
 
   > * {
     margin-bottom: 1.5em;

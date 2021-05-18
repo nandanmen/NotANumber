@@ -9,9 +9,7 @@ import {
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
 import { FaUndo } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
-import 'twin.macro'
-
-import Button from '@/elements/Button'
+import { styled } from 'twin.macro'
 
 import exec from '@/lib/exec'
 import { zip } from '@/lib/utils'
@@ -201,3 +199,20 @@ function Algorithm({
     </>
   )
 }
+
+const Button = styled(motion.button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: var(--gray100);
+
+  &:focus {
+    outline: none;
+    background: hsl(13, 16%, 40%);
+    color: white;
+  }
+`

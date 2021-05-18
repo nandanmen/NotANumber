@@ -10,7 +10,7 @@ export default function BabelPipeline() {
   return (
     <Wrapper>
       <Section caption="Parse">
-        <CodeBlock tw="p-2!">{inputCode}</CodeBlock>
+        <CodeBlock style={{ '--space': '8px' }}>{inputCode}</CodeBlock>
         <Arrow />
         <Tree />
       </Section>
@@ -26,14 +26,14 @@ export default function BabelPipeline() {
       <Section caption="Generate">
         <Tree isSquare />
         <Arrow />
-        <CodeBlock tw="p-2!">{outputCode}</CodeBlock>
+        <CodeBlock style={{ '--space': '8px' }}>{outputCode}</CodeBlock>
       </Section>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  ${tw`space-x-2`}
+  ${tw`space-x-6`}
 
   display: flex;
   justify-content: flex-start;
@@ -58,13 +58,12 @@ const Wrapper = styled.div`
 
 const PluginWrapper = styled.ul`
   ${tw`space-y-1`}
-
-  list-style: none !important;
 `
 
 const Plugin = styled.li`
-  ${tw`font-mono text-sm`}
-
+  font-family: var(--text-mono);
+  font-size: var(--text-sm);
+  border: 2px solid var(--border-color);
   background: var(--code-background);
   padding: 8px;
   border-radius: 6px;
@@ -92,8 +91,6 @@ const TreeWrapper = styled.div`
 `
 
 const Node = styled.div`
-  --border-color: ${theme`colors.gray.300`};
-
   background: var(--code-background);
   position: relative;
   width: 32px;
@@ -113,7 +110,7 @@ const Node = styled.div`
       width: 40px;
       height: 4px;
       background: var(--border-color);
-      top: 120%;
+      top: 122%;
     }
 
     &:after {
@@ -143,8 +140,16 @@ function Arrow() {
     </ArrowWrapper>
   )
 }
-
-const ArrowWrapper = tw.div`flex items-center justify-center w-8 h-8 text-gray-500 bg-gray-200 border-2 border-gray-300 rounded-full`
+const ArrowWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border-color);
+  background: var(--brown);
+  border-radius: 50%;
+`
 
 // --
 
@@ -158,15 +163,16 @@ function Section({ children, caption }) {
 }
 
 const SectionContent = styled.div`
-  ${tw`space-x-4`}
+  ${tw`space-x-8`}
 
   display: flex;
   align-items: center;
 `
 
 const SectionCaption = styled.caption`
-  ${tw`font-mono text-sm text-gray-600`}
-
+  font-family: var(--text-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
   display: block;
   text-align: center;
   margin-top: 16px;

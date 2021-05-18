@@ -1,7 +1,7 @@
 import { HiPencil } from 'react-icons/hi'
 import Editor from 'react-simple-code-editor'
 import { highlight, languages } from 'prismjs/components/prism-core'
-import tw, { styled, theme } from 'twin.macro'
+import tw, { styled } from 'twin.macro'
 import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 
@@ -35,7 +35,7 @@ const EditorWrapper = styled.div`
   border-color: var(--code-border-color);
 
   &:focus-within {
-    border-color: ${theme`colors.blue.400`};
+    border-color: var(--color-highlight-secondary);
   }
 
   .keyword {

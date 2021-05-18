@@ -1,7 +1,9 @@
 ---
 title: 'Building a Debugger: Code Analysis'
 blurb: 'A crash course in writing your own Babel plugin.'
-publishDate: '2021-05-07'
+description: "If you want to build your own debugger, where do you start? In this post, I go over how I built Playground — an online JS debugger — using Babel's plugin APIs."
+publishedAt: '2021-05-07'
+editedAt: '2021-05-15'
 ---
 
 import ProblemStatement from '@/elements/ProblemStatement'
@@ -77,11 +79,9 @@ I messed around with ways to automatically inject these calls, but ultimately I 
 
 Here's a demo of what exactly the transpiler does — simply, it turns any `debugger` statement into a function call:
 
-<EmbeddedTranspiler>
+<EmbeddedTranspiler />
 
-Try to add some more `debugger` statements in the left panel to see how the transpiler converts it.
-
-</EmbeddedTranspiler>
+This is an editable demo! Try to add some more `debugger` statements in the left panel to see what code the transpiler converts it to.
 
 ## Problem 2: Automatic Transformation
 

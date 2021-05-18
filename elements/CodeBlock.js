@@ -4,6 +4,7 @@ import { styled } from 'twin.macro'
 function CodeBlock({
   children = '',
   highlight = '',
+  style = {},
   className: containerClass,
 }) {
   const lineNumbers = getLineNumbers(highlight)
@@ -13,7 +14,8 @@ function CodeBlock({
         return (
           <StyledBlock
             className={`${className} ${containerClass}`}
-            tw="rounded-md overflow-x-scroll text-sm p-6 border-4"
+            tw="rounded-md overflow-x-scroll text-sm"
+            style={style}
           >
             {tokens.map((line, i) => (
               <Line
@@ -79,7 +81,9 @@ function getLineNumbers(highlight) {
 
 const StyledBlock = styled.pre`
   background: var(--code-background);
-  border-color: var(--code-background);
+  border: 2px solid var(--code-border-color, black);
+  color: var(--code-text-color);
+  padding: var(--space, 24px);
 `
 
 const Line = styled.div`
