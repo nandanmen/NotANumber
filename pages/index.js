@@ -15,9 +15,7 @@ function formatPath(path) {
 }
 
 export default function HomePage() {
-  posts.sort((a, b) =>
-    new Date(a.publishDate) < new Date(b.publishDate) ? 1 : -1
-  )
+  posts.sort((a, b) => (new Date(a.editedAt) < new Date(b.editedAt) ? 1 : -1))
   return (
     <>
       <Head>
@@ -42,7 +40,7 @@ export default function HomePage() {
         </header>
         <Posts>
           <Divider />
-          {posts.map(({ title, __resourcePath, description, publishDate }) => (
+          {posts.map(({ title, __resourcePath, description, editedAt }) => (
             <li
               key={__resourcePath}
               tw="px-8 py-4 hover:bg-gray-200 rounded-xl"
@@ -53,11 +51,12 @@ export default function HomePage() {
                     <h1 tw="text-3xl font-serif">{title}</h1>
                     <p tw="text-gray-600">{description}</p>
                     <p tw="text-sm text-gray-600">
+                      Last updated{' '}
                       {new Intl.DateTimeFormat('en-US', {
                         month: 'long',
                         year: 'numeric',
                         day: 'numeric',
-                      }).format(new Date(publishDate))}
+                      }).format(new Date(editedAt))}
                     </p>
                   </div>
                   <p tw="text-2xl text-gray-600">
