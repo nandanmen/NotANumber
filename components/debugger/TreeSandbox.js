@@ -30,7 +30,7 @@ export default function TreeSandbox({
           {error && <pre>{error}</pre>}
         </div>
       )}
-      <div tw="font-mono text-sm overflow-x-scroll relative">
+      <DetailToggleWrapper>
         {!hideDetailView && (
           <label tw="absolute top-0 right-0 z-20 text-gray-500">
             Show all properties
@@ -50,11 +50,18 @@ export default function TreeSandbox({
           whitelist={whitelist}
           {...props}
         />
-      </div>
+      </DetailToggleWrapper>
       {children && <Caption>{children}</Caption>}
     </Widget>
   )
 }
+
+const DetailToggleWrapper = styled.div`
+  font-family: var(--text-mono);
+  font-size: var(--text-sm);
+  overflow-x: scroll;
+  position: relative;
+`
 
 const Caption = styled(Widget.Caption)`
   position: relative;
