@@ -29,11 +29,6 @@ export default function HomePage() {
             </ExternalLink>
             .
           </p>
-          <p tw="text-center px-16">
-            Read the latest below, or{' '}
-            <SubscribeButton>subscribe</SubscribeButton> to get it straight in
-            your inbox.
-          </p>
         </header>
         <Posts>
           <Divider />
@@ -68,30 +63,6 @@ export default function HomePage() {
     </>
   )
 }
-
-const SubscribeButton = styled.button`
-  position: relative;
-  color: var(--color-highlight);
-  font-weight: 600;
-
-  --offset: 0px;
-
-  &:after {
-    content: '';
-    width: 100%;
-    position: absolute;
-    height: 2px;
-    bottom: 0;
-    background: currentColor;
-    left: 0;
-    transform: translateY(var(--offset, 0px));
-    transition: transform 0.2s ease-out;
-  }
-
-  &:hover {
-    --offset: 4px;
-  }
-`
 
 const Title = styled.h1`
   ${tw`font-serif text-center`}
