@@ -1,22 +1,26 @@
 import { motion } from 'framer-motion'
-import clsx from 'clsx'
+import { styled } from 'twin.macro'
 
-const ItemMargin = 0.5
-const ItemWidth = 3
+const ItemMargin = 8
+const ItemWidth = 50
 
 export default function SlidingWindow({ start, end, className }) {
   const windowSize = end - start + 1
   return (
-    <motion.div
+    <Window
       layout
       style={{
-        width: `${windowSize * ItemWidth + (windowSize - 1) * ItemMargin}rem`,
-        left: `${start * ItemWidth + start * ItemMargin}rem`,
+        width: `${windowSize * ItemWidth + (windowSize - 1) * ItemMargin}px`,
+        left: `${start * ItemWidth + start * ItemMargin}px`,
       }}
-      className={clsx(
-        'border-gray-400 border-4 h-28 rounded-xl absolute',
-        className
-      )}
-    ></motion.div>
+      className={className}
+    />
   )
 }
+
+const Window = styled(motion.div)`
+  position: absolute;
+  height: 112px;
+  border-radius: 12px;
+  border: 3px solid hsl(13, 16%, 40%);
+`

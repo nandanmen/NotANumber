@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
+import { styled } from 'twin.macro'
 
 const variants = {
   show: {
@@ -19,7 +20,7 @@ export default function Item({
   ...props
 }) {
   return (
-    <motion.div
+    <ItemWrapper
       variants={variants}
       animate={active ? 'show' : 'hide'}
       transition={{
@@ -28,15 +29,32 @@ export default function Item({
           bounce: 0.75,
         },
       }}
+      style={{
+        '--background-color':
+          variant === 'base'
+            ? `var(--brown)`
+            : variant === 'danger'
+            ? `var(--red)`
+            : undefined,
+        '--border-color':
+          variant === 'base'
+            ? `hsl(13, 16%, 60%)`
+            : variant === 'danger'
+            ? `hsl(0, 72%, 42%)`
+            : undefined,
+      }}
       className={clsx(
-        'w-12 h-12 rounded-lg text-white font-semibold flex items-center justify-center mr-2',
-        {
-          'bg-green-400': variant === 'base',
-          'bg-red-500': variant === 'danger',
-        },
+        'rounded-lg text-white font-semibold flex items-center justify-center mr-2',
         className
       )}
       {...props}
     />
   )
 }
+
+const ItemWrapper = styled(motion.div)`
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--border-color);
+  background: var(--background-color);
+`
