@@ -132,7 +132,7 @@ const ContentWrapper = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-column-gap: 16px;
   align-items: flex-start;
-  overflow-x: scroll;
+  overflow-x: auto;
   padding: 0 32px;
 
   @media screen and (min-width: ${theme`screens.md`}) {

@@ -59,7 +59,7 @@ export default function TreeSandbox({
 const DetailToggleWrapper = styled.div`
   font-family: var(--text-mono);
   font-size: var(--text-sm);
-  overflow-x: scroll;
+  overflow-x: auto;
   position: relative;
 `
 

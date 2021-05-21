@@ -14,7 +14,7 @@ function CodeBlock({
         return (
           <StyledBlock
             className={`${className} ${containerClass}`}
-            tw="rounded-md overflow-x-scroll text-sm"
+            tw="rounded-md overflow-x-auto text-sm"
             style={style}
           >
             {tokens.map((line, i) => (
