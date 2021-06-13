@@ -57,6 +57,7 @@ const Main = styled.main`
   --token-style-comment: italic;
 
   /* Fonts */
+  --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-xl: 1.25rem;
