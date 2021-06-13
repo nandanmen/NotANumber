@@ -63,7 +63,7 @@ const Main = styled.main`
   --text-2xl: 1.875rem;
 
   --text-serif: Recoleta, ui-serif, Georgia, serif;
-  --text-mono: DM Mono, Menlo, ui-monospace, monospace;
+  --text-mono: SF Mono, Menlo, ui-monospace, monospace;
   --text-sans: Karla, system-ui, -apple-system, sans-serif;
 
   background: var(--color-background);

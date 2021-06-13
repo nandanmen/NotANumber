@@ -84,6 +84,7 @@ const StyledBlock = styled.pre`
   border: 2px solid var(--code-border-color, black);
   color: var(--code-text-color);
   padding: var(--space, 24px);
+  font-family: var(--text-mono);
 `
 
 const Line = styled.div`
