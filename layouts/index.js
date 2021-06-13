@@ -193,6 +193,12 @@ const Article = styled.article`
     margin-bottom: 48px;
   }
 
+  > blockquote {
+    font-style: italic;
+    border-left: 3px solid var(--gray300);
+    padding-left: 16px;
+  }
+
   > .full-width,
   > .full-width-2x,
   > .full-width-3x {

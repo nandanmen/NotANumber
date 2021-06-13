@@ -60,7 +60,9 @@ It might seem pretty weird that we're describing arrays using arrays, but don't 
 
 </Callout>
 
-One thing to keep in mind is that you can't freely store data anywhere in memory you'd like — both the hardware and the operating system won't let you! Instead, you have to _allocate_ the space in memory first.
+One thing to keep in mind is that you can't freely store data anywhere in memory you'd like — both the hardware and the operating system won't let you!\* Instead, you have to _allocate_ the space in memory first.
+
+> \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change the memory that's being used by other programs!
 
 ```js
 const pointer = Mem.allocate(/* num of bytes */ 12)
