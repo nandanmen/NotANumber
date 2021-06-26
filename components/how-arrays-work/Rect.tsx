@@ -33,7 +33,7 @@ export default function Rect({
         stroke="var(--gray400)"
       />
       {children && (
-        <text x={1 + size / 2} y={1 + size / 2}>
+        <text x={1 + size / 2} y={1 + size / 2} textAnchor="middle" dominantBaseline="central">
           {children}
         </text>
       )}

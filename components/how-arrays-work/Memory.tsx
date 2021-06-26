@@ -19,7 +19,9 @@ export default function Memory() {
     <Wrapper className="full-width">
       {range(18).map((_, address) => (
         <motion.div key={address} layout="position">
-          <Rect size={90} borderRadius={6} strokeWidth={2} dashed />
+          <Rect size={90} borderRadius={6} strokeWidth={2} dashed>
+            hello
+          </Rect>
           {showAddress && (
             <Address
               animate={{ y: 0, opacity: 1 }}
