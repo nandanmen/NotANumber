@@ -1,8 +1,8 @@
 import { FaLongArrowAltDown } from 'react-icons/fa'
 import { motion } from 'framer-motion'
-import { useInViewAnimate } from 'framer-motion-hooks'
 
 import { styled } from '@/stitches'
+import { useInViewAnimate } from '@/components/utils/useInViewAnimate'
 import Refresh from '@/components/utils/Refresh'
 
 import ArrayItem from './ArrayItem'
