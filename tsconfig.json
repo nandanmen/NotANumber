@@ -27,7 +27,8 @@
       ],
       "@/lib/*": [
         "lib/*"
-      ]
+      ],
+      "@/stitches": ["stitches.config"]
     }
   },
   "include": [

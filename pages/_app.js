@@ -6,7 +6,6 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   return (
     <Main>
-      <TopNavigation tw="w-full p-8 pb-0 fixed top-0 z-50" />
       <Component {...pageProps} />
     </Main>
   )
@@ -37,7 +36,7 @@ const Main = styled.main`
   --gray400: hsl(var(--gray), 65%);
   --gray600: hsl(var(--gray), 45%);
 
-  --color-background: var(--gray100);
+  --color-background: white;
   --color-highlight: var(--red);
   --color-highlight-secondary: var(--blue);
   --color-text: var(--black);
@@ -65,7 +64,7 @@ const Main = styled.main`
 
   --text-serif: Recoleta, ui-serif, Georgia, serif;
   --text-mono: SF Mono, Menlo, ui-monospace, monospace;
-  --text-sans: Karla, system-ui, -apple-system, sans-serif;
+  --text-sans: Inter, system-ui, -apple-system, sans-serif;
 
   background: var(--color-background);
   color: var(--color-text);

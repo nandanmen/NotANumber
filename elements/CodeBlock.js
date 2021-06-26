@@ -57,7 +57,7 @@ export default styled(CodeBlock)``
 function Annotation({ children }) {
   let label = children.replace('/* ', '')
   label = label.replace(' */', '')
-  return <AnnotationWrapper>{label}</AnnotationWrapper>
+  return <AnnotationWrapper>{label}:</AnnotationWrapper>
 }
 
 function isAnnotation(tokenType, text) {

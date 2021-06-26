@@ -150,7 +150,8 @@ const Article = styled.article`
   }
 
   > figure {
-    margin-bottom: 2rem;
+    margin-top: 24px;
+    margin-bottom: 48px;
   }
 
   > ${CodeBlock} {
