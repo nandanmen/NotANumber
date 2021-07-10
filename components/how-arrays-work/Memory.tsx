@@ -1,33 +1,32 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
 
 import Rect from './Rect'
 
-const range = (length: number) => Array.from({ length }).fill(-1)
+type MemoryProps = {
+  memory: Array<string | number | boolean>
+  showAddress?: boolean
+}
 
-export default function Memory() {
-  const [showAddress, setShowAddress] = React.useState(false)
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setShowAddress(true)
-    }, 500)
-  }, [])
-
+export default function Memory({ memory, showAddress }: MemoryProps) {
   return (
-    <Wrapper className="full-width">
-      {range(18).map((_, address) => (
+    <Wrapper>
+      {memory.map((value, address) => (
         <motion.div key={address} layout="position">
-          <Rect size={90} borderRadius={6} strokeWidth={2} dashed>
-            hello
+          <Rect
+            size={90}
+            borderRadius={6}
+            strokeWidth={2}
+            dashed={value == null ? true : undefined}
+          >
+            {value != null ? String(value) : null}
           </Rect>
           {showAddress && (
             <Address
               animate={{ y: 0, opacity: 1 }}
               initial={{ y: -12, opacity: 0 }}
             >
-              {address + 100}
+              {String(address).padStart(3, '0')}
             </Address>
           )}
         </motion.div>
@@ -36,7 +35,7 @@ export default function Memory() {
   )
 }
 
-const Wrapper = styled('figure', {
+const Wrapper = styled('div', {
   display: 'flex',
   flexWrap: 'wrap',
   gap: '8px',

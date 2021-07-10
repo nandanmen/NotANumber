@@ -4,7 +4,6 @@ blurb: "Rebuilding the world's most popular data structure."
 description: "It's a bit more than a website."
 publishedAt: '2021-06-21'
 editedAt: '2021-06-21'
-layout: 'v2'
 ---
 
 import Placeholder from '@/components/utils/Placeholder'
@@ -14,7 +13,8 @@ import ArrayGrid from '@/components/how-arrays-work/ArrayGrid'
 import ArrayLookup from '@/components/how-arrays-work/ArrayLookup'
 import ArrayGrow from '@/components/how-arrays-work/ArrayGrow'
 import ArrayMultiType from '@/components/how-arrays-work/ArrayMultiType'
-import Memory from '@/components/how-arrays-work/Memory'
+import MemoryReadWrite from '@/components/how-arrays-work/MemoryReadWrite'
+import Allocate from '@/components/how-arrays-work/Allocate'
 
 This is an array:
 
@@ -40,11 +40,7 @@ Before we get started, let's take a look at the memory APIs that are available t
 
 As a starting point, you can think of memory as a super long array of bytes where each byte has an address. Using the address, you can read and write data from memory:
 
-```js
-const item = Mem.get(/* address */ 0x123)
-```
-
-<Memory />
+<MemoryReadWrite />
 
 ### Protection
 
@@ -58,13 +54,13 @@ To get past the memory gates, you have to ask for permission from the OS by allo
 const pointer = Mem.allocate(/* num of bytes */ 12)
 ```
 
-When you allocate space, you're requesting to use a certain number of bytes from memory for your program to use. The OS is pretty generous too — as long as there's memory left, the OS will allocate the space for you. Once allocated, you're free to read and write to that memory location as you please!
+Allocating memory returns a pointer to the address of the **first byte** that you allocated:
 
-Allocating memory returns a pointer, an object that, among other things, represents the address of the **first byte** that you allocated:
+<Allocate />
 
-<Placeholder name="memory and pointers" />
+When you allocate space, you're requesting to use a certain number of bytes from memory for your program to use. The OS is pretty generous too — as long as there's memory left, the OS will allocate the space for you.
 
-Once you've allocated memory, you can freely read and write to it:
+Once allocated, you're free to read and write to that memory location as you please:
 
 <Placeholder name="read and write to allocated memory" />
 
@@ -113,6 +109,12 @@ const pointer = Mem.allocate(/* num of bytes */ 12)
 Mem.free(pointer)
 Mem.free(pointer) // oops!
 ```
+
+<Callout label="Do we really have to do this?">
+
+If you feel like this is really tedious, that's because it is. Bugs related to memory management happens _all the time_ when writing in lower level languages. Thankfully, JavaScript uses something called a garbage collector that automates memory management for you, allowing you to focus on the features that matter.
+
+</Callout>
 
 One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around.
 
@@ -205,12 +207,42 @@ But what if we're at capacity? How do we grow the array then?
 
 Recall that the memory gates won't let you write to memory that you haven't allocated yet. So naturally, we would have to allocate more memory.
 
-One thing we might be tempted to do would be to allocate just enough memory for the new item. If we're adding a number, then we would allocate an extra 8 bytes:
+One thing we might be tempted to do would be to allocate just enough memory for the new item. If we're adding a number for example, then we would allocate an extra 8 bytes:
 
 ```js
 const newAddress = Mem.allocate(/* num of bytes */ 8)
 ```
 
-But this wouldn't work because **you don't actually know where the new memory is allocated**.
+This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array:
+
+<Placeholder name="array in a vacuum" />
+
+In practice though, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
+
+<Placeholder name="constrained array" />
+
+Ultimately, the only slice of memory that you are sure of is the part that you've allocated yourself.
+
+Instead, we have to re-allocate space for the entire array _plus_ the element that we're adding. Then, we copy the array into the new space and free up the old memory location:
+
+<Placeholder name="increasing array capacity" />
 
 ## Mixing Types
+
+Nice! We now have an array that can grow in size. We still have one more assumption though — our array can only contain the same type of data. We know that in JavaScript this isn't true; you can freely mix and match types without any problems!
+
+### The Problem
+
+Before we look into implementing this in our array, let's see _why_ this assumption was there in the first place. Let's say that we did allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done:
+
+<Placeholder name="mixing array type memory" />
+
+Now, let's say we want to read an element from the array using its index. First, we need to get the address of that element. Easy enough, we'll use the formula that we wrote down before:
+
+```
+address of index i = address at index 0 + (size of item * i)
+```
+
+But, um, wait a minute. What's the `size of item`? Now that our elements are of different types, the size (number of bytes) of each item may not necessarily be the same. Uh oh, we can't quickly determine the address any more!
+
+<Placeholder name="array element different size" />

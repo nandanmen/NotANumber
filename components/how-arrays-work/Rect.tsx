@@ -1,3 +1,5 @@
+import { styled } from '@/stitches'
+
 type RectProps = {
   size: number
   strokeWidth?: number
@@ -25,7 +27,7 @@ export default function Rect({
         y="1"
         width={size}
         height={size}
-        fill="rgba(255, 255, 255, 1.000)"
+        fill="white"
         rx={borderRadius}
         ry={borderRadius}
         strokeWidth={strokeWidth}
@@ -33,10 +35,16 @@ export default function Rect({
         stroke="var(--gray400)"
       />
       {children && (
-        <text x={1 + size / 2} y={1 + size / 2} textAnchor="middle" dominantBaseline="central">
+        <Text x={1 + size / 2} y={1 + size / 2}>
           {children}
-        </text>
+        </Text>
       )}
     </svg>
   )
 }
+
+const Text = styled('text', {
+  fontFamily: 'var(--text-mono)',
+  textAnchor: 'middle',
+  dominantBaseline: 'central',
+})
