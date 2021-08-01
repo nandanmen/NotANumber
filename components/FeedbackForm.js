@@ -48,7 +48,7 @@ export default function FeedbackForm({ slug, className }) {
       )}
       onSubmit={handleSubmit}
     >
-      <h1 className="text-2xl font-semibold">Have feedback?</h1>
+      <h1 className="text-2xl font-serif font-medium">Have feedback?</h1>
       <p>
         Was anything confusing, hard to follow, or out of date? Let me know what
         you think of the article and I'll make sure to update it with your

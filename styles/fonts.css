@@ -44,3 +44,17 @@
   src: url('/fonts/RecoletaRegular/font.woff2') format('woff2'),
     url('/fonts/RecoletaRegular/font.woff') format('woff');
 }
+
+@font-face {
+  font-family: 'Recoleta';
+  font-weight: 500;
+  src: url('/fonts/RecoletaMedium/font.woff2') format('woff2'),
+    url('/fonts/RecoletaMedium/font.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Recoleta';
+  font-weight: 600;
+  src: url('/fonts/RecoletaSemiBold/font.woff2') format('woff2'),
+    url('/fonts/RecoletaSemiBold/font.woff') format('woff');
+}
