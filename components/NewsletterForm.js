@@ -49,7 +49,7 @@ export default function NewsletterForm({ className }) {
       )}
       onSubmit={handleSubmit}
     >
-      <h1 className="text-2xl font-semibold">Newsletter</h1>
+      <h1 className="text-2xl font-medium font-serif">Newsletter</h1>
       <p>
         If you like my content, consider signing up for my newsletter. You'll
         receive updates on new posts, gain access to subscriber-exclusive posts

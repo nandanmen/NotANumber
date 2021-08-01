@@ -40,7 +40,7 @@ export default function HomePage() {
               <Link href={formatPath(__resourcePath)}>
                 <a tw="flex items-center justify-between cursor-pointer space-x-8">
                   <div tw="space-y-4">
-                    <h1 tw="text-3xl font-serif">{title}</h1>
+                    <PostTitle tw="text-3xl font-serif">{title}</PostTitle>
                     <p tw="text-gray-600">{description}</p>
                     <p tw="text-sm text-gray-600">
                       Last updated{' '}
@@ -67,7 +67,12 @@ export default function HomePage() {
 const Title = styled.h1`
   ${tw`font-serif text-center`}
   font-size: 6rem;
+  font-weight: 600;
   line-height: 0.9;
+`
+
+const PostTitle = styled.h1`
+  font-weight: 500;
 `
 
 const Posts = styled.ul`

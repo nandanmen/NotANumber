@@ -97,8 +97,9 @@ const Author = styled.div`
 `
 
 const Blurb = styled.p`
-  ${tw`font-serif text-2xl`}
-
+  ${tw`text-2xl`}
+  
+  font-family: var(--text-mono);
   text-align: center;
   padding: 0 32px;
 `
@@ -226,6 +227,7 @@ const Title = styled.h1`
   ${tw`px-8 mx-auto mb-12 font-serif text-center lg:mb-24`}
 
   font-size: 4rem;
+  font-weight: 600;
   line-height: 0.9;
   max-width: min(100vw, 14ch);
 

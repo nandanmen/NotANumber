@@ -4,6 +4,7 @@ const Heading = styled.h2`
   font-size: var(--text-2xl);
   font-family: var(--text-serif);
   position: relative;
+  font-weight: 500;
 
   &:before {
     content: '';
