@@ -36,6 +36,7 @@ const Main = styled.main`
   --gray300: hsl(var(--gray), 75%);
   --gray400: hsl(var(--gray), 65%);
   --gray600: hsl(var(--gray), 45%);
+  --gray800: hsl(var(--gray), 25%);
 
   --color-background: var(--gray100);
   --color-highlight: var(--red);
