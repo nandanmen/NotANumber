@@ -1,0 +1,251 @@
+---
+title: 'How do arrays work?'
+blurb: "Rebuilding the world's most popular data structure."
+description: "It's a bit more than a website."
+publishedAt: '2021-06-21'
+editedAt: '2021-06-21'
+---
+
+import Callout from '@/elements/Callout'
+import Placeholder from '@/components/utils/Placeholder'
+
+This is an array: `[]`. An array represents an ordered list of items. Each item in the array has an associated _index_. Using the index, the array knows exactly where that item is within the array — it doesn't have to look for it:
+
+<Placeholder name="searching vs index lookup" />
+
+In JavaScript, arrays are even more powerful — they can grow in size, and can even contain multiple types of values:
+
+<Placeholder name="dynamic arrays" />
+
+That's great and all, but have you ever wondered **how does it all work?** What's going on "under the hood" when you lookup an item in an array? What makes that operation so fast?
+
+In this post, we're going to dive into the inner workings of an array by building one ourselves, with the help of a few memory primitives.
+
+## Memory API
+
+Before we get too deep into making our own array, I want to talk briefly about computer memory. Throughout this post, I'm going to be using a fake memory object that mimics how computer memory actually works.
+
+This memory object has four methods:
+
+1. `get(address: number)` — returns the value at a specific memory address.
+2. `set(address: number, value: number)` — sets the given address to the given value.
+3. `allocate(bytes: number)` — allocates a given number of bytes, returning a pointer to the _first_ allocated byte.
+4. `free(pointer: Pointer)` — frees the memory location pointed to by the pointer.
+
+If you've written code in C or C++ before, some of these methods might be familiar to you; if not, that's okay too — we'll go through each one in this section.
+
+As a starting point, you can think of memory as a super long array of bytes where each byte has an address. Using the address, you can read from and write to memory:
+
+<Placeholder name="read from memory" />
+
+<Placeholder name="write to memory" />
+
+### Protection
+
+Memory is "gate keeped" by the hardware and operating system (OS) — you can't read _nor_ write from memory unless both the hardware and OS lets you\*.
+
+> \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change memory that's being used by other programs!
+
+To get past the memory gates, you have to ask for permission from the OS by allocating space:
+
+```js
+const pointer = Mem.allocate(/* num of bytes */ 12)
+```
+
+Allocating memory returns a pointer to the address of the **first byte** that you allocated:
+
+![A variable arr with an arrow pointing to the first byte in an array](./allocation.png)
+
+Functionally, a pointer acts like an address. You can use it in place of an address to read and write to memory. In reality though, a pointer contains some other metadata that's useful for the other memory methods.
+
+When you allocate space, you're requesting to use a certain number of bytes from memory for your program to use. The OS is pretty generous too — as long as there's memory left, the OS will allocate the space for you.
+
+<Placeholder name="memory allocation" />
+
+Once allocated, you're free to read and write to that memory location as you please — but if you try to read and write to memory that's not allocated yet, it's not going to work.
+
+Finally, once you're done with the data and don't need it anymore, you can free up that space so the computer can use the memory for other things:
+
+```js
+const pointer = Mem.allocate(/* num of bytes */ 12)
+
+// do stuff
+
+Mem.free(pointer)
+```
+
+<Callout label="Do we really have to do this?">
+
+If you feel like this is really tedious, that's because it is. Bugs related to memory management happens _all the time_ when writing in lower level languages. Thankfully, JavaScript uses something called a garbage collector that automates memory management for you, allowing you to focus on the interesting stuff.
+
+</Callout>
+
+One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around:
+
+```js
+const pointer = Mem.allocate(/* num of bytes */ 12)
+
+Mem.set(pointer, 10)
+console.log(Mem.get(pointer)) // prints 10
+
+Mem.free(pointer)
+```
+
+As a quick summary:
+
+- Memory, for our purposes, is a long array of bytes where each byte has an associated address
+- To use memory, you need to allocate it first; this allocation process returns a pointer, the address of the first byte that you allocated
+- Once allocated, you can freely read and write to that memory location
+- When you're done, you can free the allocated space so it can be used elsewhere
+
+## Building the Array
+
+Now that we have a basic understanding of how memory works, let's jump back to arrays! We'll start with a few assumptions to make our lives easier:
+
+1. The array has a fixed length (i.e. it cannot grow in size), and
+2. The array can only contain numbers.
+
+These assumptions may seem really restrictive, but don't worry — we'll ease them as we move on.
+
+### Allocating Space
+
+With these assumptions, how would we lay out the array in memory? The simplest way would be to lay out the array as one big continuous block:
+
+<Placeholder name="array block" />
+
+This works for now, so let's see how we can use the memory API we described earlier to make it happen. Remember that the first thing we have to do is to allocate space for it first. To allocate space, we need to know how many bytes we need:
+
+```js
+const data = Mem.allocate(/* num of bytes */ ???)
+```
+
+Since our array is a fixed length and can only contain numbers, we can determine the total number of bytes we need using a simple formula:
+
+```
+total # of bytes = length x (# of bytes for 1 number)
+```
+
+In JavaScript, numbers are 8 bytes in size, so we'll use 8 for the number of bytes for 1 number. This gives the total space needed as 8 multiplied by the length of the array:
+
+```js
+function createArray(length) {
+  const totalSize = length * 8 // number of bytes for 1 number
+  const array = Mem.allocate(totalSize)
+
+  return {
+    get(index) {
+      // TODO
+    },
+    set(index, value) {
+      // TODO
+    },
+  }
+}
+```
+
+<Placeholder name="allocate array" />
+
+Notice that our array is actually a pointer, since that is what's returtned from the allocate function.
+
+### Reading and Writing
+
+Once allocated, we're free to read and write data to the array. In particular, reading and writing might look something like this:
+
+```js
+arr.set(/* index */ 0, /* value */ 2)
+const item = arr.get(/* index */ 0) // item = 2
+```
+
+To implement this, we need to keep two things in mind:
+
+1. As long as you have the address, you can quickly read and write to and from memory
+2. Allocating the array gives us the address for the _first_ byte we allocated
+
+To quickly get the item at a particular index, we need to determine the address of the item at that index. How can we determine the address given the address of the first byte only?
+
+For index 0, we already have the address — it's exactly the address that was returned from the allocate function!
+
+<Placeholder name="read index 0" />
+
+For other indices, we have to do a bit of math. Since we know the size of each item in the array, the address of the item at index `i` is:
+
+```
+address of index i = address at index 0 + (size of item * i)
+```
+
+In our case, the size of each item is the size of a number, 8 bytes. So our formula is then:
+
+```
+address of index i = address at index 0 + (8 * i)
+```
+
+<Placeholder name="read from index i" />
+
+And this is why arrays are fast! Using the index, we can derive the address that we need without needing to go through every element of the array.
+
+## Growing the Array
+
+So far, our array is static. We define a capacity when we created it, but it can never exceed that initial capacity. Now, let's ease one of our assumptions and let the array grow in size. In particular, we want to implement a `push` function that would add items to the end of the array. How would we change our array to support this?
+
+If our array's length is less than the initial capacity, we don't have to change anything. In this case, all we have to do to add an item is:
+
+1. Calculate the address using the array's length as the new index
+2. Store the value to that address
+
+But what if we're at capacity? How do we grow the array then?
+
+### Increasing Capacity
+
+Recall that the memory gates won't let you write to memory that you haven't allocated yet. So naturally, we would have to allocate more memory.
+
+One thing we might be tempted to do would be to allocate just enough memory for the new item. If we're adding a number for example, then we would allocate an extra 8 bytes:
+
+```js
+const newAddress = Mem.allocate(/* num of bytes */ 8)
+```
+
+This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array:
+
+<Placeholder name="array in a vacuum" />
+
+In practice though, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
+
+<Placeholder name="constrained array" />
+
+Ultimately, the only slice of memory that you are sure of is the part that you've allocated yourself.
+
+Instead, we have to re-allocate space for the entire array _plus_ the element that we're adding. Then, we copy the array into the new space and free up the old memory location:
+
+<Placeholder name="increasing array capacity" />
+
+## Mixing Types
+
+Nice! We now have an array that can grow in size. We still have one more assumption though — our array can only contain the same type of data. We know that in JavaScript this isn't true; you can freely mix and match types without any problems!
+
+### The Problem
+
+Before we look into implementing this in our array, let's see _why_ this assumption was there in the first place. Let's say that we did allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done:
+
+<Placeholder name="mixing array type memory" />
+
+Now, let's say we want to read an element from the array using its index. First, we need to get the address of that element. Easy enough, we'll use the formula that we wrote down before:
+
+```
+address of index i = address at index 0 + (size of item * i)
+```
+
+But, um, wait a minute. What's the `size of item`? Now that our elements are of different types, the size (number of bytes) of each item may not necessarily be the same. Uh oh, our formula breaks down, and _we can't quickly determine the address any more_!
+
+<Placeholder name="array element different size" />
+
+### Boxing our Items
+
+In order to make our formula work, we would need to make each element of the array take up the same space in memory despite being different types. How do we do this?
+
+One approach is to "box" the items in our array, wrapping each element in a container of a fixed size:
+
+<Placeholder name="element container" />
+
+The container will contain our value and a tag that indicates what type that value is. The size (in bytes) of our container will then be the size of the tag plus the size of the _largest_ value our container can hold. Since we're working with JavaScript's type system here, this size will be 8 bytes.
+
+Regardless of how large our container is, boxing each element ensures that each element of the array is the same size regardless of its type. This lets us maintain our array's lookup performance.
