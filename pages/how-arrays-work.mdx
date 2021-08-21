@@ -9,11 +9,16 @@ editedAt: '2021-06-21'
 import Callout from '@/elements/Callout'
 import Placeholder from '@/components/utils/Placeholder'
 
-This is an array: `[]`. An array represents an ordered list of items. Each item in the array has an associated _index_. Using the index, the array knows exactly where that item is within the array — it doesn't have to look for it:
+import IndexLookup from '@/components/how-arrays-work/IndexLookup'
+import Figure from '@/elements/Figure'
 
-<Placeholder name="searching vs index lookup" />
+This is an array: `[]`. An array represents an ordered list of items, where each item has an associated _index_. Using the index, the array knows exactly where that item is within the array — it doesn't have to look for it:
 
-In JavaScript, arrays are even more powerful — they can grow in size, and can even contain multiple types of values:
+<Figure>
+  <IndexLookup items={[1, 2, 3]} />
+</Figure>
+
+In many programming languages, that's typically all that arrays can do. In JavaScript however, arrays can also grow in size and contain different types of values:
 
 <Placeholder name="dynamic arrays" />
 
