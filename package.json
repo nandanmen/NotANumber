@@ -12,6 +12,7 @@
     "@babel/standalone": "^7.13.10",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
+    "@stitches/react": "^0.2.5",
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
     "babel-plugin-styled-components": "^1.12.0",
@@ -35,6 +36,8 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^3.2.2",
+    "@types/node": "^16.6.1",
+    "@types/react": "^17.0.18",
     "babel-plugin-macros": "^3.0.1",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
@@ -42,7 +45,8 @@
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "typescript": "^4.3.5"
   },
   "babelMacros": {
     "twin": {
