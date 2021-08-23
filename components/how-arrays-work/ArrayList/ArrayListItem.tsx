@@ -58,7 +58,7 @@ const Content = styled(motion.div, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  border: '2px solid var(--black)',
+  border: '2px solid var(--border-color)',
   background: 'var(--white)',
   borderRadius: '6px',
   zIndex: 10,

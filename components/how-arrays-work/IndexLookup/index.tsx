@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled } from '@stitches/react'
 
-import { ArrayList, ArrayListItem } from '../ArrayList'
+import ActiveIndexList from './ActiveIndexList'
 
 type IndexLookupProps = {
   items: unknown[]
@@ -10,42 +10,28 @@ type IndexLookupProps = {
 export default function IndexLookup({ items }: IndexLookupProps) {
   const [activeIndex, setActiveIndex] = React.useState(0)
   return (
-    <div>
-      <button
+    <Wrapper>
+      <IndexButton
         onClick={() => setActiveIndex((index) => (index + 1) % items.length)}
       >
-        Get Index: {activeIndex}
-      </button>
-      <ArrayList>
-        {items.map((item, index) => {
-          const isActive = activeIndex === index
-          return (
-            <div key={index}>
-              <ArrayListItem
-                pressed={isActive}
-                variant={isActive ? 'highlight' : undefined}
-                shadow
-              >
-                {item}
-              </ArrayListItem>
-              <Index active={isActive}>{index}</Index>
-            </div>
-          )
-        })}
-      </ArrayList>
-    </div>
+        Index: {activeIndex}
+      </IndexButton>
+      <ActiveIndexList items={items} activeIndex={activeIndex} />
+    </Wrapper>
   )
 }
 
-const Index = styled('div', {
-  textAlign: 'center',
-  marginTop: '12px',
-  variants: {
-    active: {
-      true: {
-        color: 'var(--color-highlight-secondary)',
-        fontWeight: 600,
-      },
-    },
-  },
+const Wrapper = styled('div', {
+  paddingTop: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+})
+
+const IndexButton = styled('button', {
+  marginBottom: '24px',
+  padding: '6px 10px',
+  border: '2px solid var(--border-color)',
+  background: 'var(--teal)',
+  borderRadius: '6px',
 })
