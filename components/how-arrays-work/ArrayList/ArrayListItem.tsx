@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { styled } from '@stitches/react'
 
-type ArrayListItemVariants = 'highlight'
+type ArrayListItemVariants = 'highlight' | 'free' | 'allocated' | 'base'
 
 type ArrayListItemProps = {
   children: React.ReactNode
@@ -52,21 +52,35 @@ const Content = styled(motion.div, {
   position: 'relative',
   fontFamily: 'var(--text-mono)',
   fontSize: '1.2rem',
-  color: 'var(--gray600)',
   width: '100%',
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  border: '2px solid var(--border-color)',
+  color: 'var(--gray600)',
   background: 'var(--white)',
+  justifyContent: 'center',
+  border: '2px var(--border-style, solid) var(--border-color)',
   borderRadius: '6px',
   zIndex: 10,
   variants: {
     variant: {
+      base: {
+        color: 'var(--gray600)',
+        background: 'var(--white)',
+      },
       highlight: {
         background: 'var(--color-highlight-secondary)',
         color: 'white',
+      },
+      free: {
+        '--border-style': 'dashed',
+        '--border-color': 'var(--gray400)',
+        background: 'var(--gray100)',
+        color: 'var(--gray600)',
+      },
+      allocated: {
+        '--border-color': 'var(--gray400)',
+        background: 'var(--white)',
       },
     },
   },

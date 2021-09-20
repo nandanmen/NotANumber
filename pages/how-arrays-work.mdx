@@ -10,6 +10,7 @@ import Callout from '@/elements/Callout'
 import Placeholder from '@/components/utils/Placeholder'
 
 import IndexLookup from '@/components/how-arrays-work/IndexLookup'
+import { Memory } from '@/components/how-arrays-work/Memory'
 import Figure from '@/elements/Figure'
 
 This is an array: `[]`. An array represents an ordered list of items, where each item has an associated _index_. Using the index, the array knows exactly where that item is within the array — it doesn't have to look for it:
@@ -41,7 +42,7 @@ If you've written code in C or C++ before, some of these methods might be famili
 
 As a starting point, you can think of memory as a super long array of bytes where each byte has an address. Using the address, you can read from and write to memory:
 
-<Placeholder name="read from memory" />
+<Memory length={8} />
 
 <Placeholder name="write to memory" />
 
