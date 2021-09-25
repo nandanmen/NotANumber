@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import { styled } from '@stitches/react'
 
 import { ArrayList, ArrayListItem } from '../ArrayList'
@@ -6,16 +6,19 @@ import { ArrayList, ArrayListItem } from '../ArrayList'
 const items = [1, 2, 3]
 const indexValues = [0, 1, 500]
 
-export default function IndexLookup() {
+function useCycle<CycleValue>(values: CycleValue[]) {
   const [currentIndex, setCurrentIndex] = React.useState(0)
-  const activeIndex = indexValues[currentIndex]
+  return [
+    values[currentIndex],
+    () => setCurrentIndex((index) => (index + 1) % values.length),
+  ] as const
+}
+
+export default function IndexLookup() {
+  const [activeIndex, cycle] = useCycle(indexValues)
   return (
     <Wrapper>
-      <IndexButton
-        onClick={() =>
-          setCurrentIndex((index) => (index + 1) % indexValues.length)
-        }
-      >
+      <IndexButton onClick={cycle as MouseEventHandler}>
         Index: {activeIndex}
       </IndexButton>
       <ArrayList>
