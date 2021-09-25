@@ -98,7 +98,7 @@ const Author = styled.div`
 
 const Blurb = styled.p`
   ${tw`text-2xl`}
-  
+
   font-family: var(--text-mono);
   text-align: center;
   padding: 0 32px;
@@ -151,7 +151,8 @@ const Article = styled.article`
   }
 
   > figure {
-    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
   }
 
   > ${CodeBlock} {
