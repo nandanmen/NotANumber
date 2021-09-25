@@ -13,19 +13,17 @@ import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { Memory } from '@/components/how-arrays-work/Memory'
 import Figure from '@/elements/Figure'
 
-This is an array: `[]`. An array represents an ordered list of items, where each item has an associated _index_. Using the index, the array knows exactly where that item is within the array — it doesn't have to look for it:
+The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
 
 <Figure>
-  <IndexLookup items={[1, 2, 3]} />
+  <IndexLookup />
 </Figure>
 
-In many programming languages, that's typically all that arrays can do. In JavaScript however, arrays can also grow in size and contain different types of values:
+If you've been a developer for a while, you probaby use arrays on a daily basis without thinking too much about them. But have you ever wondered how arrays actually work?
 
-<Placeholder name="dynamic arrays" />
+In this post, I want to dive into the technical details of the array and figure out how you might invent the array yourself. We're going to start with a simple array that only supports numbers, then later build that up to the flexible, dynamic array we all know and love from JavaScript.
 
-That's great and all, but have you ever wondered **how does it all work?** What's going on "under the hood" when you lookup an item in an array? What makes that operation so fast?
-
-In this post, we're going to dive into the inner workings of an array by building one ourselves, with the help of a few memory primitives.
+Let's get started!
 
 ## Memory API
 
@@ -42,7 +40,7 @@ If you've written code in C or C++ before, some of these methods might be famili
 
 As a starting point, you can think of memory as a super long array of bytes where each byte has an address. Using the address, you can read from and write to memory:
 
-<Memory length={8} />
+<Memory data={[undefined, undefined, 1, 2, 3, null, undefined]} />
 
 <Placeholder name="write to memory" />
 
