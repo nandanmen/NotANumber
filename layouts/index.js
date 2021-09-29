@@ -138,6 +138,12 @@ const Article = styled.article`
     margin-bottom: 1.5em;
   }
 
+  > blockquote {
+    border-left: 3px solid var(--gray400);
+    padding-left: 1rem;
+    color: var(--gray600);
+  }
+
   > ${Header} {
     grid-column: 1 / -1;
   }

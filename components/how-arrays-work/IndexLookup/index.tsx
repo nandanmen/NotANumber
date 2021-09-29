@@ -25,7 +25,7 @@ export default function IndexLookup() {
         {items.map((item, index) => {
           const isActive = activeIndex === index
           return (
-            <ItemWithIndex isActive={isActive} index={index}>
+            <ItemWithIndex key={item} isActive={isActive} index={index}>
               {item}
             </ItemWithIndex>
           )

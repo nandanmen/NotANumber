@@ -27,34 +27,40 @@ Let's get started!
 
 ## Memory API
 
-Before we get too deep into making our own array, I want to talk briefly about computer memory. Throughout this post, I'm going to be using a fake memory object that mimics how computer memory actually works.
+Before we start on our array, let's talk about the tools we're going to use to do it. In particular, we're going to be using a virtual memory system that mimics the behaviour of your computer's local memory.
 
-This memory object has four methods:
+Through the virtual memory system, we're going to have access to the following four methods:
 
 1. `get(address: number)` — returns the value at a specific memory address.
 2. `set(address: number, value: number)` — sets the given address to the given value.
 3. `allocate(bytes: number)` — allocates a given number of bytes, returning a pointer to the _first_ allocated byte.
 4. `free(pointer: Pointer)` — frees the memory location pointed to by the pointer.
 
-If you've written code in C or C++ before, some of these methods might be familiar to you; if not, that's okay too — we'll go through each one in this section.
+If you've written code in a lower level language before, some of these methods might be familiar to you; if not, that's okay too — we'll go over how everything works in this section.
 
-As a starting point, you can think of memory as a super long array of bytes where each byte has an address. Using the address, you can read from and write to memory:
+### Reading, Writing, and Addresses
 
-<Memory data={[undefined, undefined, 1, 2, 3, null, undefined]} />
+As a starting point, you can think of memory as itself a super long array, where each element of the array is one byte:
 
 <Placeholder name="write to memory" />
 
-### Protection
+Just like arrays, you can use the index to quickly read and write to a specific location in memory. We typically refer to the index of an element in memory as its address.
 
-Memory is "gate keeped" by the hardware and operating system (OS) — you can't read _nor_ write from memory unless both the hardware and OS lets you\*.
+### Memory Allocation
+
+One key restriction behind our computer's memory system is that you can't freely read and write to any old address in memory\*. In fact, when you begin, you can't read and write to any address at all!
 
 > \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change memory that's being used by other programs!
 
-To get past the memory gates, you have to ask for permission from the OS by allocating space:
+To get past this restriction, you have to ask for space in memory by allocating it through the operating system:
 
 ```js
-const pointer = Mem.allocate(/* num of bytes */ 12)
+const pointer = Mem.allocate(/* num of bytes */ 4)
 ```
+
+<Memory data={[undefined, undefined, null, null, null, null, undefined]} />
+
+Only after you allocate space are you able to store your data in memory:
 
 Allocating memory returns a pointer to the address of the **first byte** that you allocated:
 
