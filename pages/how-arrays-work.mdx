@@ -11,6 +11,7 @@ import Placeholder from '@/components/utils/Placeholder'
 
 import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { Memory } from '@/components/how-arrays-work/Memory'
+import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -42,7 +43,9 @@ If you've written code in a lower level language before, some of these methods m
 
 As a starting point, you can think of memory as itself a super long array, where each element of the array is one byte:
 
-<Placeholder name="write to memory" />
+<Figure>
+  <MemoryStructure />
+</Figure>
 
 Just like arrays, you can use the index to quickly read and write to a specific location in memory. We typically refer to the index of an element in memory as its address.
 

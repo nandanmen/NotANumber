@@ -4,7 +4,7 @@ import { styled } from '@stitches/react'
 type ArrayListItemVariants = 'highlight' | 'free' | 'allocated' | 'base'
 
 type ArrayListItemProps = {
-  children: React.ReactNode
+  children?: React.ReactNode
   pressed?: boolean
   shadow?: boolean
   variant?: ArrayListItemVariants
