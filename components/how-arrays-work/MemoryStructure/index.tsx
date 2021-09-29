@@ -10,13 +10,17 @@ const highlightIndex = Math.floor(ITEM_LENGTH / 2)
 
 export function MemoryStructure() {
   return (
-    <ArrayList>
+    <WrapperList>
       {items.map((item, index) => {
         return <ItemWithIndex key={item} index={index} />
       })}
-    </ArrayList>
+    </WrapperList>
   )
 }
+
+const WrapperList = styled(ArrayList, {
+  marginTop: '1.5em',
+})
 
 // --
 

@@ -157,8 +157,8 @@ const Article = styled.article`
   }
 
   > figure {
-    margin-top: 2rem;
-    margin-bottom: 4rem;
+    margin-top: calc(3rem - 1.5em);
+    margin-bottom: 3rem;
   }
 
   > ${CodeBlock} {
