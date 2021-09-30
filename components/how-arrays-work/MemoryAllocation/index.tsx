@@ -2,7 +2,6 @@ import { styled } from '@stitches/react'
 import { motion } from 'framer-motion'
 
 import { range } from '@/lib/utils'
-import Refresh from '../../utils/Refresh'
 import { ArrayListItem } from '../ArrayList'
 
 export function MemoryAllocation() {
