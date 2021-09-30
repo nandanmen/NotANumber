@@ -9,42 +9,38 @@ export function MemoryAllocation() {
   return (
     <Wrapper>
       <Code>
-        <code>
-          Mem.allocate(<span>size in bytes:</span>4)
-        </code>
+        <code>const startingByte = Mem.allocate(bytes: 4)</code>
       </Code>
-      <Refresh>
-        <List>
-          {range(8).map((_, index) => (
-            <ArrayListItem key={index} variant="free" />
-          ))}
-          <AllocatedList
-            variants={{
-              normal: {
-                transition: {
-                  staggerChildren: 0.3,
-                },
+      <List>
+        {range(8).map((_, index) => (
+          <ArrayListItem key={index} variant="free" />
+        ))}
+        <AllocatedList
+          variants={{
+            normal: {
+              transition: {
+                staggerChildren: 0.15,
               },
-            }}
-            animate="normal"
-            initial="small"
-          >
-            {range(4).map((_, index) => (
-              <AllocatedBlock
-                key={`allocated-${index}`}
-                variants={{
-                  small: {
-                    scale: 0.2,
-                  },
-                  normal: {
-                    scale: 1,
-                  },
-                }}
-              />
-            ))}
-          </AllocatedList>
-        </List>
-      </Refresh>
+            },
+          }}
+          animate="normal"
+          initial="small"
+        >
+          {range(4).map((_, index) => (
+            <AllocatedBlock
+              key={`allocated-${index}`}
+              variants={{
+                small: {
+                  scale: 0.2,
+                },
+                normal: {
+                  scale: 1,
+                },
+              }}
+            />
+          ))}
+        </AllocatedList>
+      </List>
     </Wrapper>
   )
 }
@@ -64,7 +60,7 @@ const AllocatedBlock = styled(motion.li, {
   height: '4rem',
   borderRadius: '6px',
   border: '2px solid var(--gray400)',
-  background: 'var(--gray200)',
+  background: 'white',
 })
 
 const Wrapper = styled('div', {

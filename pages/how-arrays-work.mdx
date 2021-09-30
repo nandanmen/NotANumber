@@ -56,25 +56,21 @@ One key restriction behind our computer's memory system is that you can't freely
 
 > \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change memory that's being used by other programs!
 
-To get past this restriction, you have to ask for space in memory by _allocating_ it:
+To get past this restriction, you have to ask for space in memory by _allocating_ it. To allocate space, you use the `allocate` function, passing in the specific number of bytes that you need:
 
 <Figure>
   <MemoryAllocation />
 </Figure>
 
-Only after you allocate space are you able to store your data in memory:
+The `allocate` call returns the address of the _first_ byte of the allocated block. In this case, the call returns the address `1` because our 4 byte block begins at address `1`.
 
-Allocating memory returns a pointer to the address of the **first byte** that you allocated:
+> I lied a bit there - the allocate call actually returns a **pointer**, which is functionally equivalent to a memory address but has some additional metadata about the block that was allocated. For this article, understanding that allocation returns "something like" a memory address will suffice.
 
-![A variable arr with an arrow pointing to the first byte in an array](./allocation.png)
-
-Functionally, a pointer acts like an address. You can use it in place of an address to read and write to memory. In reality though, a pointer contains some other metadata that's useful for the other memory methods.
-
-When you allocate space, you're requesting to use a certain number of bytes from memory for your program to use. The OS is pretty generous too — as long as there's memory left, the OS will allocate the space for you.
+Great! Now that we have our allocated slice of memory, we can read and write from it as we please:
 
 <Placeholder name="memory allocation" />
 
-Once allocated, you're free to read and write to that memory location as you please — but if you try to read and write to memory that's not allocated yet, it's not going to work.
+### Freeing Up Space
 
 Finally, once you're done with the data and don't need it anymore, you can free up that space so the computer can use the memory for other things:
 
