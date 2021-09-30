@@ -12,6 +12,7 @@ import Placeholder from '@/components/utils/Placeholder'
 import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { Memory } from '@/components/how-arrays-work/Memory'
 import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
+import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -47,7 +48,7 @@ As a starting point, you can think of memory as itself a super long array, where
   <MemoryStructure />
 </Figure>
 
-Just like arrays, you can use the index to quickly read and write to a specific location in memory. However, when we're talking about memory in particular, we tend to talk about the index of any individual byte as its _address_.
+Just like arrays, you can use the index to quickly read and write to a specific location in memory. However, when we're talking about memory in particular, we refer to the index of any individual byte as its _address_.
 
 ### Memory Allocation
 
@@ -55,13 +56,11 @@ One key restriction behind our computer's memory system is that you can't freely
 
 > \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change memory that's being used by other programs!
 
-To get past this restriction, you have to ask for space in memory by allocating it through the operating system:
+To get past this restriction, you have to ask for space in memory by _allocating_ it:
 
-```js
-const pointer = Mem.allocate(/* num of bytes */ 4)
-```
-
-<Memory data={[undefined, undefined, null, null, null, null, undefined]} />
+<Figure>
+  <MemoryAllocation />
+</Figure>
 
 Only after you allocate space are you able to store your data in memory:
 
