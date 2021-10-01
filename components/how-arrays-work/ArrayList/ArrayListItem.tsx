@@ -80,7 +80,7 @@ const Content = styled(motion.div, {
       },
       allocated: {
         '--border-color': 'var(--gray400)',
-        background: 'var(--gray200)',
+        background: 'white',
       },
     },
   },

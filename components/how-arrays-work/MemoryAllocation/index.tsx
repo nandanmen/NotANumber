@@ -8,7 +8,7 @@ export function MemoryAllocation() {
   return (
     <Wrapper>
       <Code>
-        <code>const startingByte = Mem.allocate(bytes: 4)</code>
+        <code>const block = Mem.allocate(bytes: 4)</code>
       </Code>
       <List>
         {range(8).map((_, index) => (

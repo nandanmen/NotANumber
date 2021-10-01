@@ -13,6 +13,7 @@ import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { Memory } from '@/components/how-arrays-work/Memory'
 import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
 import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
+import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -68,7 +69,7 @@ The `allocate` call returns the address of the _first_ byte of the allocated blo
 
 Great! Now that we have our allocated slice of memory, we can read and write from it as we please:
 
-<Placeholder name="memory allocation" />
+<MemoryReadWrite />
 
 ### Freeing Up Space
 
