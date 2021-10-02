@@ -1,36 +1,32 @@
 import React from 'react'
 import { styled } from '@stitches/react'
-import { motion } from 'framer-motion'
+import { motion, useAnimation } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
 
 import { range } from '@/lib/utils'
 import { ArrayListItem } from '../ArrayList'
 
-const states = [
-  {
-    code: `Mem.set(block, 'a')`,
-    activeIndex: 1,
-  },
-  {
-    code: `Mem.set(block + 1, 'b')`,
-    activeIndex: 2,
-  },
-]
+const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
 export function MemoryReadWrite() {
-  const [currentStateIndex, setCurrentStateIndex] = React.useState(0)
-  const currentState = states[currentStateIndex]
+  const [index, setIndex] = React.useState(-1)
+
+  const cycle = () => setIndex((index) => (index + 1) % 4)
+  const activeIndex = index + 1
 
   return (
     <Wrapper>
+      <button onClick={cycle}>Cycle</button>
       <Code>
-        <code>{currentState.code}</code>
+        <code>Mem.set(block, 'a')</code>
       </Code>
       <List>
         <ArrayListItem variant="free" />
         {range(4).map((_, index) => (
           <div key={`allocated-${index}`}>
-            <AllocatedBlock active={index + 1 === currentState.activeIndex} />
+            <AllocatedBlock active={index + 1 <= activeIndex}>
+              {String.fromCharCode(index + LOWERCASE_ALPHABET_CHAR_CODE)}
+            </AllocatedBlock>
             <Index>{index + 1}</Index>
           </div>
         ))}
@@ -39,7 +35,7 @@ export function MemoryReadWrite() {
         ))}
         <Pointer
           animate={{
-            x: `calc(${currentState.activeIndex} * calc(8px + 4rem))`,
+            x: `calc(${activeIndex} * calc(8px + 4rem))`,
           }}
         >
           <RiArrowDownSFill size="2em" />
@@ -60,6 +56,36 @@ const Pointer = styled(motion.div, {
 })
 
 function AllocatedBlock(props) {
+  const controls = useAnimation()
+
+  React.useEffect(() => {
+    let timeout = null
+
+    if (!props.active) {
+      controls.start('base')
+    } else {
+      controls.start('active')
+      timeout = setTimeout(() => {
+        controls.start({
+          scale: 1,
+          transition: {
+            type: 'spring',
+            velocity: -20,
+            stiffness: 400,
+            damping: 100,
+          },
+        })
+      }, 300)
+    }
+
+    return () => {
+      controls.stop()
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+    }
+  }, [props.active])
+
   return (
     <AllocatedBlockWrapper
       variants={{
@@ -70,31 +96,30 @@ function AllocatedBlock(props) {
           y: -5,
         },
       }}
-      animate={props.active ? 'active' : 'base'}
+      animate={controls}
       variant={props.active && 'active'}
       {...props}
-    />
+    >
+      <motion.div
+        variants={{
+          base: {
+            opacity: 0,
+          },
+          active: {
+            opacity: 1,
+            transition: {
+              delay: 0.3,
+            },
+          },
+        }}
+      >
+        {props.children}
+      </motion.div>
+    </AllocatedBlockWrapper>
   )
 }
 
 // -- Styles
-
-const Slider = styled(motion.div, {
-  $$offset: '10px',
-  position: 'absolute',
-  height: 'calc(100% + $$offset)',
-  border: '3px solid var(--color-highlight-secondary)',
-  borderRadius: '6px',
-  width: 'calc(4rem + $$offset)',
-})
-
-const AllocatedList = styled(motion.ul, {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(4, 4rem)',
-  gap: '8px',
-  position: 'absolute',
-  left: 'calc(4rem + 8px)',
-})
 
 const AllocatedBlockWrapper = styled(motion.li, {
   '--border-color': 'var(--gray400)',
@@ -104,6 +129,11 @@ const AllocatedBlockWrapper = styled(motion.li, {
   borderRadius: '6px',
   border: '2px solid var(--border-color, var(--gray400))',
   background: 'var(--background, white)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontWeight: '600',
+  fontSize: '1.5rem',
 
   variants: {
     variant: {
@@ -127,7 +157,7 @@ const Wrapper = styled('div', {
 })
 
 const Code = styled('p', {
-  marginBottom: '60px',
+  marginBottom: '40px',
   textAlign: 'center',
 })
 
