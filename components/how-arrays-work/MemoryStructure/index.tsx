@@ -1,4 +1,4 @@
-import { styled } from '@stitches/react'
+import { styled, keyframes } from '@stitches/react'
 
 import { ArrayList, ArrayListItem } from '../ArrayList'
 import { range } from '@/lib/utils'
@@ -33,6 +33,26 @@ function ItemWithIndex({ index }) {
   )
 }
 
+const fadeUp = keyframes({
+  '0%': {
+    transform: 'translateY(16px)',
+    opacity: 0,
+  },
+  '100%': {
+    transform: 'translateY(0)',
+    opacity: 1,
+  },
+})
+
+const slideCenter = keyframes({
+  '0%': {
+    transform: 'scaleX(0)',
+  },
+  '100%': {
+    transform: 'scaleX(1)',
+  },
+})
+
 const Wrapper = styled('div', {
   position: 'relative',
   variants: {
@@ -45,6 +65,11 @@ const Wrapper = styled('div', {
           height: '2px',
           top: '-16px',
           background: 'var(--gray400)',
+          transformOrigin: 'center',
+          animationName: `${slideCenter}`,
+          animationDuration: '600ms',
+          animationFillMode: 'forwards',
+          transform: 'scaleX(0)',
         },
         '&:after': {
           content: '1 byte',
@@ -54,6 +79,12 @@ const Wrapper = styled('div', {
           color: 'var(--gray600)',
           textAlign: 'center',
           fontWeight: 'bold',
+          animationName: `${fadeUp}`,
+          animationDuration: '600ms',
+          animationFillMode: 'forwards',
+          animationDelay: '400ms',
+          opacity: 0,
+          transform: `translateY(16px)`,
         },
       },
     },
