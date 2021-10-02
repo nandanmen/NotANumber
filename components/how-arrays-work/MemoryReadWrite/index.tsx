@@ -8,18 +8,24 @@ import { ArrayListItem } from '../ArrayList'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
-export function MemoryReadWrite() {
-  const [index, setIndex] = React.useState(-1)
+const code = [
+  'const block = Mem.allocate(4)',
+  `Mem.set(block, 'a')`,
+  `Mem.set(block + 1, 'b')`,
+  `Mem.set(block + 2, 'c')`,
+  `Mem.set(block + 3, 'd')`,
+  `Mem.set(block + 4, 'e')`,
+]
 
-  const cycle = () => setIndex((index) => (index + 1) % 4)
-  const activeIndex = index + 1
+export function MemoryReadWrite() {
+  const [activeIndex, setIndex] = React.useState(0)
+
+  const cycle = () => setIndex((index) => (index + 1) % code.length)
 
   return (
     <Wrapper>
       <button onClick={cycle}>Cycle</button>
-      <Code>
-        <code>Mem.set(block, 'a')</code>
-      </Code>
+      <Code>{code[activeIndex]}</Code>
       <List>
         <ArrayListItem variant="free" />
         {range(4).map((_, index) => (
@@ -36,6 +42,7 @@ export function MemoryReadWrite() {
         <Pointer
           animate={{
             x: `calc(${activeIndex} * calc(8px + 4rem))`,
+            opacity: activeIndex === 0 ? 0 : 1,
           }}
         >
           <RiArrowDownSFill size="2em" />
@@ -159,6 +166,7 @@ const Wrapper = styled('div', {
 const Code = styled('p', {
   marginBottom: '40px',
   textAlign: 'center',
+  fontFamily: 'var(--text-mono)',
 })
 
 const List = styled('ul', {
