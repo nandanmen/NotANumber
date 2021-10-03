@@ -33,13 +33,14 @@ export function MemoryReadWrite() {
             <AllocatedBlock active={index + 1 <= activeIndex}>
               {String.fromCharCode(index + LOWERCASE_ALPHABET_CHAR_CODE)}
             </AllocatedBlock>
-            <Index>{index + 1}</Index>
+            <Index>{index > 0 ? `block + ${index}` : 'block'}</Index>
           </div>
         ))}
         {range(3).map((_, index) => (
           <ArrayListItem key={`free-${index}`} variant="free" />
         ))}
         <Pointer
+          initial={{ opacity: 0 }}
           animate={{
             x: `calc(${activeIndex} * calc(8px + 4rem))`,
             opacity: activeIndex === 0 ? 0 : 1,
@@ -62,37 +63,12 @@ const Pointer = styled(motion.div, {
   left: 0,
 })
 
-function AllocatedBlock(props) {
-  const controls = useAnimation()
+type AllocatedBlockProps = {
+  active: boolean
+  children?: React.ReactNode
+}
 
-  React.useEffect(() => {
-    let timeout = null
-
-    if (!props.active) {
-      controls.start('base')
-    } else {
-      controls.start('active')
-      timeout = setTimeout(() => {
-        controls.start({
-          scale: 1,
-          transition: {
-            type: 'spring',
-            velocity: -20,
-            stiffness: 400,
-            damping: 100,
-          },
-        })
-      }, 300)
-    }
-
-    return () => {
-      controls.stop()
-      if (timeout) {
-        clearTimeout(timeout)
-      }
-    }
-  }, [props.active])
-
+function AllocatedBlock({ active, children }: AllocatedBlockProps) {
   return (
     <AllocatedBlockWrapper
       variants={{
@@ -103,9 +79,9 @@ function AllocatedBlock(props) {
           y: -5,
         },
       }}
-      animate={controls}
-      variant={props.active && 'active'}
-      {...props}
+      animate={active ? 'active' : 'base'}
+      initial="base"
+      variant={active ? 'active' : undefined}
     >
       <motion.div
         variants={{
@@ -120,7 +96,7 @@ function AllocatedBlock(props) {
           },
         }}
       >
-        {props.children}
+        {children}
       </motion.div>
     </AllocatedBlockWrapper>
   )
@@ -154,7 +130,8 @@ const AllocatedBlockWrapper = styled(motion.li, {
 
 const Index = styled('p', {
   textAlign: 'center',
-  marginTop: '12px',
+  marginTop: '8px',
+  fontSize: 'var(--text-sm)',
 })
 
 const Wrapper = styled('div', {
