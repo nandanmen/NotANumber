@@ -1,9 +1,14 @@
 import React from 'react'
 import { styled } from '@stitches/react'
-import { motion, useAnimation } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
+import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
+import { HiArrowRight, HiArrowLeft } from 'react-icons/hi'
 
 import { range } from '@/lib/utils'
+import usePlayer from '@/lib/usePlayer'
+
+import { AllocatedBlock } from './AllocatedBlock'
 import { ArrayListItem } from '../ArrayList'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
@@ -18,14 +23,12 @@ const code = [
 ]
 
 export function MemoryReadWrite() {
-  const [activeIndex, setIndex] = React.useState(0)
-
-  const cycle = () => setIndex((index) => (index + 1) % code.length)
+  const { actions, models } = usePlayer(code, { delay: 750, loop: true })
+  const activeIndex = models.activeStepIndex
 
   return (
     <Wrapper>
-      <button onClick={cycle}>Cycle</button>
-      <Code>{code[activeIndex]}</Code>
+      <Code>{models.state}</Code>
       <List>
         <ArrayListItem variant="free" />
         {range(4).map((_, index) => (
@@ -49,9 +52,54 @@ export function MemoryReadWrite() {
           <RiArrowDownSFill size="2em" />
         </Pointer>
       </List>
+      <ControlsWrapper>
+        <ControlButton onClick={actions.toggle}>
+          {models.isPlaying ? (
+            <BsPauseFill size="20px" />
+          ) : (
+            <BsPlayFill size="20px" />
+          )}
+        </ControlButton>
+        <input
+          type="range"
+          min={0}
+          max={models.steps.length - 1}
+          value={models.activeStepIndex}
+          onChange={(evt) => actions.setIndex(evt.target.valueAsNumber)}
+        />
+        <StepWrapper>
+          <ControlButton onClick={actions.prev}>
+            <HiArrowLeft />
+          </ControlButton>
+          <ControlButton onClick={actions.next}>
+            <HiArrowRight />
+          </ControlButton>
+        </StepWrapper>
+      </ControlsWrapper>
     </Wrapper>
   )
 }
+
+const ControlsWrapper = styled('div', {
+  display: 'flex',
+  gap: '16px',
+})
+
+const StepWrapper = styled('div', {
+  display: 'flex',
+  gap: '8px',
+})
+
+const ControlButton = styled('button', {
+  width: '2rem',
+  height: '2rem',
+  borderRadius: '6px',
+  background: '#e5e7eb',
+  fontWeight: 'bold',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})
 
 const Pointer = styled(motion.div, {
   position: 'absolute',
@@ -61,71 +109,6 @@ const Pointer = styled(motion.div, {
   justifyContent: 'center',
   top: 'calc(-2em - 2px)',
   left: 0,
-})
-
-type AllocatedBlockProps = {
-  active: boolean
-  children?: React.ReactNode
-}
-
-function AllocatedBlock({ active, children }: AllocatedBlockProps) {
-  return (
-    <AllocatedBlockWrapper
-      variants={{
-        base: {
-          y: 0,
-        },
-        active: {
-          y: -5,
-        },
-      }}
-      animate={active ? 'active' : 'base'}
-      initial="base"
-      variant={active ? 'active' : undefined}
-    >
-      <motion.div
-        variants={{
-          base: {
-            opacity: 0,
-          },
-          active: {
-            opacity: 1,
-            transition: {
-              delay: 0.3,
-            },
-          },
-        }}
-      >
-        {children}
-      </motion.div>
-    </AllocatedBlockWrapper>
-  )
-}
-
-// -- Styles
-
-const AllocatedBlockWrapper = styled(motion.li, {
-  '--border-color': 'var(--gray400)',
-
-  width: '4rem',
-  height: '4rem',
-  borderRadius: '6px',
-  border: '2px solid var(--border-color, var(--gray400))',
-  background: 'var(--background, white)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontWeight: '600',
-  fontSize: '1.5rem',
-
-  variants: {
-    variant: {
-      active: {
-        '--border-color': 'var(--black)',
-        '--background': 'var(--teal)',
-      },
-    },
-  },
 })
 
 const Index = styled('p', {
@@ -138,10 +121,13 @@ const Wrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+
+  '> :not(:last-child)': {
+    marginBottom: '32px',
+  },
 })
 
 const Code = styled('p', {
-  marginBottom: '40px',
   textAlign: 'center',
   fontFamily: 'var(--text-mono)',
 })
