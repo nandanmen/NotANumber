@@ -9,17 +9,18 @@ import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 
 import { AllocatedBlock } from './AllocatedBlock'
+import { ForbiddenBlock } from './ForbiddenBlock'
 import { ArrayListItem } from '../ArrayList'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
 const code = [
-  'const block = Mem.allocate(4)',
-  `Mem.set(block, 'a')`,
-  `Mem.set(block + 1, 'b')`,
-  `Mem.set(block + 2, 'c')`,
-  `Mem.set(block + 3, 'd')`,
-  `Mem.set(block + 4, 'e')`,
+  'const block = Memory.allocate(4)',
+  `Memory.set(block, 'a')`,
+  `Memory.set(block + 1, 'b')`,
+  `Memory.set(block + 2, 'c')`,
+  `Memory.set(block + 3, 'd')`,
+  `Memory.set(block + 4, 'e')`,
 ]
 
 export function MemoryReadWrite() {
@@ -39,7 +40,11 @@ export function MemoryReadWrite() {
             <Index>{index > 0 ? `block + ${index}` : 'block'}</Index>
           </div>
         ))}
-        {range(3).map((_, index) => (
+        <div>
+          <ForbiddenBlock active={activeIndex === 5} />
+          <Index>block + 4</Index>
+        </div>
+        {range(2).map((_, index) => (
           <ArrayListItem key={`free-${index}`} variant="free" />
         ))}
         <Pointer
