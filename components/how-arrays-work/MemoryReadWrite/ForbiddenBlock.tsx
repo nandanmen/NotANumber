@@ -48,7 +48,10 @@ export function ForbiddenBlock({ active }: ForbiddenBlockProps) {
       animate={isBooped ? 'active' : 'base'}
       initial="base"
     >
-      <motion.div animate={{ opacity: active ? 1 : 0 }}>
+      <motion.div
+        animate={{ opacity: active ? 1 : 0 }}
+        initial={{ opacity: 0 }}
+      >
         <HiX size="38px" />
       </motion.div>
     </Wrapper>
