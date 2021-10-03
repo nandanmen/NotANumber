@@ -80,42 +80,7 @@ export function MemoryReadWrite() {
   )
 }
 
-const ControlsWrapper = styled('div', {
-  display: 'flex',
-  gap: '16px',
-})
-
-const StepWrapper = styled('div', {
-  display: 'flex',
-  gap: '8px',
-})
-
-const ControlButton = styled('button', {
-  width: '2rem',
-  height: '2rem',
-  borderRadius: '6px',
-  background: '#e5e7eb',
-  fontWeight: 'bold',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-})
-
-const Pointer = styled(motion.div, {
-  position: 'absolute',
-  color: 'var(--black)',
-  width: '4rem',
-  display: 'flex',
-  justifyContent: 'center',
-  top: 'calc(-2em - 2px)',
-  left: 0,
-})
-
-const Index = styled('p', {
-  textAlign: 'center',
-  marginTop: '8px',
-  fontSize: 'var(--text-sm)',
-})
+/* Main */
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -137,4 +102,43 @@ const List = styled('ul', {
   gridTemplateColumns: 'repeat(8, 4rem)',
   gap: '8px',
   position: 'relative',
+})
+
+const Pointer = styled(motion.div, {
+  position: 'absolute',
+  color: 'var(--black)',
+  width: '4rem',
+  display: 'flex',
+  justifyContent: 'center',
+  top: 'calc(-2em - 2px)',
+  left: 0,
+})
+
+const Index = styled('p', {
+  textAlign: 'center',
+  marginTop: '8px',
+  fontSize: 'var(--text-sm)',
+})
+
+/* Controls */
+
+const ControlsWrapper = styled('div', {
+  display: 'flex',
+  gap: '16px',
+})
+
+const StepWrapper = styled('div', {
+  display: 'flex',
+  gap: '8px',
+})
+
+const ControlButton = styled('button', {
+  width: '2rem',
+  height: '2rem',
+  borderRadius: '6px',
+  background: '#e5e7eb',
+  fontWeight: 'bold',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 })
