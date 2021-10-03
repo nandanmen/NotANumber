@@ -1,7 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { styled } from '@stitches/react'
 import { HiX } from 'react-icons/hi'
+
+import { styled } from '@/stitches'
+import { Block } from './Block'
 
 type ForbiddenBlockProps = {
   active: boolean
@@ -60,25 +62,16 @@ export function ForbiddenBlock({ active }: ForbiddenBlockProps) {
 
 // -- Styles
 
-const Wrapper = styled(motion.li, {
-  '--border-color': 'var(--gray400)',
-
-  width: '4rem',
-  height: '4rem',
-  borderRadius: '6px',
-  border: '2px solid var(--border-color, var(--gray400))',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontWeight: '600',
-  fontSize: '1.5rem',
+const Wrapper = styled(Block, {
+  $$background: 'transparent',
+  $$borderStyle: 'dashed',
 
   variants: {
     variant: {
       active: {
-        '--border-color': 'var(--black)',
-        background: 'var(--red)',
-        color: 'white',
+        $$borderColor: '$black',
+        $$background: '$red',
+        color: '$white',
       },
     },
   },

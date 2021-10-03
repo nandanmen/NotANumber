@@ -1,5 +1,4 @@
 import React from 'react'
-import { styled } from '@stitches/react'
 import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
@@ -7,6 +6,7 @@ import { HiArrowRight, HiArrowLeft } from 'react-icons/hi'
 
 import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
+import { styled } from '@/stitches'
 
 import { AllocatedBlock } from './AllocatedBlock'
 import { ForbiddenBlock } from './ForbiddenBlock'
@@ -111,7 +111,7 @@ const List = styled('ul', {
 
 const Pointer = styled(motion.div, {
   position: 'absolute',
-  color: 'var(--black)',
+  color: '$black',
   width: '4rem',
   display: 'flex',
   justifyContent: 'center',
@@ -122,7 +122,7 @@ const Pointer = styled(motion.div, {
 const Index = styled('p', {
   textAlign: 'center',
   marginTop: '8px',
-  fontSize: 'var(--text-sm)',
+  fontSize: '$sm',
 })
 
 /* Controls */
@@ -141,7 +141,7 @@ const ControlButton = styled('button', {
   width: '2rem',
   height: '2rem',
   borderRadius: '6px',
-  background: '#e5e7eb',
+  background: '$grey200',
   fontWeight: 'bold',
   display: 'flex',
   alignItems: 'center',

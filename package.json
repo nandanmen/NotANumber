@@ -12,7 +12,7 @@
     "@babel/standalone": "^7.13.10",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
-    "@stitches/react": "^0.2.5",
+    "@stitches/react": "^1.2.1",
     "@use-it/interval": "^1.0.0",
     "autoprefixer": "^10.1.0",
     "babel-plugin-styled-components": "^1.12.0",
