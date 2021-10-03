@@ -21,7 +21,8 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/elements/*": ["elements/*"],
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/stitches": ["stitches.config.ts"]
     }
   },
   "include": [

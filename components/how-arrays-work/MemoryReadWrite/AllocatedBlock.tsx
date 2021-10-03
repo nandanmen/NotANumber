@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
-import { styled } from '@stitches/react'
+
+import { styled } from '@/stitches'
+import { Block } from './Block'
 
 type AllocatedBlockProps = {
   active: boolean
@@ -42,25 +44,12 @@ export function AllocatedBlock({ active, children }: AllocatedBlockProps) {
 
 // -- Styles
 
-const AllocatedBlockWrapper = styled(motion.li, {
-  '--border-color': 'var(--gray400)',
-
-  width: '4rem',
-  height: '4rem',
-  borderRadius: '6px',
-  border: '2px solid var(--border-color, var(--gray400))',
-  background: 'var(--background, white)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontWeight: '600',
-  fontSize: '1.5rem',
-
+const AllocatedBlockWrapper = styled(Block, {
   variants: {
     variant: {
       active: {
-        '--border-color': 'var(--black)',
-        '--background': 'var(--teal)',
+        $$borderColor: '$black',
+        $$background: '$teal',
       },
     },
   },
