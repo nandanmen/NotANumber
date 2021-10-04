@@ -32,7 +32,7 @@ export function ForbiddenBlock({ active }: ForbiddenBlockProps) {
 
   return (
     <Wrapper
-      variant={active ? 'active' : undefined}
+      active={active}
       variants={{
         base: {
           x: 0,
@@ -67,8 +67,8 @@ const Wrapper = styled(Block, {
   $$borderStyle: 'dashed',
 
   variants: {
-    variant: {
-      active: {
+    active: {
+      true: {
         $$borderColor: '$black',
         $$background: '$red',
         color: '$white',

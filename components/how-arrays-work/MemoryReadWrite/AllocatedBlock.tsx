@@ -21,7 +21,7 @@ export function AllocatedBlock({ active, children }: AllocatedBlockProps) {
       }}
       animate={active ? 'active' : 'base'}
       initial="base"
-      variant={active ? 'active' : undefined}
+      active={active}
     >
       <motion.div
         variants={{
@@ -46,8 +46,8 @@ export function AllocatedBlock({ active, children }: AllocatedBlockProps) {
 
 const AllocatedBlockWrapper = styled(Block, {
   variants: {
-    variant: {
-      active: {
+    active: {
+      true: {
         $$borderColor: '$black',
         $$background: '$teal',
       },
