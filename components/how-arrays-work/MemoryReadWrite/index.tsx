@@ -10,7 +10,7 @@ import { styled } from '@/stitches'
 
 import { AllocatedBlock } from './AllocatedBlock'
 import { ForbiddenBlock } from './ForbiddenBlock'
-import { ArrayListItem } from '../ArrayList'
+import { Block } from './Block'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
@@ -31,7 +31,7 @@ export function MemoryReadWrite() {
     <Wrapper>
       <Code>{models.state}</Code>
       <List>
-        <ArrayListItem variant="free" />
+        <Block type="free" />
         {range(4).map((_, index) => (
           <div key={`allocated-${index}`}>
             <AllocatedBlock active={index + 1 <= activeIndex}>
@@ -45,7 +45,7 @@ export function MemoryReadWrite() {
           <Index>block + 4</Index>
         </div>
         {range(2).map((_, index) => (
-          <ArrayListItem key={`free-${index}`} variant="free" />
+          <Block key={`free-${index}`} type="free" />
         ))}
         <Pointer
           initial={{ opacity: 0 }}

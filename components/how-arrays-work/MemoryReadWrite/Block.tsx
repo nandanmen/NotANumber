@@ -16,4 +16,13 @@ export const Block = styled(motion.div, {
   justifyContent: 'center',
   fontWeight: '600',
   fontSize: '$lg',
+
+  variants: {
+    type: {
+      free: {
+        $$background: 'transparent',
+        $$borderStyle: 'dashed',
+      },
+    },
+  },
 })

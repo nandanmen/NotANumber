@@ -49,6 +49,7 @@ export function ForbiddenBlock({ active }: ForbiddenBlockProps) {
       }}
       animate={isBooped ? 'active' : 'base'}
       initial="base"
+      type="free"
     >
       <motion.div
         animate={{ opacity: active ? 1 : 0 }}
@@ -63,9 +64,6 @@ export function ForbiddenBlock({ active }: ForbiddenBlockProps) {
 // -- Styles
 
 const Wrapper = styled(Block, {
-  $$background: 'transparent',
-  $$borderStyle: 'dashed',
-
   variants: {
     active: {
       true: {
