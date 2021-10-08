@@ -17,7 +17,7 @@ const Wrapper = styled('div', {
   gridTemplateColumns: 'repeat(2, $12)',
   gridTemplateRows: 'repeat(2, $12)',
   gap: '$2',
-  justifyContent: 'center',
+  justifyContent: 'flex-end',
 })
 
 const Node = styled('div', {
@@ -46,7 +46,7 @@ const Node = styled('div', {
     content: '',
     position: 'absolute',
     inset: '$0',
-    background: '$grey100',
+    background: '$background',
     border: '3px solid $black',
     borderRadius: '$$borderRadius',
   },

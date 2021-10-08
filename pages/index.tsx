@@ -4,6 +4,7 @@ import { styled } from '@/stitches'
 import { HiArrowRight } from 'react-icons/hi'
 
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
+import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
 import ExternalLink from '@/elements/ExternalLink'
 import { formatPath } from '@/lib/utils'
 
@@ -35,7 +36,7 @@ export default function HomePage() {
             <Post post={debuggerPost} />
           </PostItem>
           <PostItem>
-            <DebuggerIcon />
+            <SlidingWindowIcon />
             <Post post={slidingWindow} />
           </PostItem>
         </Posts>
@@ -127,7 +128,7 @@ function Post({ post }: { post: typeof slidingWindow }) {
   )
 }
 
-const PostWrapper = styled('li', {
+const PostWrapper = styled('div', {
   padding: '$4 $8',
   borderRadius: '12px',
 
