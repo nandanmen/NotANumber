@@ -3,15 +3,12 @@ import Link from 'next/link'
 import { styled } from '@/stitches'
 import { HiArrowRight } from 'react-icons/hi'
 
+import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import ExternalLink from '@/elements/ExternalLink'
 import { formatPath } from '@/lib/utils'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
-
-const posts = [debuggerPost, slidingWindow]
-
-posts.sort((a, b) => (new Date(a.editedAt) < new Date(b.editedAt) ? 1 : -1))
 
 export default function HomePage() {
   return (
@@ -33,14 +30,26 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
-          {posts.map((post) => (
-            <Post key={post.__resourcePath} post={post} />
-          ))}
+          <PostItem>
+            <DebuggerIcon />
+            <Post post={debuggerPost} />
+          </PostItem>
+          <PostItem>
+            <DebuggerIcon />
+            <Post post={slidingWindow} />
+          </PostItem>
         </Posts>
       </Wrapper>
     </>
   )
 }
+
+const PostItem = styled('li', {
+  display: 'grid',
+  gridTemplateColumns: '$32 65ch',
+  alignItems: 'center',
+  gap: '$4',
+})
 
 const Wrapper = styled('div', {
   paddingTop: '$32',
@@ -74,13 +83,9 @@ const Description = styled('p', {
 
 const Posts = styled('ul', {
   paddingTop: '$12',
-  display: 'grid',
-  gridTemplateColumns: '1fr min(65ch, 100%) 1fr',
-  position: 'relative',
-
-  '> *': {
-    gridColumn: 2,
-  },
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
 
   '> :not(:last-child)': {
     marginBottom: '$4',
