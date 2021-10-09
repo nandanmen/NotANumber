@@ -145,6 +145,7 @@ function Post({ post }: { post: typeof slidingWindow }) {
 const PostWrapper = styled('div', {
   padding: '$4 $8',
   borderRadius: '12px',
+  width: 'min(100vw, 40rem)',
 
   '&:hover': {
     background: '$grey200',
