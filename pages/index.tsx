@@ -5,11 +5,13 @@ import { HiArrowRight } from 'react-icons/hi'
 
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
+import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
 import ExternalLink from '@/elements/ExternalLink'
 import { formatPath } from '@/lib/utils'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
+import { frontMatter as howArraysWork } from './how-arrays-work.mdx'
 
 export default function HomePage() {
   return (
@@ -31,6 +33,12 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
+          <PostItem>
+            <Icon>
+              <HowArraysWorkIcon />
+            </Icon>
+            <Post post={howArraysWork} />
+          </PostItem>
           <PostItem>
             <Icon>
               <DebuggerIcon />
