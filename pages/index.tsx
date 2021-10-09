@@ -70,7 +70,7 @@ const PostItem = styled('li', {
     display: 'grid',
     gridTemplateColumns: '8rem 40rem',
     alignItems: 'center',
-    gap: '$4',
+    gap: '$8',
   },
 })
 
