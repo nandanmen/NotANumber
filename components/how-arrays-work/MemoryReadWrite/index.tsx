@@ -8,9 +8,8 @@ import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 import { styled } from '@/stitches'
 
-import { AllocatedBlock } from './AllocatedBlock'
 import { ForbiddenBlock } from './ForbiddenBlock'
-import { Block } from './Block'
+import { Block, AllocatedBlock } from '../Block'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 

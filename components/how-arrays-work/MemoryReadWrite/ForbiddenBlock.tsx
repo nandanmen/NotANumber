@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { HiX } from 'react-icons/hi'
 
 import { styled } from '@/stitches'
-import { Block } from './Block'
+import { Block } from '../Block/Block'
 
 type ForbiddenBlockProps = {
   active: boolean
