@@ -32,11 +32,15 @@ export default function HomePage() {
         <Divider />
         <Posts>
           <PostItem>
-            <DebuggerIcon />
+            <Icon>
+              <DebuggerIcon />
+            </Icon>
             <Post post={debuggerPost} />
           </PostItem>
           <PostItem>
-            <SlidingWindowIcon />
+            <Icon>
+              <SlidingWindowIcon />
+            </Icon>
             <Post post={slidingWindow} />
           </PostItem>
         </Posts>
@@ -45,11 +49,21 @@ export default function HomePage() {
   )
 }
 
+const Icon = styled('div', {
+  display: 'none',
+
+  '@post': {
+    display: 'revert',
+  },
+})
+
 const PostItem = styled('li', {
-  display: 'grid',
-  gridTemplateColumns: '$32 65ch',
-  alignItems: 'center',
-  gap: '$4',
+  '@post': {
+    display: 'grid',
+    gridTemplateColumns: '8rem 40rem',
+    alignItems: 'center',
+    gap: '$4',
+  },
 })
 
 const Wrapper = styled('div', {
