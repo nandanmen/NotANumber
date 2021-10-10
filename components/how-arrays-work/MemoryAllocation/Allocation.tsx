@@ -3,15 +3,12 @@ import { motion } from 'framer-motion'
 
 import { range } from '@/lib/utils'
 import { useInViewAnimate } from '@/lib/hooks/useInViewAnimate'
-import { Block, BLOCK_SIZE } from '../Block/Block'
+import { Block, BlockList, GRID_GAP, MEMORY_SIZE } from '../Block'
 
 export type AllocationProps = {
   startIndex: number
   size: number
 }
-
-const MEMORY_SIZE = 8
-const GRID_GAP = '$space$2'
 
 export function Allocation({ startIndex, size }: AllocationProps) {
   const [ref, animate] = useInViewAnimate(
@@ -25,7 +22,7 @@ export function Allocation({ startIndex, size }: AllocationProps) {
     }
   )
   return (
-    <List>
+    <BlockList>
       {range(MEMORY_SIZE).map((_, index) => (
         <Block key={index} type="free" />
       ))}
@@ -59,7 +56,7 @@ export function Allocation({ startIndex, size }: AllocationProps) {
           />
         ))}
       </AllocatedList>
-    </List>
+    </BlockList>
   )
 }
 
@@ -69,11 +66,4 @@ const AllocatedList = styled(motion.ul, {
   display: 'grid',
   gap: GRID_GAP,
   position: 'absolute',
-})
-
-const List = styled('ul', {
-  display: 'grid',
-  gridTemplateColumns: `repeat(${MEMORY_SIZE}, ${BLOCK_SIZE})`,
-  gap: GRID_GAP,
-  position: 'relative',
 })

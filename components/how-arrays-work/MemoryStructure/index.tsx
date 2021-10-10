@@ -1,12 +1,14 @@
-import { styled, keyframes } from '@stitches/react'
+import { useInView } from 'react-intersection-observer'
 
-import { ArrayList, ArrayListItem } from '../ArrayList'
+import { styled, keyframes } from '@/stitches'
 import { range } from '@/lib/utils'
 
-const ITEM_LENGTH = 7
+import { Block, BlockList } from '../Block'
+
+const ITEM_LENGTH = 8
 
 const items = range(ITEM_LENGTH)
-const highlightIndex = Math.floor(ITEM_LENGTH / 2)
+const highlightIndex = 3
 
 export function MemoryStructure() {
   return (
@@ -18,16 +20,18 @@ export function MemoryStructure() {
   )
 }
 
-const WrapperList = styled(ArrayList, {
-  marginTop: '1.5em',
+const WrapperList = styled(BlockList, {
+  marginTop: '$8',
+  justifyContent: 'center',
 })
 
 // --
 
 function ItemWithIndex({ index }) {
+  const [ref, inView] = useInView({ rootMargin: '-300px' })
   return (
-    <Wrapper active={index === highlightIndex}>
-      <ArrayListItem variant="free" />
+    <Wrapper ref={ref} active={inView && index === highlightIndex}>
+      <Block type="free" />
       <Index>{index}</Index>
     </Wrapper>
   )
@@ -35,7 +39,7 @@ function ItemWithIndex({ index }) {
 
 const fadeUp = keyframes({
   '0%': {
-    transform: 'translateY(16px)',
+    transform: 'translateY($space$4)',
     opacity: 0,
   },
   '100%': {
@@ -63,8 +67,8 @@ const Wrapper = styled('div', {
           position: 'absolute',
           width: '100%',
           height: '2px',
-          top: '-16px',
-          background: 'var(--gray400)',
+          top: '-$space$4',
+          background: '$grey400',
           transformOrigin: 'center',
           animationName: `${slideCenter}`,
           animationDuration: '600ms',
@@ -76,7 +80,7 @@ const Wrapper = styled('div', {
           position: 'absolute',
           width: '100%',
           top: '-44px',
-          color: 'var(--gray600)',
+          color: '$grey600',
           textAlign: 'center',
           fontWeight: 'bold',
           animationName: `${fadeUp}`,
@@ -84,7 +88,7 @@ const Wrapper = styled('div', {
           animationFillMode: 'forwards',
           animationDelay: '400ms',
           opacity: 0,
-          transform: `translateY(16px)`,
+          transform: `translateY($space$4)`,
         },
       },
     },
@@ -93,7 +97,7 @@ const Wrapper = styled('div', {
 
 const Index = styled('div', {
   textAlign: 'center',
-  marginTop: '12px',
-  color: 'var(--gray600)',
-  fontFamily: 'var(--text-mono)',
+  marginTop: '$space$3',
+  color: '$grey600',
+  fontFamily: '$mono',
 })
