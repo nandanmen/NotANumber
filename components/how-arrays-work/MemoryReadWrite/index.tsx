@@ -10,6 +10,7 @@ import { styled } from '@/stitches'
 
 import { ForbiddenBlock } from './ForbiddenBlock'
 import { Block, AllocatedBlock } from '../Block'
+import { Slider } from '../../Slider'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
@@ -64,7 +65,7 @@ export function MemoryReadWrite() {
             <BsPlayFill size="20px" />
           )}
         </ControlButton>
-        <input
+        <Slider
           type="range"
           min={0}
           max={models.steps.length - 1}
@@ -129,6 +130,7 @@ const Index = styled('p', {
 const ControlsWrapper = styled('div', {
   display: 'flex',
   gap: '16px',
+  width: '75%',
 })
 
 const StepWrapper = styled('div', {
@@ -137,12 +139,13 @@ const StepWrapper = styled('div', {
 })
 
 const ControlButton = styled('button', {
-  width: '2rem',
-  height: '2rem',
+  width: '$8',
+  height: '$8',
   borderRadius: '6px',
   background: '$grey200',
   fontWeight: 'bold',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  flexShrink: 0,
 })
