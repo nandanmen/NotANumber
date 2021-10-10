@@ -1,16 +1,18 @@
 import { styled } from '@stitches/react'
 
-import { Allocation } from './Allocation'
+import { Allocation, AllocationProps } from './Allocation'
 
 export * from './Allocation'
 
-export function MemoryAllocation() {
+type MemoryAllocationProps = AllocationProps
+
+export function MemoryAllocation({ startIndex, size }: MemoryAllocationProps) {
   return (
     <Wrapper>
       <Code>
-        <code>const block = Mem.allocate(bytes: 4)</code>
+        <code>const block = Mem.allocate(bytes: {size})</code>
       </Code>
-      <Allocation startIndex={1} size={4} />
+      <Allocation startIndex={startIndex} size={size} />
     </Wrapper>
   )
 }

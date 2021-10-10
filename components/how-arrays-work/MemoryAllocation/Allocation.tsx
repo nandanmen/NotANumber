@@ -2,9 +2,10 @@ import { styled } from '@stitches/react'
 import { motion } from 'framer-motion'
 
 import { range } from '@/lib/utils'
+import { useInViewAnimate } from '@/lib/hooks/useInViewAnimate'
 import { Block, BLOCK_SIZE } from '../Block/Block'
 
-type AllocationProps = {
+export type AllocationProps = {
   startIndex: number
   size: number
 }
@@ -13,12 +14,23 @@ const MEMORY_SIZE = 8
 const GRID_GAP = '$space$2'
 
 export function Allocation({ startIndex, size }: AllocationProps) {
+  const [ref, animate] = useInViewAnimate(
+    {
+      initial: 'small',
+      animate: 'normal',
+    },
+    {
+      threshold: 1,
+      rootMargin: '-300px',
+    }
+  )
   return (
     <List>
       {range(MEMORY_SIZE).map((_, index) => (
         <Block key={index} type="free" />
       ))}
       <AllocatedList
+        ref={ref}
         css={{
           gridTemplateColumns: `repeat(${size}, 4rem)`,
           left: `calc(${startIndex} * calc(4rem + 8px))`,
@@ -30,7 +42,7 @@ export function Allocation({ startIndex, size }: AllocationProps) {
             },
           },
         }}
-        animate="normal"
+        animate={animate}
         initial="small"
       >
         {range(size).map((_, index) => (
