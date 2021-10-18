@@ -22,7 +22,8 @@
       "@/components/*": ["components/*"],
       "@/elements/*": ["elements/*"],
       "@/lib/*": ["lib/*"],
-      "@/stitches": ["stitches.config.ts"]
+      "@/stitches": ["stitches.config.ts"],
+      "@/layouts/*": ["layouts/*"]
     }
   },
   "include": [
