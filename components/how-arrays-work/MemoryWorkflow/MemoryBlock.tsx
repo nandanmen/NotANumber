@@ -40,13 +40,13 @@ export function MemoryBlock({ state, index, children }: MemoryBlockProps) {
           free: {
             scale: 0,
             transition: {
-              delay: index * 0.1,
+              delay: index * 0.2,
             },
           },
           allocated: {
             scale: 1,
             transition: {
-              delay: index * 0.1,
+              delay: index * 0.2,
             },
           },
           occupied: {

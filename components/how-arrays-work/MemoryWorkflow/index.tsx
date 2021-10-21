@@ -65,7 +65,7 @@ const steps: AnimationState[] = [
 ]
 
 export function MemoryWorkflow() {
-  const player = usePlayer(steps, { delay: 1000 })
+  const player = usePlayer(steps, { delay: 1200 })
   const { memory, lineNumber, cursor } = player.models.state
 
   return (
