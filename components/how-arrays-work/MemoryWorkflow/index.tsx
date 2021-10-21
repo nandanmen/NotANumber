@@ -1,13 +1,15 @@
 import React from 'react'
 import { styled } from '@stitches/react'
+import { motion } from 'framer-motion'
+import { RiArrowDownSFill } from 'react-icons/ri'
 
+import { Controls } from '@/components/Controls'
 import CodeBlock from '@/elements/CodeBlock'
-import { BlockList, MEMORY_SIZE } from '../Block'
-import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 
+import { BlockList } from '../Block'
 import { MemoryBlock } from './MemoryBlock'
-import { Controls } from '@/components/Controls'
+import { Memory } from './Memory'
 
 const code = `// Allocate
 const block = Mem.allocate(4)
@@ -20,89 +22,51 @@ console.log(Mem.get(block)) // prints 'a'
 // Free
 Mem.free(block)`
 
-type MemoryBlockType = {
-  state: 'free' | 'allocated' | 'occupied'
-  data: number | string | null
-}
-
 type AnimationState = {
   cursor: number | null
   lineNumber?: number
-  memory: MemoryBlockType[]
-}
-
-function pipe<DataType>(...fns: Array<(value: DataType) => DataType>) {
-  return (initialArg: DataType) => {
-    let currentArg = initialArg
-    for (const fn of fns) {
-      currentArg = fn(currentArg)
-    }
-    return currentArg
-  }
-}
-
-const makeMemory = (): MemoryBlockType[] =>
-  range(MEMORY_SIZE).map(() => ({
-    state: 'free',
-    data: null,
-  }))
-
-const allocate = (size: number) => (mem: MemoryBlockType[]) => {
-  const copy = [...mem]
-  range(size).forEach((offset) => (copy[offset].state = 'allocated'))
-  return copy
-}
-
-const set = (address: number, value: number | string) => (
-  mem: MemoryBlockType[]
-) => {
-  const copy = [...mem]
-  const block = copy[address]
-  block.data = value
-  block.state = 'occupied'
-  return copy
-}
-
-const free = (address: number, size: number) => (mem: MemoryBlockType[]) => {
-  const copy = [...mem]
-  range(size).forEach((offset) => (copy[address + offset].state = 'free'))
-  return copy
+  memory: Memory
 }
 
 const steps: AnimationState[] = [
   {
     cursor: null,
-    memory: makeMemory(),
+    memory: new Memory(),
   },
   {
     cursor: null,
     lineNumber: 1,
-    memory: pipe(allocate(4))(makeMemory()),
+    memory: new Memory().allocate(4),
   },
   {
     cursor: 0,
     lineNumber: 4,
-    memory: pipe(allocate(4), set(0, 'a'))(makeMemory()),
+    memory: new Memory().allocate(4).set(0, 'a'),
   },
   {
     cursor: 1,
     lineNumber: 5,
-    memory: pipe(allocate(4), set(0, 'a'), set(1, 'b'))(makeMemory()),
+    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
+  },
+  {
+    cursor: 0,
+    lineNumber: 6,
+    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
   },
   {
     cursor: null,
     lineNumber: 9,
-    memory: makeMemory(),
+    memory: new Memory(),
   },
   {
     cursor: null,
-    memory: makeMemory(),
+    memory: new Memory(),
   },
 ]
 
 export function MemoryWorkflow() {
   const player = usePlayer(steps, { delay: 1000 })
-  const { memory, lineNumber } = player.models.state
+  const { memory, lineNumber, cursor } = player.models.state
 
   return (
     <Wrapper>
@@ -116,12 +80,33 @@ export function MemoryWorkflow() {
               {block.data}
             </MemoryBlock>
           ))}
+          {cursor !== null && (
+            <Pointer
+              initial={{ opacity: 0 }}
+              animate={{
+                x: `calc(${cursor} * calc(8px + 4rem))`,
+                opacity: 1,
+              }}
+            >
+              <RiArrowDownSFill size="2em" />
+            </Pointer>
+          )}
         </BlockList>
       </AnimationWrapper>
       <Controls player={player} />
     </Wrapper>
   )
 }
+
+const Pointer = styled(motion.div, {
+  position: 'absolute',
+  color: '$black',
+  width: '4rem',
+  display: 'flex',
+  justifyContent: 'center',
+  top: 'calc(-2em - 2px)',
+  left: 0,
+})
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -139,6 +124,5 @@ const AnimationWrapper = styled('div', {
 const CodeWrapper = styled(CodeBlock, {
   position: 'relative',
   width: 'fit-content',
-  // boxShadow: '4px 4px 2px $colors$grey300',
   transform: 'translateY(16px)',
 })

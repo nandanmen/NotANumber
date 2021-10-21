@@ -37,7 +37,7 @@ export function Controls({ player: { models, actions } }) {
 const ControlsWrapper = styled('div', {
   display: 'flex',
   gap: '16px',
-  width: '75%',
+  width: '100%',
 })
 
 const StepWrapper = styled('div', {

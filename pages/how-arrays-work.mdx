@@ -13,6 +13,7 @@ import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
 import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
+import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -92,16 +93,11 @@ If you feel like this is really tedious, that's because it is. Bugs related to m
 
 </Callout>
 
-One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around. Overall, the typical memory management workflow looks like:
+One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around. Overall, the typical memory management workflow looks like this:
 
-```js
-const pointer = Mem.allocate(/* num of bytes */ 12)
-
-Mem.set(pointer, 'a')
-console.log(Mem.get(pointer)) // prints 10
-
-Mem.free(pointer)
-```
+<Figure>
+  <MemoryWorkflow />
+</Figure>
 
 As a quick summary:
 
