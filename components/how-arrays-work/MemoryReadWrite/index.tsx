@@ -1,8 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
-import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
-import { HiArrowRight, HiArrowLeft } from 'react-icons/hi'
 
 import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
@@ -10,7 +8,7 @@ import { styled } from '@/stitches'
 
 import { ForbiddenBlock } from './ForbiddenBlock'
 import { Block, AllocatedBlock } from '../Block'
-import { Slider } from '../../Slider'
+import { Controls } from '@/components/Controls'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
@@ -57,30 +55,7 @@ export function MemoryReadWrite() {
           <RiArrowDownSFill size="2em" />
         </Pointer>
       </List>
-      <ControlsWrapper>
-        <ControlButton onClick={actions.toggle}>
-          {models.isPlaying ? (
-            <BsPauseFill size="20px" />
-          ) : (
-            <BsPlayFill size="20px" />
-          )}
-        </ControlButton>
-        <Slider
-          type="range"
-          min={0}
-          max={models.steps.length - 1}
-          value={models.activeStepIndex}
-          onChange={(evt) => actions.setIndex(evt.target.valueAsNumber)}
-        />
-        <StepWrapper>
-          <ControlButton onClick={actions.prev}>
-            <HiArrowLeft />
-          </ControlButton>
-          <ControlButton onClick={actions.next}>
-            <HiArrowRight />
-          </ControlButton>
-        </StepWrapper>
-      </ControlsWrapper>
+      <Controls player={{ actions, models }} />
     </Wrapper>
   )
 }
@@ -123,29 +98,4 @@ const Index = styled('p', {
   textAlign: 'center',
   marginTop: '8px',
   fontSize: '$sm',
-})
-
-/* Controls */
-
-const ControlsWrapper = styled('div', {
-  display: 'flex',
-  gap: '16px',
-  width: '75%',
-})
-
-const StepWrapper = styled('div', {
-  display: 'flex',
-  gap: '8px',
-})
-
-const ControlButton = styled('button', {
-  width: '$8',
-  height: '$8',
-  borderRadius: '6px',
-  background: '$grey200',
-  fontWeight: 'bold',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexShrink: 0,
 })

@@ -20,7 +20,7 @@ function CodeBlock({
             {tokens.map((line, i) => (
               <Line
                 key={i}
-                style={{ '--bg-opacity': lineNumbers.includes(i) ? 0.1 : 0 }}
+                style={{ opacity: lineNumbers.includes(i) ? 1 : 0.2 }}
               >
                 {line.map((token, key) => {
                   const { children, className } = getTokenProps({
@@ -71,8 +71,8 @@ function getLineNumbers(highlight) {
      * @returns {boolean} whether the given line number should be highlighted
      */
     includes(lineNumber) {
-      if (!highlight.length) {
-        return false
+      if (!highlight) {
+        return true
       }
       return numbers.includes(lineNumber)
     },

@@ -13,6 +13,7 @@ import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
 import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
+import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -72,6 +73,8 @@ Great! Now that we have our allocated slice of memory, we can read and write fro
   <MemoryReadWrite />
 </Figure>
 
+Notice how we weren't allowed to write to `block + 4` - that's because we only allocated 4 bytes, so the fifth byte, `block + 4`, is out of bounds!
+
 ### Freeing Up Space
 
 Finally, once you're done with the data and don't need it anymore, you can free up that space so the computer can use the memory for other things:
@@ -86,20 +89,15 @@ Mem.free(pointer)
 
 <Callout label="Do we really have to do this?">
 
-If you feel like this is really tedious, that's because it is. Bugs related to memory management happens _all the time_ when writing in lower level languages. Thankfully, JavaScript uses something called a garbage collector that automates memory management for you, allowing you to focus on the interesting stuff.
+If you feel like this is really tedious, that's because it is. Bugs related to memory management happens _all the time_ when writing in lower level languages. Thankfully, JavaScript automates this memory management process for you, allowing you to focus on actually writing code instead of haggling with memory.
 
 </Callout>
 
-One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around:
+One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around. Overall, the typical memory management workflow looks like this:
 
-```js
-const pointer = Mem.allocate(/* num of bytes */ 12)
-
-Mem.set(pointer, 10)
-console.log(Mem.get(pointer)) // prints 10
-
-Mem.free(pointer)
-```
+<Figure>
+  <MemoryWorkflow />
+</Figure>
 
 As a quick summary:
 
@@ -110,7 +108,7 @@ As a quick summary:
 
 ## Building the Array
 
-Now that we have a basic understanding of how memory works, let's jump back to arrays! We'll start with a few assumptions to make our lives easier:
+That's enough on memory — let's get on with our array! We'll start with a few assumptions to make our lives easier:
 
 1. The array has a fixed length (i.e. it cannot grow in size), and
 2. The array can only contain numbers.
@@ -129,17 +127,19 @@ This works for now, so let's see how we can use the memory API we described earl
 const data = Mem.allocate(/* num of bytes */ ???)
 ```
 
-Since our array is a fixed length and can only contain numbers, we can determine the total number of bytes we need using a simple formula:
+Since our array is a fixed length and can only contain numbers, we can determine the total number of bytes we need by multiplying the desired length with the number of bytes for 1 number:
 
 ```
-total # of bytes = length x (# of bytes for 1 number)
+total # of bytes = length * (# of bytes for 1 number)
 ```
 
 In JavaScript, numbers are 8 bytes in size, so we'll use 8 for the number of bytes for 1 number. This gives the total space needed as 8 multiplied by the length of the array:
 
 ```js
+const SIZE_OF_NUMBER = 8
+
 function createArray(length) {
-  const totalSize = length * 8 // number of bytes for 1 number
+  const totalSize = length * SIZE_OF_NUMBER
   const array = Mem.allocate(totalSize)
 
   return {
@@ -155,11 +155,9 @@ function createArray(length) {
 
 <Placeholder name="allocate array" />
 
-Notice that our array is actually a pointer, since that is what's returtned from the allocate function.
-
 ### Reading and Writing
 
-Once allocated, we're free to read and write data to the array. In particular, reading and writing might look something like this:
+Next, let's implement the `get` and `set` functions. We want to use them like so:
 
 ```js
 arr.set(/* index */ 0, /* value */ 2)
