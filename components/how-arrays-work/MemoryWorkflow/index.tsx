@@ -76,7 +76,7 @@ export function MemoryWorkflow() {
       <AnimationWrapper>
         <BlockList>
           {memory.map((block, index) => (
-            <MemoryBlock state={block.state} index={index}>
+            <MemoryBlock key={index} state={block.state} index={index}>
               {block.data}
             </MemoryBlock>
           ))}
