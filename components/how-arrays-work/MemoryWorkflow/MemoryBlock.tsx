@@ -6,6 +6,7 @@ export const BLOCK_SIZE = '$sizes$16'
 
 type MemoryBlockProps = {
   state: 'free' | 'allocated' | 'occupied'
+  index: number
   children?: React.ReactNode
 }
 
@@ -15,7 +16,7 @@ const prevStates = {
   occupied: 'allocated',
 }
 
-export function MemoryBlock({ state, children }: MemoryBlockProps) {
+export function MemoryBlock({ state, index, children }: MemoryBlockProps) {
   return (
     <Wrapper
       animate={state}
@@ -38,9 +39,15 @@ export function MemoryBlock({ state, children }: MemoryBlockProps) {
         variants={{
           free: {
             scale: 0,
+            transition: {
+              delay: index * 0.1,
+            },
           },
           allocated: {
             scale: 1,
+            transition: {
+              delay: index * 0.1,
+            },
           },
           occupied: {
             scale: 1,

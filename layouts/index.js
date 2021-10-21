@@ -132,6 +132,7 @@ const Article = styled.article`
   padding-bottom: 80px;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
+  font-family: var(--text-sans);
 
   > * {
     grid-column: 2 / span 1;
