@@ -8,7 +8,7 @@ export const MEMORY_SIZE = 8
 
 export const BlockList = styled(motion.ul, {
   display: 'grid',
-  gridTemplateColumns: `repeat(${MEMORY_SIZE}, ${BLOCK_SIZE})`,
+  gridTemplateColumns: `repeat(var(--size, ${MEMORY_SIZE}), ${BLOCK_SIZE})`,
   gap: GRID_GAP,
   position: 'relative',
 })

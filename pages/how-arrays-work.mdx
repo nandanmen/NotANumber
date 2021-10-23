@@ -2,11 +2,12 @@
 title: 'How do arrays work?'
 blurb: "Rebuilding the world's most popular data structure."
 description: 'What goes on under the hood of the most popular data structure? In this post, we uncover the secrets of the array by reinventing one ourselves.'
-publishedAt: '2021-06-21'
-editedAt: '2021-06-21'
+publishedAt: '2021-11-02'
+editedAt: '2021-11-02'
 ---
 
 import Callout from '@/elements/Callout'
+import ProblemStatement from '@/elements/ProblemStatement'
 import Placeholder from '@/components/utils/Placeholder'
 
 import IndexLookup from '@/components/how-arrays-work/IndexLookup'
@@ -117,30 +118,27 @@ These assumptions may seem really restrictive, but don't worry — we'll ease th
 
 ### Allocating Space
 
-With these assumptions, how would we lay out the array in memory? The simplest way would be to lay out the array as one big continuous block:
-
-<Placeholder name="array block" />
-
-This works for now, so let's see how we can use the memory API we described earlier to make it happen. Remember that the first thing we have to do is to allocate space for it first. To allocate space, we need to know how many bytes we need:
+The first thing that we need to do is allocate space for our array. But, how _much_ space?
 
 ```js
 const data = Mem.allocate(/* num of bytes */ ???)
 ```
 
-Since our array is a fixed length and can only contain numbers, we can determine the total number of bytes we need by multiplying the desired length with the number of bytes for 1 number:
+Thankfully, our assumptions let us determine the size of our array ahead of time. Since our array is a fixed length and can only contain numbers, the total number of bytes we need to allocate is:
 
 ```
 total # of bytes = length * (# of bytes for 1 number)
 ```
 
-In JavaScript, numbers are 8 bytes in size, so we'll use 8 for the number of bytes for 1 number. This gives the total space needed as 8 multiplied by the length of the array:
+For the number of bytes for 1 number, we'll use [JavaScript's size of 8 bytes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number). This means that if we want to allocate an array of 10 numbers, we would need to allocate 10 \* 8 = 80 bytes in total.
+
+Awesome, let's code that up:
 
 ```js
 const SIZE_OF_NUMBER = 8
 
-function createArray(length) {
-  const totalSize = length * SIZE_OF_NUMBER
-  const array = Mem.allocate(totalSize)
+function array(length) {
+  const data = Mem.allocate(length * SIZE_OF_NUMBER)
 
   return {
     get(index) {
@@ -153,43 +151,128 @@ function createArray(length) {
 }
 ```
 
-<Placeholder name="allocate array" />
+Let's also add a `free` method to free up any memory used by the array when the user is done with it (recall the memory workflow from the previous section!):
+
+```js highlight=12,13,14
+const SIZE_OF_NUMBER = 8
+
+function array(length) {
+  const data = Mem.allocate(length * SIZE_OF_NUMBER)
+
+  return {
+    get(index) {
+      // TODO
+    },
+    set(index, value) {
+      // TODO
+    },
+    free() {
+      Mem.free(data)
+    },
+  }
+}
+```
 
 ### Reading and Writing
 
-Next, let's implement the `get` and `set` functions. We want to use them like so:
+Next up, we'll need to implement the reading and writing operations so our array is actually usable:
 
 ```js
 arr.set(/* index */ 0, /* value */ 2)
 const item = arr.get(/* index */ 0) // item = 2
 ```
 
-To implement this, we need to keep two things in mind:
+Remember that the core property of the array is **fast random access**. This means retrieving the element at index 500 should take as long as retrieving the element at index 1. This leads us to our problem:
 
-1. As long as you have the address, you can quickly read and write to and from memory
-2. Allocating the array gives us the address for the _first_ byte we allocated
+<ProblemStatement>
 
-To quickly get the item at a particular index, we need to determine the address of the item at that index. How can we determine the address given the address of the first byte only?
+How do we quickly retrieve the element at any arbitrary index?
 
-For index 0, we already have the address — it's exactly the address that was returned from the allocate function!
+</ProblemStatement>
 
-<Placeholder name="read index 0" />
+The hint here is that, given an address, your computer's memory is able to quickly fetch the item at that address. If we're able to efficiently translate an index to a memory address, we'll be able to quickly retrieve the element located there.
 
-For other indices, we have to do a bit of math. Since we know the size of each item in the array, the address of the item at index `i` is:
+Let's work through this using an example. Say we have an array with three numbers, each 2 bytes large:
+
+![](/array_indexing.png)
+
+Using only the address of the _very first byte_, how would we get the address of the element at index 0? What about index 1? Or index 2?
+
+We don't need to do any more work for index 0 - the address of the first byte _is_ the address of the first element! But what about the other indices? From the diagram above, we see that the address of the second element (at index 1) is the address of the first byte plus the size of the first element:
+
+![](/array_index_math.png)
+
+Expanding on that further, we find that the address of the second index is the address of the first byte plus _twice_ the size of each element:
+
+![](/array_index_math_two.png)
+
+In general, the address of an element at any index can be determined with the following formula:
 
 ```
-address of index i = address at index 0 + (size of item * i)
+address = first byte address + (index * size of each element)
 ```
 
-In our case, the size of each item is the size of a number, 8 bytes. So our formula is then:
+Using this formula we can go ahead and implement the `get` and `set` functions for our array:
 
+```js highlight=5-8,11-18
+const SIZE_OF_NUMBER = 8
+
+function array(length) {
+  const data = Mem.allocate(length * SIZE_OF_NUMBER)
+
+  // Helper function to convert an index to an address
+  const getAddress = index => {
+    return data + (index * SIZE_OF_NUMBER))
+  }
+
+  return {
+    get(index) {
+      const address = getAddress(index)
+      return Mem.get(address)
+    },
+    set(index, value) {
+      const address = getAddress(index)
+      Mem.set(address, value)
+    },
+    free() {
+      Mem.free(data)
+    },
+  }
+}
 ```
-address of index i = address at index 0 + (8 * i)
+
+Something to highlight here is that it doesn't actually matter _what_ type of data the array contains - if every element is the same size, then our formula would work.
+
+So let's update our array to receive the size of each element as a paramater:
+
+```js highlight=0-6
+function array(length, elementSize) {
+  const data = Mem.allocate(length * elementSize)
+
+  // Helper function to convert an index to an address
+  const getAddress = index => {
+    return data + (index * elementSize))
+  }
+
+  return {
+    get(index) {
+      const address = getAddress(index)
+      return Mem.get(address)
+    },
+    set(index, value) {
+      const address = getAddress(index)
+      Mem.set(address, value)
+    },
+    free() {
+      Mem.free(data)
+    },
+  }
+}
 ```
 
-<Placeholder name="read from index i" />
+Great work! We now have an array that we can use to represent data. Except, it feels a bit limiting - what if we don't know how many elements we need ahead of time? Or what if we want to store _different_ elements in the same array?
 
-And this is why arrays are fast! Using the index, we can derive the address that we need without needing to go through every element of the array.
+Let's answer these questions one at a time, starting with the former - making the array grow.
 
 ## Growing the Array
 

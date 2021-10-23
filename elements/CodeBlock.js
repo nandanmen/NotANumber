@@ -64,7 +64,7 @@ function getCode(children) {
 }
 
 function getLineNumbers(highlight) {
-  const numbers = highlight.split(',').map(Number)
+  const numbers = getHighlightedIntervals(highlight)
   return {
     /**
      * @param {number} lineNumber
@@ -74,9 +74,34 @@ function getLineNumbers(highlight) {
       if (!highlight) {
         return true
       }
-      return numbers.includes(lineNumber)
+      return numbers.find((intervalOrNumber) => {
+        if (Array.isArray(intervalOrNumber)) {
+          const [start, end] = intervalOrNumber
+          return lineNumber >= start && lineNumber <= end
+        }
+        return lineNumber === intervalOrNumber
+      })
     },
   }
+}
+
+/**
+ * Given a highlight string like 3-5,6,10-12, returns the intervals
+ * for lines to be highlighted.
+ *
+ * e.g given "3-5,6,10-12", returns the array [[3, 5], 6, [10, 12]]
+ */
+function getHighlightedIntervals(highlight) {
+  if (!highlight) return []
+
+  const groups = highlight.split(',')
+  return groups.map((group) => {
+    const interval = group.split('-')
+    if (interval.length < 2) {
+      return Number(interval[0])
+    }
+    return interval.map(Number)
+  })
 }
 
 const StyledBlock = styled.pre`

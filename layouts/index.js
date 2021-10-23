@@ -27,7 +27,8 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 
 const mdxComponents = {
   a: ExternalLink,
-  pre: CodeBlock,
+  pre: (props) => <div {...props} />,
+  code: CodeBlock,
   hr: ThematicBreak,
   inlineCode: InlineCode,
   ul: UnorderedList,
