@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { styled } from '@/stitches'
 import { HiArrowRight } from 'react-icons/hi'
+import { titleCase } from 'title-case'
 
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
@@ -130,7 +131,7 @@ function Post({ post }: { post: typeof slidingWindow }) {
       <Link href={formatPath(post.__resourcePath)}>
         <Anchor>
           <PostContent>
-            <PostTitle>{post.title}</PostTitle>
+            <PostTitle>{titleCase(post.title)}</PostTitle>
             <PostDescription>{post.description}</PostDescription>
             <PostUpdatedText>
               Last updated{' '}

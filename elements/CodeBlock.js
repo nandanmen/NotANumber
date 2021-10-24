@@ -20,7 +20,7 @@ function CodeBlock({
             {tokens.map((line, i) => (
               <Line
                 key={i}
-                style={{ opacity: lineNumbers.includes(i) ? 1 : 0.2 }}
+                style={{ opacity: lineNumbers.includes(i) ? 1 : 0.3 }}
               >
                 {line.map((token, key) => {
                   const { children, className } = getTokenProps({

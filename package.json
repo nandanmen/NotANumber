@@ -33,6 +33,7 @@
     "rfdc": "^1.1.4",
     "styled-components": "^5.2.1",
     "tailwindcss": "^2.0.2",
+    "title-case": "^3.0.3",
     "twin.macro": "^2.2.3",
     "use-debounce": "^6.0.1"
   },

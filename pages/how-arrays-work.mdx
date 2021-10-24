@@ -16,6 +16,7 @@ import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
 import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
 import Figure from '@/elements/Figure'
+import { Optional } from '@/elements/Optional'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
 
@@ -153,7 +154,7 @@ function array(length) {
 
 Let's also add a `free` method to free up any memory used by the array when the user is done with it (recall the memory workflow from the previous section!):
 
-```js highlight=12,13,14
+```js highlight=12-14
 const SIZE_OF_NUMBER = 8
 
 function array(length) {
@@ -196,7 +197,9 @@ Let's work through this using an example. Say we have an array with three number
 
 ![](/array_indexing.png)
 
-Using only the address of the _very first byte_, how would we get the address of the element at index 0? What about index 1? Or index 2?
+Using only the address of the _very first byte_, how would we get the address of the element at index 0? What about index 1? Or index 2? Take a look at the diagram above and see if you can find a pattern.
+
+---
 
 We don't need to do any more work for index 0 - the address of the first byte _is_ the address of the first element! But what about the other indices? From the diagram above, we see that the address of the second element (at index 1) is the address of the first byte plus the size of the first element:
 
@@ -245,7 +248,7 @@ Something to highlight here is that it doesn't actually matter _what_ type of da
 
 So let's update our array to receive the size of each element as a paramater:
 
-```js highlight=0-6
+```js highlight=0-1,5
 function array(length, elementSize) {
   const data = Mem.allocate(length * elementSize)
 
@@ -272,42 +275,105 @@ function array(length, elementSize) {
 
 Great work! We now have an array that we can use to represent data. Except, it feels a bit limiting - what if we don't know how many elements we need ahead of time? Or what if we want to store _different_ elements in the same array?
 
-Let's answer these questions one at a time, starting with the former - making the array grow.
+Let's answer these questions one at a time, starting with the former - making the array dynamic.
 
 ## Growing the Array
 
-So far, our array is static. We define a capacity when we created it, but it can never exceed that initial capacity. Now, let's ease one of our assumptions and let the array grow in size. In particular, we want to implement a `push` function that would add items to the end of the array. How would we change our array to support this?
+So far, our array is static. We define a length when we create it, but it can never exceed that initial length. This is pretty limiting — what if we _don't_ know how many elements our array will contain? In this section, we'll explore a way to make our array dynamic, making it grow and shrink as the number of items in the array change.
 
-If our array's length is less than the initial capacity, we don't have to change anything. In this case, all we have to do to add an item is:
+We'll add two new functions to our array's API — `push`, to add elements to the end of the array, and `pop`, to remove elements from the end of the array:
 
-1. Calculate the address using the array's length as the new index
-2. Store the value to that address
+```js
+const arr = [1, 2, 3]
+arr.push(4) // adds 4 to the end of the array
+arr.pop() // returns 4
+```
 
-But what if we're at capacity? How do we grow the array then?
+### A First Pass
+
+To start, let's consider the case where our array isn't full yet i.e. the array has less items than the length we initialized it with:
+
+![](array_spare_capacity.png)
+
+When we call `push`, we want to add the value to the end of the array, or index 2 in this case. Because this block was previously allocated, we're good to set the value at this block.
+
+One way we can support this in code is to differentiate between **capacity** and **length**:
+
+- The **capacity** of an array is the number of items it _can_ hold;
+- The **length** is the number of items _currently in_ the array.
+
+![](array_capacity_length.png)
+
+The `push` and `pop` functions would use this `length` variable to determine where the end of the array is, then update the variable accordingly:
+
+```js highlight=0-2,20-29
+function array(capacity, elementSize) {
+  const data = Mem.allocate(capacity * elementSize)
+  const length = 0
+
+  const getAddress = index => {
+    return data + (index * elementSize))
+  }
+
+  return {
+    get(index) {
+      const address = getAddress(index)
+      return Mem.get(address)
+    },
+    set(index, value) {
+      const address = getAddress(index)
+      Mem.set(address, value)
+    },
+    free() {
+      Mem.free(data)
+    },
+    push(value) {
+      this.set(length, value)
+      length++
+    },
+    pop(value) {
+      if (length > 0) {
+        length--
+        return this.get(length)
+      }
+    }
+  }
+}
+```
+
+But what if we're at capacity?
+
+![](array_max_capacity.png)
+
+The end of the array points to an unallocated block, so we can't freely write our value — the memory won't let us. How do we grow our array then?
 
 ### Increasing Capacity
 
-Recall that the memory gates won't let you write to memory that you haven't allocated yet. So naturally, we would have to allocate more memory.
+Since we need space for more data, our solution is to allocate memory. But, how _much_? One thing we might be tempted to do would be to allocate just enough memory for the new item:
 
-One thing we might be tempted to do would be to allocate just enough memory for the new item. If we're adding a number for example, then we would allocate an extra 8 bytes:
+![](allocate_one_block.png)
 
-```js
-const newAddress = Mem.allocate(/* num of bytes */ 8)
-```
+This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array. But in practice, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
 
-This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array:
+![](memory_filled.png)
 
-<Placeholder name="array in a vacuum" />
+This approach also assumes a specific behaviour from the memory allocator. In reality, we can't really be sure _where_ the allocator is going to allocate memory — we can only be sure that the memory that's allocated will be the size we requested it to be.
 
-In practice though, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
+Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
 
-<Placeholder name="constrained array" />
+Then, we copy the array into the new space:
 
-Ultimately, the only slice of memory that you are sure of is the part that you've allocated yourself.
+And free up the old location:
 
-Instead, we have to re-allocate space for the entire array _plus_ the element that we're adding. Then, we copy the array into the new space and free up the old memory location:
+<Optional title="A note on performance">
 
-<Placeholder name="increasing array capacity" />
+You might have noticed that this sounds _awful_ for performance. After all, our final array is full again! What if we want to `push` another element to the array? Would we have to reallocate and copy again?
+
+The trick here is to always double the capacity of the array whenever we require more space. This way, most `push` calls won't require a memory adjustment, and only the ones that hit the limit would.
+
+Likewise, when we `pop` enough items that our array's length is less than half its capacity, we reallocate the array to half its size.
+
+</Optional>
 
 ## Mixing Types
 
