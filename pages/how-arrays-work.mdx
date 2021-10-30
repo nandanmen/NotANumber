@@ -15,8 +15,8 @@ import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
 import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
 import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
+import { ArrayResize } from '@/components/how-arrays-work/ArrayResize'
 import Figure from '@/elements/Figure'
-import { Optional } from '@/elements/Optional'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
 
@@ -224,8 +224,8 @@ function array(length) {
   const data = Mem.allocate(length * SIZE_OF_NUMBER)
 
   // Helper function to convert an index to an address
-  const getAddress = index => {
-    return data + (index * SIZE_OF_NUMBER))
+  const getAddress = (index) => {
+    return data + index * SIZE_OF_NUMBER
   }
 
   return {
@@ -361,19 +361,31 @@ This approach also assumes a specific behaviour from the memory allocator. In re
 
 Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
 
+![](array_push_allocate.png)
+
 Then, we copy the array into the new space:
+
+![](/array_allocate_copy.png)
 
 And free up the old location:
 
-<Optional title="A note on performance">
+![](/array_allocate_free.png)
+
+Finally, we can push the new element into the new space:
+
+<Figure>
+  <ArrayResize />
+</Figure>
+
+### A Note on Performance
+
+> If you're not super interested in optimizations, feel free to skip ahead to the next section where we implement more features to the array.
 
 You might have noticed that this sounds _awful_ for performance. After all, our final array is full again! What if we want to `push` another element to the array? Would we have to reallocate and copy again?
 
 The trick here is to always double the capacity of the array whenever we require more space. This way, most `push` calls won't require a memory adjustment, and only the ones that hit the limit would.
 
 Likewise, when we `pop` enough items that our array's length is less than half its capacity, we reallocate the array to half its size.
-
-</Optional>
 
 ## Mixing Types
 

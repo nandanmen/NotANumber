@@ -8,22 +8,7 @@ import CodeBlock from '@/elements/CodeBlock'
 import usePlayer from '@/lib/usePlayer'
 
 import { BlockList } from '../Block'
-import { MemoryBlock } from './MemoryBlock'
-import { Memory } from './Memory'
-
-export { MemoryBlock } from './MemoryBlock'
-export { Memory } from './Memory'
-
-const code = `// Allocate
-const block = Mem.allocate(4)
-
-// Use
-Mem.set(block, 'a')
-Mem.set(block + 1, 'b')
-console.log(Mem.get(block)) // prints 'a'
-
-// Free
-Mem.free(block)`
+import { Memory, MemoryBlock } from '../MemoryWorkflow'
 
 type AnimationState = {
   cursor: number | null
@@ -67,15 +52,12 @@ const steps: AnimationState[] = [
   },
 ]
 
-export function MemoryWorkflow() {
+export function ArrayResize() {
   const player = usePlayer(steps, { delay: 1200 })
-  const { memory, lineNumber, cursor } = player.models.state
+  const { memory, cursor } = player.models.state
 
   return (
     <Wrapper>
-      <CodeWrapper highlight={lineNumber ? String(lineNumber) : undefined}>
-        {code}
-      </CodeWrapper>
       <AnimationWrapper>
         <BlockList>
           {memory.map((block, index) => (
