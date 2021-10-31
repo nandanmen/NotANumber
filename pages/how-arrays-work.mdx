@@ -361,20 +361,26 @@ This approach also assumes a specific behaviour from the memory allocator. In re
 
 Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
 
-![](array_push_allocate.png)
+<Figure>
+  <ArrayResize slice={[0, 2]} />
+</Figure>
 
 Then, we copy the array into the new space:
 
-![](/array_allocate_copy.png)
+<Figure>
+  <ArrayResize slice={[1, 6]} />
+</Figure>
+
+Push the new element into the extra space we now have:
+
+<Figure>
+  <ArrayResize slice={[5, 7]} />
+</Figure>
 
 And free up the old location:
 
-![](/array_allocate_free.png)
-
-Finally, we can push the new element into the new space:
-
 <Figure>
-  <ArrayResize />
+  <ArrayResize slice={[6, 8]} />
 </Figure>
 
 ### A Note on Performance

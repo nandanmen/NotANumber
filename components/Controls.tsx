@@ -5,7 +5,7 @@ import { HiArrowRight, HiArrowLeft } from 'react-icons/hi'
 import { styled } from '@/stitches'
 import { Slider } from './Slider'
 
-export function Controls({ player: { models, actions } }) {
+export function Controls({ player: { models, actions }, variant = '' }) {
   return (
     <ControlsWrapper>
       <ControlButton onClick={actions.toggle}>
@@ -15,13 +15,15 @@ export function Controls({ player: { models, actions } }) {
           <BsPlayFill size="20px" />
         )}
       </ControlButton>
-      <Slider
-        type="range"
-        min={0}
-        max={models.steps.length - 1}
-        value={models.activeStepIndex}
-        onChange={(evt) => actions.setIndex(evt.target.valueAsNumber)}
-      />
+      {variant !== 'keys' && (
+        <Slider
+          type="range"
+          min={0}
+          max={models.steps.length - 1}
+          value={models.activeStepIndex}
+          onChange={(evt) => actions.setIndex(evt.target.valueAsNumber)}
+        />
+      )}
       <StepWrapper>
         <ControlButton onClick={actions.prev}>
           <HiArrowLeft />
@@ -38,6 +40,7 @@ const ControlsWrapper = styled('div', {
   display: 'flex',
   gap: '16px',
   width: '100%',
+  justifyContent: 'center',
 })
 
 const StepWrapper = styled('div', {

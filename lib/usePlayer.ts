@@ -1,7 +1,7 @@
 import React from 'react'
 import useInterval from '@use-it/interval'
 
-type PlayerOptions = {
+export type PlayerOptions = {
   delay: number
   loop: boolean
 }

@@ -15,7 +15,7 @@ type AnimationState = {
   message?: string
 }
 
-const steps = snapshot(() => {
+const ANIMATION_STEPS = snapshot(() => {
   let cursor = null
   let message = 'Waiting...'
   let memory = new Memory(16)
@@ -49,20 +49,25 @@ const steps = snapshot(() => {
   debugger
 })
 
-export function ArrayResize() {
+type ArrayResizeProps = {
+  slice?: [number, number]
+}
+
+export function ArrayResize({ slice }: ArrayResizeProps) {
   const player = useAlgorithmSteps<AnimationState>({
-    algorithm: steps,
-    options: { delay: 1000 },
+    algorithm: ANIMATION_STEPS,
+    options: { delay: 1000, slice },
   })
-  const { memory, cursor, message = '' } = player.models.state
+  const { state } = player.models
+  const { memory, cursor, message = '' } = state
 
   return (
     <Wrapper>
-      <Message>{message}</Message>
+      {!slice && <Message>{message}</Message>}
       <AnimationWrapper>
         <MemoryList state={{ memory: memory.data, cursor }} />
       </AnimationWrapper>
-      <Controls player={player} />
+      <Controls player={player} variant={slice ? 'keys' : ''} />
     </Wrapper>
   )
 }
