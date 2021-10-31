@@ -1,6 +1,5 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { teal } from '@radix-ui/colors'
 
 import { styled } from '@/stitches'
 
@@ -118,8 +117,13 @@ const Block = styled(motion.div, {
         $$background: '$teal',
       },
       anonymous: {
-        $$borderColor: teal.teal7,
-        $$background: teal.teal4,
+        $$background: `repeating-linear-gradient(
+          -45deg,
+          $colors$grey400,
+          $colors$grey400 5px,
+          transparent 5px,
+          transparent 10px
+        )`,
       },
     },
   },
