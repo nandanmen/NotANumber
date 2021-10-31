@@ -15,7 +15,7 @@ export function Controls({ player: { models, actions }, variant = '' }) {
           <BsPlayFill size="20px" />
         )}
       </ControlButton>
-      {variant !== 'keys' && (
+      {variant !== 'keys' ? (
         <Slider
           type="range"
           min={0}
@@ -23,6 +23,10 @@ export function Controls({ player: { models, actions }, variant = '' }) {
           value={models.activeStepIndex}
           onChange={(evt) => actions.setIndex(evt.target.valueAsNumber)}
         />
+      ) : (
+        <div>
+          {models.activeStepIndex + 1} / {models.steps.length}
+        </div>
       )}
       <StepWrapper>
         <ControlButton onClick={actions.prev}>
@@ -40,7 +44,8 @@ const ControlsWrapper = styled('div', {
   display: 'flex',
   gap: '16px',
   width: '100%',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
+  alignItems: 'center',
 })
 
 const StepWrapper = styled('div', {
