@@ -1,18 +1,11 @@
 import React from 'react'
 import { styled } from '@stitches/react'
-import { motion } from 'framer-motion'
-import { RiArrowDownSFill } from 'react-icons/ri'
 
 import { Controls } from '@/components/Controls'
 import CodeBlock from '@/elements/CodeBlock'
 import usePlayer from '@/lib/usePlayer'
 
-import { BlockList } from '../Block'
-import { MemoryBlock } from './MemoryBlock'
-import { Memory } from './Memory'
-
-export { MemoryBlock } from './MemoryBlock'
-export { Memory } from './Memory'
+import { Memory, MemoryList } from '../Memory'
 
 const code = `// Allocate
 const block = Mem.allocate(4)
@@ -77,39 +70,12 @@ export function MemoryWorkflow() {
         {code}
       </CodeWrapper>
       <AnimationWrapper>
-        <BlockList>
-          {memory.map((block, index) => (
-            <MemoryBlock key={index} state={block.state} index={index}>
-              {block.data}
-            </MemoryBlock>
-          ))}
-          {cursor !== null && (
-            <Pointer
-              initial={{ opacity: 0 }}
-              animate={{
-                x: `calc(${cursor} * calc(8px + 4rem))`,
-                opacity: 1,
-              }}
-            >
-              <RiArrowDownSFill size="2em" />
-            </Pointer>
-          )}
-        </BlockList>
+        <MemoryList state={{ memory: memory.data, cursor }} />
       </AnimationWrapper>
       <Controls player={player} />
     </Wrapper>
   )
 }
-
-const Pointer = styled(motion.div, {
-  position: 'absolute',
-  color: '$black',
-  width: '4rem',
-  display: 'flex',
-  justifyContent: 'center',
-  top: 'calc(-2em - 2px)',
-  left: 0,
-})
 
 const Wrapper = styled('div', {
   display: 'flex',

@@ -1,11 +1,13 @@
-import { styled } from '@/stitches'
-import { motion } from 'framer-motion'
 import React from 'react'
+import { motion } from 'framer-motion'
+import { teal } from '@radix-ui/colors'
+
+import { styled } from '@/stitches'
 
 export const BLOCK_SIZE = '$sizes$16'
 
 type MemoryBlockProps = {
-  state: 'free' | 'allocated' | 'occupied'
+  state: 'free' | 'allocated' | 'occupied' | 'anonymous'
   index: number
   children?: React.ReactNode
 }
@@ -13,6 +15,7 @@ type MemoryBlockProps = {
 const prevStates = {
   free: 'free',
   allocated: 'free',
+  anonymous: 'free',
   occupied: 'allocated',
 }
 
@@ -35,7 +38,11 @@ export function MemoryBlock({ state, index, children }: MemoryBlockProps) {
     >
       <Block type="free" />
       <ContentBlock
-        type={state === 'occupied' ? 'occupied' : undefined}
+        type={
+          ['occupied', 'anonymous'].includes(state)
+            ? (state as 'occupied' | 'anonymous')
+            : undefined
+        }
         variants={{
           free: {
             scale: 0,
@@ -50,6 +57,9 @@ export function MemoryBlock({ state, index, children }: MemoryBlockProps) {
             },
           },
           occupied: {
+            scale: 1,
+          },
+          anonymous: {
             scale: 1,
           },
         }}
@@ -106,6 +116,10 @@ const Block = styled(motion.div, {
       occupied: {
         $$borderColor: '$black',
         $$background: '$teal',
+      },
+      anonymous: {
+        $$borderColor: teal.teal7,
+        $$background: teal.teal4,
       },
     },
   },

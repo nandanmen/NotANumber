@@ -1,102 +1,76 @@
 import React from 'react'
 import { styled } from '@stitches/react'
-import { motion } from 'framer-motion'
-import { RiArrowDownSFill } from 'react-icons/ri'
 
 import { Controls } from '@/components/Controls'
-import CodeBlock from '@/elements/CodeBlock'
-import usePlayer from '@/lib/usePlayer'
+import { useAlgorithmSteps } from '@/lib/hooks/useAlgorithmSteps'
 
-import { BlockList } from '../Block'
-import { Memory, MemoryBlock } from '../MemoryWorkflow'
+import { Memory, MemoryList } from '../Memory'
+
+// Macros have to use relative imports because they only exist at compile time
+import snapshot from '../../../lib/snapshot.macro'
 
 type AnimationState = {
   cursor: number | null
-  lineNumber?: number
   memory: Memory
+  message?: string
 }
 
-const steps: AnimationState[] = [
-  {
-    cursor: null,
-    memory: new Memory(),
-  },
-  {
-    cursor: null,
-    lineNumber: 1,
-    memory: new Memory().allocate(4),
-  },
-  {
-    cursor: 0,
-    lineNumber: 4,
-    memory: new Memory().allocate(4).set(0, 'a'),
-  },
-  {
-    cursor: 1,
-    lineNumber: 5,
-    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
-  },
-  {
-    cursor: 0,
-    lineNumber: 6,
-    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
-  },
-  {
-    cursor: null,
-    lineNumber: 9,
-    memory: new Memory(),
-  },
-  {
-    cursor: null,
-    memory: new Memory(),
-  },
-]
+const steps = snapshot(() => {
+  let cursor = null
+  let message = 'Waiting...'
+  let memory = new Memory(16)
+    .allocate(4)
+    .set(0, 'a')
+    .set(1, 'b')
+    .set(2, 'c')
+    .set(3, 'd')
+  memory.setAnonymous([4, 10])
+  debugger
+
+  message = 'Allocate space for the array plus the new item'
+  memory.allocate(5, 11)
+  debugger
+
+  message = 'Copy over each element of the old array'
+  for (cursor = 0; cursor < 4; cursor++) {
+    const currentValue = memory.get(cursor)
+    memory.clear(cursor)
+    memory.set(cursor + 11, currentValue)
+    debugger
+  }
+
+  message = 'Add the new item to the array'
+  cursor = null
+  memory.set(15, 'e')
+  debugger
+
+  message = 'Free up the old array'
+  memory.free([0, 3])
+  debugger
+})
 
 export function ArrayResize() {
-  const player = usePlayer(steps, { delay: 1200 })
-  const { memory, cursor } = player.models.state
+  const player = useAlgorithmSteps<AnimationState>({
+    algorithm: steps,
+    options: { delay: 1000 },
+  })
+  const { memory, cursor, message = '' } = player.models.state
 
   return (
     <Wrapper>
+      <Message>{message}</Message>
       <AnimationWrapper>
-        <BlockList>
-          {memory.map((block, index) => (
-            <MemoryBlock key={index} state={block.state} index={index}>
-              {block.data}
-            </MemoryBlock>
-          ))}
-          {cursor !== null && (
-            <Pointer
-              initial={{ opacity: 0 }}
-              animate={{
-                x: `calc(${cursor} * calc(8px + 4rem))`,
-                opacity: 1,
-              }}
-            >
-              <RiArrowDownSFill size="2em" />
-            </Pointer>
-          )}
-        </BlockList>
+        <MemoryList state={{ memory: memory.data, cursor }} />
       </AnimationWrapper>
       <Controls player={player} />
     </Wrapper>
   )
 }
 
-const Pointer = styled(motion.div, {
-  position: 'absolute',
-  color: '$black',
-  width: '4rem',
-  display: 'flex',
-  justifyContent: 'center',
-  top: 'calc(-2em - 2px)',
-  left: 0,
-})
-
-const Wrapper = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+const Message = styled('div', {
+  marginBottom: '$4',
+  fontWeight: 'bold',
+  fontSize: 'larger',
 })
 
 const AnimationWrapper = styled('div', {
@@ -106,8 +80,8 @@ const AnimationWrapper = styled('div', {
   marginBottom: '$4',
 })
 
-const CodeWrapper = styled(CodeBlock, {
-  position: 'relative',
-  width: 'fit-content',
-  transform: 'translateY(16px)',
+const Wrapper = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
 })
