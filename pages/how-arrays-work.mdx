@@ -389,6 +389,8 @@ And free up the old location:
 
 You might have noticed that this sounds _awful_ for performance. After all, our final array is full again! What if we want to `push` another element to the array? Would we have to reallocate and copy again?
 
+Of course, we're not limited to allocating space for only _one_ more element. What if we allocate a bit more? Try moving the slider here to allocate more than one block of space:
+
 The trick here is to always double the capacity of the array whenever we require more space. This way, most `push` calls won't require a memory adjustment, and only the ones that hit the limit would.
 
 Likewise, when we `pop` enough items that our array's length is less than half its capacity, we reallocate the array to half its size.
