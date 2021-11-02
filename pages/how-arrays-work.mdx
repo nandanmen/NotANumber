@@ -385,15 +385,17 @@ And free up the old location:
 
 ### A Note on Performance
 
-> If you're not super interested in optimizations, feel free to skip ahead to the next section where we implement more features to the array.
+In real code, one `push` call is typically followed by _more_ `push` calls, so it's generally more performant to allocate more than one block of extra space.
 
-You might have noticed that this sounds _awful_ for performance. After all, our final array is full again! What if we want to `push` another element to the array? Would we have to reallocate and copy again?
+<Figure>
+  <ArrayResize slice={[0, 2]} performant />
+</Figure>
 
-Of course, we're not limited to allocating space for only _one_ more element. What if we allocate a bit more? Try moving the slider here to allocate more than one block of space:
+This way, you won't need to resize the array again if you call `push` multiple times:
 
-The trick here is to always double the capacity of the array whenever we require more space. This way, most `push` calls won't require a memory adjustment, and only the ones that hit the limit would.
-
-Likewise, when we `pop` enough items that our array's length is less than half its capacity, we reallocate the array to half its size.
+<Figure>
+  <ArrayResize slice={[5, 8]} performant />
+</Figure>
 
 ## Mixing Types
 
