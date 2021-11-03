@@ -1,10 +1,16 @@
+import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
+import { sky, lime } from '@radix-ui/colors'
 
 export function HowArraysWorkIcon() {
   return (
     <Wrapper>
-      <Node />
-      <Node />
+      <Node style={{ y: -5 }} css={{ background: sky.sky6 }}>
+        1
+      </Node>
+      <Node style={{ y: 5 }} css={{ background: lime.lime6 }}>
+        2
+      </Node>
     </Wrapper>
   )
 }
@@ -15,43 +21,18 @@ const Wrapper = styled('div', {
   justifyContent: 'flex-end',
 
   '> :first-child': {
-    marginRight: '8px',
+    marginRight: '$1',
   },
 })
 
-const Node = styled('div', {
-  $$borderRadius: '$sizes$4',
-
+const Node = styled(motion.div, {
   width: '$12',
   height: '$12',
-  position: 'relative',
-
-  '&:before': {
-    content: '',
-    position: 'absolute',
-    background: `repeating-linear-gradient(
-      -45deg,
-      $colors$black,
-      $colors$black 3px,
-      transparent 3px,
-      transparent 5px
-    )`,
-    inset: '$0',
-    transform: 'translate(4px, 4px)',
-    borderRadius: '$$borderRadius',
-  },
-
-  '&:after': {
-    content: '1',
-    position: 'absolute',
-    inset: '$0',
-    background: '$background',
-    border: '3px solid $black',
-    borderRadius: '$$borderRadius',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: '600',
-    fontSize: '$lg',
-  },
+  border: '3px solid $black',
+  borderRadius: '$sizes$2',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontWeight: '600',
+  fontSize: '$lg',
 })

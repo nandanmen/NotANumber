@@ -23,5 +23,6 @@ a {
 }
 
 ::selection {
-  background: #ffd803;
+  background: var(--colors-blue5);
+  color: var(--colors-blue10);
 }

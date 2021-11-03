@@ -1,4 +1,5 @@
 import { createStitches } from '@stitches/react'
+import { slate, slateDark, sky, blue, lime } from '@radix-ui/colors'
 
 const BASE_GREY = '220, 14%'
 
@@ -81,11 +82,16 @@ export const { styled, keyframes, css } = createStitches({
       tokenFunction: COLORS.purple,
       tokenString: COLORS.red,
       tokenComment: COLORS.brown,
+
+      ...slate,
+      ...blue,
+      ...sky,
+      ...lime,
     },
     fonts: {
       serif: `Recoleta, ui-serif, Georgia, serif`,
       mono: `DM Mono, Menlo, ui-monosapce, monospace`,
-      sans: `Karla, system-ui, -apple-system, sans-serif`,
+      sans: `Inter, system-ui, -apple-system, sans-serif`,
     },
     fontSizes: {
       sm: '0.875rem',
