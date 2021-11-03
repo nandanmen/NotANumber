@@ -62,6 +62,7 @@ const SPACING = {
 export const { styled, keyframes, css } = createStitches({
   media: {
     post: `(min-width: 50rem)`,
+    md: `(min-width: 768px)`,
   },
   theme: {
     colors: {
@@ -90,7 +91,7 @@ export const { styled, keyframes, css } = createStitches({
     },
     fonts: {
       serif: `Recoleta, ui-serif, Georgia, serif`,
-      mono: `DM Mono, Menlo, ui-monosapce, monospace`,
+      mono: `Input Mono, Menlo, ui-monosapce, monospace`,
       sans: `Inter, system-ui, -apple-system, sans-serif`,
     },
     fontSizes: {
