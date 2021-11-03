@@ -1,9 +1,11 @@
+import Link from 'next/link'
 import { HiArrowRight } from 'react-icons/hi'
 
 import { styled } from '@/stitches'
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
 import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
+import { formatPath } from '@/lib/utils'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
@@ -59,10 +61,14 @@ function Post({ post, icon }) {
       <PostContent>
         <PostHeader>
           <PostTitle>
-            {post.title}{' '}
-            <Arrow>
-              <HiArrowRight />
-            </Arrow>
+            <Link href={formatPath(post.__resourcePath)}>
+              <TitleAnchor>
+                {post.title}{' '}
+                <Arrow>
+                  <HiArrowRight />
+                </Arrow>
+              </TitleAnchor>
+            </Link>
           </PostTitle>
           <PostUpdatedDate>Last updated {post.editedAt}</PostUpdatedDate>
         </PostHeader>
@@ -84,10 +90,18 @@ const PostUpdatedDate = styled('p', {
 const PostTitle = styled('h1', {
   fontFamily: 'Cal Sans',
   fontSize: '$2xl',
+  marginTop: -12,
+})
+
+const TitleAnchor = styled('a', {
   display: 'flex',
   alignItems: 'center',
   gap: '$2',
-  marginTop: -12,
+  cursor: 'pointer',
+
+  '&:hover': {
+    color: '$blue10',
+  },
 })
 
 const Arrow = styled('span', {
