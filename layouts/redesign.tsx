@@ -1,6 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { MDXProvider } from '@mdx-js/react'
+import { HiHome } from 'react-icons/hi'
 
 import { styled } from '@/stitches'
 import CodeBlock from '@/elements/CodeBlock'
@@ -53,6 +55,11 @@ export default function RedesignLayout({
   const slug = formatPath(frontMatter.__resourcePath)
   return (
     <MDXProvider components={mdxComponents}>
+      <Nav>
+        <Link href="/redesign">
+          <Logo>NaN</Logo>
+        </Link>
+      </Nav>
       <Article>
         <Head>
           <title>{frontMatter.title}</title>
@@ -78,6 +85,22 @@ export default function RedesignLayout({
     </MDXProvider>
   )
 }
+
+const Nav = styled('nav', {
+  padding: '$8',
+  position: 'fixed',
+  top: 0,
+})
+
+const Logo = styled('a', {
+  fontFamily: '$mono',
+  fontSize: '$lg',
+  cursor: 'pointer',
+
+  '&:hover': {
+    color: '$blue10',
+  },
+})
 
 const Header = styled('header', {
   '> :not(:last-child)': {
