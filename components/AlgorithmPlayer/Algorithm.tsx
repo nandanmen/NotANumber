@@ -1,39 +1,22 @@
 import React from 'react'
-import {
-  HiArrowLeft,
-  HiArrowRight,
-  HiPencil,
-  HiX,
-  HiCheck,
-} from 'react-icons/hi'
-import { BsPlayFill, BsPauseFill } from 'react-icons/bs'
-import { FaUndo } from 'react-icons/fa'
+import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from 'react-icons/hi'
 import { motion, AnimatePresence } from 'framer-motion'
-import { styled } from 'twin.macro'
 
+import { styled } from '@/stitches'
 import exec from '@/lib/exec'
 import { zip } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 
-import Figure from './Figure'
+import { Button } from './Button'
+import { PlayButton } from './PlayButton'
+import { SaveFormButton } from './SaveFormButton'
 
-export default function Visualizer({ algorithm, caption, children, ...props }) {
-  return (
-    <Figure>
-      <Algorithm algorithm={algorithm} {...props}>
-        {children}
-      </Algorithm>
-      {caption && <Figure.Caption>{caption}</Figure.Caption>}
-    </Figure>
-  )
-}
-
-function Algorithm({
+export function Algorithm({
   algorithm,
   children,
   initialInputs = [],
-  controls,
-  editable,
+  controls = false,
+  editable = false,
   delay = 400,
 }) {
   if (!Array.isArray(algorithm)) {
@@ -45,23 +28,23 @@ function Algorithm({
   const [showForm, toggle] = React.useReducer((show) => !show, false)
   const [inputs, setInputs] = React.useState(initialInputs)
   const [errors, setErrors] = React.useState({})
-  const formRef = React.useRef()
+  const formRef = React.useRef<HTMLFormElement>()
 
   const steps = React.useMemo(
     () => zip(...algorithm.map(({ entryPoint }) => exec(entryPoint, inputs))),
     [algorithm, inputs]
   )
 
-  const playerContext = usePlayer(steps, { delay })
+  const playerContext = usePlayer<any[]>(steps, { delay })
   const { activeStepIndex, state, isPlaying } = playerContext.models
 
   const isDone = state.every((subState) => subState.__done)
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form: HTMLFormElement) => {
     const entries = [...new FormData(form).entries()]
     if (entries.every(validate)) {
       playerContext.actions.reset()
-      setInputs(entries.map(([, value]) => JSON.parse(value)))
+      setInputs(entries.map(([, value]) => JSON.parse(value as string)))
     }
   }
 
@@ -78,36 +61,30 @@ function Algorithm({
 
   return (
     <>
-      <Figure.Content>
-        <div tw="z-0">
+      <Content>
+        <AlgorithmWrapper>
           {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
-        </div>
-        <div tw="absolute left-0 flex justify-between w-full px-4 text-gray-500 bottom-4">
-          <div tw="flex">
+        </AlgorithmWrapper>
+        <ControlsWrapper>
+          <StepButtons>
             {steps.length > 1 && (
               <>
-                <Button tw="mr-1" onClick={playerContext.actions.toggle}>
-                  {isPlaying ? (
-                    <BsPauseFill />
-                  ) : isDone ? (
-                    <span tw="text-sm">
-                      <FaUndo />
-                    </span>
-                  ) : (
-                    <BsPlayFill />
-                  )}
-                </Button>
+                <PlayButton
+                  css={{ marginRight: '$1' }}
+                  state={isDone ? 'done' : isPlaying ? 'playing' : ''}
+                  onClick={playerContext.actions.toggle}
+                />
                 {controls && (
                   <>
                     <Button
-                      tw="mr-1"
+                      css={{ marginRight: '$1' }}
                       onClick={playerContext.actions.prev}
                       disabled={activeStepIndex === 0}
                     >
                       <HiArrowLeft />
                     </Button>
                     <Button
-                      tw="mr-1"
+                      css={{ marginRight: '$1' }}
                       onClick={playerContext.actions.next}
                       disabled={isDone}
                     >
@@ -117,54 +94,38 @@ function Algorithm({
                 )}
               </>
             )}
-          </div>
+          </StepButtons>
           {editable && (
-            <div tw="flex space-x-1">
+            <FormControls>
               <AnimatePresence>
                 {showForm && (
-                  <Button
+                  <SaveFormButton
                     onClick={() => {
                       handleSubmit(formRef.current)
                       toggle()
                     }}
-                    variants={{
-                      hidden: {
-                        x: '100%',
-                        opacity: 0,
-                      },
-                      shown: {
-                        x: 0,
-                        opacity: 1,
-                      },
-                    }}
-                    initial="hidden"
-                    animate="shown"
-                    exit="hidden"
-                  >
-                    <HiCheck />
-                  </Button>
+                  />
                 )}
               </AnimatePresence>
-              <Button onClick={toggle} tw="relative">
+              <Button onClick={toggle} css={{ position: 'relative' }}>
                 {showForm ? <HiX /> : <HiPencil />}
               </Button>
-            </div>
+            </FormControls>
           )}
-        </div>
+        </ControlsWrapper>
         {steps.length > 1 && (
-          <p tw="absolute text-gray-500 right-5 top-4">
+          <StepCounter>
             {steps.indexOf(state) + 1} / {steps.length}
-          </p>
+          </StepCounter>
         )}
-      </Figure.Content>
+      </Content>
       {showForm && (
-        <motion.form
+        <Form
           ref={formRef}
           onSubmit={(evt) => {
             evt.preventDefault()
-            handleSubmit(evt.target)
+            handleSubmit(evt.target as HTMLFormElement)
           }}
-          tw="z-10 flex w-full px-8 mx-auto mt-6 md:w-3/4 md:px-0"
           variants={{
             show: {
               y: 0,
@@ -179,40 +140,105 @@ function Algorithm({
           animate="show"
         >
           {params
-            .map((name, index) => [name, inputs[index]])
-            .map(([name, value]) => (
-              <label key={name} tw="flex-1 mx-1 font-mono">
-                <input
+            .map((name: string, index: number) => [name, inputs[index]])
+            .map(([name, value]: [string, string]) => (
+              <Label key={name}>
+                <Input
                   name={name}
-                  tw="w-full p-2 border-2 rounded-lg focus:outline-none focus:border-blue-400"
                   type="text"
                   defaultValue={JSON.stringify(value)}
                   onBlur={(evt) => validate([name, evt.target.value])}
                 />
-                <span tw="block">{name}</span>
+                <InputName>{name}</InputName>
                 {errors[name] && <p>{errors[name]}</p>}
-              </label>
+              </Label>
             ))}
           <button type="submit"></button>
-        </motion.form>
+        </Form>
       )}
     </>
   )
 }
 
-const Button = styled(motion.button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  font-weight: 600;
-  border-radius: 6px;
-  background: var(--gray100);
+const InputName = styled('span', {
+  display: 'block',
+})
 
-  &:focus {
-    outline: none;
-    background: hsl(13, 16%, 40%);
-    color: white;
-  }
-`
+const Input = styled('input', {
+  $$borderColor: '$colors$grey300',
+
+  width: '100%',
+  padding: '$2',
+  border: '2px solid $$borderColor',
+  borderRadius: 8,
+
+  '&:focus': {
+    outline: 'none',
+    $$borderColor: '$colors$blue',
+  },
+})
+
+const Label = styled('label', {
+  flex: 1,
+  margin: '0 $1',
+  fontFamily: '$mono',
+})
+
+const Form = styled(motion.form, {
+  zIndex: 1,
+  display: 'flex',
+  width: '100%',
+  padding: '0 $8',
+  margin: '0 auto',
+  marginTop: '$6',
+
+  '@md': {
+    width: '75%',
+    padding: '0',
+  },
+})
+
+const StepCounter = styled('p', {
+  position: 'absolute',
+  color: '$grey600',
+  right: '$5',
+  top: '$4',
+})
+
+const FormControls = styled('div', {
+  display: 'flex',
+  '> :not(:last-child)': {
+    marginRight: '$1',
+  },
+})
+
+const AlgorithmWrapper = styled('div', {
+  zIndex: 0,
+})
+
+const ControlsWrapper = styled('div', {
+  position: 'absolute',
+  left: 0,
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '100%',
+  padding: '0 $4',
+  color: '$grey600',
+  bottom: '$4',
+})
+
+const StepButtons = styled('div', {
+  display: 'flex',
+})
+
+const Content = styled('div', {
+  position: 'relative',
+  zIndex: 2,
+  padding: '$16 $8',
+  background: '$grey200',
+  border: '2px solid $grey300',
+
+  '@md': {
+    borderRadius: '8px',
+  },
+})

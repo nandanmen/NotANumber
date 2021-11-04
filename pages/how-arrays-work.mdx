@@ -399,7 +399,12 @@ This way, you won't need to resize the array again if you call `push` multiple t
 
 ## Mixing Types
 
-Nice! We now have an array that can grow in size. We still have one more assumption though — our array can only contain the same type of data. We know that in JavaScript this isn't true; you can freely mix and match types without any problems!
+Great work! So far, we've made an array that:
+
+1. Can quickly find an element given an index
+2. Can grow as more items are added to the array
+
+This leaves us with one last assumption — our array can only contain the same type of data. How do we modify our array to handle any kind of data thrown at it?
 
 ### The Problem
 
