@@ -90,7 +90,9 @@ const PostUpdatedDate = styled('p', {
 const PostTitle = styled('h1', {
   fontFamily: 'Cal Sans',
   fontSize: '$2xl',
-  marginTop: -12,
+  lineHeight: 1.1,
+  marginTop: -4,
+  marginBottom: '$2',
 })
 
 const TitleAnchor = styled('a', {
@@ -121,12 +123,18 @@ const PostIcon = styled('div', {
   width: '$space$36',
   aspectRatio: 1,
   flexShrink: 0,
+  marginBottom: '$8',
+
   variants: {
     color: {
       blue: {
         background: '$blue10',
       },
     },
+  },
+
+  '@md': {
+    marginBottom: '$0',
   },
 })
 
@@ -135,9 +143,11 @@ const PostContent = styled('article', {
 })
 
 const PostWrapper = styled('li', {
-  display: 'flex',
-  alignItems: 'flex-start',
-  gap: '$8',
+  '@md': {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '$8',
+  },
 })
 
 const Main = styled('main', {
@@ -145,15 +155,21 @@ const Main = styled('main', {
   background: '$slate2',
   color: '$slate12',
   minHeight: '100vh',
-  display: 'grid',
-  gridTemplateColumns: '1fr 3fr',
-  padding: '$32 $16',
+  padding: '$16 $8',
   alignItems: 'flex-start',
   lineHeight: 1.7,
+
+  '@md': {
+    padding: '$32 $16',
+    display: 'grid',
+    gridTemplateColumns: '1fr 3fr',
+  },
 })
 
 const Posts = styled('ul', {
-  paddingLeft: '$12',
+  '@md': {
+    paddingLeft: '$12',
+  },
 
   '> :not(:last-child)': {
     marginBottom: '$16',
@@ -161,9 +177,14 @@ const Posts = styled('ul', {
 })
 
 const Header = styled('header', {
-  borderRight: '2px solid $slate4',
-  paddingRight: '$12',
-  paddingBottom: '$12',
+  marginBottom: '$16',
+
+  '@md': {
+    borderRight: '2px solid $slate4',
+    paddingRight: '$12',
+    paddingBottom: '$12',
+    marginBottom: '$0',
+  },
 })
 
 const Title = styled('h1', {
