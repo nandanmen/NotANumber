@@ -1,3 +1,4 @@
+import React from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import { styled, keyframes } from '@/stitches'
@@ -5,14 +6,14 @@ import { range } from '@/lib/utils'
 
 import { Block, BlockList } from '../Block'
 
-const ITEM_LENGTH = 8
+const ITEM_LENGTH = 4
 
 const items = range(ITEM_LENGTH)
-const highlightIndex = 3
+const highlightIndex = 1
 
 export function MemoryStructure() {
   return (
-    <WrapperList>
+    <WrapperList style={{ '--size': ITEM_LENGTH } as React.CSSProperties}>
       {items.map((item, index) => {
         return <ItemWithIndex key={item} index={index} />
       })}

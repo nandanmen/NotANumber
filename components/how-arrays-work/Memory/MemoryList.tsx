@@ -12,12 +12,15 @@ type MemoryListProps = {
     memory: MemoryBlockType[]
     cursor?: number
   }
+  rowSize?: number
 }
 
-export function MemoryList({ state }: MemoryListProps) {
+export function MemoryList({ state, rowSize }: MemoryListProps) {
   const { memory, cursor } = state
   return (
-    <BlockList style={{ '--size': memory.length } as React.CSSProperties}>
+    <BlockList
+      style={{ '--size': rowSize ?? memory.length } as React.CSSProperties}
+    >
       {memory.map((block, index) => (
         <MemoryBlock
           key={index}

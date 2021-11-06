@@ -1,4 +1,4 @@
-import { styled } from '@stitches/react'
+import { styled } from '@/stitches'
 
 import { Allocation, AllocationProps } from './Allocation'
 
@@ -6,13 +6,17 @@ export * from './Allocation'
 
 type MemoryAllocationProps = AllocationProps
 
-export function MemoryAllocation({ startIndex, size }: MemoryAllocationProps) {
+export function MemoryAllocation({
+  startIndex,
+  size,
+  memorySize,
+}: MemoryAllocationProps) {
   return (
     <Wrapper>
       <Code>
         <code>const block = Mem.allocate(bytes: {size})</code>
       </Code>
-      <Allocation startIndex={startIndex} size={size} />
+      <Allocation startIndex={startIndex} size={size} memorySize={memorySize} />
     </Wrapper>
   )
 }
@@ -26,6 +30,5 @@ const Wrapper = styled('div', {
 })
 
 const Code = styled('p', {
-  marginBottom: '24px',
-  textAlign: 'center',
+  marginBottom: '$6',
 })

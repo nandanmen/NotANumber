@@ -68,7 +68,7 @@ export function ArrayResize({ slice, performant = false }: ArrayResizeProps) {
     <Wrapper>
       {!slice && <Message>{message}</Message>}
       <AnimationWrapper>
-        <MemoryList state={{ memory: memory.data, cursor }} />
+        <MemoryList state={{ memory: memory.data, cursor }} rowSize={8} />
       </AnimationWrapper>
       <Controls player={player} variant={slice ? 'keys' : ''} />
     </Wrapper>

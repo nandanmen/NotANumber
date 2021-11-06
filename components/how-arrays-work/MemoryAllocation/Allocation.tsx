@@ -1,16 +1,23 @@
-import { styled } from '@stitches/react'
+import React from 'react'
 import { motion } from 'framer-motion'
 
 import { range } from '@/lib/utils'
 import { useInViewAnimate } from '@/lib/hooks/useInViewAnimate'
+import { styled } from '@/stitches'
+
 import { Block, BlockList, GRID_GAP, MEMORY_SIZE } from '../Block'
 
 export type AllocationProps = {
   startIndex: number
   size: number
+  memorySize?: number
 }
 
-export function Allocation({ startIndex, size }: AllocationProps) {
+export function Allocation({
+  startIndex,
+  size,
+  memorySize = MEMORY_SIZE,
+}: AllocationProps) {
   const [ref, animate] = useInViewAnimate(
     {
       initial: 'small',
@@ -22,8 +29,8 @@ export function Allocation({ startIndex, size }: AllocationProps) {
     }
   )
   return (
-    <BlockList>
-      {range(MEMORY_SIZE).map((_, index) => (
+    <BlockList style={{ '--size': memorySize } as React.CSSProperties}>
+      {range(memorySize).map((_, index) => (
         <Block key={index} type="free" />
       ))}
       <AllocatedList
