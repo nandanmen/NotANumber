@@ -22,7 +22,7 @@ export const Block = styled(motion.div, {
   variants: {
     type: {
       free: {
-        $$background: 'transparent',
+        $$background: '$colors$grey100',
         $$borderStyle: 'dashed',
       },
     },

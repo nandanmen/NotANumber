@@ -2,6 +2,8 @@ import { styled } from '@/stitches'
 
 import { Algorithm } from './Algorithm'
 
+export * from './AnimationWrapper'
+
 export function AlgorithmPlayer({ algorithm, caption, children, ...props }) {
   return (
     <Wrapper>

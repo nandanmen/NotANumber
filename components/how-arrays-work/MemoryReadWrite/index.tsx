@@ -2,13 +2,14 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
 
+import { Controls } from '@/components/Controls'
+import { AnimationWrapper } from '@/components/AlgorithmPlayer'
 import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 import { styled } from '@/stitches'
 
 import { ForbiddenBlock } from './ForbiddenBlock'
 import { Block, AllocatedBlock } from '../Block'
-import { Controls } from '@/components/Controls'
 
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
@@ -22,41 +23,42 @@ const code = [
 ]
 
 export function MemoryReadWrite() {
-  const { actions, models } = usePlayer(code, { delay: 750, loop: true })
-  const activeIndex = models.activeStepIndex
+  const player = usePlayer(code, { delay: 750, loop: true })
+  const activeIndex = player.models.activeStepIndex
 
   return (
-    <Wrapper>
-      <Code>{models.state}</Code>
-      <List>
-        <Block type="free" />
-        {range(4).map((_, index) => (
-          <div key={`allocated-${index}`}>
-            <AllocatedBlock active={index + 1 <= activeIndex}>
-              {String.fromCharCode(index + LOWERCASE_ALPHABET_CHAR_CODE)}
-            </AllocatedBlock>
-            <Index>{index > 0 ? `block + ${index}` : 'block'}</Index>
+    <AnimationWrapper player={player} editable={false} controls>
+      <Wrapper>
+        <Code>{player.models.state}</Code>
+        <List>
+          <Block type="free" />
+          {range(4).map((_, index) => (
+            <div key={`allocated-${index}`}>
+              <AllocatedBlock active={index + 1 <= activeIndex}>
+                {String.fromCharCode(index + LOWERCASE_ALPHABET_CHAR_CODE)}
+              </AllocatedBlock>
+              <Index>{index > 0 ? `block + ${index}` : 'block'}</Index>
+            </div>
+          ))}
+          <div>
+            <ForbiddenBlock active={activeIndex === 5} />
+            <Index>block + 4</Index>
           </div>
-        ))}
-        <div>
-          <ForbiddenBlock active={activeIndex === 5} />
-          <Index>block + 4</Index>
-        </div>
-        {range(2).map((_, index) => (
-          <Block key={`free-${index}`} type="free" />
-        ))}
-        <Pointer
-          initial={{ opacity: 0 }}
-          animate={{
-            x: `calc(${activeIndex} * calc(8px + 4rem))`,
-            opacity: activeIndex === 0 ? 0 : 1,
-          }}
-        >
-          <RiArrowDownSFill size="2em" />
-        </Pointer>
-      </List>
-      <Controls player={{ actions, models }} />
-    </Wrapper>
+          {range(2).map((_, index) => (
+            <Block key={`free-${index}`} type="free" />
+          ))}
+          <Pointer
+            initial={{ opacity: 0 }}
+            animate={{
+              x: `calc(${activeIndex} * calc(8px + 4rem))`,
+              opacity: activeIndex === 0 ? 0 : 1,
+            }}
+          >
+            <RiArrowDownSFill size="2em" />
+          </Pointer>
+        </List>
+      </Wrapper>
+    </AnimationWrapper>
   )
 }
 

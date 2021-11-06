@@ -14,9 +14,9 @@ type AnimationWrapperProps = {
   player: ReturnType<typeof usePlayer>
   controls: boolean
   editable: boolean
-  showForm: boolean
-  onShowForm: () => void
-  onSubmitForm: () => void
+  showForm?: boolean
+  onShowForm?: () => void
+  onSubmitForm?: () => void
 }
 
 export function AnimationWrapper({
@@ -98,18 +98,15 @@ const FormControls = styled('div', {
 })
 
 const AlgorithmWrapper = styled('div', {
+  padding: '$16 0',
   zIndex: 0,
 })
 
 const ControlsWrapper = styled('div', {
-  position: 'absolute',
-  left: 0,
   display: 'flex',
   justifyContent: 'space-between',
   width: '100%',
-  padding: '0 $4',
   color: '$grey600',
-  bottom: '$4',
 })
 
 const StepButtons = styled('div', {
@@ -119,7 +116,7 @@ const StepButtons = styled('div', {
 const Content = styled('div', {
   position: 'relative',
   zIndex: 2,
-  padding: '$16 $8',
+  padding: '$4',
   background: '$grey200',
   border: '2px solid $grey300',
 
