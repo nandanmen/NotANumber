@@ -1,14 +1,12 @@
-import React from 'react'
-import { styled } from '@stitches/react'
-
-import { Controls } from '@/components/Controls'
+import { styled } from '@/stitches'
+import { AnimationWrapper } from '@/components/AlgorithmPlayer'
 import CodeBlock from '@/elements/CodeBlock'
 import usePlayer from '@/lib/usePlayer'
 
 import { Memory, MemoryList } from '../Memory'
 
 const code = `// Allocate
-const block = Mem.allocate(4)
+const block = Mem.allocate(3)
 
 // Use
 Mem.set(block, 'a')
@@ -27,36 +25,36 @@ type AnimationState = {
 const steps: AnimationState[] = [
   {
     cursor: null,
-    memory: new Memory(),
+    memory: new Memory(4),
   },
   {
     cursor: null,
     lineNumber: 1,
-    memory: new Memory().allocate(4),
+    memory: new Memory(4).allocate(3),
   },
   {
     cursor: 0,
     lineNumber: 4,
-    memory: new Memory().allocate(4).set(0, 'a'),
+    memory: new Memory(4).allocate(3).set(0, 'a'),
   },
   {
     cursor: 1,
     lineNumber: 5,
-    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
+    memory: new Memory(4).allocate(3).set(0, 'a').set(1, 'b'),
   },
   {
     cursor: 0,
     lineNumber: 6,
-    memory: new Memory().allocate(4).set(0, 'a').set(1, 'b'),
+    memory: new Memory(4).allocate(3).set(0, 'a').set(1, 'b'),
   },
   {
     cursor: null,
     lineNumber: 9,
-    memory: new Memory(),
+    memory: new Memory(4),
   },
   {
     cursor: null,
-    memory: new Memory(),
+    memory: new Memory(4),
   },
 ]
 
@@ -65,33 +63,28 @@ export function MemoryWorkflow() {
   const { memory, lineNumber, cursor } = player.models.state
 
   return (
-    <Wrapper>
+    <>
       <CodeWrapper highlight={lineNumber ? String(lineNumber) : undefined}>
         {code}
       </CodeWrapper>
-      <AnimationWrapper>
-        <MemoryList state={{ memory: memory.data, cursor }} />
+      <AnimationWrapper player={player} controls editable={false}>
+        <Wrapper>
+          <MemoryList state={{ memory: memory.data, cursor }} />
+        </Wrapper>
       </AnimationWrapper>
-      <Controls player={player} />
-    </Wrapper>
+    </>
   )
 }
 
 const Wrapper = styled('div', {
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-})
-
-const AnimationWrapper = styled('div', {
-  background: '$grey200',
-  padding: '$20 $16',
-  borderRadius: '12px',
-  marginBottom: '$4',
+  justifyContent: 'center',
 })
 
 const CodeWrapper = styled(CodeBlock, {
   position: 'relative',
   width: 'fit-content',
   transform: 'translateY(16px)',
+  margin: '0 auto',
+  zIndex: 10,
 })

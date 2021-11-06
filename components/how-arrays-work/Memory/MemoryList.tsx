@@ -1,3 +1,4 @@
+import React from 'react'
 import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
 import { styled } from '@/stitches'
@@ -16,7 +17,7 @@ type MemoryListProps = {
 export function MemoryList({ state }: MemoryListProps) {
   const { memory, cursor } = state
   return (
-    <BlockList>
+    <BlockList style={{ '--size': memory.length } as React.CSSProperties}>
       {memory.map((block, index) => (
         <MemoryBlock
           key={index}

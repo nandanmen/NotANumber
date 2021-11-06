@@ -75,7 +75,7 @@ Great! Now that we have our allocated slice of memory, we can read and write fro
   <MemoryReadWrite />
 </Figure>
 
-Notice how we weren't allowed to write to `block + 4` - that's because we only allocated 4 bytes, so the fifth byte, `block + 4`, is out of bounds!
+Notice how we weren't allowed to write to `block + 2` - that's because we only allocated 2 bytes, so the third byte, `block + 2`, is out of bounds!
 
 ### Freeing Up Space
 
@@ -97,7 +97,7 @@ If you feel like this is really tedious, that's because it is. Bugs related to m
 
 One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around. Overall, the typical memory management workflow looks like this:
 
-<Figure>
+<Figure size="lg">
   <MemoryWorkflow />
 </Figure>
 
