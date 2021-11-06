@@ -1,15 +1,11 @@
 import React from 'react'
-import { HiArrowLeft, HiArrowRight, HiPencil, HiX } from 'react-icons/hi'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 import { styled } from '@/stitches'
 import exec from '@/lib/exec'
 import { zip } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
 
-import { Button } from './Button'
-import { PlayButton } from './PlayButton'
-import { SaveFormButton } from './SaveFormButton'
 import { AnimationWrapper } from './AnimationWrapper'
 
 export function Algorithm({
@@ -37,9 +33,7 @@ export function Algorithm({
   )
 
   const playerContext = usePlayer<any[]>(steps, { delay })
-  const { activeStepIndex, state, isPlaying } = playerContext.models
-
-  const isDone = state.every((subState) => subState.__done)
+  const { state } = playerContext.models
 
   const handleSubmit = (form: HTMLFormElement) => {
     const entries = [...new FormData(form).entries()]
@@ -151,50 +145,5 @@ const Form = styled(motion.form, {
   '@md': {
     width: '75%',
     padding: '0',
-  },
-})
-
-const StepCounter = styled('p', {
-  position: 'absolute',
-  color: '$grey600',
-  right: '$5',
-  top: '$4',
-})
-
-const FormControls = styled('div', {
-  display: 'flex',
-  '> :not(:last-child)': {
-    marginRight: '$1',
-  },
-})
-
-const AlgorithmWrapper = styled('div', {
-  zIndex: 0,
-})
-
-const ControlsWrapper = styled('div', {
-  position: 'absolute',
-  left: 0,
-  display: 'flex',
-  justifyContent: 'space-between',
-  width: '100%',
-  padding: '0 $4',
-  color: '$grey600',
-  bottom: '$4',
-})
-
-const StepButtons = styled('div', {
-  display: 'flex',
-})
-
-const Content = styled('div', {
-  position: 'relative',
-  zIndex: 2,
-  padding: '$16 $8',
-  background: '$grey200',
-  border: '2px solid $grey300',
-
-  '@md': {
-    borderRadius: '8px',
   },
 })
