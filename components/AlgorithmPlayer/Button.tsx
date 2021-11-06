@@ -13,7 +13,7 @@ export const Button = styled(motion.button, {
 
   '&:focus': {
     outline: 'none',
-    background: 'hsl(13, 16%, 40%)',
+    background: '$navy',
     color: '$white',
   },
 })

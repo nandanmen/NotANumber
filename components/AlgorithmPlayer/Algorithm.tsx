@@ -10,6 +10,7 @@ import usePlayer from '@/lib/usePlayer'
 import { Button } from './Button'
 import { PlayButton } from './PlayButton'
 import { SaveFormButton } from './SaveFormButton'
+import { AnimationWrapper } from './AnimationWrapper'
 
 export function Algorithm({
   algorithm,
@@ -61,64 +62,19 @@ export function Algorithm({
 
   return (
     <>
-      <Content>
-        <AlgorithmWrapper>
-          {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
-        </AlgorithmWrapper>
-        <ControlsWrapper>
-          <StepButtons>
-            {steps.length > 1 && (
-              <>
-                <PlayButton
-                  css={{ marginRight: '$1' }}
-                  state={isDone ? 'done' : isPlaying ? 'playing' : ''}
-                  onClick={playerContext.actions.toggle}
-                />
-                {controls && (
-                  <>
-                    <Button
-                      css={{ marginRight: '$1' }}
-                      onClick={playerContext.actions.prev}
-                      disabled={activeStepIndex === 0}
-                    >
-                      <HiArrowLeft />
-                    </Button>
-                    <Button
-                      css={{ marginRight: '$1' }}
-                      onClick={playerContext.actions.next}
-                      disabled={isDone}
-                    >
-                      <HiArrowRight />
-                    </Button>
-                  </>
-                )}
-              </>
-            )}
-          </StepButtons>
-          {editable && (
-            <FormControls>
-              <AnimatePresence>
-                {showForm && (
-                  <SaveFormButton
-                    onClick={() => {
-                      handleSubmit(formRef.current)
-                      toggle()
-                    }}
-                  />
-                )}
-              </AnimatePresence>
-              <Button onClick={toggle} css={{ position: 'relative' }}>
-                {showForm ? <HiX /> : <HiPencil />}
-              </Button>
-            </FormControls>
-          )}
-        </ControlsWrapper>
-        {steps.length > 1 && (
-          <StepCounter>
-            {steps.indexOf(state) + 1} / {steps.length}
-          </StepCounter>
-        )}
-      </Content>
+      <AnimationWrapper
+        player={playerContext}
+        controls={controls}
+        editable={editable}
+        showForm={showForm}
+        onSubmitForm={() => {
+          handleSubmit(formRef.current)
+          toggle()
+        }}
+        onShowForm={toggle}
+      >
+        {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
+      </AnimationWrapper>
       {showForm && (
         <Form
           ref={formRef}
