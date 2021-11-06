@@ -410,26 +410,49 @@ This leaves us with one last assumption — our array can only contain the same 
 
 Before we look into implementing this in our array, let's see _why_ this assumption was there in the first place. Let's say that we did allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done:
 
-<Placeholder name="mixing array type memory" />
+![](/multi-array-naive.png)
 
-Now, let's say we want to read an element from the array using its index. First, we need to get the address of that element. Easy enough, we'll use the formula that we wrote down before:
+Now, let's say we want to get the boolean `true` which is located at index 2. To do this, we would plug in "2" into our address formula:
 
 ```
-address of index i = address at index 0 + (size of item * i)
+address of index 2 = address at index 0 + (size of item * 2)
 ```
 
-But, um, wait a minute. What's the `size of item`? Now that our elements are of different types, the size (number of bytes) of each item may not necessarily be the same. Uh oh, our formula breaks down, and _we can't quickly determine the address any more_!
+But, um, wait a minute. What should we put as the "size of item"? Now that our array contains different data types, each element could be a different size. If we put in "2" (using the size of the first element), our formula gives us 4 as the address:
 
-<Placeholder name="array element different size" />
+![](/multi-array-broken-formula.png)
 
-### Boxing our Items
+Whereas the correct address is 6, since the number "10" takes up 4 bytes of space. Uh oh, our formula doesn't work anymore! This leads us to our problem:
+
+<ProblemStatement>
+
+How do we allow our array to contain data of differing size while still maintaining fast lookup?
+
+</ProblemStatement>
+
+### Boxing Our Items
 
 In order to make our formula work, we would need to make each element of the array take up the same space in memory despite being different types. How do we do this?
 
 One approach is to "box" the items in our array, wrapping each element in a container of a fixed size:
 
-<Placeholder name="element container" />
+![](/box.png)
 
-The container will contain our value and a tag that indicates what type that value is. The size (in bytes) of our container will then be the size of the tag plus the size of the _largest_ value our container can hold. Since we're working with JavaScript's type system here, this size will be 8 bytes.
+The container will contain our value and a tag that indicates what type the box contains. The size (in bytes) of our container will then be the size of the tag plus the size of the **largest** value our container can hold. What the largest value is is typically up to the programming language the array is implemented in. In the case of JavaScript, that size is 8 bytes [citation needed].
 
 Regardless of how large our container is, boxing each element ensures that each element of the array is the same size regardless of its type. This lets us maintain our array's lookup performance.
+
+![](/multi-type-array.png)
+
+Now, if we want to get the element at index 2, we only need to put in the size of our container as the element size.
+
+## Summary
+
+Whew. If you made it all the way here, thank you! I appreciate you. Turns out there's quite a bit happening in the background when we work with arrays. Let's summarize what we've learned:
+
+1. Computer memory is restrictive. You can only use specific bytes by allocating memory first. Because of this, making arrays dynamic is not super straightforward.
+2. Array indices get converted to a memory address. This process needs to be fast so that our array can have fast random access.
+3. Adding more items to an array might mean we have to resize it under the hood. But as long as we resize correctly, we don't have to resize too often.
+4. To make an array handle multiple types, we have to "box" each element in the array so that they take up the same amount of space in memory.
+
+And that's it! Hope you've enjoyed our inventive approach to how arrays work, and thanks again for reading!
