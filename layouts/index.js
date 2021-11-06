@@ -25,9 +25,11 @@ const formatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 })
 
+const CodeBlockWrapper = styled.div``
+
 const mdxComponents = {
   a: ExternalLink,
-  pre: (props) => <div {...props} />,
+  pre: CodeBlockWrapper,
   code: CodeBlock,
   hr: ThematicBreak,
   inlineCode: InlineCode,
@@ -161,9 +163,10 @@ const Article = styled.article`
   > figure {
     margin-top: calc(3rem - 1.5em);
     margin-bottom: 3rem;
+    max-width: 100vw;
   }
 
-  > ${CodeBlock} {
+  > ${CodeBlockWrapper} {
     margin-top: 24px;
     margin-bottom: 48px;
 

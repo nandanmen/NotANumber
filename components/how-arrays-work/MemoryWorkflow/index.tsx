@@ -83,7 +83,7 @@ const Wrapper = styled('div', {
 
 const CodeWrapper = styled(CodeBlock, {
   position: 'relative',
-  width: 'fit-content',
+  maxWidth: 'fit-content',
   transform: 'translateY(16px)',
   margin: '0 auto',
   zIndex: 10,

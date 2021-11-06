@@ -43,7 +43,7 @@ If you've written code in a lower level language before, some of these methods m
 
 As a starting point, you can think of memory as itself a super long array, where each element of the array represents a single byte:
 
-<Figure>
+<Figure size="lg">
   <MemoryStructure />
 </Figure>
 
@@ -57,7 +57,7 @@ One key restriction behind our computer's memory system is that you can't freely
 
 To get past this restriction, you have to ask for space in memory by _allocating_ it. To allocate space, you use the `allocate` function, passing in the specific number of bytes that you need:
 
-<Figure>
+<Figure size="lg">
   <MemoryAllocation size={3} startIndex={0} memorySize={4} />
 </Figure>
 
@@ -356,42 +356,6 @@ This would work just fine if the array was the _only_ thing in memory because th
 This approach also assumes a specific behaviour from the memory allocator. In reality, we can't really be sure _where_ the allocator is going to allocate memory — we can only be sure that the memory that's allocated will be the size we requested it to be.
 
 Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
-
-<Figure>
-  <ArrayResize slice={[0, 2]} />
-</Figure>
-
-Then, we copy the array into the new space:
-
-<Figure>
-  <ArrayResize slice={[1, 6]} />
-</Figure>
-
-Push the new element into the extra space we now have:
-
-<Figure>
-  <ArrayResize slice={[5, 7]} />
-</Figure>
-
-And free up the old location:
-
-<Figure>
-  <ArrayResize slice={[6, 8]} />
-</Figure>
-
-### A Note on Performance
-
-In real code, one `push` call is typically followed by _more_ `push` calls, so it's generally more performant to allocate more than one block of extra space.
-
-<Figure>
-  <ArrayResize slice={[0, 2]} performant />
-</Figure>
-
-This way, you won't need to resize the array again if you call `push` multiple times:
-
-<Figure>
-  <ArrayResize slice={[5, 8]} performant />
-</Figure>
 
 ## Mixing Types
 
