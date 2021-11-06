@@ -1,8 +1,6 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import { RiArrowDownSFill } from 'react-icons/ri'
 
-import { Controls } from '@/components/Controls'
 import { AnimationWrapper } from '@/components/AlgorithmPlayer'
 import { range } from '@/lib/utils'
 import usePlayer from '@/lib/usePlayer'
@@ -14,12 +12,10 @@ import { Block, AllocatedBlock } from '../Block'
 const LOWERCASE_ALPHABET_CHAR_CODE = 97
 
 const code = [
-  'const block = Memory.allocate(4)',
+  'const block = Memory.allocate(2)',
   `Memory.set(block, 'a')`,
   `Memory.set(block + 1, 'b')`,
   `Memory.set(block + 2, 'c')`,
-  `Memory.set(block + 3, 'd')`,
-  `Memory.set(block + 4, 'e')`,
 ]
 
 export function MemoryReadWrite() {
@@ -31,8 +27,7 @@ export function MemoryReadWrite() {
       <Wrapper>
         <Code>{player.models.state}</Code>
         <List>
-          <Block type="free" />
-          {range(4).map((_, index) => (
+          {range(2).map((_, index) => (
             <div key={`allocated-${index}`}>
               <AllocatedBlock active={index + 1 <= activeIndex}>
                 {String.fromCharCode(index + LOWERCASE_ALPHABET_CHAR_CODE)}
@@ -41,16 +36,14 @@ export function MemoryReadWrite() {
             </div>
           ))}
           <div>
-            <ForbiddenBlock active={activeIndex === 5} />
-            <Index>block + 4</Index>
+            <ForbiddenBlock active={activeIndex === 3} />
+            <Index>block + 2</Index>
           </div>
-          {range(2).map((_, index) => (
-            <Block key={`free-${index}`} type="free" />
-          ))}
+          <Block type="free" />
           <Pointer
             initial={{ opacity: 0 }}
             animate={{
-              x: `calc(${activeIndex} * calc(8px + 4rem))`,
+              x: `calc(${activeIndex - 1} * calc(8px + 4rem))`,
               opacity: activeIndex === 0 ? 0 : 1,
             }}
           >
@@ -81,7 +74,7 @@ const Code = styled('p', {
 
 const List = styled('ul', {
   display: 'grid',
-  gridTemplateColumns: 'repeat(8, 4rem)',
+  gridTemplateColumns: 'repeat(4, 4rem)',
   gap: '8px',
   position: 'relative',
 })
