@@ -16,4 +16,8 @@ export const Button = styled(motion.button, {
     background: '$navy',
     color: '$white',
   },
+
+  '&:disabled': {
+    opacity: 0.5,
+  },
 })
