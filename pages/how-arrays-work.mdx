@@ -16,6 +16,7 @@ import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
 import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
 import { ArrayResize } from '@/components/how-arrays-work/ArrayResize'
+import { ArraySpareCapacity } from '@/components/how-arrays-work/ArraySpareCapacity'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -191,7 +192,11 @@ The hint here is that, given an address, your computer's memory is able to quick
 
 Let's work through this using an example. Say we have an array with three numbers, each 2 bytes large:
 
-![](/array_indexing.png)
+<Figure size="lg">
+
+![](/how-arrays-work/array_indexing.png)
+
+</Figure>
 
 Using only the address of the _very first byte_, how would we get the address of the element at index 0? What about index 1? Or index 2? Take a look at the diagram above and see if you can find a pattern.
 
@@ -199,11 +204,19 @@ Using only the address of the _very first byte_, how would we get the address of
 
 We don't need to do any more work for index 0 - the address of the first byte _is_ the address of the first element! But what about the other indices? From the diagram above, we see that the address of the second element (at index 1) is the address of the first byte plus the size of the first element:
 
-![](/array_index_math.png)
+<Figure size="lg">
+
+![](/how-arrays-work/array_index_math.png)
+
+</Figure>
 
 Expanding on that further, we find that the address of the second index is the address of the first byte plus _twice_ the size of each element:
 
-![](/array_index_math_two.png)
+<Figure size="lg">
+
+![](/how-arrays-work/array_index_math_two.png)
+
+</Figure>
 
 In general, the address of an element at any index can be determined with the following formula:
 
@@ -288,6 +301,8 @@ arr.pop() // returns 4
 ### A First Pass
 
 To start, let's consider the case where our array isn't full yet i.e. the array has less items than the length we initialized it with:
+
+<ArraySpareCapacity />
 
 ![](array_spare_capacity.png)
 
