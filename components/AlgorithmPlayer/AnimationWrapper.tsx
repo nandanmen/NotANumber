@@ -19,6 +19,14 @@ type AnimationWrapperProps = {
   onSubmitForm?: () => void
 }
 
+export function StaticVisual({ children }: { children: React.ReactNode }) {
+  return (
+    <Content>
+      <AlgorithmWrapper>{children}</AlgorithmWrapper>
+    </Content>
+  )
+}
+
 export function AnimationWrapper({
   children,
   player,

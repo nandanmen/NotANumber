@@ -3,22 +3,21 @@ import React from 'react'
 import exec from '../exec'
 import usePlayer, { PlayerOptions } from '../usePlayer'
 
-type AlgorithmOptions = {
+type AlgorithmOptions<StateType> = {
   slice: [number, number]
+  filterState: (state: StateType) => boolean
 } & PlayerOptions
 
 export function useAlgorithmSteps<StateType>({
   algorithm,
   inputs = [],
-  options = {} as Partial<AlgorithmOptions>,
+  options = {} as Partial<AlgorithmOptions<StateType>>,
 }) {
   const steps = React.useMemo(
     () => exec(algorithm.entryPoint, inputs),
     [algorithm, inputs]
   )
 
-  const { slice = [] } = options
-  const [start, end] = slice
-
-  return usePlayer<StateType>(steps.slice(start, end), options)
+  const { filterState = () => true } = options
+  return usePlayer<StateType>(steps.filter(filterState), options)
 }

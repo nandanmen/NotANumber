@@ -357,6 +357,42 @@ This approach also assumes a specific behaviour from the memory allocator. In re
 
 Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
 
+<Figure size="lg">
+  <ArrayResize phase="allocate" />
+</Figure>
+
+Then, we copy the array into the new space:
+
+<Figure size="lg">
+  <ArrayResize phase="copy" />
+</Figure>
+
+Push the new element into the extra space we now have:
+
+<Figure size="lg">
+  <ArrayResize phase="push" />
+</Figure>
+
+And free up the old location:
+
+<Figure size="lg">
+  <ArrayResize phase="free" />
+</Figure>
+
+### A Note on Performance
+
+In real code, one `push` call is typically followed by _more_ `push` calls, so it's generally more performant to allocate more than one block of extra space.
+
+<Figure size="lg">
+  <ArrayResize phase="allocate" performant />
+</Figure>
+
+This way, you won't need to resize the array again if you call `push` multiple times:
+
+<Figure size="lg">
+  <ArrayResize phase="push" performant />
+</Figure>
+
 ## Mixing Types
 
 Great work! So far, we've made an array that:
