@@ -16,7 +16,11 @@ import { MemoryAllocation } from '@/components/how-arrays-work/MemoryAllocation'
 import { MemoryReadWrite } from '@/components/how-arrays-work/MemoryReadWrite'
 import { MemoryWorkflow } from '@/components/how-arrays-work/MemoryWorkflow'
 import { ArrayResize } from '@/components/how-arrays-work/ArrayResize'
-import { ArraySpareCapacity } from '@/components/how-arrays-work/ArraySpareCapacity'
+import {
+  ArraySpareCapacity,
+  SetSpareCapacity,
+} from '@/components/how-arrays-work/ArraySpareCapacity'
+import { ArrayIncreaseCapacity } from '@/components/how-arrays-work/ArrayIncreaseCapacity'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -302,67 +306,25 @@ arr.pop() // returns 4
 
 To start, let's consider the case where our array isn't full yet i.e. the array has less items than the length we initialized it with:
 
-<ArraySpareCapacity />
+<Figure size="lg">
+  <ArraySpareCapacity />
+</Figure>
 
-![](array_spare_capacity.png)
+When we call `push`, we want to add the value to the end of the array, or index 2 in this case. Because this block was previously allocated, we're good to set the value at index 2 directly.
 
-When we call `push`, we want to add the value to the end of the array, or index 2 in this case. Because this block was previously allocated, we're good to set the value at this block.
+<Figure size="lg">
+  <SetSpareCapacity />
+</Figure>
 
-One way we can support this in code is to differentiate between **capacity** and **length**:
-
-- The **capacity** of an array is the number of items it _can_ hold;
-- The **length** is the number of items _currently in_ the array.
-
-![](array_capacity_length.png)
-
-The `push` and `pop` functions would use this `length` variable to determine where the end of the array is, then update the variable accordingly:
-
-```js highlight=0-2,20-29
-function array(capacity, elementSize) {
-  const data = Mem.allocate(capacity * elementSize)
-  const length = 0
-
-  const getAddress = index => {
-    return data + (index * elementSize))
-  }
-
-  return {
-    get(index) {
-      const address = getAddress(index)
-      return Mem.get(address)
-    },
-    set(index, value) {
-      const address = getAddress(index)
-      Mem.set(address, value)
-    },
-    free() {
-      Mem.free(data)
-    },
-    push(value) {
-      this.set(length, value)
-      length++
-    },
-    pop(value) {
-      if (length > 0) {
-        length--
-        return this.get(length)
-      }
-    }
-  }
-}
-```
-
-But what if we're at capacity?
-
-![](array_max_capacity.png)
-
-The end of the array points to an unallocated block, so we can't freely write our value — the memory won't let us. How do we grow our array then?
+But what if we want to call `push` again? The end of the array points to an unallocated block, so we can't freely write our value — the memory won't let us. How do we grow our array then?
 
 ### Increasing Capacity
 
-Since we need space for more data, our solution is to allocate memory. But, how _much_? One thing we might be tempted to do would be to allocate just enough memory for the new item:
+Since we need space for more data, our solution is to allocate more memory. But, how _much_ memory should we allocate? One thing we might be tempted to do would be to allocate just enough memory for the new item:
 
-![](allocate_one_block.png)
+<Figure size="lg">
+  <ArrayIncreaseCapacity />
+</Figure>
 
 This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array. But in practice, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
 

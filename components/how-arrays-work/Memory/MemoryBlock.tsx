@@ -20,21 +20,7 @@ const prevStates = {
 
 export function MemoryBlock({ state, index, children }: MemoryBlockProps) {
   return (
-    <Wrapper
-      animate={state}
-      initial={prevStates[state]}
-      variants={{
-        free: {
-          y: 0,
-        },
-        allocated: {
-          y: 0,
-        },
-        occupied: {
-          y: -5,
-        },
-      }}
-    >
+    <Wrapper animate={state} initial={prevStates[state]}>
       <Block type="free" />
       <ContentBlock
         type={
