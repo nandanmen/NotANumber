@@ -5,6 +5,8 @@ import { MemoryList, Memory } from '../Memory'
 
 import snapshot from '../../../lib/snapshot.macro'
 
+export * from './FilledMemory'
+
 const steps = snapshot(() => {
   let cursor = 2
   const memory = new Memory(4).allocate(3).set(0, 10).set(1, 20).set(2, 30)
@@ -34,8 +36,4 @@ const Center = styled('div', {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-
-  '> :not(:last-child)': {
-    marginBottom: '$8',
-  },
 })

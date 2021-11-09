@@ -20,7 +20,10 @@ import {
   ArraySpareCapacity,
   SetSpareCapacity,
 } from '@/components/how-arrays-work/ArraySpareCapacity'
-import { ArrayIncreaseCapacity } from '@/components/how-arrays-work/ArrayIncreaseCapacity'
+import {
+  ArrayIncreaseCapacity,
+  FilledMemory,
+} from '@/components/how-arrays-work/ArrayIncreaseCapacity'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
@@ -299,7 +302,7 @@ We'll add two new functions to our array's API — `push`, to add elements to th
 ```js
 const arr = [1, 2, 3]
 arr.push(4) // adds 4 to the end of the array
-arr.pop() // returns 4
+arr.pop() // removes and returns 4
 ```
 
 ### A First Pass
@@ -326,13 +329,13 @@ Since we need space for more data, our solution is to allocate more memory. But,
   <ArrayIncreaseCapacity />
 </Figure>
 
-This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array. But in practice, arrays don't live in a vacuum. You can never be sure how much memory remains and where empty memory lies. It's totally possible that the space around the array is occupied by something else:
+This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array. In practice though, arrays don't live in a vacuum. It's totally possible, and very likely, that the space around the array is occupied by something else:
 
-![](memory_filled.png)
+<Figure size="lg">
+  <FilledMemory />
+</Figure>
 
-This approach also assumes a specific behaviour from the memory allocator. In reality, we can't really be sure _where_ the allocator is going to allocate memory — we can only be sure that the memory that's allocated will be the size we requested it to be.
-
-Since we can't allocate space for only one more element, our alternative is to allocate memory for the whole array _plus_ the new element:
+In which case you can't really be sure where the allocator is going to allocate your new block. Okay, so if that doesn't work, what should we do then? Our only option is to allocate memory for the whole array _plus_ the new element:
 
 <Figure size="lg">
   <ArrayResize phase="allocate" />
@@ -377,11 +380,13 @@ Great work! So far, we've made an array that:
 1. Can quickly find an element given an index
 2. Can grow as more items are added to the array
 
-This leaves us with one last assumption — our array can only contain the same type of data. How do we modify our array to handle any kind of data thrown at it?
+This leaves us with one last assumption — that our array can only contain the same type of data. How do we modify our array to handle any kind of data thrown at it?
 
 ### The Problem
 
-Before we look into implementing this in our array, let's see _why_ this assumption was there in the first place. Let's say that we did allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done:
+Before we look into implementing this in our array, let's try to get a better sense of the problem first. Let's say that we _did_ allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done.
+
+Using the array `['ab', 10, true]` as an example, our array might look something like this (in memory):
 
 ![](/multi-array-naive.png)
 
@@ -391,7 +396,15 @@ Now, let's say we want to get the boolean `true` which is located at index 2. To
 address of index 2 = address at index 0 + (size of item * 2)
 ```
 
-But, um, wait a minute. What should we put as the "size of item"? Now that our array contains different data types, each element could be a different size. If we put in "2" (using the size of the first element), our formula gives us 4 as the address:
+But, um, wait a minute — we're missing a variable. What should we put as the "size of item"? We have three choices:
+
+1. **2 bytes**, the size of the string `'ab'`
+2. **4 bytes**, the size of the number 10
+3. **1 byte**, the size of the boolean `true`
+
+Turns out none of these options give us the correct answer.
+
+If we put in "2" (using the size of the first element), our formula gives us 4 as the address:
 
 ![](/multi-array-broken-formula.png)
 
