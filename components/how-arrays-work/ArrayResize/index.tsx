@@ -58,9 +58,10 @@ export function ArrayResize({ phase, performant = false }: ArrayResizeProps) {
   const player = useAlgorithmSteps<AnimationState>({
     algorithm: ANIMATION_STEPS,
     inputs: performant ? [2, true] : [],
+    filterState: (state: AnimationState) =>
+      phase != null ? state.phase === phase : true,
     options: {
       delay: 1000,
-      filterState: (state) => (phase != null ? state.phase === phase : true),
     },
   })
   const { state } = player.models
