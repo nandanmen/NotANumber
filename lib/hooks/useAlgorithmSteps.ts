@@ -11,7 +11,7 @@ type AlgorithmStepOptions<T> = {
   algorithm: any
   inputs?: any[]
   filterState?: (state: T) => boolean
-  options: Partial<AlgorithmOptions>
+  options?: Partial<AlgorithmOptions>
 }
 
 export function useAlgorithmSteps<StateType>({
