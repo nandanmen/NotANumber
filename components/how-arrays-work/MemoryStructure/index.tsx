@@ -29,7 +29,7 @@ const WrapperList = styled(BlockList, {
 // --
 
 function ItemWithIndex({ index }) {
-  const [ref, inView] = useInView({ rootMargin: '-300px' })
+  const [ref, inView] = useInView({ rootMargin: '-100px' })
   return (
     <Wrapper ref={ref} active={inView && index === highlightIndex}>
       <Block type="free" />

@@ -25,7 +25,7 @@ export function Allocation({
     },
     {
       threshold: 1,
-      rootMargin: '-300px',
+      rootMargin: '-100px',
     }
   )
   return (

@@ -24,8 +24,11 @@ import {
   ArrayIncreaseCapacity,
   FilledMemory,
 } from '@/components/how-arrays-work/ArrayIncreaseCapacity'
-import { ArrayMultiType } from '@/components/how-arrays-work/ArrayMultiType'
-import Figure from '@/elements/Figure'
+import {
+  ArrayMultiType,
+  ArrayPadded,
+} from '@/components/how-arrays-work/ArrayMultiType'
+import Figure, { Caption } from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses take the same amount of time.
 
@@ -321,7 +324,7 @@ If our formula doesn't work anymore, we won't be able to quickly determine the a
 
 <ProblemStatement>
 
-How do we allow our array to contain data of differing size while still maintaining fast lookup?
+How do we allow our array to contain data of differing sizes while still maintaining fast lookup?
 
 </ProblemStatement>
 
@@ -329,19 +332,14 @@ How do we allow our array to contain data of differing size while still maintain
 
 As it turns out, the solution is to force each element to be the same size by "boxing" them. This box will essentially act as padding so that each element ends up where you expect it to:
 
-<Placeholder name="padding" />
+<Figure size="lg">
+  <ArrayPadded />
+  <Caption>
+    Here, the box size is set to 4 bytes, the largest of the three data types.
+  </Caption>
+</Figure>
 
-Instead of storing the element directly, we store a box _containing_ the element we want to store:
-
-![](/box.png)
-
-We'll also need to add a tag that signifies what type of value the box contains. This allows the user of the array to know what type it's getting back.
-
-All in all, our boxed array will look something like this:
-
-![](/multi-type-array.png)
-
-Now, if we want to get the element at index 2, we only need to put in the size of our container as the element size.
+In the example above, we boxed each element of the array in a 4-byte container — the size of the largest of the three data types. With each element being padded to a multiple of 4, we can now use our formula to calculate the address of any particular index.
 
 ## Summary
 

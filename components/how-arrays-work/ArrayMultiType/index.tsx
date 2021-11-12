@@ -6,6 +6,8 @@ import { styled } from '@/stitches'
 
 import { Block } from '../Block'
 
+export * from './ArrayPadded'
+
 export function ArrayMultiType() {
   return (
     <StaticVisual>

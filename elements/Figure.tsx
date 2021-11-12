@@ -1,3 +1,5 @@
+import { styled } from '@/stitches'
+
 const sizes = {
   base: 'base',
   lg: 'lg',
@@ -24,5 +26,12 @@ function Figure({ children, size = 'base' }: FigureProps) {
 }
 
 Figure.sizes = sizes
+
+export const Caption = styled('p', {
+  padding: '$0 $8',
+  marginTop: '$4',
+  fontSize: '$sm',
+  textAlign: 'center',
+})
 
 export default Figure
