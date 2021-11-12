@@ -8,7 +8,6 @@ editedAt: '2021-11-02'
 
 import Callout from '@/elements/Callout'
 import ProblemStatement from '@/elements/ProblemStatement'
-import Placeholder from '@/components/utils/Placeholder'
 
 import IndexLookup from '@/components/how-arrays-work/IndexLookup'
 import { MemoryStructure } from '@/components/how-arrays-work/MemoryStructure'
@@ -134,8 +133,6 @@ Thankfully, our assumptions let us determine the size of our array ahead of time
 ```
 total # of bytes = length * (# of bytes for 1 number)
 ```
-
-<Placeholder name="formula visual" />
 
 For the number of bytes for 1 number, we'll use [JavaScript's size of 8 bytes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number). This means that if we want to allocate an array of 10 numbers, we would need to allocate 10 \* 8 = 80 bytes in total.
 
