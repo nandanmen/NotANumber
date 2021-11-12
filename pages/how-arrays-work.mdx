@@ -24,6 +24,7 @@ import {
   ArrayIncreaseCapacity,
   FilledMemory,
 } from '@/components/how-arrays-work/ArrayIncreaseCapacity'
+import { ArrayMultiType } from '@/components/how-arrays-work/ArrayMultiType'
 import Figure from '@/elements/Figure'
 
 The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses take the same amount of time.
@@ -296,7 +297,9 @@ Before we look into implementing this in our array, let's try to get a better se
 
 Using the array `['ab', 10, true]` as an example, our array might look something like this (in memory):
 
-![](/multi-array-naive.png)
+<Figure size="lg">
+  <ArrayMultiType />
+</Figure>
 
 Now, let's say we want to get the boolean `true` which is located at index 2. To do this, we would plug in "2" into our address formula:
 
@@ -312,11 +315,7 @@ But, um, wait a minute — we're missing a variable. What should we put as the "
 
 Turns out none of these options give us the correct answer.
 
-If we put in 2 (using the size of the first element), our formula gives us 4 as the address:
-
-![](/multi-array-broken-formula.png)
-
-But the correct address is 6, since the number "10" takes up 4 bytes of space. Likewise, if we use 4, we'll overshoot the address, while if we use 1, we'll undershoot the address.
+If we put in 2 (using the size of the first element), our formula gives us 4 as the address; whereas the correct address is 6, since the number "10" takes up 4 bytes of space. Likewise, if we use 4, we'll overshoot the address, while if we use 1, we'll undershoot the address.
 
 If our formula doesn't work anymore, we won't be able to quickly determine the address of any given index - the core feature of the array! Therefore...
 
