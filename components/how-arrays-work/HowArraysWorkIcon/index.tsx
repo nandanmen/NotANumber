@@ -3,8 +3,12 @@ import { styled } from '@/stitches'
 export function HowArraysWorkIcon() {
   return (
     <Wrapper>
-      <Node />
-      <Node />
+      <Node>
+        <Content>1</Content>
+      </Node>
+      <Node>
+        <Content>2</Content>
+      </Node>
     </Wrapper>
   )
 }
@@ -40,18 +44,17 @@ const Node = styled('div', {
     transform: 'translate(4px, 4px)',
     borderRadius: '$$borderRadius',
   },
+})
 
-  '&:after': {
-    content: '1',
-    position: 'absolute',
-    inset: '$0',
-    background: '$background',
-    border: '3px solid $black',
-    borderRadius: '$$borderRadius',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: '600',
-    fontSize: '$lg',
-  },
+const Content = styled('div', {
+  position: 'absolute',
+  inset: '$0',
+  background: '$background',
+  border: '3px solid $black',
+  borderRadius: '$$borderRadius',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontWeight: '600',
+  fontSize: '$lg',
 })
