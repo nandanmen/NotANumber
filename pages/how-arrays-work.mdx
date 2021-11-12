@@ -26,9 +26,9 @@ import {
 } from '@/components/how-arrays-work/ArrayIncreaseCapacity'
 import Figure from '@/elements/Figure'
 
-The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses takes the same amount of time.
+The simple array is probably the most popular data structure in programming. It's a straightforward yet powerful tool — it lets you represent an ordered list of items with fast _random_ access. It doesn't matter if you're looking for index 1 or index 500 — with the array, both accesses take the same amount of time.
 
-If you've been a developer for a while, you probaby use arrays on a daily basis without thinking too much about them. But have you ever wondered how arrays actually work?
+If you've been a developer for a while, you probably use arrays on a daily basis without thinking too much about them. But have you ever wondered how arrays actually work?
 
 In this post, I want to dive into the technical details of the array and figure out how you might invent the array yourself. We're going to start with a simple array that only supports numbers, then later build that up to the flexible, dynamic array we all know and love from JavaScript.
 
@@ -36,9 +36,7 @@ Let's get started!
 
 ## Memory API
 
-Before we start on our array, let's talk about the tools we're going to use to do it. In particular, we're going to be using a virtual memory system that mimics the behaviour of your computer's local memory.
-
-Through the virtual memory system, we're going to have access to the following four methods:
+To implement our array, we'll use our computer's memory API (or a super simplified version of it). This API has four methods:
 
 1. `get(address: number)` — returns the value at a specific memory address.
 2. `set(address: number, value: number)` — sets the given address to the given value.
@@ -55,13 +53,13 @@ As a starting point, you can think of memory as itself a super long array, where
   <MemoryStructure />
 </Figure>
 
-Just like arrays, you can use the index to quickly read and write to a specific location in memory. However, when we're talking about memory in particular, we refer to the index of any individual byte as its _address_.
+You can refer to specific bytes in memory using their address — just like how you can use an index to refer to specific elements in an array.
 
 ### Memory Allocation
 
 One key restriction behind our computer's memory system is that you can't freely read and write to any old address in memory\*. In fact, when you begin, you can't read and write to any address at all!
 
-> \*And for good reason too — your computer memory is shared between the hundreds of different programs that are running at the same time. Imagine if programs are able to change memory that's being used by other programs!
+> \*And for a good reason too — your computer memory is shared between the hundreds of different programs running in parallel. Imagine if programs can change memory that's being used by other programs!
 
 To get past this restriction, you have to ask for space in memory by _allocating_ it. To allocate space, you use the `allocate` function, passing in the specific number of bytes that you need:
 
@@ -69,9 +67,7 @@ To get past this restriction, you have to ask for space in memory by _allocating
   <MemoryAllocation size={3} startIndex={0} memorySize={4} />
 </Figure>
 
-The `allocate` call returns the address of the _first_ byte of the allocated block. In this case, the call returns the address `1` because our 4 byte block begins at address `1`.
-
-> I lied a bit there - the allocate call actually returns a **pointer**, which is functionally equivalent to a memory address but has some additional metadata about the block that was allocated. For this article, understanding that allocation returns "something like" a memory address will suffice.
+The `allocate` call returns the address of the _first_ byte of the allocated block. In this case, the call returns the address `1` because our 4-byte block begins at address `1`.
 
 Great! Now that we have our allocated slice of memory, we can read and write from it as we please:
 
@@ -95,11 +91,11 @@ Mem.free(pointer)
 
 <Callout label="Do we really have to do this?">
 
-If you feel like this is really tedious, that's because it is. Bugs related to memory management happens _all the time_ when writing in lower level languages. Thankfully, JavaScript automates this memory management process for you, allowing you to focus on actually writing code instead of haggling with memory.
+If you feel like this is really tedious, that's because it is. Bugs related to memory management happen all the time when writing in lower-level languages. Thankfully, JavaScript automates this memory management process for you, allowing you to focus on actually writing code instead of haggling with memory.
 
 </Callout>
 
-One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. You just need to work with pointers and move them around. Overall, the typical memory management workflow looks like this:
+One thing you might notice from this allocate-free workflow is that you end up not referencing addresses directly. Instead, these addresses live inside variables, and all you need to do is move them around. Overall, the typical memory management workflow looks like this:
 
 <Figure size="lg">
   <MemoryWorkflow />
@@ -107,14 +103,14 @@ One thing you might notice from this allocate-free workflow is that you end up n
 
 As a quick summary:
 
-- Memory, for our purposes, is a long array of bytes where each byte has an associated address
-- To use memory, you need to allocate it first; this allocation process returns a pointer, the address of the first byte that you allocated
-- Once allocated, you can freely read and write to that memory location
-- When you're done, you can free the allocated space so it can be used elsewhere
+- Memory, for our purposes, is a long array of bytes where each byte has an associated address.
+- To use memory, you need to allocate it first; this allocation process returns the address of the first byte of the allocated block.
+- Once allocated, you can freely read and write to that memory location.
+- When you're done, you can free the allocated space so it can be used elsewhere.
 
 ## Building the Array
 
-That's enough on memory — let's get on with our array! We'll start with a few assumptions to make our lives easier:
+Now that we know a bit about memory and how it works, let's get on with our array! We'll start with a few assumptions to make our lives easier:
 
 1. The array has a fixed length (i.e. it cannot grow in size), and
 2. The array can only contain numbers.
@@ -135,48 +131,9 @@ Thankfully, our assumptions let us determine the size of our array ahead of time
 total # of bytes = length * (# of bytes for 1 number)
 ```
 
+<Placeholder name="formula visual" />
+
 For the number of bytes for 1 number, we'll use [JavaScript's size of 8 bytes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number). This means that if we want to allocate an array of 10 numbers, we would need to allocate 10 \* 8 = 80 bytes in total.
-
-Awesome, let's code that up:
-
-```js
-const SIZE_OF_NUMBER = 8
-
-function array(length) {
-  const data = Mem.allocate(length * SIZE_OF_NUMBER)
-
-  return {
-    get(index) {
-      // TODO
-    },
-    set(index, value) {
-      // TODO
-    },
-  }
-}
-```
-
-Let's also add a `free` method to free up any memory used by the array when the user is done with it (recall the memory workflow from the previous section!):
-
-```js highlight=12-14
-const SIZE_OF_NUMBER = 8
-
-function array(length) {
-  const data = Mem.allocate(length * SIZE_OF_NUMBER)
-
-  return {
-    get(index) {
-      // TODO
-    },
-    set(index, value) {
-      // TODO
-    },
-    free() {
-      Mem.free(data)
-    },
-  }
-}
-```
 
 ### Reading and Writing
 
@@ -195,7 +152,7 @@ How do we quickly retrieve the element at any arbitrary index?
 
 </ProblemStatement>
 
-The hint here is that, given an address, your computer's memory is able to quickly fetch the item at that address. If we're able to efficiently translate an index to a memory address, we'll be able to quickly retrieve the element located there.
+Keep in mind that, given an address, your computer's memory can quickly fetch the item at that address. If we're able to efficiently translate an index to a memory address, we'll be able to quickly retrieve the element located there.
 
 Let's work through this using an example. Say we have an array with three numbers, each 2 bytes large:
 
@@ -205,11 +162,13 @@ Let's work through this using an example. Say we have an array with three number
 
 </Figure>
 
-Using only the address of the _very first byte_, how would we get the address of the element at index 0? What about index 1? Or index 2? Take a look at the diagram above and see if you can find a pattern.
+Using only the address of the first byte, how would we get the address of the element at index 0? What about index 1? Or index 2? Take a look at the diagram above and see if you can find a pattern.
 
 ---
 
-We don't need to do any more work for index 0 - the address of the first byte _is_ the address of the first element! But what about the other indices? From the diagram above, we see that the address of the second element (at index 1) is the address of the first byte plus the size of the first element:
+We don't need to do any more work for index 0 - the address of the first byte _is_ the address of the first element! But what about the other indices?
+
+From the diagram above, we see that the address of the second element (at index 1) is the address of the first byte plus the size of the first element:
 
 <Figure size="lg">
 
@@ -231,63 +190,9 @@ In general, the address of an element at any index can be determined with the fo
 address = first byte address + (index * size of each element)
 ```
 
-Using this formula we can go ahead and implement the `get` and `set` functions for our array:
+Once we have the address of the element, we can freely read and write to that location using the memory's get and set functions.
 
-```js highlight=5-8,11-18
-const SIZE_OF_NUMBER = 8
-
-function array(length) {
-  const data = Mem.allocate(length * SIZE_OF_NUMBER)
-
-  // Helper function to convert an index to an address
-  const getAddress = (index) => {
-    return data + index * SIZE_OF_NUMBER
-  }
-
-  return {
-    get(index) {
-      const address = getAddress(index)
-      return Mem.get(address)
-    },
-    set(index, value) {
-      const address = getAddress(index)
-      Mem.set(address, value)
-    },
-    free() {
-      Mem.free(data)
-    },
-  }
-}
-```
-
-Something to highlight here is that it doesn't actually matter _what_ type of data the array contains - if every element is the same size, then our formula would work.
-
-So let's update our array to receive the size of each element as a paramater:
-
-```js highlight=0-1,5
-function array(length, elementSize) {
-  const data = Mem.allocate(length * elementSize)
-
-  // Helper function to convert an index to an address
-  const getAddress = index => {
-    return data + (index * elementSize))
-  }
-
-  return {
-    get(index) {
-      const address = getAddress(index)
-      return Mem.get(address)
-    },
-    set(index, value) {
-      const address = getAddress(index)
-      Mem.set(address, value)
-    },
-    free() {
-      Mem.free(data)
-    },
-  }
-}
-```
+> Something to highlight here is that it doesn't actually matter what _type_ of data the array contains - if every element is the same size, then our formula would work fine!
 
 Great work! We now have an array that we can use to represent data. Except, it feels a bit limiting - what if we don't know how many elements we need ahead of time? Or what if we want to store _different_ elements in the same array?
 
@@ -295,19 +200,18 @@ Let's answer these questions one at a time, starting with the former - making th
 
 ## Growing the Array
 
-So far, our array is static. We define a length when we create it, but it can never exceed that initial length. This is pretty limiting — what if we _don't_ know how many elements our array will contain? In this section, we'll explore a way to make our array dynamic, making it grow and shrink as the number of items in the array change.
+So far, our array is static. We define a length when we create it, but it can never exceed that initial length. This is pretty limiting — what if we _don't_ know how many elements our array will contain?
 
-We'll add two new functions to our array's API — `push`, to add elements to the end of the array, and `pop`, to remove elements from the end of the array:
+In this section, we'll explore a way to make our array dynamic, making it grow and shrink as the number of items in the array change. In particular, we'll explore how to implement a `push` function that adds items to the end of the array.
 
 ```js
 const arr = [1, 2, 3]
 arr.push(4) // adds 4 to the end of the array
-arr.pop() // removes and returns 4
 ```
 
 ### A First Pass
 
-To start, let's consider the case where our array isn't full yet i.e. the array has less items than the length we initialized it with:
+To start, let's consider the case where our array isn't full yet, i.e. the array has fewer items than the length we initialized it with:
 
 <Figure size="lg">
   <ArraySpareCapacity />
@@ -323,25 +227,27 @@ But what if we want to call `push` again? The end of the array points to an unal
 
 ### Increasing Capacity
 
-Since we need space for more data, our solution is to allocate more memory. But, how _much_ memory should we allocate? One thing we might be tempted to do would be to allocate just enough memory for the new item:
+Since we need space for more data, our solution is to allocate more memory. But, how much more memory should we allocate? One thing we might be tempted to do would be to allocate just enough memory for the new element:
 
 <Figure size="lg">
   <ArrayIncreaseCapacity />
 </Figure>
 
-This would work just fine if the array was the _only_ thing in memory because then there's always going to be space right next to the array. In practice though, arrays don't live in a vacuum. It's totally possible, and very likely, that the space around the array is occupied by something else:
+This would work just fine if the array was the only thing in memory because then there's always going to be space right next to the array. In practice, though, arrays don't live in a vacuum. It's totally possible, and actually very likely, that the space around the array is occupied by something else:
 
 <Figure size="lg">
   <FilledMemory />
 </Figure>
 
-In which case you can't really be sure where the allocator is going to allocate your new block. Okay, so if that doesn't work, what should we do then? Our only option is to allocate memory for the whole array _plus_ the new element:
+In which case, you can't really be sure where the allocator will allocate your new block.
+
+Okay, so if that doesn't work, what should we do then? Our only option is to allocate memory for the whole array _plus_ the new element:
 
 <Figure size="lg">
   <ArrayResize phase="allocate" />
 </Figure>
 
-Then, we copy the array into the new space:
+Next, we'll need to copy the array into the new space:
 
 <Figure size="lg">
   <ArrayResize phase="copy" />
@@ -359,9 +265,11 @@ And free up the old location:
   <ArrayResize phase="free" />
 </Figure>
 
+And we there we have our `push` function!
+
 ### A Note on Performance
 
-In real code, one `push` call is typically followed by _more_ `push` calls, so it's generally more performant to allocate more than one block of extra space.
+One push call is typically followed by _more_ push calls in actual code, so allocating more than one block of extra space is generally more performant.
 
 <Figure size="lg">
   <ArrayResize phase="allocate" performant />
@@ -380,11 +288,11 @@ Great work! So far, we've made an array that:
 1. Can quickly find an element given an index
 2. Can grow as more items are added to the array
 
-This leaves us with one last assumption — that our array can only contain the same type of data. How do we modify our array to handle any kind of data thrown at it?
+This leaves us with one last assumption: our array can only contain the same type of data. How do we modify our array to handle any kind of data thrown at it?
 
 ### The Problem
 
-Before we look into implementing this in our array, let's try to get a better sense of the problem first. Let's say that we _did_ allow our array to contain multiple types, and all we did to support that was to lay out the items one after another like we've always done.
+Before we look into implementing this in our array, let's try to get a better sense of the problem first. Let's say that we _did_ allow our array to contain multiple types, and all we did to support that was to lay out the items one after another as we've always done.
 
 Using the array `['ab', 10, true]` as an example, our array might look something like this (in memory):
 
@@ -408,7 +316,7 @@ If we put in 2 (using the size of the first element), our formula gives us 4 as 
 
 ![](/multi-array-broken-formula.png)
 
-But the correct address is 6, since the number "10" takes up 4 bytes of space. Likewise, if we use 4 we'll overshoot the address while 1 will undershoot the address.
+But the correct address is 6, since the number "10" takes up 4 bytes of space. Likewise, if we use 4, we'll overshoot the address, while if we use 1, we'll undershoot the address.
 
 If our formula doesn't work anymore, we won't be able to quickly determine the address of any given index - the core feature of the array! Therefore...
 
@@ -420,19 +328,17 @@ How do we allow our array to contain data of differing size while still maintain
 
 ### Boxing Our Items
 
-The solution, as it turns out, is to _force_ each element to be the same size by "boxing" them. This box will essentially act as padding so that each element ends up where you expect it to:
+As it turns out, the solution is to force each element to be the same size by "boxing" them. This box will essentially act as padding so that each element ends up where you expect it to:
 
 <Placeholder name="padding" />
 
-In order to make our formula work, we would need to make each element of the array take up the same space in memory despite being different types. How do we do this?
-
-One approach is to "box" the items in our array, wrapping each element in a container of a fixed size:
+Instead of storing the element directly, we store a box _containing_ the element we want to store:
 
 ![](/box.png)
 
-The container will contain our value and a tag that indicates what type the box contains. The size (in bytes) of our container will then be the size of the tag plus the size of the **largest** value our container can hold. What the largest value is is typically up to the programming language the array is implemented in. In the case of JavaScript, that size is 8 bytes [citation needed].
+We'll also need to add a tag that signifies what type of value the box contains. This allows the user of the array to know what type it's getting back.
 
-Regardless of how large our container is, boxing each element ensures that each element of the array is the same size regardless of its type. This lets us maintain our array's lookup performance.
+All in all, our boxed array will look something like this:
 
 ![](/multi-type-array.png)
 
