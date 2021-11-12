@@ -6,7 +6,7 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   return (
     <Main>
-      <TopNavigation tw="w-full p-8 pb-0 fixed top-0 z-50" />
+      <TopNavigation tw="w-screen p-8 pb-0 fixed top-0 z-50" />
       <Component {...pageProps} />
     </Main>
   )

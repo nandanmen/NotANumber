@@ -25,9 +25,12 @@ const formatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 })
 
+const CodeBlockWrapper = styled.div``
+
 const mdxComponents = {
   a: ExternalLink,
-  pre: CodeBlock,
+  pre: CodeBlockWrapper,
+  code: CodeBlock,
   hr: ThematicBreak,
   inlineCode: InlineCode,
   ul: UnorderedList,
@@ -98,7 +101,7 @@ const Author = styled.div`
 
 const Blurb = styled.p`
   ${tw`text-2xl`}
-  
+
   font-family: var(--text-mono);
   text-align: center;
   padding: 0 32px;
@@ -132,10 +135,17 @@ const Article = styled.article`
   padding-bottom: 80px;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
+  font-family: var(--text-sans);
 
   > * {
     grid-column: 2 / span 1;
     margin-bottom: 1.5em;
+  }
+
+  > blockquote {
+    border-left: 3px solid var(--gray400);
+    padding-left: 1rem;
+    color: var(--gray600);
   }
 
   > ${Header} {
@@ -151,10 +161,12 @@ const Article = styled.article`
   }
 
   > figure {
-    margin-bottom: 2rem;
+    margin-top: calc(3rem - 1.5em);
+    margin-bottom: 3rem;
+    max-width: 100vw;
   }
 
-  > ${CodeBlock} {
+  > ${CodeBlockWrapper} {
     margin-top: 24px;
     margin-bottom: 48px;
 

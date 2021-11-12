@@ -18,10 +18,13 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "downlevelIteration": true,
     "paths": {
       "@/components/*": ["components/*"],
       "@/elements/*": ["elements/*"],
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/stitches": ["stitches.config.ts"],
+      "@/layouts/*": ["layouts/*"]
     }
   },
   "include": [

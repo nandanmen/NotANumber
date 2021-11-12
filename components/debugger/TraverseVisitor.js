@@ -12,6 +12,7 @@ import snapshot from '../../lib/snapshot.macro'
 
 import Tree from './shared/Tree'
 import useSyntaxTree from './shared/useSyntaxTree'
+import { Slider } from '../Slider'
 
 const code = `let a = 10`
 
@@ -88,42 +89,6 @@ const Controls = styled.div`
 
   > :first-child {
     margin-right: 16px;
-  }
-`
-
-const Slider = styled.input.attrs({ type: 'range' })`
-  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-  width: 100%; /* Specific width is required for Firefox. */
-  background: transparent; /* Otherwise white in Chrome */
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    margin-top: -10px;
-    cursor: pointer;
-    background: var(--brown);
-    border: 2px solid var(--border-color);
-  }
-
-  &::-moz-range-thumb {
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    cursor: pointer;
-    background: var(--brown);
-    border: 2px solid var(--border-color);
-  }
-
-  &::-webkit-slider-runnable-track {
-    height: 4px;
-    background: hsl(var(--gray), 85%);
-  }
-
-  &::-moz-range-track {
-    height: 4px;
-    background: hsl(var(--gray), 85%);
   }
 `
 

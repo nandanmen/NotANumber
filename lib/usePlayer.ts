@@ -1,7 +1,22 @@
 import React from 'react'
 import useInterval from '@use-it/interval'
 
-export default function usePlayer(steps, settings = { delay: 500 }) {
+export type PlayerOptions = {
+  delay: number
+  loop: boolean
+}
+
+const DEFAULT_OPTIONS: PlayerOptions = {
+  delay: 500,
+  loop: false,
+}
+
+export default function usePlayer<StateType = unknown>(
+  steps: StateType[],
+  settings: Partial<PlayerOptions> = DEFAULT_OPTIONS
+) {
+  const populatedSettings = { ...DEFAULT_OPTIONS, ...settings }
+
   const [activeStepIndex, setActiveStepIndex] = React.useState(0)
   const [isPlaying, setIsPlaying] = React.useState(false)
 
@@ -13,7 +28,7 @@ export default function usePlayer(steps, settings = { delay: 500 }) {
         setIsPlaying(false)
       }
     },
-    isPlaying ? settings.delay : null
+    isPlaying ? populatedSettings.delay : null
   )
 
   const toggle = () => {
@@ -29,13 +44,17 @@ export default function usePlayer(steps, settings = { delay: 500 }) {
   }, [])
 
   const next = () => {
-    if (activeStepIndex < steps.length - 1) {
+    if (populatedSettings.loop) {
+      setActiveStepIndex((index) => (index + 1) % steps.length)
+    } else if (activeStepIndex < steps.length - 1) {
       setActiveStepIndex((index) => index + 1)
     }
   }
 
   const prev = () => {
-    if (activeStepIndex > 0) {
+    if (populatedSettings.loop && activeStepIndex === 0) {
+      setActiveStepIndex(steps.length - 1)
+    } else if (activeStepIndex > 0) {
       setActiveStepIndex((index) => index - 1)
     }
   }
@@ -46,7 +65,7 @@ export default function usePlayer(steps, settings = { delay: 500 }) {
       state: steps[activeStepIndex],
       steps,
       isPlaying,
-      settings,
+      settings: populatedSettings,
     },
     actions: {
       reset,
