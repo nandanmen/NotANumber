@@ -67,10 +67,10 @@ One key restriction behind our computer's memory system is that you can't freely
 To get past this restriction, you have to ask for space in memory by _allocating_ it. To allocate space, you use the `allocate` function, passing in the specific number of bytes that you need:
 
 <Figure size="lg">
-  <MemoryAllocation size={3} startIndex={0} memorySize={4} />
+  <MemoryAllocation size={2} startIndex={0} memorySize={4} />
 </Figure>
 
-The `allocate` call returns the address of the _first_ byte of the allocated block. In this case, the call returns the address `1` because our 4-byte block begins at address `1`.
+The `allocate` call returns the address of the _first_ byte of the allocated block. In this case, the call returns the address `0` because our 2-byte block begins at address `0`.
 
 Great! Now that we have our allocated slice of memory, we can read and write from it as we please:
 
