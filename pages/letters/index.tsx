@@ -1,8 +1,16 @@
+import React from 'react'
+import { HiArrowRight, HiCheck } from 'react-icons/hi'
+import { ImSpinner8 } from 'react-icons/im'
 import Head from 'next/head'
+import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
-import { red } from '@radix-ui/colors'
+import { blue, green } from '@radix-ui/colors'
+import { subscribe } from '@/lib/subscribe'
 
 export default function LettersPage() {
+  const [isSubscribeInputOpen, setIsSubscribeInputOpen] = React.useState(false)
+  const [formState, setFormState] = React.useState('idle')
+
   return (
     <Page>
       <Head>
@@ -12,11 +20,58 @@ export default function LettersPage() {
         <Title>Letters</Title>
         <Blurb>
           An archive of letters from the Not a Number newsletter, amped up with
-          interactive components. <SubscribeLink>Subscribe</SubscribeLink> to
-          get these letters sent straight to your inbox.
+          interactive components.{' '}
+          <SubscribeLink onClick={() => setIsSubscribeInputOpen(true)}>
+            Subscribe
+          </SubscribeLink>{' '}
+          to get these letters sent straight to your inbox.
         </Blurb>
+        {isSubscribeInputOpen && (
+          <SubscriptionBox
+            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: -8, opacity: 0 }}
+            onSubmit={(evt: React.FormEvent<HTMLFormElement>) => {
+              evt.preventDefault()
+              const target = evt.target as typeof evt.target & {
+                email: { value: string }
+              }
+              const email = target.email.value
+              setFormState('loading')
+              subscribe(email).then(() => setFormState('done'))
+            }}
+          >
+            <EmailInput
+              name="email"
+              type="email"
+              placeholder="john.doe@email.com"
+            />
+            <SubmitButton
+              variants={{
+                loading: {
+                  scale: 0.8,
+                },
+              }}
+              animate={formState}
+              whileTap="loading"
+              done={formState === 'done'}
+            >
+              {formState === 'idle' ? (
+                <HiArrowRight size="1.5em" />
+              ) : formState === 'loading' ? (
+                <motion.span
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  <ImSpinner8 size="1.2em" />
+                </motion.span>
+              ) : (
+                <HiCheck size="1.5em" />
+              )}
+            </SubmitButton>
+          </SubscriptionBox>
+        )}
       </Header>
-      <List>
+      <List layout>
         <Letter
           title="CSS Counters and a Warm Hello"
           description="In Not a Number's first ever newsletter, we talk about CSS counters: what they are, and how to use them."
@@ -27,11 +82,50 @@ export default function LettersPage() {
   )
 }
 
-const SubscribeLink = styled('a', {
-  color: red.red10,
+const SubscribeLink = styled('button', {
+  color: blue.blue10,
   fontFamily: '$serif',
   fontStyle: 'italic',
   fontWeight: 600,
+})
+
+const SubscriptionBox = styled(motion.form, {
+  marginTop: '$4',
+  display: 'flex',
+  gap: '$2',
+  maxWidth: '20rem',
+})
+
+const SubmitButton = styled(motion.button, {
+  width: '44px',
+  borderRadius: '6px',
+  background: blue.blue10,
+  aspectRatio: 1,
+  color: '$white',
+  flexShrink: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  variants: {
+    done: {
+      true: {
+        background: green.green10,
+      },
+    },
+  },
+})
+
+const EmailInput = styled('input', {
+  borderRadius: '6px',
+  padding: '$2',
+  border: '2px solid $grey300',
+  outline: 'none',
+  width: '100%',
+
+  '&:focus-visible': {
+    border: `2px solid ${blue.blue10}`,
+  },
 })
 
 const Page = styled('div', {
@@ -63,7 +157,7 @@ const Blurb = styled('p', {
   maxWidth: '65ch',
 })
 
-const List = styled('ul', {
+const List = styled(motion.ul, {
   listStyle: 'none',
   counterReset: 'letters',
 })
