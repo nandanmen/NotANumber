@@ -29,10 +29,11 @@ const StyledEditor = styled(Editor)`
 `
 
 const EditorWrapper = styled.div`
-  ${tw`relative h-full p-6 font-mono text-sm border-2 rounded-md focus-within:shadow-md`}
+  ${tw`relative h-full p-6 text-sm border-2 rounded-md focus-within:shadow-md`}
 
   background: var(--code-background);
   border-color: var(--code-border-color);
+  font-family: var(--text-mono);
 
   &:focus-within {
     border-color: var(--color-highlight-secondary);

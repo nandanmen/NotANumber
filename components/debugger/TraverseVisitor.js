@@ -99,6 +99,7 @@ const ContentWrapper = styled.div`
   align-items: flex-start;
   overflow-x: auto;
   padding: 0 32px;
+  font-family: var(--text-mono);
 
   @media screen and (min-width: ${theme`screens.md`}) {
     padding: 0 2px;
@@ -107,7 +108,6 @@ const ContentWrapper = styled.div`
 
 const Visitor = styled.ul`
   font-family: var(--text-mono);
-  background: var(--gray200);
   border-radius: 8px;
   padding: 16px;
   border: 2px solid var(--border-color);
