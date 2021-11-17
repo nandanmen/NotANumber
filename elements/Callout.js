@@ -60,8 +60,8 @@ Callout.Details = CalloutDetails
 const Icon = styled.div`
   ${tw`flex items-center justify-center w-10 h-10 text-white`}
 
-  background: var(--brown);
-  border: 2px solid var(--border-color);
+  background: var(--navy);
+  border: 2px solid var(--navy);
   position: absolute;
   top: -20px;
   right: 16px;
@@ -72,10 +72,8 @@ const Aside = styled.aside`
   ${tw`relative p-8 border-4`}
 
   border-radius: 8px;
-  border: 2px solid var(--border-color);
-  background: var(--teal);
-
-  --inline-code-background: hsl(187, 55%, 81%);
+  border: 2px solid var(--navy);
+  background: var(--white);
 
   > * {
     margin-bottom: 1.5em;

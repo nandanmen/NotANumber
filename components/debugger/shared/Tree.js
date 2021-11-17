@@ -27,7 +27,7 @@ function Tree({
   return (
     <motion.ul
       layout="position"
-      tw="list-none! space-y-4 max-w-full font-mono text-sm"
+      tw="list-none! space-y-4 max-w-full text-sm"
       className={className}
     >
       <TreeContext.Provider
