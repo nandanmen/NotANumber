@@ -23,13 +23,14 @@ const Title = styled.h1`
   font-weight: 600;
   font-size: var(--text-sm);
   transform: translateY(8px);
-  background: var(--brown);
-  border: 2px solid var(--border-color);
+  background: var(--navy);
+  border: 2px solid var(--navy);
+  color: var(--white);
 `
 
 const Content = styled.div`
   padding: 16px;
   border-radius: 8px;
-  border: 2px solid var(--border-color);
-  background: var(--teal);
+  border: 2px solid var(--navy);
+  background: var(--white);
 `

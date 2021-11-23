@@ -1,9 +1,30 @@
+import React from 'react'
+import { useRouter } from 'next/router'
+import * as Fathom from 'fathom-client'
 import tw, { styled } from 'twin.macro'
 
 import Navigation from '../components/Navigation'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+
+  React.useEffect(() => {
+    Fathom.load('FRYAVPNF')
+
+    function onRouteChangeComplete() {
+      Fathom.trackPageview()
+    }
+    // Record a pageview when route changes
+    router.events.on('routeChangeComplete', onRouteChangeComplete)
+
+    // Unassign event listener
+    return () => {
+      router.events.off('routeChangeComplete', onRouteChangeComplete)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Main>
       <TopNavigation tw="w-screen p-8 pb-0 fixed top-0 z-50" />
@@ -14,7 +35,7 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp
 
-// --
+// --\
 
 const Main = styled.main`
   ${tw`min-h-screen antialiased`}
@@ -64,7 +85,7 @@ const Main = styled.main`
   --text-2xl: 1.875rem;
 
   --text-serif: Recoleta, ui-serif, Georgia, serif;
-  --text-mono: DM Mono, Menlo, ui-monospace, monospace;
+  --text-mono: Menlo, ui-monospace, monospace;
   --text-sans: Karla, system-ui, -apple-system, sans-serif;
 
   background: var(--color-background);
