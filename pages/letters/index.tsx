@@ -1,4 +1,6 @@
 import React from 'react'
+import { GetStaticProps } from 'next'
+import Link from 'next/link'
 import { HiArrowRight, HiCheck } from 'react-icons/hi'
 import { ImSpinner8 } from 'react-icons/im'
 import Head from 'next/head'
@@ -6,8 +8,13 @@ import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
 import { blue, green } from '@radix-ui/colors'
 import { subscribe } from '@/lib/subscribe'
+import { getAllLetters, Letter } from '@/lib/button-down'
 
-export default function LettersPage() {
+type LetterPageProps = {
+  letters: Letter[]
+}
+
+export default function LettersPage({ letters }: LetterPageProps) {
   const [isSubscribeInputOpen, setIsSubscribeInputOpen] = React.useState(false)
   const [formState, setFormState] = React.useState('idle')
 
@@ -19,12 +26,11 @@ export default function LettersPage() {
       <Header>
         <Title>Letters</Title>
         <Blurb>
-          An archive of letters from the Not a Number newsletter, amped up with
-          interactive components.{' '}
+          An archive of letters from the Not a Number newsletter.{' '}
           <SubscribeLink onClick={() => setIsSubscribeInputOpen(true)}>
             Subscribe
           </SubscribeLink>{' '}
-          to get these letters sent straight to your inbox.
+          now to get these letters sent straight to your inbox.
         </Blurb>
         {isSubscribeInputOpen && (
           <SubscriptionBox
@@ -72,14 +78,25 @@ export default function LettersPage() {
         )}
       </Header>
       <List layout>
-        <Letter
-          title="CSS Counters and a Warm Hello"
-          description="In Not a Number's first ever newsletter, we talk about CSS counters: what they are, and how to use them."
-          date={new Date()}
-        />
+        {letters.map((letter) => (
+          <LetterLink
+            key={letter.key}
+            title={letter.subject}
+            date={new Date(letter.publish_date)}
+            slug={letter.key}
+          />
+        ))}
       </List>
     </Page>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {
+      letters: await getAllLetters(),
+    },
+  }
 }
 
 const SubscribeLink = styled('button', {
@@ -162,14 +179,15 @@ const List = styled(motion.ul, {
   counterReset: 'letters',
 })
 
-function Letter({ title, description = '', date = new Date() }) {
+function LetterLink({ title, date = new Date(), slug }) {
   return (
     <LetterWrapper>
       <LetterDate>
         {date.getDate()}/{date.getMonth() + 1}
       </LetterDate>
-      <LetterTitle>{title}</LetterTitle>
-      <LetterDescription>{description}</LetterDescription>
+      <Link href={`/letters/${slug}`}>
+        <LetterTitle>{title}</LetterTitle>
+      </Link>
     </LetterWrapper>
   )
 }
@@ -178,13 +196,9 @@ const LetterWrapper = styled('li', {
   counterIncrement: 'letters',
   position: 'relative',
   maxWidth: '70ch',
-
-  '@md': {
-    paddingLeft: '$16',
-  },
 })
 
-const LetterTitle = styled('h1', {
+const LetterTitle = styled('a', {
   fontFamily: '$serif',
   fontWeight: 600,
   fontSize: '2.5rem',
@@ -198,11 +212,4 @@ const LetterDate = styled('p', {
   color: '$grey600',
   fontSize: '$lg',
   marginBottom: '$4',
-
-  '@md': {
-    position: 'absolute',
-    left: 0,
-  },
 })
-
-const LetterDescription = styled('p', {})

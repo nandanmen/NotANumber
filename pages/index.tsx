@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { styled } from '@/stitches'
 import { HiArrowRight } from 'react-icons/hi'
 import { titleCase } from 'title-case'
+import { motion } from 'framer-motion'
 
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
@@ -31,6 +32,16 @@ export default function HomePage() {
             </ExternalLink>
             .
           </Description>
+          <p>
+            <Link href="letters">
+              <NewsletterLink whileHover="hover">
+                Read the newsletter{' '}
+                <motion.span variants={{ hover: { x: 5 } }}>
+                  <HiArrowRight />
+                </motion.span>
+              </NewsletterLink>
+            </Link>
+          </p>
         </Header>
         <Divider />
         <Posts>
@@ -57,6 +68,22 @@ export default function HomePage() {
     </>
   )
 }
+
+const NewsletterLink = styled(motion.a, {
+  fontFamily: '$serif',
+  display: 'flex',
+  fontStyle: 'italic',
+  alignItems: 'center',
+  cursor: 'pointer',
+
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+
+  '> span': {
+    marginLeft: '$2',
+  },
+})
 
 const Icon = styled('div', {
   display: 'none',
@@ -86,15 +113,15 @@ const Title = styled('h1', {
   fontSize: '6rem',
   fontWeight: '600',
   lineHeight: '0.9',
+  marginBottom: '$16',
 })
 
 const Header = styled('header', {
   marginBottom: '$16',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   textAlign: 'center',
-
-  '> :not(:last-child)': {
-    marginBottom: '$16',
-  },
 })
 
 const Description = styled('p', {
@@ -103,6 +130,7 @@ const Description = styled('p', {
   paddingRight: '$8',
   maxWidth: '720px',
   margin: '0 auto',
+  marginBottom: '$8',
 })
 
 const Posts = styled('ul', {
