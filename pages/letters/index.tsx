@@ -17,6 +17,13 @@ type LetterPageProps = {
 export default function LettersPage({ letters }: LetterPageProps) {
   const [isSubscribeInputOpen, setIsSubscribeInputOpen] = React.useState(false)
   const [formState, setFormState] = React.useState('idle')
+  const emailInputRef = React.useRef<HTMLInputElement | null>(null)
+
+  React.useEffect(() => {
+    if (isSubscribeInputOpen && emailInputRef.current) {
+      emailInputRef.current.focus()
+    }
+  }, [isSubscribeInputOpen])
 
   return (
     <Page>
@@ -47,6 +54,7 @@ export default function LettersPage({ letters }: LetterPageProps) {
             }}
           >
             <EmailInput
+              ref={emailInputRef}
               name="email"
               type="email"
               placeholder="john.doe@email.com"
