@@ -146,13 +146,9 @@ const EmailInput = styled('input', {
 })
 
 const Page = styled('div', {
-  padding: '$8',
-  paddingTop: '$24',
-
-  '@md': {
-    padding: '$16',
-    paddingTop: '$32',
-  },
+  padding: '$24 $8',
+  maxWidth: 'calc(40rem + $space$16)',
+  margin: '0 auto',
 })
 
 const Header = styled('header', {
@@ -201,7 +197,7 @@ const LetterWrapper = styled('li', {
 const LetterTitle = styled('a', {
   fontFamily: '$serif',
   fontWeight: 600,
-  fontSize: '2.5rem',
+  fontSize: '$2xl',
   lineHeight: 1,
   marginBottom: '$4',
   cursor: 'pointer',
