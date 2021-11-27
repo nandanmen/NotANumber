@@ -1,7 +1,7 @@
 import React from 'react'
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
-import { HiArrowRight, HiCheck } from 'react-icons/hi'
+import { HiArrowRight, HiCheck, HiArrowLeft } from 'react-icons/hi'
 import { ImSpinner8 } from 'react-icons/im'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
@@ -31,6 +31,14 @@ export default function LettersPage({ letters }: LetterPageProps) {
         <title>NaN | Letters</title>
       </Head>
       <Header>
+        <Link href="/">
+          <BackLink whileHover="hover">
+            <motion.span variants={{ hover: { x: -5 } }}>
+              <HiArrowLeft />
+            </motion.span>{' '}
+            Home
+          </BackLink>
+        </Link>
         <Title>Letters</Title>
         <Blurb>
           An archive of letters from the Not a Number newsletter.{' '}
@@ -107,6 +115,20 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 }
 
+const BackLink = styled(motion.a, {
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+
+  '&:hover': {
+    color: '$blue',
+  },
+
+  span: {
+    marginRight: '$2',
+  },
+})
+
 const SubscribeLink = styled('button', {
   color: blue.blue10,
   fontFamily: '$serif',
@@ -171,10 +193,11 @@ const Title = styled('h1', {
   fontFamily: '$serif',
   fontSize: '4rem',
   fontWeight: 600,
+  marginBottom: '$6',
+  marginTop: '$16',
 })
 
 const Blurb = styled('p', {
-  color: '$grey600',
   maxWidth: '65ch',
 })
 
