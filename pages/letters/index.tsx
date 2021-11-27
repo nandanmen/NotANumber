@@ -187,10 +187,19 @@ function LetterLink({ title, date = new Date(), slug }) {
   return (
     <LetterWrapper>
       <LetterDate>
-        {date.getDate()}/{date.getMonth() + 1}
+        {new Intl.DateTimeFormat('en-US', {
+          month: 'long',
+          year: 'numeric',
+          day: 'numeric',
+        }).format(date)}
       </LetterDate>
       <Link href={`/letters/${slug}`}>
-        <LetterTitle>{title}</LetterTitle>
+        <LetterTitle>
+          {title}{' '}
+          <span>
+            <HiArrowRight />
+          </span>
+        </LetterTitle>
       </Link>
     </LetterWrapper>
   )
@@ -209,6 +218,12 @@ const LetterTitle = styled('a', {
   lineHeight: 1,
   marginBottom: '$4',
   cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+
+  span: {
+    marginLeft: '$4',
+  },
 
   '&:hover': {
     color: '$blue',
@@ -216,9 +231,6 @@ const LetterTitle = styled('a', {
 })
 
 const LetterDate = styled('p', {
-  fontFamily: '$serif',
-  fontWeight: 600,
   color: '$grey600',
-  fontSize: '$lg',
   marginBottom: '$4',
 })
