@@ -32,7 +32,7 @@ const transition = (state, event) => {
   return machine[state][event] ?? state
 }
 
-export default function NewsletterForm({ className }) {
+export default function NewsletterForm({ className = '' }) {
   const [state, dispatch] = React.useReducer(transition, formState.Start)
 
   const handleSubmit = async (evt) => {
