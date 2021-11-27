@@ -204,6 +204,11 @@ const LetterTitle = styled('a', {
   fontSize: '2.5rem',
   lineHeight: 1,
   marginBottom: '$4',
+  cursor: 'pointer',
+
+  '&:hover': {
+    color: '$blue',
+  },
 })
 
 const LetterDate = styled('p', {
