@@ -1,4 +1,3 @@
-import React from 'react'
 import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
@@ -57,10 +56,10 @@ export default function Layout({ frontMatter = {}, children }) {
           <meta property="og:url" content={`https://nan.fyi/${slug}`} />
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
-        <Header>
+        <header>
           <Title>{frontMatter.title}</Title>
           <Blurb>{frontMatter.blurb}</Blurb>
-        </Header>
+        </header>
         <Meta>
           <Author>
             <Avatar src="/avatar.jpg" alt="Nanda Syahrasyad" />
@@ -100,25 +99,8 @@ const Author = styled.div`
 `
 
 const Blurb = styled.p`
-  ${tw`text-2xl`}
-
+  ${tw`text-lg`}
   font-family: var(--text-mono);
-  text-align: center;
-  padding: 0 32px;
-`
-
-const Header = styled.header`
-  background: var(--color-background);
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 100vw;
-
-  @media screen and (min-width: ${theme`screens.lg`}) {
-    height: 100vh;
-  }
 `
 
 const Meta = styled.div`
@@ -132,6 +114,7 @@ const Meta = styled.div`
 const Article = styled.article`
   display: grid;
   width: 100%;
+  padding-top: 10rem;
   padding-bottom: 80px;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
@@ -148,16 +131,12 @@ const Article = styled.article`
     color: var(--gray600);
   }
 
-  > ${Header} {
-    grid-column: 1 / -1;
+  > header {
+    margin-bottom: 8rem;
   }
 
-  > ${Header}, > ${Meta} {
-    margin-bottom: 48px;
-
-    @media screen and (min-width: ${theme`screens.lg`}) {
-      margin-bottom: 96px;
-    }
+  > ${Meta} {
+    margin-bottom: 64px;
   }
 
   > figure {
@@ -236,16 +215,11 @@ const Article = styled.article`
 `
 
 const Title = styled.h1`
-  ${tw`px-8 mx-auto mb-12 font-serif text-center lg:mb-24`}
+  ${tw`mb-8 font-serif`}
 
-  font-size: 4rem;
   font-weight: 600;
-  line-height: 0.9;
-  max-width: min(100vw, 14ch);
-
-  @media screen and (min-width: ${theme`screens.md`}) {
-    font-size: clamp(5rem, 15vw, 8rem);
-  }
+  line-height: 1;
+  font-size: 4rem;
 `
 
 const FormContainer = styled.div`
