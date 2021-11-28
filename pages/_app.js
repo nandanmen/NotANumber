@@ -7,7 +7,7 @@ import Navigation from '../components/Navigation'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
-  /* const router = useRouter()
+  const router = useRouter()
 
   React.useEffect(() => {
     Fathom.load('FRYAVPNF')
@@ -22,8 +22,8 @@ function MyApp({ Component, pageProps }) {
     return () => {
       router.events.off('routeChangeComplete', onRouteChangeComplete)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Main>
