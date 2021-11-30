@@ -9,7 +9,7 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     Fathom.load('FRYAVPNF')
 
     function onRouteChangeComplete() {
@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }) {
       router.events.off('routeChangeComplete', onRouteChangeComplete)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []) */
 
   return (
     <Main>
