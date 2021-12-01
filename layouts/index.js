@@ -65,7 +65,9 @@ export default function Layout({ frontMatter = {}, children }) {
             <Avatar src="/avatar.jpg" alt="Nanda Syahrasyad" />
             <p>Nanda Syahrasyad</p>
           </Author>
-          <p>Last updated {formatter.format(new Date(frontMatter.editedAt))}</p>
+          <p tw="text-right">
+            Last updated {formatter.format(new Date(frontMatter.editedAt))}
+          </p>
         </Meta>
         {children}
         <FormContainer>
@@ -149,9 +151,11 @@ const Article = styled.article`
     margin-top: 24px;
     margin-bottom: 48px;
 
-    border-radius: 0;
-    border-right-width: 0;
-    border-left-width: 0;
+    > pre {
+      border-radius: 0;
+      border-right-width: 0;
+      border-left-width: 0;
+    }
 
     grid-column: 1 / -1;
     max-width: 100vw;
@@ -159,10 +163,12 @@ const Article = styled.article`
     @media screen and (min-width: ${theme`screens.md`}) {
       grid-column: 5 / span 1;
 
-      /* For some reason revert doesn't work here so I have to manually set it back */
-      border-radius: 6px;
-      border-right-width: 2px;
-      border-left-width: 2px;
+      > pre {
+        /* For some reason revert doesn't work here so I have to manually set it back */
+        border-radius: 6px;
+        border-right-width: 2px;
+        border-left-width: 2px;
+      }
     }
   }
 

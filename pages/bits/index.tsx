@@ -8,7 +8,7 @@ import { titleCase } from 'title-case'
 import { styled } from '@/stitches'
 import { formatPath } from '@/lib/utils'
 
-import { frontMatter as parsingTokens } from './2021-11-30-parsing-tokens.mdx'
+import { frontMatter as aocDay1 } from './2021-11-30-aoc-day-01.mdx'
 
 export default function BitsPage() {
   return (
@@ -35,7 +35,7 @@ export default function BitsPage() {
       </Header>
       <Divider />
       <Posts>
-        <Post post={parsingTokens} />
+        <Post post={aocDay1} />
       </Posts>
     </Page>
   )
@@ -43,14 +43,16 @@ export default function BitsPage() {
 
 // --
 
-function Post({ post }: { post: typeof parsingTokens }) {
+function Post({ post }: { post: typeof aocDay1 }) {
   return (
     <PostWrapper>
       <Link href={formatPath(post.__resourcePath)}>
         <Anchor>
           <PostContent>
             <PostTitle>{titleCase(post.title)}</PostTitle>
-            <PostDescription>{post.description}</PostDescription>
+            {post.description && (
+              <PostDescription>{post.description}</PostDescription>
+            )}
             <PostUpdatedText>
               Last updated{' '}
               {new Intl.DateTimeFormat('en-US', {
@@ -70,12 +72,14 @@ function Post({ post }: { post: typeof parsingTokens }) {
 }
 
 const PostWrapper = styled('div', {
-  padding: '$4 $8',
   borderRadius: '12px',
-  width: 'min(100vw, 40rem)',
 
   '&:hover': {
     background: '$grey200',
+  },
+
+  '@md': {
+    padding: '$4 $8',
   },
 })
 
