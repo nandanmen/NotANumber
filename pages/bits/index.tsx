@@ -1,9 +1,14 @@
 import React from 'react'
 import Link from 'next/link'
-import { HiArrowLeft } from 'react-icons/hi'
 import Head from 'next/head'
+import { HiArrowRight } from 'react-icons/hi'
 import { motion } from 'framer-motion'
+import { titleCase } from 'title-case'
+
 import { styled } from '@/stitches'
+import { formatPath } from '@/lib/utils'
+
+import { frontMatter as parsingTokens } from './2021-11-30-parsing-tokens.mdx'
 
 export default function BitsPage() {
   return (
@@ -12,14 +17,6 @@ export default function BitsPage() {
         <title>NaN | Bits</title>
       </Head>
       <Header>
-        <Link href="/">
-          <BackLink whileHover="hover">
-            <motion.span variants={{ hover: { x: -5 } }}>
-              <HiArrowLeft />
-            </motion.span>{' '}
-            Home
-          </BackLink>
-        </Link>
         <Title>
           <Node>
             <Content>B</Content>
@@ -34,24 +31,96 @@ export default function BitsPage() {
             <Content>s</Content>
           </Node>
         </Title>
-        <Blurb>A small collection of little learnings ✨</Blurb>
+        <Blurb>A small collection of little learnings</Blurb>
       </Header>
+      <Divider />
+      <Posts>
+        <Post post={parsingTokens} />
+      </Posts>
     </Page>
   )
 }
 
-const BackLink = styled(motion.a, {
-  display: 'flex',
-  alignItems: 'center',
-  cursor: 'pointer',
-  color: '$grey600',
+// --
+
+function Post({ post }: { post: typeof parsingTokens }) {
+  return (
+    <PostWrapper>
+      <Link href={formatPath(post.__resourcePath)}>
+        <Anchor>
+          <PostContent>
+            <PostTitle>{titleCase(post.title)}</PostTitle>
+            <PostDescription>{post.description}</PostDescription>
+            <PostUpdatedText>
+              Last updated{' '}
+              {new Intl.DateTimeFormat('en-US', {
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric',
+              }).format(new Date(post.editedAt))}
+            </PostUpdatedText>
+          </PostContent>
+          <PostArrow>
+            <HiArrowRight />
+          </PostArrow>
+        </Anchor>
+      </Link>
+    </PostWrapper>
+  )
+}
+
+const PostWrapper = styled('div', {
+  padding: '$4 $8',
+  borderRadius: '12px',
+  width: 'min(100vw, 40rem)',
 
   '&:hover': {
-    color: '$blue',
+    background: '$grey200',
   },
+})
 
-  span: {
-    marginRight: '$2',
+const Anchor = styled('a', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  cursor: 'pointer',
+
+  '> :not(:last-child)': {
+    marginRight: '$8',
+  },
+})
+
+const PostTitle = styled('h1', {
+  fontWeight: '500',
+  fontSize: '$2xl',
+  fontFamily: '$serif',
+})
+
+const PostDescription = styled('p', {
+  color: '$grey600',
+})
+
+const PostUpdatedText = styled('p', {
+  fontSize: '$sm',
+  color: '$grey600',
+})
+
+const PostArrow = styled('p', {
+  fontSize: '$xl',
+  color: '$grey600',
+})
+
+const PostContent = styled('div', {
+  '> :not(:last-child)': {
+    marginBottom: '$4',
+  },
+})
+
+// --
+
+const Posts = styled('ul', {
+  '> :not(:last-child)': {
+    marginBottom: '$4',
   },
 })
 
@@ -121,4 +190,19 @@ const Title = styled('h1', {
   },
 })
 
-const Blurb = styled('p', {})
+const Blurb = styled('p', {
+  fontStyle: 'italic',
+  fontFamily: '$serif',
+})
+
+const Divider = styled('div', {
+  width: '$24',
+  height: '$px',
+  background: '$grey400',
+  margin: '0 auto',
+  marginBottom: '$12',
+
+  '@md': {
+    marginBottom: '$20',
+  },
+})

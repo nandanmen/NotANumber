@@ -11,7 +11,12 @@ export default function Navigation({ style, className }) {
             <a className="hover:text-green-600">NaN</a>
           </Link>
         </li>
-        <li tw="ml-auto" className="mr-4">
+        <li className="font-serif ml-auto mr-4">
+          <Link href="/bits">
+            <a className="hover:text-green-600">Bits</a>
+          </Link>
+        </li>
+        <li className="ml-auto mr-4">
           <a
             href="https://github.com/narendrasss/blog"
             target="_blank"
