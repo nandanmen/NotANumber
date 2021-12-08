@@ -1,0 +1,39 @@
+---
+title: 'Rebuilding Babel'
+blurb: 'A series on building a modern front-end compiler from first principles.'
+description: 'A series on building a modern front-end compiler from first principles.'
+publishedAt: '2021-12-01'
+editedAt: '2021-12-01'
+layout: 'minimal'
+---
+
+import Figure from '@/elements/Figure'
+import { PageList } from '@/components/compiler/PageList'
+
+When I wrote the [debugger post](), I had a vague idea of how [Babel]() works - it takes your code, turns it into an AST, passes the AST through a series of plugins, and turns the modified AST back into code. This was enough for me to utilize most of the power of Babel, using it to power the interactive widgets on this blog.
+
+Except, it didn't let me use Babel in its _complete_ form. How would I create plugins to modify JavaScript _syntax_, for example? There was a lot that I still didn't know about how Babel works under the hood. How does Babel convert your code into an AST? How does it use your plugin code to modify ASTs? How does it convert an AST back into code?
+
+To answer these questions, I set out to rewrite Babel from scratch, in all of its phases. To keep the scope small, I set out a concrete goal: to convert the following code:
+
+```js
+function hello(message) {
+  console.log(message)
+}
+```
+
+To the following code:
+
+```js
+function print(message) {
+  console.log(message)
+}
+```
+
+By passing it through my own Babel implementation; no `str.replace()` tricks.
+
+Last weekend, I managed to accomplish that goal (take a look at the [final repo]() to see the code), and I learned a _lot_ in the process. In this series of posts, I want to explore everything I learned, all the problems I faced, and the solutions that I put in place to overcome those problems.
+
+<Figure size="lg">
+  <PageList />
+</Figure>
