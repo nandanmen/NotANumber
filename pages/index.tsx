@@ -199,7 +199,7 @@ const Anchor = styled('a', {
   cursor: 'pointer',
 
   '> :not(:last-child)': {
-    marginRight: '$8',
+    marginRight: '$4',
   },
 })
 
@@ -231,27 +231,73 @@ const PostContent = styled('div', {
 
 // --
 
+type SeriesProps = {
+  path: string
+  title: string
+  description: string
+  count?: number
+}
+
 function Series() {
   return (
     <Link href="/compiler">
       <SeriesWrapper whileHover="hover">
-        <SeriesTitle>Build Your Own Babel</SeriesTitle>
-        <SeriesDescription>
-          A series on building Babel from scratch.
-        </SeriesDescription>
-        <SeriesArrow
+        <SeriesShadow variants={{ hover: { x: 4, y: 4 } }} />
+        <SeriesContent whileHover="hover">
+          <SeriesText>
+            <SeriesTitle>Build Your Own Babel</SeriesTitle>
+            <SeriesDescription>
+              A series on building Babel from scratch.
+            </SeriesDescription>
+          </SeriesText>
+          <SeriesArrow
+            variants={{
+              hover: {
+                rotate: -45,
+              },
+            }}
+          >
+            <HiArrowRight />
+          </SeriesArrow>
+        </SeriesContent>
+        <SeriesCount
           variants={{
             hover: {
-              rotate: -45,
+              x: -4,
+              y: -4,
             },
           }}
         >
-          <HiArrowRight />
-        </SeriesArrow>
+          5
+        </SeriesCount>
       </SeriesWrapper>
     </Link>
   )
 }
+
+const SeriesCount = styled(motion.div, {
+  width: '$10',
+  aspectRatio: 1,
+  position: 'absolute',
+  background: '$grey100',
+  border: '2px solid $black',
+  borderRadius: '50%',
+  fontFamily: '$serif',
+  fontWeight: 'bold',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  right: '-$3',
+  top: '-$3',
+})
+
+const SeriesText = styled('article', {
+  '@md': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$8',
+  },
+})
 
 const SeriesTitle = styled('h1', {
   fontFamily: '$serif',
@@ -266,6 +312,11 @@ const SeriesArrow = styled(PostArrow, {
 })
 
 const SeriesWrapper = styled(motion.a, {
+  position: 'relative',
+})
+
+const SeriesContent = styled(motion.div, {
+  position: 'relative',
   padding: '$4 $8',
   width: 'min(100vw, 50rem)',
   background: '$black',
@@ -273,6 +324,30 @@ const SeriesWrapper = styled(motion.a, {
   alignItems: 'center',
   justifyContent: 'space-between',
   color: '$white',
+  border: '2px solid $black',
+  transition: 'background 0.2s ease-out',
+  cursor: 'pointer',
+
+  '@md': {
+    borderRadius: '12px',
+  },
+
+  '&:hover': {
+    background: '$grey100',
+    color: '$black',
+  },
+})
+
+const SeriesShadow = styled(motion.div, {
+  position: 'absolute',
+  inset: 0,
+  background: `repeating-linear-gradient(
+    -45deg,
+    $colors$black,
+    $colors$black 3px,
+    transparent 3px,
+    transparent 5px
+  )`,
 
   '@md': {
     borderRadius: '12px',
