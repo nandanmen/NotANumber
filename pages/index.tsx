@@ -45,7 +45,12 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
-          <Series />
+          <Series
+            path="/compiler"
+            title="Rebuilding Babel"
+            description="A series on building Babel from first principles."
+            count={5}
+          />
           <PostItem>
             <Icon>
               <HowArraysWorkIcon />
@@ -238,17 +243,15 @@ type SeriesProps = {
   count?: number
 }
 
-function Series() {
+function Series({ path, title, description, count }: SeriesProps) {
   return (
-    <Link href="/compiler">
+    <Link href={path}>
       <SeriesWrapper whileHover="hover">
         <SeriesShadow variants={{ hover: { x: 4, y: 4 } }} />
         <SeriesContent whileHover="hover">
           <SeriesText>
-            <SeriesTitle>Build Your Own Babel</SeriesTitle>
-            <SeriesDescription>
-              A series on building Babel from scratch.
-            </SeriesDescription>
+            <SeriesTitle>{title}</SeriesTitle>
+            <SeriesDescription>{description}</SeriesDescription>
           </SeriesText>
           <SeriesArrow
             variants={{
@@ -268,7 +271,7 @@ function Series() {
             },
           }}
         >
-          5
+          {count}
         </SeriesCount>
       </SeriesWrapper>
     </Link>
