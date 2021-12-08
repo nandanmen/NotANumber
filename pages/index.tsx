@@ -45,6 +45,7 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
+          <Series />
           <PostItem>
             <Icon>
               <HowArraysWorkIcon />
@@ -68,6 +69,8 @@ export default function HomePage() {
     </>
   )
 }
+
+// --
 
 const NewsletterLink = styled(motion.a, {
   fontFamily: '$serif',
@@ -140,7 +143,7 @@ const Posts = styled('ul', {
   alignItems: 'center',
 
   '> :not(:last-child)': {
-    marginBottom: '$4',
+    marginBottom: '$8',
   },
 })
 
@@ -215,7 +218,7 @@ const PostUpdatedText = styled('p', {
   color: '$grey600',
 })
 
-const PostArrow = styled('p', {
+const PostArrow = styled(motion.p, {
   fontSize: '$xl',
   color: '$grey600',
 })
@@ -223,5 +226,55 @@ const PostArrow = styled('p', {
 const PostContent = styled('div', {
   '> :not(:last-child)': {
     marginBottom: '$4',
+  },
+})
+
+// --
+
+function Series() {
+  return (
+    <Link href="/compiler">
+      <SeriesWrapper whileHover="hover">
+        <SeriesTitle>Build Your Own Babel</SeriesTitle>
+        <SeriesDescription>
+          A series on building Babel from scratch.
+        </SeriesDescription>
+        <SeriesArrow
+          variants={{
+            hover: {
+              rotate: -45,
+            },
+          }}
+        >
+          <HiArrowRight />
+        </SeriesArrow>
+      </SeriesWrapper>
+    </Link>
+  )
+}
+
+const SeriesTitle = styled('h1', {
+  fontFamily: '$serif',
+  fontWeight: 500,
+  fontSize: '$2xl',
+})
+
+const SeriesDescription = styled('p', {})
+
+const SeriesArrow = styled(PostArrow, {
+  color: 'inherit',
+})
+
+const SeriesWrapper = styled(motion.a, {
+  padding: '$4 $8',
+  width: 'min(100vw, 50rem)',
+  background: '$black',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  color: '$white',
+
+  '@md': {
+    borderRadius: '12px',
   },
 })
