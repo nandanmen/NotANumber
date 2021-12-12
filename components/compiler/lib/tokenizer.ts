@@ -86,22 +86,22 @@ export const token = {
     }
   },
   leftParen() {
-    return { type: TokenType.LeftParen }
+    return { type: TokenType.LeftParen, name: '(' }
   },
   rightParen() {
-    return { type: TokenType.RightParen }
+    return { type: TokenType.RightParen, name: ')' }
   },
   leftCurly() {
-    return { type: TokenType.LeftCurly }
+    return { type: TokenType.LeftCurly, name: '{' }
   },
   rightCurly() {
-    return { type: TokenType.RightCurly }
+    return { type: TokenType.RightCurly, name: '}' }
   },
   dot() {
-    return { type: TokenType.Dot }
+    return { type: TokenType.Dot, name: '.' }
   },
   semicolon() {
-    return { type: TokenType.Semicolon }
+    return { type: TokenType.Semicolon, name: ';' }
   },
 }
 
