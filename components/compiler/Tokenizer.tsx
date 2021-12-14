@@ -96,13 +96,12 @@ const Wrapper = styled('div', {
 
 const InputWrapper = styled('div', {
   fontFamily: '$mono',
-  fontSize: '$lg',
   display: 'flex',
   position: 'relative',
 })
 
 const Cursor = styled(motion.span, {
-  width: 8,
+  width: 4,
   aspectRatio: 1,
   background: '$grey600',
   borderRadius: '50%',

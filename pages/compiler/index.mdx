@@ -9,12 +9,17 @@ layout: 'minimal'
 
 import Figure from '@/elements/Figure'
 import { PageList } from '@/components/compiler/PageList'
+import { Tokenizer } from '@/components/compiler/Tokenizer'
 
 When I wrote the [debugger post](), I had a vague idea of how [Babel]() works - it takes your code, turns it into an AST, passes the AST through a series of plugins, and turns the modified AST back into code. This was enough for me to utilize most of the power of Babel, using it to power the interactive widgets on this blog.
 
 Except, it didn't let me use Babel in its _complete_ form. How would I create plugins to modify JavaScript _syntax_, for example? There was a lot that I still didn't know about how Babel works under the hood. How does Babel convert your code into an AST? How does it use your plugin code to modify ASTs? How does it convert an AST back into code?
 
 To answer these questions, I set out to rewrite Babel from scratch, in all of its phases. To keep the scope small, I set out a concrete goal: to convert the following code:
+
+<Figure size="lg">
+  <Tokenizer />
+</Figure>
 
 ```js
 function hello(message) {
