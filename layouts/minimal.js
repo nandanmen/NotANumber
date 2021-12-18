@@ -11,14 +11,9 @@ import OrderedList from '@/elements/OrderedList'
 import Heading from '@/elements/Heading'
 import Subheading from '@/elements/Subheading'
 import ProblemStatement from '@/elements/ProblemStatement'
+import { PageList } from '@/components/compiler/PageList'
 
 import { formatPath } from '@/lib/utils'
-
-const formatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  year: 'numeric',
-  day: 'numeric',
-})
 
 const CodeBlockWrapper = styled.div``
 
@@ -56,38 +51,11 @@ export default function Layout({ frontMatter = {}, children }) {
           <Title>{frontMatter.title}</Title>
           <Blurb>{frontMatter.blurb}</Blurb>
         </header>
-        <Meta>
-          <Author>
-            <Avatar src="/avatar.jpg" alt="Nanda Syahrasyad" />
-            <p>Nanda Syahrasyad</p>
-          </Author>
-          <p tw="text-right">
-            Last updated {formatter.format(new Date(frontMatter.editedAt))}
-          </p>
-        </Meta>
         {children}
       </Article>
     </MDXProvider>
   )
 }
-
-const Avatar = styled.img`
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid var(--gray400);
-`
-
-const Author = styled.div`
-  display: flex;
-  align-items: center;
-  color: var(--color-text-secondary);
-
-  > :first-child {
-    margin-right: 8px;
-  }
-`
 
 const Blurb = styled.p`
   ${tw`text-lg`}
@@ -106,7 +74,7 @@ const Article = styled.article`
   display: grid;
   width: 100%;
   padding-top: 10rem;
-  padding-bottom: 80px;
+  padding-bottom: 40vh;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
   font-family: var(--text-sans);
