@@ -67,7 +67,11 @@ export function Algorithm({
         }}
         onShowForm={toggle}
       >
-        {children({ state: algorithm.length > 1 ? state : state[0], inputs })}
+        {children({
+          state: algorithm.length > 1 ? state : state[0],
+          inputs,
+          player: playerContext,
+        })}
       </AnimationWrapper>
       {showForm && (
         <Form

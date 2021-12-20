@@ -5,7 +5,7 @@ import tw, { styled } from 'twin.macro'
 import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 
-export default function LiveEditor({ className, ...delegated }) {
+export default function LiveEditor({ className = '', ...delegated }) {
   return (
     <EditorWrapper className={className}>
       <StyledEditor

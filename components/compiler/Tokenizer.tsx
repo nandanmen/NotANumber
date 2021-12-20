@@ -1,10 +1,29 @@
 import { motion } from 'framer-motion'
 
-import { AnimationWrapper } from '@/components/AlgorithmPlayer'
-import { useAlgorithmSteps } from '@/lib/hooks/useAlgorithmSteps'
+import { CodePreview } from '@/components/CodePreview'
 import { styled } from '@/stitches'
 
 import { tokenize } from './lib/tokenizer'
+import snapshot from '../../lib/snapshot.macro'
+
+const boilerplate = snapshot(function tokenize(input) {
+  let current = 0
+  let tokens = []
+  debugger
+
+  while (current < input.length) {
+    // parse tokens
+    debugger
+    current++
+  }
+
+  debugger
+  return tokens
+})
+
+const algorithms = {
+  boilerplate,
+}
 
 const INPUT = `function hello(message) {
   console.log(message);
@@ -22,35 +41,42 @@ type TokenizerState = {
   tokens: TokenType[]
 }
 
-export function Tokenizer() {
-  const player = useAlgorithmSteps<TokenizerState>({
-    algorithm: tokenize,
-    inputs: [INPUT],
-    options: {
-      delay: 300,
-    },
-  })
-  const { state } = player.models
-  const codeInput = [...state.input]
-
+export function Tokenizer({ name }: { name: string }) {
   return (
-    <AnimationWrapper player={player} controls editable={false}>
-      <Wrapper>
-        <InputWrapper>
-          {codeInput.map((char, index) => {
-            const isActive = index <= state.current && index >= state.start
-            return (
-              <InputCharacter
-                key={index}
-                type={char === ' ' ? 'empty' : undefined}
-                active={isActive}
-              >
-                {char === '\n' ? `\\n` : char}
-                {isActive && <Cursor style={{ x: '-50%' }} />}
-              </InputCharacter>
-            )
-          })}
-        </InputWrapper>
+    <CodePreview
+      algorithm={algorithms[name] ?? tokenize}
+      initialInputs={['console.log(message)']}
+      delay={300}
+      controls
+      editable
+    >
+      {(context) => <TokenizerVisual {...context} />}
+    </CodePreview>
+  )
+}
+
+function TokenizerVisual({ state, player }) {
+  return (
+    <Wrapper>
+      <InputWrapper>
+        {[...state.input].map((char, index) => {
+          const isAtEnds =
+            player.models.activeStepIndex === 0 ||
+            player.models.activeStepIndex === player.models.steps.length - 1
+          const isActive = index === state.current
+          return (
+            <InputCharacter
+              key={index}
+              type={char === ' ' ? 'empty' : undefined}
+              active={isActive || isAtEnds}
+            >
+              {char === '\n' ? `\\n` : char}
+              {isActive && !isAtEnds && <Cursor style={{ x: '-50%' }} />}
+            </InputCharacter>
+          )
+        })}
+      </InputWrapper>
+      {state.tokens.length > 0 && (
         <Tokens>
           {state.tokens.map((token, index) => (
             <Token
@@ -63,8 +89,8 @@ export function Tokenizer() {
             </Token>
           ))}
         </Tokens>
-      </Wrapper>
-    </AnimationWrapper>
+      )}
+    </Wrapper>
   )
 }
 
