@@ -7,6 +7,7 @@ editedAt: '2021-12-21'
 
 import { Tokenizer } from '@/components/compiler/Tokenizer'
 import { Editor } from '@/components/compiler/Editor'
+import { Reveal } from '@/components/Reveal'
 import Figure from '@/elements/Figure'
 
 > This is part 2 in a series of posts on rebuilding a Babel-like compiler from first principles. For a complete lists of posts, see the [main page](.).
@@ -73,11 +74,25 @@ function tokenize(input) {
 }
 ```
 
-Now try to see if you can implement the `isSingleCharacter` function:
+How would you implement the `isSingleCharacterToken` function? Try to implement the function here and press the play button to see if it's correct!
 
-<Figure size="xl">
+<Figure size="2xl">
   <Editor />
 </Figure>
+
+<Reveal>
+
+One way to implement this is to define a set of the known single character tokens and then checking if the given character is in that set:
+
+```ts
+const singleCharacterTokens = new Set(['(', ')', '.'])
+
+function isSingleCharacterToken(char) {
+  return singleCharacterTokens.has(char)
+}
+```
+
+</Reveal>
 
 ### Identifiers and Keywords
 
@@ -109,7 +124,7 @@ I wanted to keep it simple, so in my first pass, I only supported identifiers th
 // visual here
 ```
 
-```ts
+```ts highlight=3,7-14,18-19
 const singleCharacterTokens = new Set(['(', ')', '{', '}', ';', '.'])
 
 function tokenize(code: string): string[] {

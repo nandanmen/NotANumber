@@ -33,14 +33,6 @@ export function Editor() {
   return (
     <Wrapper>
       <LiveEditor value={code} onValueChange={setCode} />
-      <LiveEditor value={input} onValueChange={setInput} />
-      <Output>
-        <pre>
-          {errors.length
-            ? errors.join('\n')
-            : `Tokens:\n${JSON.stringify(result)}`}
-        </pre>
-      </Output>
     </Wrapper>
   )
 }
@@ -61,11 +53,4 @@ const Output = styled('div', {
 
 const Wrapper = styled('div', {
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gridTemplateRows: 'repeat(2, 1fr)',
-  gap: '$4',
-
-  '> :first-child': {
-    gridRow: '1 / -1',
-  },
 })
