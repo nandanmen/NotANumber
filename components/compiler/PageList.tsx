@@ -1,17 +1,22 @@
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { HiArrowRight } from 'react-icons/hi'
 import { styled } from '@/stitches'
+import { blue, yellow, green } from '@radix-ui/colors'
+import React from 'react'
 
 const links = [
   {
     title: 'How Does a Compiler Work?',
     href: './compiler/01-how-does-a-compiler-work',
     draft: false,
+    description: `In the first installment, we'll go over how a compiler works by looking at each step of the compiler pipeline.`,
   },
   {
     title: 'The Terrific Tokenizer',
     href: './compiler/02-the-terrific-tokenizer',
     draft: false,
+    description: `The tokenizer is the module responsible for breaking up the source code into little chunks called tokens. In this section, we'll look at how it works by implementing it ourselves.`,
   },
   {
     title: 'The Intricacies of Parsing console.log',
@@ -23,23 +28,13 @@ const links = [
     href: './compiler/04-vexing-visitors-and-generating-code',
     draft: true,
   },
-  {
-    title: 'Elegantly Handling Errors',
-    href: './compiler/05-elegantly-handling-errors',
-    draft: true,
-  },
-  {
-    title: 'Introducing Variables',
-    href: './compiler/06-introducing-variables',
-    draft: true,
-  },
 ]
 
 export function PageList() {
   return (
     <List>
-      {links.map(({ title, href, draft }) => (
-        <ListLink key={href} title={title} href={href} draft={draft} />
+      {links.map(({ href, ...post }, index) => (
+        <ListLink key={href} href={href} index={index} {...post} />
       ))}
     </List>
   )
@@ -53,37 +48,69 @@ const List = styled('ol', {
   },
 })
 
-function ListLink({ title, href, draft }) {
+const colors = [blue.blue6, yellow.yellow6, green.green6]
+
+function ListLink({ title, href, draft, description = '', index = 0 }) {
   return (
-    <LetterWrapper draft={draft}>
-      <Link href={href}>
-        <LetterTitle>
-          {title}{' '}
-          <span>
+    <Link href={href}>
+      <LetterWrapper>
+        <LetterLinkWrapper
+          draft={draft}
+          style={{ '--bg-color': colors[index] } as React.CSSProperties}
+          whileHover="hover"
+          variants={{ hover: { x: -4, y: -4 } }}
+        >
+          <LinkContent>
+            <LinkTitle>{title}</LinkTitle>
+            <Description draft={draft}>
+              {draft ? 'Coming soon' : description}
+            </Description>
+          </LinkContent>
+          <LinkArrow variants={{ hover: { x: 16 } }}>
             <HiArrowRight />
-          </span>
-        </LetterTitle>
-      </Link>
-      {draft && <DraftText>Coming soon</DraftText>}
-    </LetterWrapper>
+          </LinkArrow>
+        </LetterLinkWrapper>
+      </LetterWrapper>
+    </Link>
   )
 }
 
-const DraftText = styled('p', {
-  color: '$grey600',
-  fontFamily: '$mono',
+const LinkContent = styled('div', {
+  '> :not(:last-child)': {
+    marginBottom: '$2',
+  },
 })
 
 const LetterWrapper = styled('li', {
   counterIncrement: 'list',
   position: 'relative',
-  paddingLeft: '$12',
 
   '&:before': {
+    content: '',
+    position: 'absolute',
+    inset: 0,
+    background: '$black',
+    borderRadius: 4,
+  },
+})
+
+const LetterLinkWrapper = styled(motion.a, {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '$8',
+  position: 'relative',
+  padding: '$8',
+  background: 'var(--bg-color)',
+  border: '2px solid $black',
+  cursor: 'pointer',
+  borderRadius: 4,
+
+  '&:after': {
     content: `counter(list, lower-roman) "."`,
     position: 'absolute',
-    left: 0,
-    top: 0,
+    left: '-1rem',
+    top: 8,
     aspectRatio: 1,
     height: '2rem',
     display: 'flex',
@@ -91,40 +118,52 @@ const LetterWrapper = styled('li', {
     justifyContent: 'center',
     fontFamily: '$serif',
     fontWeight: 600,
-    borderRadius: 8,
+    fontSize: '$sm',
     border: '2px solid $black',
+    borderRadius: 4,
+    background: 'white',
   },
 
   variants: {
     draft: {
       true: {
-        opacity: 0.5,
+        background: '$grey200',
+        border: '2px dashed $grey300',
         pointerEvents: 'none',
+        color: '$grey400',
+
+        '&:after': {
+          border: '2px solid $grey300',
+          background: '$grey200',
+        },
       },
     },
   },
+})
+
+const LinkTitle = styled('p', {
+  fontFamily: '$serif',
+  fontWeight: 600,
+  lineHeight: 1,
+  fontSize: '$xl',
+})
+
+const Description = styled('p', {
+  fontSize: '$sm',
 
   '@md': {
-    paddingLeft: '$16',
-    paddingTop: 4,
+    fontSize: '$base',
+  },
+
+  variants: {
+    draft: {
+      true: {
+        color: '$grey600',
+      },
+    },
   },
 })
 
-const LetterTitle = styled('a', {
-  fontFamily: '$serif',
-  fontWeight: 600,
+const LinkArrow = styled(motion.div, {
   fontSize: '$xl',
-  lineHeight: 1,
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  marginRight: '$4',
-
-  span: {
-    marginLeft: 'auto',
-  },
-
-  '&:hover': {
-    color: '$blue',
-  },
 })
