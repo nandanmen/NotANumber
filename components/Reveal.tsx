@@ -1,12 +1,17 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
 
 export function Reveal({ children }) {
   const [revealed, setRevealed] = React.useState(false)
-
   return (
     <Wrapper>
-      <Content revealed={revealed}>{children}</Content>
+      <Content
+        initial={{ filter: 'blur(8px)' }}
+        animate={revealed ? { filter: 'blur(0px)' } : null}
+      >
+        {children}
+      </Content>
       {!revealed && (
         <RevealButton onClick={() => setRevealed(true)}>
           Reveal answer
@@ -23,19 +28,9 @@ const Wrapper = styled('div', {
   borderRadius: 8,
 })
 
-const Content = styled('div', {
-  filter: 'blur(8px)',
-
+const Content = styled(motion.div, {
   '> :not(:last-child)': {
     marginBottom: '1em',
-  },
-
-  variants: {
-    revealed: {
-      true: {
-        filter: 'blur(0px)',
-      },
-    },
   },
 })
 
