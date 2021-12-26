@@ -11,11 +11,9 @@ import Figure from '@/elements/Figure'
 import { PageList } from '@/components/compiler/PageList'
 import { Tokenizer } from '@/components/compiler/Tokenizer'
 
-> One thing I don't like about this is how much text there is _before_ the list of sub pages. At the same time, I want to make sure this intro is here because I want to add context to the whole series. Is it ok to put this much text?
+_"How does Babel work?"_ is a question that I never really knew the answer to. When I wrote the [debugger post](../debugger), I had a vague idea of what syntax trees were and how to use them, but I never took the time to sit down and go over _how_ these syntax trees were actually made.
 
-When I wrote the [debugger post](../debugger), I had a vague idea of how [Babel]() works - it takes your code, turns it into an AST, passes the AST through a series of plugins, and turns the modified AST back into code. This was enough for me to utilize most of the power of Babel, using it to power the interactive widgets on this blog. But I was nonetheless left with a pretty big knowledge gap - how does Babel turn the sequence of characters that is your source code and turn it into the all powerful AST?
-
-A few weekends ago I set out to overcome this knowledge gap by trying to rewrite the entire Babel compiler from scratch. I had one goal: to convert the following code snippet:
+A few weekends ago I set out to figure this out by trying to rewrite the entire Babel compiler from scratch. I had one goal: to create a compiler that can turn this:
 
 ```js
 function hello(message) {
@@ -23,7 +21,7 @@ function hello(message) {
 }
 ```
 
-To the following code:
+Into this:
 
 ```js
 function print(message) {
@@ -31,12 +29,8 @@ function print(message) {
 }
 ```
 
-Without using any `str.replace()` or regex tricks.
-
-In the first part of this series, we'll go over everything that I did to accomplish that goal:
+In this series, we'll cover _everything_ that I learned in the process.
 
 <Figure>
   <PageList />
 </Figure>
-
-Once we've achieved this goal, we'll extend our compiler to work better with the JavaScript language as a whole and make it more "production-ready":

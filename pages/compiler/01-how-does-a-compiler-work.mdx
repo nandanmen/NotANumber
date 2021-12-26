@@ -51,7 +51,9 @@ We'll talk more about tokens and the tokenizer in [[Tokenizer]].
 
 ## Parsing
 
-The second phase, **parsing**, takes this list of tokens and converts it into a tree-like structure called an **abstract syntax tree**, or AST for short. If you read my [debugger](../debugger) post, you might know about these trees already. An abstract syntax tree adds _context_ to the tokens and provides more meaning to them. For example, the tree for `const a = 10` looks something like this:
+The second phase, **parsing**, takes this list of tokens and converts it into a tree-like structure called an **abstract syntax tree**, or AST for short. If you read my [debugger](../debugger) post, you might know about these trees already.
+
+An abstract syntax tree essentially adds _context_ to the tokens and provides more meaning to them. For example, the tree for `const a = 10` looks something like this:
 
 <TreeSandbox initialCode={`const a = 10`} depth={Infinity} hideDetailView />
 

@@ -74,7 +74,7 @@ const Article = styled.article`
   display: grid;
   width: 100%;
   padding-top: 10rem;
-  padding-bottom: 40vh;
+  padding-bottom: 15vh;
   grid-template-columns: 2rem 1fr 2rem;
   line-height: 1.6;
   font-family: var(--text-sans);
