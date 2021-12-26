@@ -19,14 +19,13 @@ A compiler, in a nutshell, is a piece of software that converts code from one la
 
 I like to think of a compiler as a pipeline with four distinct phases:
 
-1. Tokenization;
-2. Parsing;
-3. Transformation;
-4. Generation.
+<Figure size="xl">
+  <object type="image/svg+xml" data="pipeline.svg" width="100%" />
+</Figure>
 
 Each step of the pipeline takes the output of the _previous_ step as its _input_. For example, the parsing phase takes in a list of tokens generated in the tokenization phase, and the transforming phase takes in the syntax tree generated in the parsing phase.
 
-The code for a compiler then, is nothing more than this:
+The code for a compiler then, is (generally speaking) nothing more than this:
 
 ```ts
 function compile(inputCode) {
@@ -76,9 +75,9 @@ Each plugin takes a tree and transforms it in some way - for example to strip ou
 
 The last phase, **generation**, takes in the transformed syntax tree and outputs executable code. In a traditional compiler, this might be machine language or bytecode. But for Babel, the output code is JavaScript. In some ways, the generation phase is the _inverse_ of the tokenization and parsing phases - albeit generating code is (surprisingly) a lot simpler than parsing it.
 
-```
-some generation visual
-```
+<Figure size="xl">
+  <object type="image/svg+xml" data="generate.svg" width="100%" />
+</Figure>
 
 We'll talk more about transformations and code generation in [[Vexing Visitors]].
 
