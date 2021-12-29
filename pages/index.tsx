@@ -133,10 +133,10 @@ const Header = styled('header', {
 })
 
 const Description = styled('p', {
-  fontSize: '$xl',
+  fontFamily: '$mono',
   paddingLeft: '$8',
   paddingRight: '$8',
-  maxWidth: '720px',
+  maxWidth: '65ch',
   margin: '0 auto',
   marginBottom: '$8',
 })
@@ -247,8 +247,11 @@ function Series({ path, title, description, count }: SeriesProps) {
   return (
     <Link href={path}>
       <SeriesWrapper whileHover="hover">
-        <SeriesShadow variants={{ hover: { x: 4, y: 4 } }} />
-        <SeriesContent whileHover="hover">
+        <SeriesShadow />
+        <SeriesContent
+          whileHover="hover"
+          variants={{ hover: { x: -4, y: -4 } }}
+        >
           <SeriesText>
             <SeriesTitle>{title}</SeriesTitle>
             <SeriesDescription>{description}</SeriesDescription>
@@ -263,36 +266,10 @@ function Series({ path, title, description, count }: SeriesProps) {
             <HiArrowRight />
           </SeriesArrow>
         </SeriesContent>
-        <SeriesCount
-          variants={{
-            hover: {
-              x: -4,
-              y: -4,
-            },
-          }}
-        >
-          {count}
-        </SeriesCount>
       </SeriesWrapper>
     </Link>
   )
 }
-
-const SeriesCount = styled(motion.div, {
-  width: '$10',
-  aspectRatio: 1,
-  position: 'absolute',
-  background: '$grey100',
-  border: '2px solid $black',
-  borderRadius: '50%',
-  fontFamily: '$serif',
-  fontWeight: 'bold',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  right: '-$3',
-  top: '-$3',
-})
 
 const SeriesText = styled('article', {
   '@md': {
@@ -322,37 +299,25 @@ const SeriesContent = styled(motion.div, {
   position: 'relative',
   padding: '$4 $8',
   width: 'min(100vw, 50rem)',
-  background: '$black',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  color: '$white',
   border: '2px solid $black',
   transition: 'background 0.2s ease-out',
   cursor: 'pointer',
+  background: '$teal',
 
   '@md': {
-    borderRadius: '12px',
-  },
-
-  '&:hover': {
-    background: '$grey100',
-    color: '$black',
+    borderRadius: 4,
   },
 })
 
 const SeriesShadow = styled(motion.div, {
   position: 'absolute',
   inset: 0,
-  background: `repeating-linear-gradient(
-    -45deg,
-    $colors$black,
-    $colors$black 3px,
-    transparent 3px,
-    transparent 5px
-  )`,
+  background: '$black',
 
   '@md': {
-    borderRadius: '12px',
+    borderRadius: 4,
   },
 })

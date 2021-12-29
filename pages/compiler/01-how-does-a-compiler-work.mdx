@@ -8,6 +8,7 @@ editedAt: '2021-12-21'
 import Figure, { Caption } from '@/elements/Figure'
 import BabelPipeline from '@/components/debugger/BabelPipeline'
 import TreeSandbox from '@/components/debugger/TreeSandbox'
+import { Svg } from '@/components/Svg'
 
 > This is part 1 in a series of posts on rebuilding a Babel-like compiler from first principles. For a complete lists of posts, see the [main page](.).
 
@@ -20,7 +21,7 @@ A compiler, in a nutshell, is a piece of software that converts code from one la
 I like to think of a compiler as a pipeline with four distinct phases:
 
 <Figure size="xl">
-  <object type="image/svg+xml" data="pipeline.svg" width="100%" />
+  <Svg href="pipeline.svg" />
 </Figure>
 
 Each step of the pipeline takes the output of the _previous_ step as its _input_. For example, the parsing phase takes in a list of tokens generated in the tokenization phase, and the transforming phase takes in the syntax tree generated in the parsing phase.
@@ -46,8 +47,6 @@ The first phase, the **tokenization** phase, takes in your code as a string and 
 [const] [a] [=] [10]
 ```
 
-We'll talk more about tokens and the tokenizer in [[Tokenizer]].
-
 ## Parsing
 
 The second phase, **parsing**, takes this list of tokens and converts it into a tree-like structure called an **abstract syntax tree**, or AST for short. If you read my [debugger](../debugger) post, you might know about these trees already.
@@ -57,8 +56,6 @@ An abstract syntax tree essentially adds _context_ to the tokens and provides mo
 <TreeSandbox initialCode={`const a = 10`} depth={Infinity} hideDetailView />
 
 Try changing the code in the editor to see what trees for other JavaScript code might look like!
-
-The parser, the piece of the compiler in charge of this phase, is arguably the most interesting part of the compiler. We'll talk about it more in [[Parsing console.log]].
 
 ## Transformation
 
@@ -76,10 +73,10 @@ Each plugin takes a tree and transforms it in some way - for example to strip ou
 The last phase, **generation**, takes in the transformed syntax tree and outputs executable code. In a traditional compiler, this might be machine language or bytecode. But for Babel, the output code is JavaScript. In some ways, the generation phase is the _inverse_ of the tokenization and parsing phases - albeit generating code is (surprisingly) a lot simpler than parsing it.
 
 <Figure size="xl">
-  <object type="image/svg+xml" data="generate.svg" width="100%" />
+  <Svg href="generate.svg" />
 </Figure>
 
-We'll talk more about transformations and code generation in [[Vexing Visitors]].
+## Summary
 
 And that's a high level overview of how Babel works! In the next few posts, we're going to use these principles to build a compiler that can understand and transform a simple hello world function:
 
@@ -89,4 +86,4 @@ function hello(message) {
 }
 ```
 
-We'll see you there!
+[We'll see you there!](./02-the-terrific-tokenizer)

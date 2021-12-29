@@ -12,7 +12,7 @@ import Figure from '@/elements/Figure'
 
 > This is part 2 in a series of posts on rebuilding a Babel-like compiler from first principles. For a complete lists of posts, see the [main page](.).
 
-As mentioned in [[A Quick Rundown]], Babel has four distinct phases in its pipeline: tokenization, parsing, transformation, and code generation. The **tokenizer** is the piece of code responsible for handling the first phase - the tokenization phase.
+As mentioned in [the last post](./01-how-does-a-compiler-work), a compiler has four distinct phases in its pipeline: tokenization, parsing, transformation, and code generation. The **tokenizer** is the piece of code responsible for handling, you guessed it, the tokenization phase.
 
 A tokenizer takes your raw code string as input and generates a list of _tokens_ as its output. A _token_ can be thought of as a JavaScript "word" - the smallest sequence of characters that still carry a meaning in the language. For example, the following JS code:
 
@@ -76,7 +76,7 @@ function tokenize(input) {
 
 How would you implement the `isSingleCharacterToken` function? Try to implement the function here and press the play button to see if it's correct!
 
-<Figure size="2xl">
+<Figure size="xl">
   <Editor />
 </Figure>
 

@@ -1,8 +1,7 @@
 import React from 'react'
 import { styled } from '@/stitches'
-import LiveEditor from '@/components/debugger/shared/LiveEditor'
-import { useCode } from '@/lib/hooks/useCode'
-import { slate } from '@radix-ui/colors'
+import { CodeEditor } from '@/components/CodeEditor'
+import { useCode } from '@/lib/code/useCode'
 
 const initialCode = `function isSingleCharacterToken(char) {
   // TODO: Your code here
@@ -24,33 +23,63 @@ export default function tokenize(input) {
   return tokens
 }`
 
-const initialInput = `console.log(message)`
+const INPUT = `console.log(message)`
+
+const outputCode = `Given:
+  ${INPUT}
+Expected:
+  [".","(",")"]
+Received:
+  `
 
 export function Editor() {
   const [code, setCode] = React.useState(initialCode)
-  const [input, setInput] = React.useState(initialInput)
-  const [result, errors] = useCode<[string], string[]>(code, input)
+  const state = useCode<[string], string[]>(code, [INPUT])
+
   return (
     <Wrapper>
-      <LiveEditor value={code} onValueChange={setCode} />
+      <CodeEditorWrapper>
+        <CodeEditor value={code} onValueChange={setCode} />
+      </CodeEditorWrapper>
+      <Output>
+        {outputCode +
+          (state.state === 'done' ? JSON.stringify(state.result) : '')}
+      </Output>
     </Wrapper>
   )
 }
 
-const Output = styled('div', {
+const Output = styled('pre', {
   display: 'flex',
   flexDirection: 'column',
-  padding: '$4',
-  background: slate.slate12,
-  color: 'white',
-  overflowX: 'scroll',
+  padding: '$6',
   fontFamily: '$mono',
-
-  '@md': {
-    borderRadius: '8px',
-  },
+  fontSize: '$sm',
+  border: '2px solid $black',
+  borderLeft: 'none',
+  borderTopRightRadius: 4,
+  borderBottomRightRadius: 4,
+  background: '$grey200',
+  overflow: 'auto',
 })
 
 const Wrapper = styled('div', {
   display: 'grid',
+  gridTemplateColumns: '3fr 2fr',
+})
+
+const CodeEditorWrapper = styled('div', {
+  '--border-color': '$colors$black',
+
+  borderRadius: 0,
+  borderTopLeftRadius: 4,
+  borderBottomLeftRadius: 4,
+  fontSize: '$sm',
+  border: '2px solid var(--border-color)',
+  background: 'white',
+  padding: '$6',
+
+  '&:focus-within': {
+    '--border-color': '$colors$blue',
+  },
 })
