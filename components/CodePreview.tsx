@@ -5,7 +5,7 @@ import CodeBlock from '@/elements/CodeBlock'
 export function CodePreview({ algorithm, children, ...props }) {
   return (
     <>
-      <CodeWrapper>{algorithm.code}</CodeWrapper>
+      <CodeWrapper language="ts">{algorithm.code}</CodeWrapper>
       <Algorithm algorithm={algorithm} {...props}>
         {children}
       </Algorithm>

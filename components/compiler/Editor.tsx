@@ -8,6 +8,7 @@ const initialCode = `function isSingleCharacterToken(char) {
   return false
 }
 
+// Don't remove this default export otherwise the code won't run!
 export default function tokenize(input) {
   let current = 0
   const tokens = []

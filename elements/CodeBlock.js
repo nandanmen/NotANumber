@@ -1,15 +1,22 @@
 import Highlight, { defaultProps } from 'prism-react-renderer'
 import { styled } from 'twin.macro'
 
-function CodeBlock({
-  children = '',
-  highlight = '',
-  style = {},
-  className: containerClass,
-}) {
+function CodeBlock(props) {
+  const {
+    children = '',
+    highlight = '',
+    style = {},
+    language,
+    className: containerClass,
+  } = props
+  const inferredLanguage = language || getLanguageFromClassName(containerClass)
   const lineNumbers = getLineNumbers(highlight)
   return (
-    <Highlight {...defaultProps} code={getCode(children).trim()} language="jsx">
+    <Highlight
+      {...defaultProps}
+      code={getCode(children).trim()}
+      language={inferredLanguage}
+    >
       {({ className, tokens, getTokenProps }) => {
         return (
           <StyledBlock
@@ -50,6 +57,16 @@ function CodeBlock({
 }
 
 export default styled(CodeBlock)``
+
+function getLanguageFromClassName(className) {
+  const languageClass = className
+    .split(' ')
+    .find((name) => name.startsWith('language'))
+  if (languageClass) {
+    const [, language] = languageClass.split('-')
+    return language
+  }
+}
 
 function getCode(children) {
   if (typeof children === 'string') {

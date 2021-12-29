@@ -72,8 +72,9 @@ const Main = styled.main`
   --code-text-color: var(--black);
   --code-border-color: var(--border-color);
 
-  --token-color-keyword: var(--purple);
-  --token-color-function: var(--purple);
+  --token-color-keyword: var(--blue);
+  --token-style-keyword: italic;
+  --token-color-function: var(--blue);
   --token-color-string: var(--red);
   --token-color-comment: var(--brown);
   --token-style-comment: italic;
