@@ -1,14 +1,15 @@
-import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import { HiArrowRight } from 'react-icons/hi'
 import { motion } from 'framer-motion'
 import { titleCase } from 'title-case'
+import { HiArrowRight } from 'react-icons/hi'
 
 import { styled } from '@/stitches'
 import { formatPath } from '@/lib/utils'
 
-import { frontMatter as aocDay1 } from './2021-11-30-aoc-day-01.mdx'
+import { frontMatter as post1 } from './aoc-day-1.mdx'
+import { frontMatter as post2 } from './parsing-console-log.mdx'
+import { frontMatter as post3 } from './tokenizer.mdx'
 
 export default function BitsPage() {
   return (
@@ -35,7 +36,9 @@ export default function BitsPage() {
       </Header>
       <Divider />
       <Posts>
-        <Post post={aocDay1} />
+        <Post post={post1} />
+        <Post post={post2} />
+        <Post post={post3} />
       </Posts>
     </Page>
   )
@@ -43,88 +46,64 @@ export default function BitsPage() {
 
 // --
 
-function Post({ post }: { post: typeof aocDay1 }) {
+function Post({ post }: { post: typeof post1 }) {
   return (
     <PostWrapper>
       <Link href={formatPath(post.__resourcePath)}>
         <Anchor>
-          <PostContent>
-            <PostTitle>{titleCase(post.title)}</PostTitle>
-            {post.description && (
-              <PostDescription>{post.description}</PostDescription>
-            )}
-            <PostUpdatedText>
-              Last updated{' '}
-              {new Intl.DateTimeFormat('en-US', {
-                month: 'long',
-                year: 'numeric',
-                day: 'numeric',
-              }).format(new Date(post.editedAt))}
-            </PostUpdatedText>
-          </PostContent>
-          <PostArrow>
+          <Arrow style={{ rotate: -45 }}>
             <HiArrowRight />
-          </PostArrow>
+          </Arrow>
+          <PostTitle>{titleCase(post.title)}</PostTitle>
         </Anchor>
       </Link>
     </PostWrapper>
   )
 }
 
-const PostWrapper = styled('div', {
-  borderRadius: '12px',
+const PostWrapper = styled('li', {})
 
-  '&:hover': {
-    background: '$grey200',
-  },
-
-  '@md': {
-    padding: '$4 $8',
-  },
+const Arrow = styled(motion.span, {
+  position: 'absolute',
+  top: '$2',
+  right: '$2',
 })
 
 const Anchor = styled('a', {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
   cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'flex-end',
+  borderRadius: 8,
+  background: '$grey200',
+  padding: '$4',
+  border: '2px solid $grey200',
+  height: '100%',
+  position: 'relative',
 
-  '> :not(:last-child)': {
-    marginRight: '$8',
+  '&:hover': {
+    border: '2px solid $black',
+    background: '$grey100',
   },
 })
 
 const PostTitle = styled('h1', {
   fontWeight: '500',
-  fontSize: '$2xl',
-  fontFamily: '$serif',
-})
-
-const PostDescription = styled('p', {
-  color: '$grey600',
-})
-
-const PostUpdatedText = styled('p', {
-  fontSize: '$sm',
-  color: '$grey600',
-})
-
-const PostArrow = styled('p', {
   fontSize: '$xl',
-  color: '$grey600',
-})
-
-const PostContent = styled('div', {
-  '> :not(:last-child)': {
-    marginBottom: '$4',
-  },
+  fontFamily: '$serif',
+  lineHeight: 1,
 })
 
 // --
 
 const Posts = styled('ul', {
-  '> :not(:last-child)': {
-    marginBottom: '$4',
+  display: 'grid',
+  gap: '$2',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gridAutoRows: '15rem',
+
+  '@md': {
+    gap: '$4',
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
 })
 
