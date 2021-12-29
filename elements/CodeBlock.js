@@ -9,6 +9,13 @@ function CodeBlock(props) {
     language,
     className: containerClass,
   } = props
+
+  /**
+   * When MDX parses a code block, the language defined in the markdown gets
+   * passed as a _class_ with the name "langauge-x". So if we're using this
+   * CodeBlock as a replacement in MDX, we'll need to infer the code's language
+   * by checking the given class name.
+   */
   const inferredLanguage = language || getLanguageFromClassName(containerClass)
   const lineNumbers = getLineNumbers(highlight)
   return (
