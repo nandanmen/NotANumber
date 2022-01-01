@@ -8,12 +8,13 @@ import { motion } from 'framer-motion'
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
 import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
-import ExternalLink from '@/elements/ExternalLink'
+import { CachesIcon } from '@/components/blazing-fast-algorithms-with-caches/Icon'
 import { formatPath } from '@/lib/utils'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 import { frontMatter as howArraysWork } from './how-arrays-work.mdx'
+import { frontMatter as caches } from './blazing-fast-algorithms-with-caches.mdx'
 
 export default function HomePage() {
   return (
@@ -26,11 +27,7 @@ export default function HomePage() {
           <Title>Not a Number</Title>
           <Description>
             An interactive blog on computer science and web development, by
-            {` `}
-            <ExternalLink href="https://narendras.io">
-              Nanda Syahrasyad
-            </ExternalLink>
-            .
+            Nanda Syahrasyad.
           </Description>
           <p>
             <Link href="letters">
@@ -45,6 +42,12 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
+          <PostItem>
+            <Icon>
+              <CachesIcon />
+            </Icon>
+            <Post post={caches} />
+          </PostItem>
           <PostItem>
             <Icon>
               <HowArraysWorkIcon />

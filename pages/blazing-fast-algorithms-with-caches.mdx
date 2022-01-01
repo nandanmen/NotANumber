@@ -1,0 +1,597 @@
+---
+title: 'Blazing Fast Algorithms With Caches'
+blurb: "A JavaScript solution to advent of code's day 6 problem."
+description: 'In this post, we go over how using a cache made my algorithm almost 10,000x faster.'
+publishedAt: '2022-01-08'
+editedAt: '2022-01-08'
+---
+
+i've been slowly going through the advent of code challenges to practice my algorithm skills when i ran into a performance problem in the day 6 problem.
+
+i quite liked the approach that i ended up with so in this post, we'll go into the entire process! specifically, we'll look into how to speed up an algorithm that was taking _over 25 seconds_ to taking only _0.07 seconds_ in the end.
+
+let's take a deeper look, shall we?
+
+## the problem
+
+in day 6 of advent of code we have to implement an algorithm that models the growth of a school of fishes. each fish automatically creates a new fish every 7 days. new fishes take a little longer to create new fish - they need 9 days instead. but once they create a new fish, every subsequent fish they create takes 7 days.
+
+as input, we're given an array of numbers, where each number represents the number of days until that fish creates a new fish. for example, the following array:
+
+```
+3,1,2
+```
+
+represents three fishes, where the first fish will create a new fish in three days, the second fish in 1 day, and the third fish in 2 days.
+
+the algorithm should take this array of fish as input and a number of days, and return the total number of fish after the number of days have passed.
+
+after 3 days, the output will be:
+
+```
+day 0 -> 3,1,2
+day 1 -> 2,0,1
+day 2 -> 1,6,0,8
+```
+
+so our algorithm should print '4' since we end up with 4 fishes.
+
+## brute force
+
+the brute force way of doing it is to simulate each day as we go:
+
+1.  iterate through every day
+2.  for each day, if the fish count is 0, push a new fish to the fish array with value 8 and reset the fish's value to 6; otherwise, decrement the fish's value
+
+once we've gone through all of the days, we end up with an array of all the fish counts. since we only want the length, we return the fish array list.
+
+```jsx
+export default (...fishes) => {
+  for (let i = 0; i < DAYS; i++) {
+    for (const [index, fish] of fishes.entries()) {
+      iterations++
+      if (!fish) {
+        fishes[index] = NEW_FISH_TIME
+        fishes.push(NEW_FISH_TIME + NEW_FISH_DELAY + 1)
+      } else {
+        fishes[index]--
+      }
+    }
+  }
+  return fishes.length
+}
+```
+
+this method is simple, straightforward, and works great! perfectly enough to get us through 80 days and pass part a of the challenge.
+
+## performance problems
+
+in part b, instead of 80 days, we have to do 256 days instead. ok, only three times as many days — should work ok, right? umm no. i changed the number of days to 256 and executed it on my work laptop, a 2021 16” mbp with an i7. it ran for about 18s before crashing with a “js heap out of memory error”. this tells me two things:
+
+1.  18s is a darn long time to be running a function
+2.  i dont think i should be running out of memory
+
+the memory issue seems to be caused by the fishes array getting too large, since the error says: `FATAL ERROR: invalid array length Allocation failed - JavaScript heap out of memory`
+
+so there’s both a memory and performance issue. i think we can get rid of the array entirely since we only need the number of fish at the end. but how do we get rid of the array while still keeping the counts correct? back to the drawing board it is.
+
+## a smarter solution
+
+i was staring at the code for a while trying to think of ways to optimize it. i thought about:
+
+1.  parallelizing so that each fish in the fish array is running in its own thread
+2.  figuring out a way to remove the “days” loop so we only have one for loop instead of two
+
+i figured option 2 is a better way to improve the speed since i would assume my algorithm is just poorly designed. i thought about how we can remove the days loop and i realized that we can infer the final value of a fish given the starting value and the number of days.
+
+## inferring the final value
+
+this is entirely because the fish’s value loops every 7 days. let me explain with an example. lets say we start with the value 1 and we want to know what value the fish will be after 3 days.
+
+every day, we decrement the value of the fish, so my first thought was to subtract the starting value with the number of days. in this case, we get `1 - 3 = -2`. of course, -2 isn’t a valid value for a fish, so we have to convert it to a valid value somehow.
+
+a fish is only valid in the range `[0,6]`, inclusive (meaning both 0 and 6 are valid values). when a fish is at 0, decrementing it will circle back to the top of the range, 6 in this case:
+
+```
+day 0 -> 1
+day 1 -> 0
+day 2 -> 6
+day 3 -> 5
+```
+
+so how do we convert -2 to 5? by adding 7, the length of the cycle!
+
+ok, but what if it loops again? let’s say, in day 9?
+
+```
+day 0 -> 1
+day 1 -> 0
+day 2 -> 6
+day 3 -> 5
+day 4 -> 4
+day 5 -> 3
+day 6 -> 2
+day 7 -> 1
+day 8 -> 0
+day 9 -> 6
+```
+
+if we subtract 9 from the start value, we get `1 - 9 = -8`. if we add 7 to this, we get -1, still not a valid value! to get the right value, 6, we need to add 7 again. so what we actually want is to add 7 times the number of cycles so far. this is a bit tedious so thankfully we can just use the `mod` operator to get the negative value that we're looking for: `-8 mod 7` gives us -1, and we add 7, giving us 6, the final value we're looking for. to summarize, the value of a fish after x days is: `((start value - x) mod 7) + 7`
+
+## finding the number of created fish
+
+cool, so this gives us the value of the fish after x days, but what about all the fishes that it creates and their values?
+
+every time the fish starts a new cycle, a new fish is created. in the above case, a fish is created on day 2 and day 9, when the fish resets back to 6:
+
+```
+day 0 -> 1
+day 1 -> 0, 8
+day 2 -> 6, 7
+day 3 -> 5, 6
+day 4 -> 4, 5
+day 5 -> 3, 4
+day 6 -> 2, 3
+day 7 -> 1, 2
+day 8 -> 0, 1, 8
+day 9 -> 6, 0, 7
+```
+
+to get the number of new fish a fish created, we have to determine the number of cycles. one way to do this is to subtract the number of days by the starting value, then dividing by 7.
+
+we subtract the starting value from the number of days because the first cycle begins when the fish goes down to zero for the first time, which happens after `start value` days has passed.
+
+```
+day 0 -> 1
+day 1 -> 0 <-- cycle 1 begins
+day 2 -> 6
+day 3 -> 5
+day 4 -> 4
+day 5 -> 3
+day 6 -> 2
+day 7 -> 1
+day 8 -> 0 <-- cycle 2 begins
+day 9 -> 6
+```
+
+here, we have 9 days and the fish starts with a value of 1. using the formula, we get `(9 - 1) / 7 = 1.14`. the decimal value means we're part ways through the second cycle, but it means we already created the second fish. so it means we need to round the result into the _next_ highest integer, or 2 in this case. we can do that using the javascript `math.ceil()` function:
+
+```js
+const fishCreated = (days, start) => Math.ceil((days - start) / 7)
+```
+
+## getting the fishes' fishes
+
+good stuff, given a starting value and a number of days, we can now calculate:
+
+- the number of fishes that fish creates
+- the ending value of the fish after the given days have passed
+
+but what about all the fishes that your fishes create? to get an accurate count of all the fishes at the end of the day, we need to add up all the fishes that the original fish created, but also all the fish that _those_ fish created, and so on.
+
+thankfully, we already have the formula for determining the number of fish created after a certain number of days, so we can reuse that formula for all the fish that we created. except - what should the number of days be?
+
+we can't reuse the same number of days because the fish didn't exist at the beginning. to get an accurate number, we need to somehow get the day when this fish was created, and subtract this value from the total number of days.
+
+```
+day 0 -> 1 <-- we use 9 days here because it existed from the start
+day 1 -> 0
+day 2 -> 6, 8 <-- this fish uses _8_ days instead day 9 is 8 days
+                   _away_ from when this fish was created
+day 3 -> 5, 7
+day 4 -> 4, 6
+day 5 -> 3, 5
+day 6 -> 2, 4
+day 7 -> 1, 3
+day 8 -> 0, 2
+day 9 -> 6, 1, 8 <-- this fish uses 0 days because day 9 is 0 days
+away from when this fish was created
+```
+
+```js
+const getTotalFishes = (start, days) => {
+  const directFishesCreated = Math.max(Math.ceil(days - start / 7), 0)
+
+  let subFishes = 0
+  for (let fish = 0; fish < directFishesCreated; fish++) {
+    subFishes += getTotalFishes(8 /* relative num of days */)
+  }
+
+  return 1 + subFishes
+}
+```
+
+## getting a fish's birthday
+
+so how do we get the relative number of days for each fish? to calculate this, we need to find the day a fish was created.
+
+we know that a fish is created once a cycle and a cycle lasts for 7 days. let's say we start with a fish of value 6, meaning the fish _just_ restarted its cycle, and we go on for 7 days. when do we expect the new fish to be created?
+
+```
+day 0 -> 6
+day 1 -> 5
+day 2 -> 4
+day 3 -> 3
+day 4 -> 2
+day 5 -> 1
+day 6 -> 0
+day 7 -> 6, 8
+```
+
+on day 7, exactly the length of the cycle! if we go on for another 7 days, we expect another fish to be created in day 14. so a fish is created every 7 days, which lets us infer a formula for the day a fish is born to be:
+
+```
+dayFishCreated = 7 * cycleNumber
+```
+
+where the cycle number ranges from 0 to however many cycles there are (which, equivalently, is also the number of fish that was created).
+
+this is an ok start, but it really only works because we started with a fish value of 6, the top of the cycle. what if the starting value is something else?
+
+if we start with a value of 1 like in our previous examples, the first fish will be born on _day 2_, not day 7:
+
+```
+day 0 -> 1
+day 1 -> 0
+day 2 -> 6, 8 <-- fish was born
+day 3 -> 5, 7
+```
+
+but afterwards, a new fish is created every 7 days, so the next one will be in day 9:
+
+```
+day 0 -> 1
+day 1 -> 0
+day 2 -> 6, 8 <-- fish #1
+day 3 -> 5, 7,
+day 4 -> 4, 6
+day 5 -> 3, 5
+day 6 -> 2, 4
+day 7 -> 1, 3
+day 8 -> 0, 2
+day 9 -> 6, 1, 8 <-- fish #2
+```
+
+this means that our cycle is shifted a little bit by whatever the starting value is, so our formula needs to take the starting value into account.
+
+at the smallest possible value 0, a new fish will be born in day 1:
+
+```
+day 0 -> 0
+day 1 -> 6, 8
+```
+
+increasing the starting value by 1 will push the first fish's birthdate back by 1 day:
+
+```
+day 0 -> 1
+day 1 -> 0
+day 2 -> 6, 8
+```
+
+so this means we need to add the starting value to `7 * cycleNumber` to get the first fish's birthdate:
+
+```
+dayFishCreated = start + 1 + (7 * cycleNumber)
+```
+
+note that cycleNumber starts at 0 because at the start, we haven't gone through a cycle just yet.
+
+we also add 1 here because if the starting value is 0, the fish is created on _day 1_, not day 0.
+
+## putting it together
+
+ok, cool! now that we know the birthday of any given fish, we can get the _relative_ number of days till the end by subtracting the total number of days with the birthday:
+
+```js
+const birthday = start + 1 + 7 * cycleNumber
+subFishes += getTotalFish(8, days - birthday)
+```
+
+once we have the counts of all the fishes, we return that count + 1 (the fish that we started with):
+
+```js
+const getTotalFishes = (start, days) => {
+  const cycles = Math.max(Math.ceil(days - start / 7), 0)
+
+  let subFishes = 0
+  for (let cycleNumber = 0; cycleNumber < cycles; cycleNumber++) {
+    const birthday = start + 1 + 7 * cycleNumber
+    subFishes += getTotalFish(8, days - birthday)
+  }
+
+  return 1 + subFishes
+}
+```
+
+we don't include cycles in the final count to prevent double counting - the recursive `getTotalFishes` call will already include the fish that we created in its total.
+
+## performance testing
+
+great! let's give this a shot and see how it fares compared to our other implementation.
+
+first let's hook it up to the original function:
+
+```jsx
+const DAYS = 256
+
+export default (...fishes) => {
+  let total = 0
+
+  fishes.forEach((start) => {
+    total += getTotalFishes(start, DAYS)
+  })
+
+  return total
+}
+```
+
+remember that the original implementation ran for 18s before crashing because it ran out of memory. how does this one perform in comparison?
+
+uh, it didn't run out of memory at least?
+
+## iteration counter
+
+let's tone down the number of days a little bit and add some logs to see what's going on.
+
+for my part a solution, i added an iterations counter and incremented it for each iteration of the loop to see how many iterations we need to get the final answer:
+
+```js
+export default (...fishes) => {
+  let iterations = 0
+
+  for (let i = 0; i < DAYS; i++) {
+    for (const [index, fish] of fishes.entries()) {
+      iterations++
+      if (!fish) {
+        fishes[index] = NEW_FISH_TIME
+        fishes.push(NEW_FISH_TIME + NEW_FISH_DELAY + 1)
+      } else {
+        fishes[index]--
+      }
+    }
+  }
+
+  console.log({ iterations })
+
+  return fishes.length
+}
+```
+
+- running it against the example input (which starts with 5 fishes), the algorithm needed 70k iterations to complete.
+- running it against the provided input (which starts with 300 fishes), the algorithm needed over 4.4 million (!) iterations.
+- running both algorithms took about 0.13s.
+
+i added something similar for part b where i increment a counter for every call to `getTotalFishes`. the results were pretty surprising:
+
+- the example input with **5 fishes** needed 5934 recursive calls
+- the provided input with **300 fishes** needed over 385k recursive calls
+- both inputs took a combined 0.10s to complete.
+
+an order of magnitude better than the initial input, but still not quite fast enough it seems!
+
+let's bump up the number of days to 100 days:
+
+- part a needed 25 million iterations, ~0.32s to complete
+- part b needed 2.17 million calls, ~0.2s to complete
+
+and again to 120 days:
+
+- part a -> 145 million iterations, 1.36s
+- part b -> 12 million iterations, 0.84s
+
+so the part b solution is about an order of magnitude faster than part a, but it's still not fast enough to solve 256 days in a decent amount of time.
+
+how can we make it better?
+
+## adding a cache
+
+one thing i noticed is that we're doing repetitive work when moving from one fish to the next. for example, let's say we start with the following fishes and we want to calculate the total number of fishes after 10 days:
+
+```
+3,1,3
+```
+
+using our algorithm, we calculate the total number of fish created by the first fish 3, then the second fish 1, and the third fish 3.
+
+however, the result of the first fish and the last fish is going to be the same because the number of days is the same and the starting value is the same as well, i.e. for both of those fishes we call this function:
+
+```js
+totalFishes += getTotalFishes(3, 10)
+```
+
+when we're calling the function a second time, we're _repeating_ the work of calling the function the first time. we can potentially save this inefficiency by storing the result of the previous calculation, and referring to that result instead, a process called **memoization**.
+
+the general idea is this:
+
+1. we add an object that's going to act as a "cache" - this object will contain key-value pairs where the key is a combination of the starting fish value and number of days, and the value is the total fish created after those number of days have passed.
+2. before we start the calculation, we first check if the cache contains the combination of fish value and number of days; if it does, we return it. otherwise, we continue on with the calculation.
+3. once we've calculated the total number of fish, we add the fish value-number of days combination to the cache.
+
+in code, that looks something like this:
+
+```js
+const DAYS = 120
+
+const cache = {}
+
+export default (...fishes) => {
+  let fishCount = 0
+
+  fishes.forEach((start) => {
+    fishCount += getTotalFishes(start, DAYS)
+  })
+
+  return fishCount
+}
+
+const getTotalFishes = (start, days) => {
+  const key = `${start}-${days}`
+
+  /**
+   * Look in the cache to see if we've calculated this
+   * specific combination of start and days.
+   */
+  if (cache[key]) {
+    return cache[key]
+  }
+
+  const fishesCreated = Math.max(Math.ceil((days - start) / 7), 0)
+
+  let subFishes = 0
+
+  for (let offset = 0; offset < fishesCreated; offset++) {
+    const birthday = start + 1 + 7 * offset
+    subFishes += getTotalFishes(8, days - birthday)
+  }
+
+  const fishes = 1 + subFishes
+  // add our result to the cache so future calls can refer to it
+  cache[key] = fishes
+
+  return fishes
+}
+```
+
+let's try it out. how much better is this approach?
+
+on the left is the command _without_ the cache, and on the right _with_ the cache, both calculating 120 days:
+
+// gif showing side by side comparison
+
+whoa! 0.84s down to 0.07s.
+
+what if we bump it up to 140 days? or even higher?
+
+// slider to change number of days
+
+it'll take too long to show here, but the original approach took about 25 seconds to calculate 160 days whereas the cached approach took 0.07s - basically the same amount of time as before.
+
+// graph with the time
+
+as we keep adding days, the time it takes for the uncached approach explodes until it times out - but the cached approach takes almost the same amount of time every time, regardless of how many days there are. you can't even see the line in the graph above!
+
+i bumped up the number of days to an absurd number like 1000 days and the cached approach took only _0.01s longer to complete_. my computer would light on fire if i tried running 1000 days on the original, uncached approach.
+
+## analysis
+
+so what gives? how come adding a cache makes the algorithm that much faster? to look into this, i added some more counters to count the number of times that a cache _hit_ and a cache _miss_ occurs.
+
+- a cache hit is when the cache contains the arguments we're looking for, so we can skip the computation
+- a cache miss is when the cache _doesn't_ contain the arguments we're looking for, so we need to manually perform the computation
+
+```jsx
+const DAYS = 120
+
+const cache = {}
+let hits = 0
+let misses = 0
+
+export default (...fishes) => {
+  let fishCount = 0
+
+  fishes.forEach((start) => {
+    fishCount += getTotalFishes(start, DAYS)
+  })
+
+  console.log({ hits, misses })
+
+  return fishCount
+}
+
+const getTotalFishes = (start, days) => {
+  const key = `${start}-${days}`
+
+  /**
+   * Look in the cache to see if we've calculated this
+   * specific combination of start and days.
+   */
+  if (cache[key]) {
+    hits++
+    return cache[key]
+  }
+
+  misses++
+
+  const fishesCreated = Math.max(Math.ceil((days - start) / 7), 0)
+
+  let subFishes = 0
+
+  for (let offset = 0; offset < fishesCreated; offset++) {
+    const birthday = start + 1 + 7 * offset
+    subFishes += getTotalFishes(8, days - birthday)
+  }
+
+  const fishes = 1 + subFishes
+  cache[key] = fishes
+
+  return fishes
+}
+```
+
+without the cache, computing 120 days took about ~12 million calls to `getTotalFishes`. what about with the cache?
+
+```
+$ yarn test 6b
+  { hits: 1158, misses: 122 }
+  Result: 11967638
+  Done in 0.07s.
+```
+
+adding up the number of hits and misses gives us the total number of calls to be 1280 calls - about 10,000x less calls than without the cache! this means that >99% of the calls were part of repeated work that we got rid of using the cache.
+
+out of those 1280 calls, 1158 were cache hits, meaning 90.4% of the time, the cache contained the answer we were looking for. this also means that we only needed to run 10% of the calls to get the answer for 100% of the input.
+
+in a larger number of days, the effect is even more pronounced. with 1200 days, 101k out of 102k total calls were cache hits - 99% of the calculations were repeats!
+
+## summary
+
+here's my solution to advent of code's day 6 problem in its entirety, without the performance measuring code:
+
+```js
+const DAYS = 256
+
+const cache = {}
+
+export default (...fishes) => {
+  let fishCount = 0
+
+  fishes.forEach((start) => {
+    fishCount += getTotalFishes(start, DAYS)
+  })
+
+  return fishCount
+}
+
+const getTotalFishes = (start, days) => {
+  const key = `${start}-${days}`
+
+  /**
+   * Look in the cache to see if we've calculated this
+   * specific combination of start and days.
+   */
+  if (cache[key]) {
+    return cache[key]
+  }
+
+  const fishesCreated = Math.max(Math.ceil((days - start) / 7), 0)
+
+  let subFishes = 0
+
+  for (let offset = 0; offset < fishesCreated; offset++) {
+    const birthday = start + 1 + 7 * offset
+    subFishes += getTotalFishes(8, days - birthday)
+  }
+
+  const fishes = 1 + subFishes
+  cache[key] = fishes
+
+  return fishes
+}
+```
+
+i'm pretty proud of this one because i'm not quite good with algorithms, and i figured this out all on my own! i admit, when i added the cache, i didn't think it would improve the solution by as much as it did, but i'm glad it worked out.
+
+i came across a few other clever solutions out there (like one involving rotating arrays) that i'm not quite clever enough to decipher, but this approach was the one that made the most sense to me. maybe i'll amend this post in the future with those solutions when (or if) i figure it out.
+
+until next time, thanks for reading!
