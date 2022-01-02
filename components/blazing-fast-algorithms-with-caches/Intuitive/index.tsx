@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { FaUndo } from 'react-icons/fa'
+import { yellow } from '@radix-ui/colors'
 
 import { CodePreview } from '@/components/CodePreview'
 import { styled } from '@/stitches'
@@ -104,7 +105,11 @@ const School = styled('div', {
 function Fish({ value, previous }) {
   const showLast = value !== previous && previous < 9
   return (
-    <FishWrapper animate={{ y: 0, opacity: 1 }} initial={{ y: 8, opacity: 0 }}>
+    <FishWrapper
+      animate={{ y: 0, opacity: 1 }}
+      initial={{ y: 8, opacity: 0 }}
+      active={showLast}
+    >
       {value}
       {showLast && (
         <DiffWrapper
@@ -130,6 +135,14 @@ const FishWrapper = styled(motion.div, {
 
   '&:not(:last-child)': {
     borderRight: 'none',
+  },
+
+  variants: {
+    active: {
+      true: {
+        background: yellow.yellow6,
+      },
+    },
   },
 })
 
