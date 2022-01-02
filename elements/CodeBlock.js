@@ -5,9 +5,10 @@ function CodeBlock({
   children = '',
   highlight = '',
   style = {},
+  language = undefined,
   className: containerClass,
 }) {
-  const lang = getLanguageFromClassName(containerClass)
+  const lang = language || getLanguageFromClassName(containerClass)
   const lineNumbers = getLineNumbers(highlight)
   return (
     <Highlight

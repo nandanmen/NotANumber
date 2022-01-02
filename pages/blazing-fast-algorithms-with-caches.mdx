@@ -1,88 +1,85 @@
 ---
 title: 'Blazing Fast Algorithms With Caches'
 blurb: "A JavaScript solution to advent of code's day 6 problem."
-description: 'In this post, we go over how using a cache made my algorithm almost 10,000x faster.'
+description: 'How introducing a cache made my algorithm over 10,000x faster.'
 publishedAt: '2022-01-08'
 editedAt: '2022-01-08'
 ---
 
-i've been slowly going through the advent of code challenges to practice my algorithm skills when i ran into a performance problem in the day 6 problem.
+import Figure from '@/elements/Figure'
+import Callout from '@/elements/Callout'
+import { Intuitive } from '@/components/blazing-fast-algorithms-with-caches/Intuitive'
 
-i quite liked the approach that i ended up with so in this post, we'll go into the entire process! specifically, we'll look into how to speed up an algorithm that was taking _over 25 seconds_ to taking only _0.07 seconds_ in the end.
+I've been slowly going through the [advent of code challenges](https://adventofcode.com/) to practice my algorithm skills when I ran into a performance bottleneck in my solution to day 6.
 
-let's take a deeper look, shall we?
+After a bit of head scratching I landed on a solution that I was pretty happy with, and in this post, we'll go over the solution in its entirety. In particular, I talk about how I sped up an algorithm that was taking _over 25 seconds_ to taking only _0.07 seconds_ in the end.
 
-## the problem
+Let's take a deeper look, shall we?
 
-in day 6 of advent of code we have to implement an algorithm that models the growth of a school of fishes. each fish automatically creates a new fish every 7 days. new fishes take a little longer to create new fish - they need 9 days instead. but once they create a new fish, every subsequent fish they create takes 7 days.
+## The Problem
 
-as input, we're given an array of numbers, where each number represents the number of days until that fish creates a new fish. for example, the following array:
+In day 6 of advent of code we have to implement an algorithm that models the growth of a school of fishes. Each fish creates a new fish every 7 days, and is represented as a single number - the number of days until it creates a new fish.
+
+For example, the following array represents a school of three fishes:
 
 ```
 3,1,2
 ```
 
-represents three fishes, where the first fish will create a new fish in three days, the second fish in 1 day, and the third fish in 2 days.
+Where the first fish will create a new fish in three days, the second fish in 1 day, and the third fish in 2 days. Note that a fish can have a value of zero - this means that the fish will create the fish today, and the school will include the new fish in the _next day_.
 
-the algorithm should take this array of fish as input and a number of days, and return the total number of fish after the number of days have passed.
+Each passing day reduces each fish's value by 1. When a fish reaches zero, a new fish will be added to the school and the fish will reset back to the start of the cycle.
 
-after 3 days, the output will be:
+Using the same example as before, after 3 days the school will look like this:
 
 ```
 day 0 -> 3,1,2
 day 1 -> 2,0,1
-day 2 -> 1,6,0,8
+day 2 -> 1,6,0,8 <-- new fish created by fish #2
+day 3 -> 0,5,6,7,8 <-- new fish created by fish #3
 ```
 
-so our algorithm should print '4' since we end up with 4 fishes.
+New fish needs an extra two days before it can start making fish, so they start with a value of eight instead of six. Once they've created their first fish, their next fish will take the regular seven days.
 
-## brute force
+In this example, our algorithm should return "5" because after 3 days, the school consists of five fish.
 
-the brute force way of doing it is to simulate each day as we go:
+## The Intuitive Way
 
-1.  iterate through every day
-2.  for each day, if the fish count is 0, push a new fish to the fish array with value 8 and reset the fish's value to 6; otherwise, decrement the fish's value
+The most intuitive way to solve this algorithm is to simulate each passing day, where we:
 
-once we've gone through all of the days, we end up with an array of all the fish counts. since we only want the length, we return the fish array list.
+1.  Iterate through every day until we hit the desired number of days;
+2.  For each day and for each fish, if the fish count is zero, add a new fish to the school with a starting value of eight and reset the fish's value to six; otherwise, reduce the fish's value by one.
 
-```jsx
-export default (...fishes) => {
-  for (let i = 0; i < DAYS; i++) {
-    for (const [index, fish] of fishes.entries()) {
-      iterations++
-      if (!fish) {
-        fishes[index] = NEW_FISH_TIME
-        fishes.push(NEW_FISH_TIME + NEW_FISH_DELAY + 1)
-      } else {
-        fishes[index]--
-      }
-    }
-  }
-  return fishes.length
-}
-```
+<Figure size="lg">
+  <Intuitive />
+</Figure>
 
-this method is simple, straightforward, and works great! perfectly enough to get us through 80 days and pass part a of the challenge.
+This method is simple, straightforward, and works great! More than enough to get through the 80 day requirement of part A of the challenge.
 
-## performance problems
+## It's a Bit... Slow
 
-in part b, instead of 80 days, we have to do 256 days instead. ok, only three times as many days — should work ok, right? umm no. i changed the number of days to 256 and executed it on my work laptop, a 2021 16” mbp with an i7. it ran for about 18s before crashing with a “js heap out of memory error”. this tells me two things:
+In part B of the challenge, the question asked for the total size of the school after **256 days** have passed. "It's only three times as many days", I thought - the same algorithm should work, right?
 
-1.  18s is a darn long time to be running a function
-2.  i dont think i should be running out of memory
+Unfortunately... not quite. I increased the number of days to 256 and let it run for a bit. After about 18 seconds, the program crashed with the following V8 error (V8 is the JavaScript engine that Node is built on top of): `FATAL ERROR: invalid array length Allocation failed - JavaScript heap out of memory`.
 
-the memory issue seems to be caused by the fishes array getting too large, since the error says: `FATAL ERROR: invalid array length Allocation failed - JavaScript heap out of memory`
+Interesting! The number of fish grew so much that there's no longer enough space to keep every single fish in memory. 18 seconds feels like a long time too, so it looks like not only do we have a memory problem, we also have a performance problem.
 
-so there’s both a memory and performance issue. i think we can get rid of the array entirely since we only need the number of fish at the end. but how do we get rid of the array while still keeping the counts correct? back to the drawing board it is.
+Back to the drawing board we go.
 
-## a smarter solution
+<Callout label="How much space DO we need?">
 
-i was staring at the code for a while trying to think of ways to optimize it. i thought about:
+I got curious - assuming the JS heap is infinitely large, how much space do we need to store all the fish? Thankfully, the question is kind enough to provide us the expected answer for the example input, so we can figure it out with a bit of math.
 
-1.  parallelizing so that each fish in the fish array is running in its own thread
-2.  figuring out a way to remove the “days” loop so we only have one for loop instead of two
+With a starting school size of **five fish**, after **256 days**, there will be 26,984,457,539 fish in the school - almost 27 billion! If each fish is represented as a number, and each [number takes up eight bytes of memory](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), then we will need almost 216 **gigabytes** of memory to store all the fish!
 
-i figured option 2 is a better way to improve the speed since i would assume my algorithm is just poorly designed. i thought about how we can remove the days loop and i realized that we can infer the final value of a fish given the starting value and the number of days.
+</Callout>
+
+### A Smarter Solution
+
+I was staring at the code for a while trying to think of ways to optimize it, and I figured there's two things we can change:
+
+1. Remove the array altogether. The question asked for the _number_ of fish, not the values of them, so it would be wasteful to store the array.
+2. Removing the outer `days` loop. Is there a way for us to _infer_ the final value without having to loop through every single day?
 
 ## inferring the final value
 
