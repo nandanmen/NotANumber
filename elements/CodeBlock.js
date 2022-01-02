@@ -7,9 +7,14 @@ function CodeBlock({
   style = {},
   className: containerClass,
 }) {
+  const lang = getLanguageFromClassName(containerClass)
   const lineNumbers = getLineNumbers(highlight)
   return (
-    <Highlight {...defaultProps} code={getCode(children).trim()} language="jsx">
+    <Highlight
+      {...defaultProps}
+      code={getCode(children).trim()}
+      language={lang}
+    >
       {({ className, tokens, getTokenProps }) => {
         return (
           <StyledBlock
@@ -50,6 +55,16 @@ function CodeBlock({
 }
 
 export default styled(CodeBlock)``
+
+function getLanguageFromClassName(className) {
+  const languageName = className
+    .split(' ')
+    .find((name) => name.startsWith('language'))
+  if (languageName) {
+    const [, language] = languageName.split('-')
+    return language
+  }
+}
 
 function getCode(children) {
   if (typeof children === 'string') {
