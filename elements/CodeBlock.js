@@ -90,13 +90,14 @@ function getLineNumbers(highlight) {
       if (!highlight) {
         return true
       }
-      return numbers.find((intervalOrNumber) => {
+      const number = numbers.find((intervalOrNumber) => {
         if (Array.isArray(intervalOrNumber)) {
           const [start, end] = intervalOrNumber
           return lineNumber >= start && lineNumber <= end
         }
         return lineNumber === intervalOrNumber
       })
+      return number != undefined
     },
   }
 }

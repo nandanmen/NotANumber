@@ -1,11 +1,12 @@
 import { styled } from '@/stitches'
+import { blue } from '@radix-ui/colors'
 
 const thumbStyle = {
   height: '$6',
   width: '$6',
   borderRadius: '50%',
   cursor: 'pointer',
-  background: '$brown',
+  background: blue.blue8,
   border: '2px solid $border',
 }
 
@@ -14,7 +15,11 @@ const trackStyle = {
   background: '$grey200',
 }
 
-export const Slider = styled('input', {
+export function Slider(props) {
+  return <SliderWrapper type="range" {...props} />
+}
+
+const SliderWrapper = styled('input', {
   '-webkit-appearance': 'none',
   width: '100%',
   background: 'transparent',
