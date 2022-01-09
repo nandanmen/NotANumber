@@ -23,6 +23,7 @@ const boilerplate = snapshot(function tokenize(input) {
 
 const algorithms = {
   boilerplate,
+  tokenize,
 }
 
 const INPUT = `function hello(message) {
