@@ -2,7 +2,7 @@ import React from 'react'
 import { FaChevronDown, FaChevronUp, FaQuestion } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import tw, { styled } from 'twin.macro'
-import { yellow } from '@radix-ui/colors'
+import { sky } from '@radix-ui/colors'
 
 import Widget from './Widget'
 
@@ -61,7 +61,7 @@ Callout.Details = CalloutDetails
 const Icon = styled.div`
   ${tw`flex items-center justify-center w-10 h-10`}
 
-  background: ${yellow.yellow10};
+  background: ${sky.sky10};
   border: 2px solid var(--navy);
   position: absolute;
   top: -20px;
@@ -74,7 +74,7 @@ const Aside = styled.aside`
 
   border-radius: 8px;
   border: 2px solid var(--navy);
-  background: ${yellow.yellow3};
+  background: ${sky.sky4};
 
   > * {
     margin-bottom: 1.5em;

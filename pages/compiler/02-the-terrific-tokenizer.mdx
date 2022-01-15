@@ -5,11 +5,12 @@ publishedAt: '2021-12-21'
 editedAt: '2021-12-21'
 ---
 
-import { Tokenizer } from '@/components/compiler/Tokenizer'
+import { Boilerplate } from '@/components/compiler/Boilerplate'
 import { PageList } from '@/components/compiler/PageList'
 import { Editor } from '@/components/compiler/Editor'
 import { Reveal } from '@/components/Reveal'
 import Figure from '@/elements/Figure'
+import Callout from '@/elements/Callout'
 
 <Figure size="xl">
   <PageList />
@@ -36,19 +37,17 @@ Each token has a type that describes what that sequence of characters represent.
  Identifier  Dot  Identifier  LeftParen  Identifier  RightParen
 ```
 
-So how does the tokenizer generate these tokens?
+In this post, we'll start by going through a small tokenizer that can recognize all the tokens of the following snippet:
 
-## First Attempt
+```js
+function hello(message) {
+  console.log(message)
+}
+```
 
-In my first attempt with the tokenizer, I aimed to simply split the string into the tokens - I didn't want to overcomplicate by introducing a Token class or anything like that.
+And then we'll finish up with a little assignment for _you_!
 
-We'll start off by writing some boilerplate to iterate through every character of the string:
-
-<Figure size="lg">
-  <Tokenizer name="boilerplate" />
-</Figure>
-
-### Single Character Tokens
+## Single Character Tokens
 
 Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In our `console.log` example, that would be the dot and parentheses tokens:
 
@@ -56,6 +55,12 @@ Let's begin by trying to parse out the simplest tokens first - the ones that are
 
 ![](single-tokens.png)
 
+</Figure>
+
+We'll start off by writing some boilerplate to iterate through every character of the string:
+
+<Figure size="lg">
+  <Boilerplate />
 </Figure>
 
 As we iterate through the code string, we check if the current character points to one of these single character tokens. If it does, we add the character to the final tokens list. We'll discard all other characters for now.
@@ -77,10 +82,118 @@ function tokenize(input) {
 }
 ```
 
-How would you implement the `isSingleCharacterToken` function? Try to implement the function in the editor below, then press the play button (or Shift + Enter) to see if you got it right!
+How would you implement the `isSingleCharacterToken` function? Try to implement the function in the editor below, and check the output against what's expected to see if you're correct!
 
 <Figure size="xl">
-  <Editor />
+  <Editor test={{ input: ['console.log(message)'], expected: [".","(",")"] }}>
+
+```
+function isSingleCharacterToken(char) {
+  // TODO: Your code here
+  return false
+}
+
+// Don't remove this default export otherwise the code won't run!
+export default function tokenize(input) {
+  let current = 0
+  const tokens = []
+
+  while (current < input.length) {
+    const char = input[current]
+    if (isSingleCharacterToken(char)) {
+      tokens.push(char)
+    }
+    current++
+  }
+
+  return tokens
+}
+```
+
+  </Editor>
+</Figure>
+
+<Figure size="lg">
+
+<Reveal>
+
+One way to implement this is to define a set of the known single character tokens and then checking if the given character is in that set:
+
+```ts
+const singleCharacterTokens = new Set(['(', ')', '.'])
+
+function isSingleCharacterToken(char) {
+  return singleCharacterTokens.has(char)
+}
+```
+
+</Reveal>
+
+</Figure>
+
+### Refactoring
+
+It's not super useful to return only the character that corresponds to the token. Instead, let's change things up so we'll return the _type_ of the token as well.
+
+Using the above `console.log` as an example, instead of returning this:
+
+```js
+tokens = ['.', '(', ')']
+```
+
+We want to return this instead:
+
+```json
+[{ "type": "Dot" }, { "type": "LeftParen" }, { "type": "RightParen" }]
+```
+
+<Callout label="Is this really necessary?">
+
+Bear with me here! This probably looks a bit over-engineered at the moment, but it'll make more sense why this is a good idea when we get to the more complicated tokens later on.
+
+</Callout>
+
+Give it a shot and try to refactor the code from before to return these objects instead:
+
+<Figure size="xl">
+  <Editor
+    test={{ 
+      input: ['console.log(message)'],
+      expected: [
+        { type: "Dot" },
+        { type: "LeftParen" },
+        { type: "RightParen" }
+      ]
+    }}
+  >
+
+```
+const singleCharacterTokens = new Set(
+  ['(', ')', '.']
+)
+
+function isSingleCharacterToken(char) {
+  return singleCharacterTokens.has(char)
+}
+
+// Don't remove this default export otherwise the code won't run!
+export default function tokenize(input) {
+  let current = 0
+  const tokens = []
+
+  while (current < input.length) {
+    const char = input[current]
+    if (isSingleCharacterToken(char)) {
+      tokens.push(char)
+    }
+    current++
+  }
+
+  return tokens
+}
+```
+
+  </Editor>
 </Figure>
 
 <Figure size="lg">

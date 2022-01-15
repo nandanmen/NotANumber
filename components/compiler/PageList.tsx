@@ -74,7 +74,7 @@ function ListLink({ title, href, draft, active = false }) {
 const LetterWrapper = styled('li', {
   counterIncrement: 'list',
   position: 'relative',
-  minHeight: '$64',
+  minHeight: '$48',
 
   '&:before': {
     content: '',

@@ -3,27 +3,6 @@ import { styled } from '@/stitches'
 import { CodeEditor } from '@/components/CodeEditor'
 import { useCode } from '@/lib/code/useCode'
 
-const initialCode = `function isSingleCharacterToken(char) {
-  // TODO: Your code here
-  return false
-}
-
-// Don't remove this default export otherwise the code won't run!
-export default function tokenize(input) {
-  let current = 0
-  const tokens = []
-
-  while (current < input.length) {
-    const char = input[current]
-    if (isSingleCharacterToken(char)) {
-      tokens.push(char)
-    }
-    current++
-  }
-
-  return tokens
-}`
-
 const INPUT = `console.log(message)`
 
 const outputCode = `Given:
@@ -33,9 +12,27 @@ Expected:
 Received:
   `
 
-export function Editor() {
-  const [code, setCode] = React.useState(initialCode)
-  const state = useCode<[string], string[]>(code, [INPUT])
+type Test = {
+  input: any[]
+  expected: any
+}
+
+export function Editor({
+  children,
+  test,
+}: {
+  children: React.ReactNode
+  test: Test
+}) {
+  const [code, setCode] = React.useState(getInitialCodeFromChildren(children))
+  const state = useCode(code, test.input)
+
+  const outputCode = `Given:
+${test.input.join('\n')}
+Expected:
+${JSON.stringify(test.expected, null, 2)}
+Received:
+`
 
   return (
     <Wrapper>
@@ -44,10 +41,22 @@ export function Editor() {
       </CodeEditorWrapper>
       <Output>
         {outputCode +
-          (state.state === 'done' ? JSON.stringify(state.result) : '')}
+          (state.state === 'done' ? JSON.stringify(state.result, null, 2) : '')}
       </Output>
     </Wrapper>
   )
+}
+
+function getInitialCodeFromChildren(children: React.ReactNode) {
+  if (!children) {
+    return ''
+  }
+
+  const { props } = children as React.ReactElement
+  if (props.mdxType === 'pre') {
+    return props.children.props.children
+  }
+  return ''
 }
 
 const Output = styled('pre', {

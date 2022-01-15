@@ -2,10 +2,18 @@ import { styled } from '@/stitches'
 import { Algorithm } from '@/components/AlgorithmPlayer'
 import CodeBlock from '@/elements/CodeBlock'
 
-export function CodePreview({ algorithm, children, ...props }) {
+export function CodePreview({
+  algorithm,
+  children,
+  language = 'ts',
+  highlight = '',
+  ...props
+}) {
   return (
     <>
-      <CodeWrapper language="ts">{algorithm.code}</CodeWrapper>
+      <CodeWrapper language={language} highlight={highlight}>
+        {algorithm.code}
+      </CodeWrapper>
       <Algorithm algorithm={algorithm} {...props}>
         {children}
       </Algorithm>
