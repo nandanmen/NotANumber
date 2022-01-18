@@ -65,9 +65,11 @@ export default function Layout({ frontMatter = {}, children }) {
             <Avatar src="/avatar.jpg" alt="Nanda Syahrasyad" />
             <p>Nanda Syahrasyad</p>
           </Author>
-          <p tw="text-right">
-            Last updated {formatter.format(new Date(frontMatter.editedAt))}
-          </p>
+          {frontMatter.editedAt && (
+            <p tw="text-right">
+              Last updated {formatter.format(new Date(frontMatter.editedAt))}
+            </p>
+          )}
         </Meta>
         {children}
         <FormContainer>

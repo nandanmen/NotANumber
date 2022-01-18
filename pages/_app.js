@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <Main>
-      <TopNavigation tw="w-screen p-4 fixed top-0 z-50" />
+      <TopNavigation tw="w-screen p-4 fixed top-0 z-50 border-b border-gray-300" />
       <Component {...pageProps} />
     </Main>
   )
