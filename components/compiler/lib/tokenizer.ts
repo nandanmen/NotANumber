@@ -3,27 +3,33 @@ import snapshot from '../../../lib/snapshot.macro'
 export const keywords = new Set(['function'])
 
 export const tokenize = snapshot((input) => {
-  let start = 0
   let current = 0
   const tokens = []
 
   debugger
 
   function finishIdentifier() {
+    const candidate = {
+      type: TokenType.Identifier,
+      name: '',
+    }
+    tokens.push(candidate)
+    debugger
+
     let currentChar = input[current]
     while (isAlpha(currentChar)) {
+      candidate.name += currentChar
       debugger
       current++
       currentChar = input[current]
     }
-    const name = input.substring(start, current)
-    start = current
 
-    if (keywords.has(name)) {
-      return token.keyword(name)
+    if (keywords.has(candidate.name)) {
+      candidate.type = TokenType.Keyword
+      debugger
     }
 
-    return token.identifier(name)
+    return candidate
   }
 
   while (current < input.length) {
@@ -31,19 +37,16 @@ export const tokenize = snapshot((input) => {
 
     if (isWhitespace(currentChar)) {
       debugger
-      start++
       current++
       continue
     }
 
     if (isAlpha(currentChar)) {
-      const currentToken = finishIdentifier()
-      tokens.push(currentToken)
+      finishIdentifier()
     } else if (isSingleCharacter(currentChar)) {
-      const charToken = getCharToken(currentChar)
       debugger
-      tokens.push(charToken)
-      start++
+      tokens.push(getCharToken(currentChar))
+      debugger
       current++
     } else {
       throw new Error(`Unknown character: ${currentChar}`)
@@ -69,7 +72,7 @@ export enum TokenType {
 
 export type Token = {
   type: TokenType
-  name?: string
+  name: string
 }
 
 export const token = {

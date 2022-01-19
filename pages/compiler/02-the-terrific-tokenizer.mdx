@@ -6,6 +6,7 @@ editedAt: '2021-12-21'
 ---
 
 import { Boilerplate } from '@/components/compiler/Boilerplate'
+import { Tokenizer } from '@/components/compiler/Tokenizer'
 import { PageList } from '@/components/compiler/PageList'
 import { Editor } from '@/components/compiler/Editor'
 import { Reveal } from '@/components/Reveal'
@@ -215,6 +216,10 @@ function isSingleCharacterToken(char) {
 </Figure>
 
 ### Identifiers and Keywords
+
+<Figure size="lg">
+  <Tokenizer />
+</Figure>
 
 An identifier in JavaScript is a sequence of characters that is used to refer to a variable name, like `message` and `hello`. Some sequences are called _keywords_ because they have special meaning in the language itself and _cannot_ be used as a variable name - some examples include `function`, `while`, and `switch`.
 

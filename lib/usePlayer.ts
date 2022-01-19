@@ -6,6 +6,23 @@ export type PlayerOptions = {
   loop: boolean
 }
 
+export type Player<StateType> = {
+  models: {
+    activeStepIndex: number
+    state: StateType
+    steps: StateType[]
+    isPlaying: boolean
+    settings: PlayerOptions
+  }
+  actions: {
+    reset: () => void
+    toggle: () => void
+    next: () => void
+    prev: () => void
+    setIndex: (index: number) => void
+  }
+}
+
 const DEFAULT_OPTIONS: PlayerOptions = {
   delay: 500,
   loop: false,
@@ -14,7 +31,7 @@ const DEFAULT_OPTIONS: PlayerOptions = {
 export default function usePlayer<StateType = unknown>(
   steps: StateType[],
   settings: Partial<PlayerOptions> = DEFAULT_OPTIONS
-) {
+): Player<StateType> {
   const populatedSettings = { ...DEFAULT_OPTIONS, ...settings }
 
   const [activeStepIndex, setActiveStepIndex] = React.useState(0)

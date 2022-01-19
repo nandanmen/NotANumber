@@ -11,7 +11,7 @@ const thumbStyle = {
 
 const trackStyle = {
   height: '4px',
-  background: '$grey200',
+  background: '$grey300',
 }
 
 export const Slider = styled('input', {

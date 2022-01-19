@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion'
 
 import { styled, css } from '@/stitches'
 import usePlayer from '@/lib/usePlayer'
+import { Slider } from '@/components/Slider'
 
 import { Button } from './Button'
 import { PlayButton } from './PlayButton'
@@ -42,35 +43,26 @@ export function AnimationWrapper({
     <Content>
       <AlgorithmWrapper>{children}</AlgorithmWrapper>
       <ControlsWrapper>
-        <StepButtons>
-          {steps.length > 1 && (
-            <>
-              <PlayButton
-                className={css({ marginRight: '0.25rem' })()}
-                state={isDone ? 'done' : isPlaying ? 'playing' : ''}
-                onClick={player.actions.toggle}
+        {steps.length > 1 && (
+          <>
+            <PlayButton
+              className={css({ marginRight: '0.25rem' })()}
+              state={isDone ? 'done' : isPlaying ? 'playing' : ''}
+              onClick={player.actions.toggle}
+            />
+            {controls && (
+              <Slider
+                type="range"
+                value={activeStepIndex}
+                onChange={(evt) =>
+                  player.actions.setIndex(evt.target.valueAsNumber)
+                }
+                min={0}
+                max={steps.length - 1}
               />
-              {controls && (
-                <>
-                  <Button
-                    css={{ marginRight: '0.25rem' }}
-                    onClick={player.actions.prev}
-                    disabled={activeStepIndex === 0}
-                  >
-                    <HiArrowLeft />
-                  </Button>
-                  <Button
-                    css={{ marginRight: '0.25rem' }}
-                    onClick={player.actions.next}
-                    disabled={isDone}
-                  >
-                    <HiArrowRight />
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-        </StepButtons>
+            )}
+          </>
+        )}
         {editable && (
           <FormControls>
             <AnimatePresence>
