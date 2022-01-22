@@ -38,11 +38,11 @@ And here's the final product in action:
   <Tokenizer />
 </Figure>
 
-## Tokens are the language's words
+## Tokens Are the Language's Words
 
 But hold on a minute — what does a tokenizer actually _do_?
 
-Essentially, a tokenizer breaks up your source code into small objects called **tokens** (hence the name). I like to think of a token as a "word" in the programming language — the smallest sequence of characters that still carry a meaning.
+Essentially, a tokenizer breaks up your source code into small objects called **tokens** (hence the name). I like to think of a token as a "word" in the programming language, i.e. the smallest sequence of characters that still carry a meaning.
 
 For example, if you tokenize the following JavaScript code:
 
@@ -56,7 +56,7 @@ You'll end up with the following six tokens:
 [console] [.] [log] [(] [message] [)]
 ```
 
-Each token has a type that represents that token's meaning. For the above sequence of tokens, the types might be something like this:
+Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. For the above sequence of tokens, the types might be something like this:
 
 ```
 [console]   [.]  [log]       [(]        [message]   [)]
@@ -203,315 +203,31 @@ Visually, this approach looks like this:
 
 ### Keywords
 
-Some identifiers have a special meaning in JavaScript and therefore cannot be used to refer to a piece of data. This includes words like "function", "while", and "switch". This group of identifiers are called **keywords** and typically have their own token type.
+Some identifiers have a special meaning in JavaScript and therefore cannot be used to refer to a piece of data. This includes words like `function`, `while`, and `switch`. This group of identifiers are called **keywords** and typically have their own token type.
+
+Therefore...
 
 <ProblemStatement>
   How does the tokenizer differentiate between an identifier and a keyword?
 </ProblemStatement>
 
-### Whitespace
+One way is to do the same thing as the single character tokens:
 
-Finally, the last thing we need to take care of is _whitespace_. We don't really want to do anything with whitespace, so we will simply skip the current character if it's whitespace:
+1. Keep a set of known keywords;
+2. When we're parsing an identifier, check if the parsed name is in this set;
+3. If it is, change the token's type to the keyword's type.
 
-```ts
-const singleCharacterTokens = new Set(['(', ')', '{', '}', ';', '.'])
+<Figure size="lg">keywords</Figure>
 
-function isAlpha(char: string) {
-  return /[a-zA-Z]/.test(char)
-}
+## Whitespace
 
-function isWhitespace(char: string) {
-  return /\s/.test(char)
-}
+Great! So far, our identifier can identify single character, identifier, and keyword tokens. The last thing we need to take care of is _whitespace_. We don't really want to do anything with whitespace, so the only change here is to skip the current character if it's a whitespace character.
 
-function tokenize(code: string): string[] {
-  let start = 0
-  let current = 0
-  let tokens = []
-
-  function finishIdentifier() {
-    while (isAlpha(code[current])) {
-      current++
-    }
-    const name = code.substring(start, current)
-    start = current
-    return name
-  }
-
-  while (current < code.length) {
-    const char = code[current]
-    if (isAlpha(char)) {
-      tokens.push(finishIdentifier())
-    } else if (singleCharacterTokens.has(char)) {
-      tokens.push(char)
-      start++
-      current++
-    } else if (isWhitespace(char)) {
-      start++
-      current++
-    }
-  }
-
-  return tokens
-}
-```
-
-And that's it! We're now able to parse enough tokens to recognize all of the tokens of our input:
-
-```js
-function hello(message) {
-  console.log(message)
-}
-```
-
-## Refactoring
-
-Our code has one issue though: we're only returning the tokens as literal strings! This isn't much more useful for the rest of the compiler pipeline than the initial raw code is. It would be a lot nicer if we return some information about the token's _type_ as well. This would also let us differentiate between _identifiers_ and _keywords_, which we haven't done so far.
-
-Let's start by creating a list of all the token types:
-
-```ts
-enum TokenType {
-  Keyword = 'Keyword',
-  Identifier = 'Identifier',
-  LeftParen = 'LeftParen',
-  RightParen = 'RightParen',
-  LeftCurly = 'LeftCurly',
-  RightCurly = 'RightCurly',
-  Dot = 'Dot',
-  Semicolon = 'Semicolon',
-}
-```
-
-_I've purposely assigned each enum value to a string here so that it's easier to debug; if we didn't do this, logging the token type would only show a number like 0 or 1._
-
-The token object that we're going to be using consists of a `type` property and an optional `name` property for keywords and identifiers:
-
-```ts
-type Token = {
-  type: TokenType
-  name?: string
-}
-```
-
-To make it easier to create these objects, let's make builder functions for each token type:
-
-```ts
-const token = {
-  keyword(name: string) {
-    return {
-      type: TokenType.Keyword,
-      name,
-    }
-  },
-  identifier(name: string) {
-    return {
-      type: TokenType.Identifier,
-      name,
-    }
-  },
-  leftParen() {
-    return { type: TokenType.LeftParen }
-  },
-  rightParen() {
-    return { type: TokenType.RightParen }
-  },
-  leftCurly() {
-    return { type: TokenType.LeftCurly }
-  },
-  rightCurly() {
-    return { type: TokenType.RightCurly }
-  },
-  dot() {
-    return { type: TokenType.Dot }
-  },
-  semicolon() {
-    return { type: TokenType.Semicolon }
-  },
-}
-```
-
-This lets us construct a token by simply calling `token.<type>()`, e.g. `token.keyword('function')` to create a token that corresponds to the `function` keyword.
-
-Great! All that's left is to update our `tokenize` function to use these builder functions instead of returning the string literal. First, let's update the `finishIdentifier()` function to create an identifier or a keyword:
-
-```ts
-const keywords = new Set(['function'])
-
-function tokenize(code: string): string[] {
-  let start = 0
-  let current = 0
-  let tokens = []
-
-  function finishIdentifier() {
-    while (isAlpha(code[current])) {
-      current++
-    }
-    const name = code.substring(start, current)
-    start = current
-
-    if (keywords.has(name)) {
-      return token.keyword(name)
-    }
-
-    return token.identifier(name)
-  }
-
-  while (current < code.length) {
-    const char = code[current]
-    if (isAlpha(char)) {
-      tokens.push(finishIdentifier())
-    } else if (singleCharacterTokens.has(char)) {
-      tokens.push(char)
-      start++
-      current++
-    } else if (isWhitespace(char)) {
-      start++
-      current++
-    }
-  }
-
-  return tokens
-}
-```
-
-Notice that I also added a set to contain the list of known keywords. For now, since we're only parsing the hello function, the only known keyword is "function".
-
-For the single character tokens, we need a way to map each character string to the appropriate builder function. For example, if we see the string `";"` then we need to call the `token.semicolon()` function.
-
-To do this, I created a `Map` that defines this relationship:
-
-```ts
-type SingleCharacterToken = '(' | ')' | '{' | '}' | '.' | ';'
-
-const knownSingleCharacters = new Map<SingleCharacterToken, () => Token>([
-  ['(', token.leftParen],
-  [')', token.rightParen],
-  ['{', token.leftCurly],
-  ['}', token.rightCurly],
-  ['.', token.dot],
-  [';', token.semicolon],
-])
-```
-
-And added a type guard to determine if the current character is a single character token:
-
-```ts
-function isSingleCharacter(char: string): char is SingleCharacterToken {
-  return knownSingleCharacters.has(char as SingleCharacterToken)
-}
-```
-
-Then I added another helper that returns the appropriate builder function for a single character token:
-
-```ts
-function getCharToken(char: SingleCharacterToken) {
-  const builder = knownSingleCharacters.get(char)
-  // we need the exclamation mark here because TS would say
-  // that this is undefined otherwise.
-  return builder!()
-}
-```
-
-Now we can update the `tokenize` function to call these helpers:
-
-```ts
-function tokenize(input: string): Token[] {
-  let start = 0
-  let current = 0
-  const tokens = []
-
-  function finishIdentifier() {
-    while (isAlpha(input[current])) {
-      current++
-    }
-    const name = input.substring(start, current)
-    start = current
-
-    if (keywords.has(name)) {
-      return token.keyword(name)
-    }
-
-    return token.identifier(name)
-  }
-
-  while (current < input.length) {
-    const currentChar = input[current]
-
-    if (isWhitespace(currentChar)) {
-      start++
-      current++
-      continue
-    }
-
-    if (isAlpha(currentChar)) {
-      tokens.push(finishIdentifier())
-    } else if (isSingleCharacter(currentChar)) {
-      tokens.push(getCharToken(currentChar))
-      start++
-      current++
-    }
-  }
-
-  return tokens
-}
-```
-
-And as a finishing touch, let's throw an error if we find a character we can't parse just yet:
-
-```ts
-function tokenize(input: string): Token[] {
-  let start = 0
-  let current = 0
-  const tokens = []
-
-  function finishIdentifier() {
-    while (isAlpha(input[current])) {
-      current++
-    }
-    const name = input.substring(start, current)
-    start = current
-
-    if (keywords.has(name)) {
-      return token.keyword(name)
-    }
-
-    return token.identifier(name)
-  }
-
-  while (current < input.length) {
-    const currentChar = input[current]
-
-    if (isWhitespace(currentChar)) {
-      start++
-      current++
-      continue
-    }
-
-    if (isAlpha(currentChar)) {
-      tokens.push(finishIdentifier())
-    } else if (isSingleCharacter(currentChar)) {
-      tokens.push(getCharToken(currentChar))
-      start++
-      current++
-    } else {
-      throw new Error(`Unknown character: ${currentChar}`)
-    }
-  }
-
-  return tokens
-}
-```
-
-Now if we run this function, we get exactly the output we would expect!
-
-```
-exec tokenizer
-```
+<Figure size="lg">Ignore whitespace</Figure>
 
 ## Summary
 
-And there we have our tokenizer! It can't do too much at the moment, but it's able to tokenize the input that we want it to - this simple hello function:
+And there we have our tokenizer! It can't do too much at the moment, but it's able to tokenize the code snippet that we started with:
 
 ```js
 function hello(message) {
@@ -519,6 +235,11 @@ function hello(message) {
 }
 ```
 
-It might also seem a tad over-engineered, but I think it's general enough that we can extend it later on when we implement more features of the JS language.
+I purposely omitted code snippets because I wanted to solidify the _concepts_ behind a tokenizer rather than tying it down to any direct implementation. After all, there's a bunch of different ways of implementing the same thing! But if you'd like to see an implementation, check out [my implementation of this tokenizer (written in TypeScript)](https://github.com/narendrasss/compiler/blob/main/src/tokenizer.ts).
 
-In the next post, we'll take the tokens generated in this phase and try to parse them into a syntax tree. Until then!
+To finish off, I have a few exercises for you to try out if you'd like to learn more:
+
+1. **Implement this tokenizer in your language of choice**; use the visualization from the introduction as a reference.
+2. Once it's done, **extend the tokenizer to support the following syntax**: `const hello = 'world'`.
+
+I'd love to see what you come up with, and thanks for reading!
