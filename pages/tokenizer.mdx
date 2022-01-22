@@ -10,6 +10,7 @@ import { Tokenizer } from '@/components/compiler/Tokenizer'
 import { PageList } from '@/components/compiler/PageList'
 import { Editor } from '@/components/compiler/Editor'
 import { Reveal } from '@/components/Reveal'
+import { Svg } from '@/components/Svg'
 import Figure from '@/elements/Figure'
 import Callout from '@/elements/Callout'
 import ProblemStatement from '@/elements/ProblemStatement'
@@ -18,29 +19,23 @@ A few weekends ago, I spent some time rebuilding the Babel compiler from scratch
 
 Fundamentally, I see a compiler as a pipeline with four concrete steps:
 
-// drawing here
+<Figure size="xl">
+  <Svg href="tokenizer/pipeline.svg" />
+</Figure>
 
 Each step takes in the output of the previous step and transforms it to something else. The first step, the tokenization step, takes in your original source code as its input, while the last step, the generation step, spits out the modified code.
 
-> It's more accurate to say that Babel is a _transpiler_ rather than a _compiler_, since the output is the same programming language as the input.
-
-In this post, we'll focus on implementing that first step. Specifically, we'll build a tokenizer that can understand the following code snippet _and absolutely nothing more_:
+In this post, we'll go over how to build a tokenizer for a small subset of JavaScript. Specifically, we'll build a tokenizer that can understand the following code snippet _and absolutely nothing more_:
 
 ```ts
-function hello(message) {
-  console.log(message)
+function hello() {
+  console.log('hello, world!')
 }
 ```
 
-And here's the final product in action:
-
-<Figure size="lg">
-  <Tokenizer />
-</Figure>
-
 ## Tokens Are the Language's Words
 
-But hold on a minute — what does a tokenizer actually _do_?
+But wait — what's a token and what does a tokenizer actually _do_?
 
 Essentially, a tokenizer breaks up your source code into small objects called **tokens** (hence the name). I like to think of a token as a "word" in the programming language, i.e. the smallest sequence of characters that still carry a meaning.
 
@@ -56,7 +51,7 @@ You'll end up with the following six tokens:
 [console] [.] [log] [(] [message] [)]
 ```
 
-Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. For the above sequence of tokens, the types might be something like this:
+Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
 ```
 [console]   [.]  [log]       [(]        [message]   [)]
@@ -67,16 +62,27 @@ To reiterate, the tokenizer's job is to break up the source code (which it recei
 
 ## Implementation Plan
 
-Here's the final tokenizer once again tokenizing our code snippet:
+Great! Now that we know what a tokenizer is, we're finally ready to implement our tokenizer. Again, we want to focus on tokenizing the following code snippet and nothing more:
+
+```ts
+function hello() {
+  console.log('hello, world!')
+}
+```
+
+And here's a preview of the final product making its way through our tokenizer:
 
 <Figure size="lg">
   <Tokenizer />
 </Figure>
 
-To implement it, we'll break it down into two parts:
+We'll break down the implementation into three parts:
 
-1. Parsing single character tokens, and
-2. Parsing identifiers and keywords.
+1. Parsing single character tokens;
+2. Parsing identifiers and keywords; and
+3. Parsing string literals.
+
+Let's get started!
 
 ## Single Character Tokens
 
@@ -84,64 +90,37 @@ Let's begin by trying to parse out the simplest tokens first - the ones that are
 
 <Figure size="lg">
 
-![](single-tokens.png)
+![](tokenizer/single-tokens.png)
 
 </Figure>
 
-We'll start off by writing some boilerplate to iterate through every character of the string:
+We'll start off by iterating through every character of our input:
 
 <Figure size="lg">
   <Boilerplate />
 </Figure>
 
-As we iterate through the code string, we check if the current character points to one of these single character tokens. If it does, we add the character to the final tokens list. We'll ignore everything else for now.
+<Callout label="What's that \n?">
 
-```ts highlight=5-8
-function tokenize(input) {
-  let current = 0
-  let tokens = []
+The `\n` character is a special character that represents a **new line**. It's typically invisible to us when we're editing code or text, but I chose to explicitly show it here to show what the _computer_ sees.
 
-  while (current < code.length) {
-    const char = code[current]
-    if (isSingleCharacterToken(char)) {
-      tokens.push(char)
-    }
-    current++
-  }
+</Callout>
 
-  return tokens
-}
-```
+As we iterate through the code string, we check if the current character is one of these single character tokens, and if it does, we add the character to the final tokens list.
 
-One way to check if a character is a single character token is to keep a list of all single character tokens and checking if the character is in that list:
-
-```ts
-const singleCharacterTokens = new Set(['{', '}', '(', ')', '.'])
-
-function isSingleCharacterToken(char) {
-  return singleCharacterTokens.has(char)
-}
-```
-
-Cool! If we run this piece of code now, we'll get something like this:
+One way to check if a character is a single character token is to keep a list of all single character tokens we support and checking if the character is in that list:
 
 <Figure size="lg">Test</Figure>
 
 ## Identifiers and Keywords
 
-With the single character tokens out of the way, the only thing left is the parsing the identifier and keyword tokens:
-
-<Figure size="lg"></Figure>
-
-<ProblemStatement>How do we parse identifier tokens?</ProblemStatement>
+With the single character tokens out of the way, the next thing we have to do is to parse the identifier and keyword tokens. But hold on a second - what's an identifier anyway?
 
 ### What Makes an Identifier?
 
-Before we can parse identifiers, we have to figure out what constitutes a valid identifier in the first place.
+In JavaScript, an identifier is a sequence of characters that is used to refer to some piece of data. For example, in our input code snippet, the words `hello`, `console`, and `log` are all identifiers because they refer to a function definition, an object, and a method respectively (all data available to the program).
 
-In JavaScript, an identifier is a sequence of characters that is used to refer to some piece of data. For example, in our input code snippet, the words "message" and "hello" are both identifiers because they refer to the function argument and the function definition respectively.
-
-A _valid_ identifier in JavaScript is a sequence of alphanumeric characters, except the first character cannot be a number. This means the following strings are valid identifiers:
+[According to MDN](https://developer.mozilla.org/en-US/docs/Glossary/Identifier), a _valid_ identifier in JavaScript is a sequence of alphanumeric characters, except the first character cannot be a number. This means the following strings are valid identifiers:
 
 ```
 hello
@@ -156,54 +135,20 @@ But the following are not:
 8ball
 ```
 
-I wanted to keep things simple for this tokenizer so I limited it further to only alphabetic characters. This means my tokenizer will only recognize the word "hello" as a valid identifier out of the examples above.
+I initially wanted to support the MDN identifier rules exactly, but I chose to limit identifiers to only **alphabetical** characters for now. This means that, out of all the examples above, my tokenizer will only recognize the word `hello` as an identifier.
 
 ### Implementation
 
-To recap, an identifier (for our purposes) is any sequence of alphabetic characters. To parse it, I went with the following approach:
+To recap, an identifier (for our purposes) is any sequence of alphabetical characters. To parse it, I went with the following approach:
 
-1. If the current character is alphabetic, start parsing an identifier;
-2. Keep adding characters to the current identifier token until the current character is **not** alphabetic.
-
-```ts highlight=3,7-14,18-19
-const singleCharacterTokens = new Set(['(', ')', '{', '}', ';', '.'])
-
-function tokenize(code: string): string[] {
-  let start = 0
-  let current = 0
-  let tokens = []
-
-  function finishIdentifier() {
-    while (isAlpha(code[current])) {
-      current++
-    }
-    const name = code.substring(start, current)
-    start = current
-    return name
-  }
-
-  while (current < code.length) {
-    const char = code[current]
-    if (isAlpha(char)) {
-      tokens.push(finishIdentifier())
-    } else if (singleCharacterTokens.has(char)) {
-      tokens.push(char)
-      start++
-      current++
-    }
-  }
-
-  return tokens
-}
-```
-
-Visually, this approach looks like this:
+1. If the current character is alphabetical, start parsing an identifier;
+2. Keep adding characters to the current identifier token until the current character is **not** alphabetical.
 
 <Figure size="lg"></Figure>
 
 ### Keywords
 
-Some identifiers have a special meaning in JavaScript and therefore cannot be used to refer to a piece of data. This includes words like `function`, `while`, and `switch`. This group of identifiers are called **keywords** and typically have their own token type.
+Some identifiers have a special meaning in JavaScript and therefore cannot be used to refer to a piece of data, such as `function`, `while`, and `switch`. This group of identifiers are called **keywords** and typically have their own individual token types.
 
 Therefore...
 
@@ -218,6 +163,10 @@ One way is to do the same thing as the single character tokens:
 3. If it is, change the token's type to the keyword's type.
 
 <Figure size="lg">keywords</Figure>
+
+## String Literals
+
+Next up is tokenizing **string literals**.
 
 ## Whitespace
 

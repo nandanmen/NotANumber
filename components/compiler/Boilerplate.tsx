@@ -1,4 +1,4 @@
-import { CodePreview } from '@/components/CodePreview'
+import { Algorithm } from '@/components/AlgorithmPlayer'
 import { styled } from '@/stitches'
 
 import { CharacterList } from './CharacterList'
@@ -18,21 +18,24 @@ const boilerplate = snapshot(function tokenize(input) {
   return tokens
 })
 
+const input = `function hello() {
+  console.log('hello, world!')
+}`
+
 export function Boilerplate() {
   return (
-    <CodePreview
+    <Algorithm
       algorithm={boilerplate}
-      initialInputs={['console.log(message)\nconsole']}
-      delay={300}
+      initialInputs={[input]}
+      delay={200}
       controls
-      editable
     >
       {(context) => (
         <Wrapper>
           <CharacterList state={context.state} />
         </Wrapper>
       )}
-    </CodePreview>
+    </Algorithm>
   )
 }
 
