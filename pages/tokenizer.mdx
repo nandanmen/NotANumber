@@ -135,7 +135,7 @@ But the following are not:
 8ball
 ```
 
-I initially wanted to support the MDN identifier rules exactly, but I chose to limit identifiers to only **alphabetical** characters for now. This means that, out of all the examples above, my tokenizer will only recognize the word `hello` as an identifier.
+I initially wanted to support the MDN identifier rules exactly, but I chose to limit identifiers to only **alphabetical** characters for now to keep it scoped to our input code snippet. This means that, out of all the examples above, my tokenizer will only recognize the word `hello` as an identifier.
 
 ### Implementation
 
@@ -148,7 +148,7 @@ To recap, an identifier (for our purposes) is any sequence of alphabetical chara
 
 ### Keywords
 
-Some identifiers have a special meaning in JavaScript and therefore cannot be used to refer to a piece of data, such as `function`, `while`, and `switch`. This group of identifiers are called **keywords** and typically have their own individual token types.
+Some words, like `function`, `while`, and `switch`, have a special meaning in JavaScript and therefore cannot be used as regular identifiers. This group of identifiers are called **keywords** and typically have their own individual token types.
 
 Therefore...
 
@@ -166,7 +166,18 @@ One way is to do the same thing as the single character tokens:
 
 ## String Literals
 
-Next up is tokenizing **string literals**.
+Next up is tokenizing the `'hello, world!'` part of the code snippet, also known as a **string literal**. In JavaScript, a string literal abides by the following rules:
+
+1. Starts and ends with an apostrophe (`'`) or double quotes (`"`) pair, and
+2. Cannot span multiple lines.
+
+To keep things simple, I've opted to support both multiple lines and **only apostrophes**.
+
+<Callout label="What about `these strings`?">
+
+JavaScript also supports writing strings using backticks like this: \`hello world\`.
+
+</Callout>
 
 ## Whitespace
 
