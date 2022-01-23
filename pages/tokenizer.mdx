@@ -33,36 +33,93 @@ function hello() {
 }
 ```
 
+To do so, we're going to look into:
+
+1. What a token is and why a tokenizer is necessary;
+2. How to implement a tokenizer in three concrete steps:
+    1. Tokenizing **single character tokens**;
+    2. Tokenizing **identifiers and keywords**; and
+    3. Tokenizing **string literals**.
+
 ## Tokens Are the Language's Words
 
-But wait — what's a token and what does a tokenizer actually _do_?
+<ProblemStatement>
+
+What's a token and what does a tokenizer actually _do_?
+
+</ProblemStatement>
 
 Essentially, a tokenizer breaks up your source code into small objects called **tokens** (hence the name). I like to think of a token as a "word" in the programming language, i.e. the smallest sequence of characters that still carry a meaning.
 
 For example, if you tokenize the following JavaScript code:
 
 ```js
-console.log(message)
+function hello() {
+  console.log('hello, world!')
+}
 ```
 
-You'll end up with the following six tokens:
+You'll end up with the following tokens:
 
-```
-[console] [.] [log] [(] [message] [)]
-```
+<Figure size="base">
+  <Svg href="tokenizer/tokens.svg" />
+</Figure>
 
 Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
-```
-[console]   [.]  [log]       [(]        [message]   [)]
- Identifier  Dot  Identifier  LeftParen  Identifier  RightParen
+<Figure size="base">
+  <Svg href="tokenizer/token-types.svg" />
+</Figure>
+
+## Why Do We Do This?
+
+Before we continue, I want to take a brief detour here to talk about _why_ a tokenizer is necessary in the first place. I couldn't find a super clear resource to point to here but from what I can gather, there are two reasons:
+
+1. To organize data to a format more friendly for machines;
+2. To separate the logic that handles a language's **microsyntax** from the logic that handles **regular syntax**.
+
+### Machine-Friendly Data
+
+Writing programs is a lot easier when the data that you're working with is structured in a consistent manner. Grouping strings into tokens means the rest of the compiler pipeline don't need to individually parse the source code - they get the advantage of working with a tidy array of objects instead.
+
+### Microsyntax and Regular Syntax
+
+The other reason is to separate the logic that handles the language's **microsyntax** from the logic that handles **regular syntax**. When I say "syntax" here I mean the **rules** that govern the "correct" structure of the programming language.
+
+For example, the correct way to define a constant variable in JavaScript is to use the `const` keyword like so:
+
+```js
+const hello = 'world'
 ```
 
-To reiterate, the tokenizer's job is to break up the source code (which it receives as a string) into a list of tokens like we just saw. Breaking up the code like this makes the other phases' lives much easier — instead of working with the source string directly, they work with the neat and tidy list of tokens.
+This is an example of **regular syntax** because the rule is about the correct way to arrange different _words_ together.
+
+On the other hand, **micro**syntax is about the correct way to arrange different _characters_ together to make up a word. One example is how strings are defined in JavaScript, i.e. they're words that are surrounded by apostrophes or double quotes:
+
+```
+// valid strings
+'hello'
+"world"
+
+// invalid strings
+<-hello->
+&world&
+```
+
+It's important to separate the code that handles this different type of syntax because they're concerned with two different things. Trying to jumble them together will only lead to more complex code that's difficult to read and follow.
+
+### In Short...
+
+To reiterate, the tokenizer's job is to break up the source code (which it receives as a string) into a list of tokens. Breaking up the code like this makes the other phases' lives much easier by:
+
+1. Tidying up the input into a more structured format, and
+2. Making the code simpler by separating logic for syntax and microsyntax.
 
 ## Implementation Plan
 
-Great! Now that we know what a tokenizer is, we're finally ready to implement our tokenizer. Again, we want to focus on tokenizing the following code snippet and nothing more:
+Anyways, back to the tokenizer!
+
+Now that we know what tokens are and why a tokenizer is necessary, we're finally ready to start implementing it. Again, we want to focus on tokenizing the following code snippet and nothing more:
 
 ```ts
 function hello() {
@@ -70,7 +127,7 @@ function hello() {
 }
 ```
 
-And here's a preview of the final product making its way through our tokenizer:
+Here's a preview of the tokenizer we're implementing, making its way through the code snippet:
 
 <Figure size="lg">
   <Tokenizer />
@@ -86,12 +143,10 @@ Let's get started!
 
 ## Single Character Tokens
 
-Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In the code snippet we're parsing, that would be the dot, curly brackets and left parentheses tokens:
+Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In the code snippet we're parsing, that would be all of the following tokens:
 
 <Figure size="lg">
-
-![](tokenizer/single-tokens.png)
-
+  <Svg href="tokenizer/single-tokens.svg" />
 </Figure>
 
 We'll start off by iterating through every character of our input:
@@ -171,19 +226,21 @@ Next up is tokenizing the `'hello, world!'` part of the code snippet, also known
 1. Starts and ends with an apostrophe (`'`) or double quotes (`"`) pair, and
 2. Cannot span multiple lines.
 
-To keep things simple, I've opted to support both multiple lines and **only apostrophes**.
+To keep things simple, I've opted to support **only apostrophes** and multiple-line strings (turns out the implementation is simpler if we support multiple lines).
 
 <Callout label="What about `these strings`?">
 
-JavaScript also supports writing strings using backticks like this: \`hello world\`.
+JavaScript also supports writing strings using backticks like this: \`hello world\`. This type of string is a bit more complicated to tokenize because they allow adding JavaScript syntax inside the string itself - so we're skipping it for now.
 
 </Callout>
 
-## Whitespace
+To tokenize a string literal, we're going to do something similar to tokenizing identifiers:
 
-Great! So far, our identifier can identify single character, identifier, and keyword tokens. The last thing we need to take care of is _whitespace_. We don't really want to do anything with whitespace, so the only change here is to skip the current character if it's a whitespace character.
+1. If the current character is an apostrophe, start parsing a string literal;
+2. Keep collecting characters until either the current character is another apostrophe, marking the end of the string; or
+3. You've reached the end of the file, making the string unterminated - an error!
 
-<Figure size="lg">Ignore whitespace</Figure>
+<Figure size="lg">string parsing</Figure>
 
 ## Summary
 
@@ -195,11 +252,13 @@ function hello(message) {
 }
 ```
 
-I purposely omitted code snippets because I wanted to solidify the _concepts_ behind a tokenizer rather than tying it down to any direct implementation. After all, there's a bunch of different ways of implementing the same thing! But if you'd like to see an implementation, check out [my implementation of this tokenizer (written in TypeScript)](https://github.com/narendrasss/compiler/blob/main/src/tokenizer.ts).
+I purposely omitted code snippets because I wanted to solidify the _concepts_ behind a tokenizer rather than tying it down to any direct implementation. After all, there's a bunch of different ways of implementing the same thing! But if you'd like to read some code anyway, check out [my implementation of this tokenizer (written in TypeScript)](https://github.com/narendrasss/compiler/blob/main/src/tokenizer.ts).
 
 To finish off, I have a few exercises for you to try out if you'd like to learn more:
 
 1. **Implement this tokenizer in your language of choice**; use the visualization from the introduction as a reference.
 2. Once it's done, **extend the tokenizer to support the following syntax**: `const hello = 'world'`.
 
-I'd love to see what you come up with, and thanks for reading!
+I'd love to see what you come up with - you can either use the feedback form below or reach out to me [@nansdotio](https://twitter.com/nansdotio) on Twitter.
+
+Thanks for reading!

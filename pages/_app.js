@@ -73,7 +73,6 @@ const Main = styled.main`
   --code-border-color: var(--border-color);
 
   --token-color-keyword: var(--blue);
-  --token-style-keyword: italic;
   --token-color-function: var(--blue);
   --token-color-string: var(--red);
   --token-color-comment: var(--brown);
@@ -86,7 +85,7 @@ const Main = styled.main`
   --text-2xl: 1.875rem;
 
   --text-serif: Recoleta, ui-serif, Georgia, serif;
-  --text-mono: 'Cartograph CF', Menlo, ui-monospace, monospace;
+  --text-mono: Menlo, ui-monospace, monospace;
   --text-sans: Karla, system-ui, -apple-system, sans-serif;
 
   background: var(--color-background);
