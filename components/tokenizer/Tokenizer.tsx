@@ -64,18 +64,17 @@ const center = {
 const SingleChar = styled('li', {
   width: '$10',
   height: '$10',
-  background: '$white',
-  border: '1px solid $black',
+  background: '$grey100',
+  border: '1px solid $grey300',
+  borderRadius: 6,
+  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   ...center,
-
-  '&:not(:last-child)': {
-    borderRight: 'none',
-  },
 
   variants: {
     active: {
       true: {
         background: '$black',
+        border: '1px solid $black',
         color: '$white',
       },
     },
@@ -93,7 +92,7 @@ function TokenBlock({ type, name, ...props }) {
 
 const TokenList = styled('ul', {
   display: 'grid',
-  gap: 4,
+  gap: '$2',
   gridTemplateColumns: 'repeat(3, 12rem)',
   marginTop: '$16',
 })
@@ -102,15 +101,19 @@ const TokenWrapper = styled(motion.li, {
   display: 'flex',
   fontFamily: '$mono',
   fontSize: '$sm',
-  border: '1px solid $black',
+  border: '1px solid $grey300',
+  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+  borderRadius: 6,
 })
 
 const TokenType = styled('p', {
   flex: 1,
   flexShrink: 0,
   padding: '$2',
-  background: '$teal',
-  borderRight: '1px solid $black',
+  background: '$grey100',
+  borderRight: '1px solid $grey300',
+  borderTopLeftRadius: 6,
+  borderBottomLeftRadius: 6,
 })
 
 const TokenName = styled('p', {
@@ -118,6 +121,8 @@ const TokenName = styled('p', {
   flexShrink: 0,
   padding: '$2',
   background: '$white',
+  borderTopRightRadius: 6,
+  borderBottomRightRadius: 6,
 })
 
 const KnownCharList = styled('ul', {
@@ -125,6 +130,7 @@ const KnownCharList = styled('ul', {
   justifyContent: 'center',
   fontFamily: '$mono',
   marginBottom: '$16',
+  gap: '$1',
 })
 
 const Wrapper = styled('div', {
