@@ -25,7 +25,8 @@ export function Tokenizer() {
       editable
     >
       {(context: AlgorithmContext<TokenizerState>) => (
-        <>
+        <Wrapper>
+          <CharacterList state={context.state} />
           <KnownCharList>
             {[...knownSingleCharacters.keys()].map((char) => (
               <SingleChar
@@ -36,20 +37,17 @@ export function Tokenizer() {
               </SingleChar>
             ))}
           </KnownCharList>
-          <Wrapper>
-            <CharacterList state={context.state} />
-            <TokenList>
-              {context.state.tokens.map((token, index) => (
-                <TokenBlock
-                  key={index}
-                  {...token}
-                  animate={{ y: 0, opacity: 1 }}
-                  initial={{ y: 8, opacity: 0 }}
-                />
-              ))}
-            </TokenList>
-          </Wrapper>
-        </>
+          <TokenList>
+            {context.state.tokens.map((token, index) => (
+              <TokenBlock
+                key={index}
+                {...token}
+                animate={{ y: 0, opacity: 1 }}
+                initial={{ y: 8, opacity: 0 }}
+              />
+            ))}
+          </TokenList>
+        </Wrapper>
       )}
     </Algorithm>
   )
@@ -62,12 +60,13 @@ const center = {
 }
 
 const SingleChar = styled('li', {
-  width: '$10',
-  height: '$10',
+  width: '$8',
+  height: '$8',
   background: '$grey100',
   border: '1px solid $grey300',
   borderRadius: 6,
   boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+  fontSize: '0.75rem',
   ...center,
 
   variants: {
@@ -129,7 +128,7 @@ const KnownCharList = styled('ul', {
   display: 'flex',
   justifyContent: 'center',
   fontFamily: '$mono',
-  marginBottom: '$16',
+  marginTop: '$16',
   gap: '$1',
 })
 
