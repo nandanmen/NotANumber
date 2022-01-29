@@ -15,11 +15,15 @@ type TokenizerState = {
   currentChar?: string
 }
 
+const INPUT = `function hello() {
+  console.log('hello, world!')
+}`
+
 export function Tokenizer() {
   return (
     <Algorithm
       algorithm={tokenize}
-      initialInputs={['console.log(message)']}
+      initialInputs={[INPUT]}
       delay={300}
       controls
       editable
@@ -80,11 +84,11 @@ const SingleChar = styled('li', {
   },
 })
 
-function TokenBlock({ type, name, ...props }) {
+function TokenBlock({ type, name = '', value = '', ...props }) {
   return (
     <TokenWrapper {...props}>
       <TokenType>{type}</TokenType>
-      <TokenName>{name}</TokenName>
+      <TokenName>{name || value}</TokenName>
     </TokenWrapper>
   )
 }

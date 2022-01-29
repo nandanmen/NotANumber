@@ -1,6 +1,8 @@
 import snapshot from '../../../lib/snapshot.macro'
 
-export const keywords = new Set(['function'])
+const capitalize = (str: string) => {
+  return str[0].toUpperCase() + str.slice(1)
+}
 
 export const tokenize = snapshot((input) => {
   let current = 0
@@ -9,10 +11,7 @@ export const tokenize = snapshot((input) => {
   debugger
 
   function finishIdentifier() {
-    const candidate = {
-      type: TokenType.Identifier,
-      name: '',
-    }
+    const candidate = token.identifier('')
     tokens.push(candidate)
     debugger
 
@@ -25,11 +24,27 @@ export const tokenize = snapshot((input) => {
     }
 
     if (keywords.has(candidate.name)) {
-      candidate.type = TokenType.Keyword
+      candidate.type = TokenType[capitalize(candidate.name)]
       debugger
     }
+  }
 
-    return candidate
+  function finishStringLiteral() {
+    const candidate = token.stringLiteral('')
+
+    let value = ''
+    while (input[current] && input[current] !== "'") {
+      value += input[current]
+      current++
+    }
+
+    if (input[current] === "'") {
+      // consume the closing tick
+      current++
+      return token.stringLiteral(value)
+    }
+
+    throw new Error(`Unterminated string, expected a closing '`)
   }
 
   while (current < input.length) {
@@ -48,6 +63,10 @@ export const tokenize = snapshot((input) => {
       tokens.push(getCharToken(currentChar))
       debugger
       current++
+    } else if (currentChar === "'") {
+      // consume the first tick
+      current++
+      tokens.push(finishStringLiteral())
     } else {
       throw new Error(`Unknown character: ${currentChar}`)
     }
@@ -60,7 +79,7 @@ export const tokenize = snapshot((input) => {
 // --
 
 export enum TokenType {
-  Keyword = 'Keyword',
+  Function = 'Function',
   Identifier = 'Identifier',
   LeftParen = 'LeftParen',
   RightParen = 'RightParen',
@@ -68,18 +87,23 @@ export enum TokenType {
   RightCurly = 'RightCurly',
   Dot = 'Dot',
   Semicolon = 'Semicolon',
+  StringLiteral = 'StringLiteral',
 }
 
-export type Token = {
-  type: TokenType
-  name: string
-}
+export type Token =
+  | {
+      type: TokenType
+      name: string
+    }
+  | {
+      type: TokenType.StringLiteral
+      value: string
+    }
 
 export const token = {
-  keyword(name: string) {
+  function() {
     return {
-      type: TokenType.Keyword,
-      name,
+      type: TokenType.Function,
     }
   },
   identifier(name: string) {
@@ -106,7 +130,15 @@ export const token = {
   semicolon() {
     return { type: TokenType.Semicolon, name: ';' }
   },
+  stringLiteral(value: string) {
+    return {
+      type: TokenType.StringLiteral,
+      value,
+    }
+  },
 }
+
+export const keywords = new Map([['function', token.function]])
 
 // --
 
