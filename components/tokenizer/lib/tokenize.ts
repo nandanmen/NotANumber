@@ -31,20 +31,26 @@ export const tokenize = snapshot((input) => {
 
   function finishStringLiteral() {
     const candidate = token.stringLiteral('')
+    tokens.push(candidate)
+    debugger
 
-    let value = ''
-    while (input[current] && input[current] !== "'") {
-      value += input[current]
+    // consume the first tick
+    current++
+
+    let currentChar = input[current]
+    while (currentChar && currentChar !== "'") {
+      candidate.value += currentChar
+      debugger
       current++
+      currentChar = input[current]
     }
 
-    if (input[current] === "'") {
+    if (currentChar) {
       // consume the closing tick
       current++
-      return token.stringLiteral(value)
+    } else {
+      throw new Error(`Unterminated string, expected a closing '`)
     }
-
-    throw new Error(`Unterminated string, expected a closing '`)
   }
 
   while (current < input.length) {
@@ -64,9 +70,7 @@ export const tokenize = snapshot((input) => {
       debugger
       current++
     } else if (currentChar === "'") {
-      // consume the first tick
-      current++
-      tokens.push(finishStringLiteral())
+      finishStringLiteral()
     } else {
       throw new Error(`Unknown character: ${currentChar}`)
     }
