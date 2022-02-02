@@ -46,6 +46,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = await getBits()
   return {
     props: { posts },
+    revalidate: 300, // stale after 5 minutes
   }
 }
 
