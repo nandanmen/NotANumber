@@ -44,5 +44,5 @@ function toBitsPage(notionPage: any): Bit {
 }
 
 function getSlugFromTitle(title: string) {
-  return title.toLowerCase().replaceAll(' ', '-')
+  return title.toLowerCase().split(' ').join('-')
 }
