@@ -32,6 +32,7 @@ export const getStaticProps: GetStaticProps<
       post,
       content: parser.makeHtml(contentMarkdown),
     },
+    revalidate: 300,
   }
 }
 
