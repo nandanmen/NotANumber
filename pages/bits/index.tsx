@@ -6,7 +6,7 @@ import { HiArrowRight } from 'react-icons/hi'
 import type { GetStaticProps } from 'next'
 
 import { styled } from '@/stitches'
-import { getBits } from '@/lib/notion'
+import { getPublishedBits } from '@/lib/notion'
 import type { Bit } from '@/lib/notion'
 
 export default function BitsPage({ posts }: { posts: Bit[] }) {
@@ -43,7 +43,7 @@ export default function BitsPage({ posts }: { posts: Bit[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const posts = await getBits()
+  const posts = await getPublishedBits()
   return {
     props: { posts },
     revalidate: 300, // stale after 5 minutes

@@ -1,7 +1,12 @@
 import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from 'next'
 import showdown from 'showdown'
 
-import { getMarkdownFromPage, Bit, getBits } from '@/lib/notion'
+import {
+  getMarkdownFromPage,
+  Bit,
+  getBits,
+  getPublishedBits,
+} from '@/lib/notion'
 import { ArticleLayout } from '@/layouts/Article'
 
 const parser = new showdown.Converter()
@@ -37,7 +42,7 @@ export const getStaticProps: GetStaticProps<
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getBits()
+  const posts = await getPublishedBits()
   return {
     paths: posts.map((post) => `/bits/${post.id}`),
     fallback: 'blocking',

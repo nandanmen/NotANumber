@@ -12,6 +12,11 @@ export async function getBits() {
   return results.map(toBitsPage)
 }
 
+export async function getPublishedBits() {
+  const bits = await getBits()
+  return bits.filter((bit) => bit.metadata.published)
+}
+
 export async function getMarkdownFromPage(pageId: string) {
   const blocks = await markdownParser.pageToMarkdown(pageId)
   return markdownParser.toMarkdownString(blocks)
