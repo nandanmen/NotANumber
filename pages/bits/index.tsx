@@ -3,15 +3,13 @@ import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { titleCase } from 'title-case'
 import { HiArrowRight } from 'react-icons/hi'
+import type { GetStaticProps } from 'next'
 
 import { styled } from '@/stitches'
-import { formatPath } from '@/lib/utils'
+import { getPublishedBits } from '@/lib/notion'
+import type { Bit } from '@/lib/notion'
 
-import { frontMatter as post1 } from './aoc-day-1.mdx'
-import { frontMatter as post2 } from './parsing-console-log.mdx'
-import { frontMatter as post3 } from './tokenizer.mdx'
-
-export default function BitsPage() {
+export default function BitsPage({ posts }: { posts: Bit[] }) {
   return (
     <Page>
       <Head>
@@ -36,25 +34,40 @@ export default function BitsPage() {
       </Header>
       <Divider />
       <Posts>
-        <Post post={post1} />
-        <Post post={post2} />
-        <Post post={post3} />
+        {posts.map((post) => (
+          <Post post={post} key={post.id} />
+        ))}
       </Posts>
     </Page>
   )
 }
 
+export const getStaticProps: GetStaticProps = async () => {
+  const posts = await getPublishedBits()
+  return {
+    props: { posts },
+    revalidate: 300, // stale after 5 minutes
+  }
+}
+
 // --
 
-function Post({ post }: { post: typeof post1 }) {
+function Post({ post }: { post: Bit }) {
   return (
     <PostWrapper>
-      <Link href={formatPath(post.__resourcePath)}>
+      <Link href={`/bits/${post.id}`}>
         <Anchor>
           <Arrow style={{ rotate: -45 }}>
             <HiArrowRight />
           </Arrow>
           <PostTitle>{titleCase(post.title)}</PostTitle>
+          <PostDate>
+            {new Intl.DateTimeFormat('en-US', {
+              month: 'long',
+              year: 'numeric',
+              day: 'numeric',
+            }).format(new Date(post.lastEditedAt))}
+          </PostDate>
         </Anchor>
       </Link>
     </PostWrapper>
@@ -69,13 +82,18 @@ const Arrow = styled(motion.span, {
   right: '$2',
 })
 
+const PostDate = styled('p', {
+  color: '$grey600',
+  fontFamily: '$mono',
+  marginTop: '$2',
+  fontSize: '$sm',
+})
+
 const Anchor = styled('a', {
   cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'flex-end',
+  display: 'block',
   borderRadius: 8,
-  background: '$grey200',
-  padding: '$4',
+  padding: '$6',
   border: '2px solid $grey200',
   height: '100%',
   position: 'relative',
@@ -96,14 +114,8 @@ const PostTitle = styled('h1', {
 // --
 
 const Posts = styled('ul', {
-  display: 'grid',
-  gap: '$2',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gridAutoRows: '15rem',
-
-  '@md': {
-    gap: '$4',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+  '> :not(:last-child)': {
+    marginBottom: '$4',
   },
 })
 
