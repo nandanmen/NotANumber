@@ -37,15 +37,13 @@ export const tokenize = snapshot((input) => {
     // consume the first tick
     current++
 
-    let currentChar = input[current]
-    while (currentChar && currentChar !== "'") {
-      candidate.value += currentChar
+    while (input[current] && input[current] !== "'") {
+      candidate.value += input[current]
       debugger
       current++
-      currentChar = input[current]
     }
 
-    if (currentChar) {
+    if (input[current]) {
       // consume the closing tick
       current++
     } else {
