@@ -34,9 +34,9 @@ To do so, we're going to look into:
 
 1. What a token is and why a tokenizer is necessary;
 2. How to implement a tokenizer in three concrete steps:
-    1. Tokenizing **single character tokens**;
-    2. Tokenizing **identifiers and keywords**; and
-    3. Tokenizing **string literals**.
+   1. Tokenizing **single character tokens**;
+   2. Tokenizing **identifiers and keywords**; and
+   3. Tokenizing **string literals**.
 
 ## Tokens Are the Language's Words
 
@@ -158,7 +158,7 @@ The `\n` character is a special character that represents a **new line**. It's t
 
 </Callout>
 
-As we iterate through the code string, we check if the current character is one of these single character tokens, and if it does, we add the character to the final tokens list.
+As we iterate through the code string, we check if the current character is one of these single character tokens, and if it is, we add the character to the final tokens list.
 
 One way to check if a character is a single character token is to keep a list of all single character tokens we support and checking if the character is in that list:
 

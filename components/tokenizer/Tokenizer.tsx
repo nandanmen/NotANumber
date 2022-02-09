@@ -96,36 +96,36 @@ function TokenBlock({ type, name = '', value = '', ...props }) {
 const TokenList = styled('ul', {
   display: 'grid',
   gap: '$2',
-  gridTemplateColumns: 'repeat(3, 12rem)',
+  gridTemplateColumns: 'repeat(3, 8rem)',
   marginTop: '$16',
 })
 
 const TokenWrapper = styled(motion.li, {
-  display: 'flex',
   fontFamily: '$mono',
   fontSize: '$sm',
-  border: '1px solid $grey300',
-  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-  borderRadius: 6,
 })
 
 const TokenType = styled('p', {
-  flex: 1,
-  flexShrink: 0,
-  padding: '$2',
+  padding: '$1',
+  marginLeft: '$2',
   background: '$grey100',
-  borderRight: '1px solid $grey300',
-  borderTopLeftRadius: 6,
-  borderBottomLeftRadius: 6,
+  fontSize: '0.75rem',
+  width: 'fit-content',
+  border: '1px solid $grey300',
+  borderTopLeftRadius: 4,
+  borderTopRightRadius: 4,
+  borderBottom: 'none',
+  transform: 'translateY(3px)',
 })
 
 const TokenName = styled('p', {
-  flex: 1,
-  flexShrink: 0,
+  position: 'relative',
   padding: '$2',
   background: '$white',
-  borderTopRightRadius: 6,
-  borderBottomRightRadius: 6,
+  border: '1px solid $grey300',
+  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+  borderRadius: 6,
+  minHeight: 40,
 })
 
 const KnownCharList = styled('ul', {
