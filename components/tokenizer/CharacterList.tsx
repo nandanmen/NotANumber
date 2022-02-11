@@ -3,37 +3,39 @@ import { styled } from '@/stitches'
 
 export function CharacterList({ state }) {
   return (
-    <InputWrapper>
-      {[...state.input].map((char, index) => {
-        const isActive = index === state.current
-        return (
-          <InputCharacter
-            key={index}
-            type={char === ' ' ? 'empty' : undefined}
-            active={isActive || state.__done}
-          >
-            {char === '\n' ? `\\n` : char}
-            {isActive && !state.__done && <Cursor style={{ x: '-50%' }} />}
-          </InputCharacter>
-        )
-      })}
-    </InputWrapper>
+    <Wrapper>
+      <InputWrapper
+        animate={{ x: -(state.current * 10) }}
+        transition={{ type: 'linear' }}
+      >
+        {[...state.input].map((char, index) => {
+          const isActive = index === state.current
+          return (
+            <InputCharacter
+              key={index}
+              type={char === ' ' ? 'empty' : undefined}
+              active={isActive}
+            >
+              {char === '\n' ? `\\n` : char}
+            </InputCharacter>
+          )
+        })}
+      </InputWrapper>
+    </Wrapper>
   )
 }
 
-const InputWrapper = styled('div', {
-  fontFamily: '$mono',
-  display: 'flex',
+const Wrapper = styled('div', {
+  width: '100%',
   position: 'relative',
+  height: '2.5rem',
+  overflowX: 'hidden',
 })
 
-const Cursor = styled(motion.span, {
-  width: 4,
-  aspectRatio: 1,
-  background: '$grey600',
-  borderRadius: '50%',
+const InputWrapper = styled(motion.div, {
+  fontFamily: '$mono',
+  display: 'flex',
   position: 'absolute',
-  top: '100%',
   left: '50%',
 })
 
