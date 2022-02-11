@@ -5,6 +5,12 @@ import { styled } from '@/stitches'
 
 import { CharacterList } from './CharacterList'
 import { tokenize, knownSingleCharacters, Token } from './lib/tokenize'
+import { singleCharacter } from './lib/single-character'
+
+const algorithms = {
+  tokenize,
+  singleCharacter,
+}
 
 type TokenizerState = {
   current: number
@@ -19,11 +25,15 @@ const INPUT = `function hello() {
   console.log('hello, world!')
 }`
 
-export function Tokenizer() {
+export function Tokenizer({
+  name = 'tokenize',
+  input = INPUT,
+  showKnownTokens = true,
+}) {
   return (
     <Algorithm
-      algorithm={tokenize}
-      initialInputs={[INPUT]}
+      algorithm={algorithms[name]}
+      initialInputs={[input]}
       delay={300}
       controls
       editable
@@ -31,16 +41,23 @@ export function Tokenizer() {
       {(context: AlgorithmContext<TokenizerState>) => (
         <Wrapper>
           <CharacterList state={context.state} />
-          <KnownCharList>
-            {[...knownSingleCharacters.keys()].map((char) => (
-              <SingleChar
-                key={char}
-                active={context.state.currentChar === char}
-              >
-                {char}
-              </SingleChar>
-            ))}
-          </KnownCharList>
+          <KnownCharsWrapper>
+            {showKnownTokens && (
+              <>
+                <KnownCharsTitle>Known Tokens</KnownCharsTitle>
+                <KnownCharList>
+                  {[...knownSingleCharacters.keys()].map((char) => (
+                    <SingleChar
+                      key={char}
+                      active={context.state.currentChar === char}
+                    >
+                      {char}
+                    </SingleChar>
+                  ))}
+                </KnownCharList>
+              </>
+            )}
+          </KnownCharsWrapper>
           <TokenList>
             {context.state.tokens.map((token, index) => (
               <TokenBlock
@@ -128,11 +145,20 @@ const TokenName = styled('p', {
   minHeight: 40,
 })
 
+const KnownCharsWrapper = styled('div', {
+  marginTop: '$16',
+})
+
+const KnownCharsTitle = styled('p', {
+  color: '$grey600',
+  fontSize: '$sm',
+  marginBottom: '$2',
+})
+
 const KnownCharList = styled('ul', {
   display: 'flex',
   justifyContent: 'center',
   fontFamily: '$mono',
-  marginTop: '$16',
   gap: '$1',
 })
 
