@@ -1,8 +1,8 @@
 ---
-title: 'The Terrific Tokenizer'
+title: 'Rebuilding Babel: The Tokenizer'
 blurb: 'How does a tokenizer convert a code string into a list of tokens?'
-publishedAt: '2021-12-21'
-editedAt: '2021-12-21'
+publishedAt: '2022-02-20'
+editedAt: '2022-02-20'
 ---
 
 import { Boilerplate } from '@/components/tokenizer/Boilerplate'
@@ -12,17 +12,9 @@ import Figure from '@/elements/Figure'
 import Callout from '@/elements/Callout'
 import ProblemStatement from '@/elements/ProblemStatement'
 
-A few weekends ago, I spent some time rebuilding the Babel compiler from scratch to learn a bit more about how it works internally. You see, I already knew a _bit_ about compilers and talked about them briefly in my [debugger]() post, but there was a very large knowledge gap that was apparent to me. I knew how to manipulate an abstract syntax tree, but I didn't know _how to make one_.
+A few weekends ago, I spent some time rebuilding the Babel compiler from scratch to learn a bit more about how it works internally. You see, I knew enough about compilers to know how to _use_ them (like in my [debugger](/debugger) post), but I didn't know enough to know how to _make_ one from scratch.
 
-Fundamentally, I see a compiler as a pipeline with four concrete steps:
-
-<Figure size="xl">
-  <Svg href="tokenizer/pipeline.svg" />
-</Figure>
-
-Each step takes in the output of the previous step and transforms it to something else. The first step, the tokenization step, takes in your original source code as its input, while the last step, the generation step, spits out the modified code.
-
-In this post, we'll go over how to build a tokenizer for a small subset of JavaScript. Specifically, we'll build a tokenizer that can understand the following code snippet _and absolutely nothing more_:
+In this post, we'll go over how to build a **tokenizer**, the very first component of a compiler. Specifically, we'll build a tokenizer that can understand the following code snippet and absolutely nothing more:
 
 ```ts
 function hello() {
@@ -37,6 +29,20 @@ To do so, we're going to look into:
    1. Tokenizing **single character tokens**;
    2. Tokenizing **identifiers and keywords**; and
    3. Tokenizing **string literals**.
+
+Let's get started!
+
+## A Compiler Primer
+
+Let's deviate for a second to go over how a compiler works at a high level. I think of a compiler as a pipeline with four concrete steps:
+
+<Figure size="xl">
+  <Svg href="tokenizer/pipeline.svg" />
+</Figure>
+
+Each step takes in the output of the previous step and transforms it to something else. The first step, the tokenization step, takes in your original source code as its input, while the last step, the generation step, spits out the modified code.
+
+Back to the tokenizer!
 
 ## Tokens Are the Language's Words
 
@@ -235,19 +241,25 @@ Next up is tokenizing the `'hello, world!'` part of the code snippet, also known
 
 To keep things simple, I've opted to support **only apostrophes** and multiple-line strings (turns out the implementation is simpler if we support multiple lines).
 
-<Callout label="What about `these strings`?">
+<Callout label="Aha, this is microsyntax!">
 
-JavaScript also supports writing strings using backticks like this: \`hello world\`. This type of string is a bit more complicated to tokenize because they allow adding JavaScript syntax inside the string itself - so we're skipping it for now.
+This is where our little discussion on microsyntax earlier comes in! By handling the string rules here, other parts of the compiler don't have to worry about whether this string is "correct" or not.
 
 </Callout>
 
-To tokenize a string literal, we're going to do something similar to tokenizing identifiers:
+To tokenize a string literal, we're going to do something similar to tokenizing identifiers except we only stop when we reach another apostrophe. Specifically:
 
 1. If the current character is an apostrophe, start parsing a string literal;
 2. Keep collecting characters until either the current character is another apostrophe, marking the end of the string; or
 3. You've reached the end of the file, making the string unterminated - an error!
 
-<Figure size="lg">string parsing</Figure>
+<Figure size="lg">
+  <Tokenizer
+    showKnownTokens={false}
+    showKeywords={false}
+    input="msg = 'hello, world!'"
+  />
+</Figure>
 
 ## Summary
 
@@ -264,8 +276,8 @@ I purposely omitted code snippets because I wanted to solidify the _concepts_ be
 To finish off, I have a few exercises for you to try out if you'd like to learn more:
 
 1. **Implement this tokenizer in your language of choice**; use the visualization from the introduction as a reference.
-2. Once it's done, **extend the tokenizer to support the following syntax**: `const hello = 'world'`.
+2. Once it's done, **extend the tokenizer to support JS syntax of your choice** - maybe something like `async`-`await`?.
 
-I'd love to see what you come up with - you can either use the feedback form below or reach out to me [@nansdotio](https://twitter.com/nansdotio) on Twitter.
+I'd love to see what you come up with! You can either use the feedback form below or reach out to me [@nandafyi](https://twitter.com/nandafyi) on Twitter to get in touch.
 
-Thanks for reading!
+That's it for today - thanks for reading!
