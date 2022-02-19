@@ -5,12 +5,14 @@ const capitalize = (str: string) => {
 }
 
 export const tokenize = snapshot((input) => {
+  let phase = 'Starting... ⚙'
   let current = 0
   const tokens = []
 
   debugger
 
   function finishIdentifier() {
+    const phase = 'Identifier 🔍'
     const candidate = token.identifier('')
     tokens.push(candidate)
     debugger
@@ -24,12 +26,14 @@ export const tokenize = snapshot((input) => {
     }
 
     if (keywords.has(candidate.name)) {
+      const phase = 'Keyword 📕'
       candidate.type = TokenType[capitalize(candidate.name)]
       debugger
     }
   }
 
   function finishStringLiteral() {
+    const phase = 'String Literal ✏'
     const candidate = token.stringLiteral('')
     tokens.push(candidate)
     debugger
@@ -55,6 +59,7 @@ export const tokenize = snapshot((input) => {
     const currentChar = input[current]
 
     if (isWhitespace(currentChar)) {
+      const phase = 'Skipping... 🧹'
       debugger
       current++
       continue
@@ -63,6 +68,7 @@ export const tokenize = snapshot((input) => {
     if (isAlpha(currentChar)) {
       finishIdentifier()
     } else if (isSingleCharacter(currentChar)) {
+      const phase = 'Known Token 📕'
       debugger
       tokens.push(getCharToken(currentChar))
       debugger
@@ -74,6 +80,7 @@ export const tokenize = snapshot((input) => {
     }
   }
 
+  phase = 'Done! ✨'
   debugger
   return tokens
 })

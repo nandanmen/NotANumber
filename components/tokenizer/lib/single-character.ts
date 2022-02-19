@@ -2,6 +2,7 @@ import { knownSingleCharacters } from './tokenize'
 import snapshot from '../../../lib/snapshot.macro'
 
 export const singleCharacter = snapshot(function tokenize(input) {
+  let phase = 'Starting...'
   let current = 0
   let tokens = []
 
@@ -12,13 +13,19 @@ export const singleCharacter = snapshot(function tokenize(input) {
 
     const builder = knownSingleCharacters.get(currentChar)
     if (builder) {
+      const phase = 'Known Token'
       debugger
       tokens.push(builder())
+      debugger
+      current++
+    } else {
+      const phase = 'Skipping...'
+      debugger
+      current++
     }
-    debugger
-    current++
   }
 
+  phase = 'Done!'
   debugger
   return tokens
 })

@@ -163,7 +163,11 @@ As we iterate through the code string, we check if the current character is one 
 One way to check if a character is a single character token is to keep a list of all single character tokens we support and checking if the character is in that list:
 
 <Figure size="lg">
-  <Tokenizer name="singleCharacter" input="{ console.log() }" />
+  <Tokenizer
+    name="singleCharacter"
+    input="{ console.log() }"
+    showKeywords={false}
+  />
 </Figure>
 
 ## Identifiers and Keywords
@@ -199,7 +203,7 @@ To recap, an identifier (for our purposes) is any sequence of alphabetical chara
 2. Keep adding characters to the current identifier token until the current character is **not** alphabetical.
 
 <Figure size="lg">
-  <Tokenizer showKnownTokens={false} />
+  <Tokenizer showKnownTokens={false} showKeywords={false} />
 </Figure>
 
 ### Keywords
