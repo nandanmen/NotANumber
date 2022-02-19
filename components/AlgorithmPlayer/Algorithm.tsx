@@ -4,9 +4,15 @@ import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
 import exec from '@/lib/exec'
 import { zip } from '@/lib/utils'
-import usePlayer from '@/lib/usePlayer'
+import usePlayer, {Player} from '@/lib/usePlayer'
 
 import { AnimationWrapper } from './AnimationWrapper'
+
+export type AlgorithmContext<StateType, InputType = unknown> = {
+  state: StateType
+  inputs: InputType
+  player: Player<StateType>
+}
 
 export function Algorithm({
   algorithm,

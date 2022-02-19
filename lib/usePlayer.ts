@@ -6,6 +6,24 @@ export type PlayerOptions = {
   loop: boolean
 }
 
+export type Player<StateType> = {
+  models: {
+    activeStepIndex: number
+    state: StateType
+    steps: StateType[]
+    isPlaying: boolean
+    settings: PlayerOptions
+  }
+  actions: {
+    reset: () => void
+    toggle: () => void
+    next: () => void
+    prev: () => void
+    setIndex: (index: number) => void
+  }
+}
+
+
 const DEFAULT_OPTIONS: PlayerOptions = {
   delay: 500,
   loop: false,

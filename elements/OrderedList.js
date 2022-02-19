@@ -17,7 +17,8 @@ const ListWrapper = styled.ol`
   list-style: none;
   counter-reset: counts 0;
 
-  > :not([hidden]) ~ :not([hidden]) {
+  > :not([hidden]) ~ :not([hidden]),
+  ol {
     margin-top: 8px;
   }
 `
@@ -27,7 +28,7 @@ const ListItem = styled.li`
   display: flex;
 
   &:before {
-    content: counters(counts, '.') '. '; // {count}.
+    content: counter(counts) '. '; // {count}.
     padding-right: 16px;
     font-family: var(--text-mono);
     font-weight: 500;
