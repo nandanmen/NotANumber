@@ -39,7 +39,7 @@ export function Tokenizer({
 }) {
   const isKeywordActive = (state: TokenizerState, char: string) => {
     if (state.candidate && 'name' in state.candidate) {
-      return name === char
+      return state.candidate.name === char
     }
     return false
   }

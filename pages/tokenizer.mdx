@@ -222,7 +222,9 @@ One way is to do the same thing as the single character tokens:
 2. When we're parsing an identifier, check if the parsed name is in this set;
 3. If it is, change the token's type to the keyword's type.
 
-<Figure size="lg">keywords</Figure>
+<Figure size="lg">
+  <Tokenizer showKnownTokens={false} input="const a = function () {}" />
+</Figure>
 
 ## String Literals
 

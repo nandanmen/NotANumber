@@ -89,6 +89,7 @@ export const tokenize = snapshot((input) => {
 
 export enum TokenType {
   Function = 'Function',
+  Const = 'Const',
   Identifier = 'Identifier',
   LeftParen = 'LeftParen',
   RightParen = 'RightParen',
@@ -97,6 +98,7 @@ export enum TokenType {
   Dot = 'Dot',
   Semicolon = 'Semicolon',
   StringLiteral = 'StringLiteral',
+  Equals = 'Equals',
 }
 
 export type Token =
@@ -113,6 +115,11 @@ export const token = {
   function() {
     return {
       type: TokenType.Function,
+    }
+  },
+  const() {
+    return {
+      type: TokenType.Const,
     }
   },
   identifier(name: string) {
@@ -139,6 +146,9 @@ export const token = {
   semicolon() {
     return { type: TokenType.Semicolon, name: ';' }
   },
+  equals() {
+    return { type: TokenType.Equals, name: '=' }
+  },
   stringLiteral(value: string) {
     return {
       type: TokenType.StringLiteral,
@@ -147,7 +157,10 @@ export const token = {
   },
 }
 
-export const keywords = new Map([['function', token.function]])
+export const keywords = new Map([
+  ['function', token.function],
+  ['const', token.const],
+])
 
 // --
 
@@ -165,7 +178,7 @@ function isWhitespace(char: string) {
   return /\s/.test(char)
 }
 
-type SingleCharacterToken = '(' | ')' | '{' | '}' | '.' | ';'
+type SingleCharacterToken = '(' | ')' | '{' | '}' | '.' | ';' | '='
 
 export const knownSingleCharacters = new Map<SingleCharacterToken, () => Token>(
   [
@@ -175,6 +188,7 @@ export const knownSingleCharacters = new Map<SingleCharacterToken, () => Token>(
     ['}', token.rightCurly],
     ['.', token.dot],
     [';', token.semicolon],
+    ['=', token.equals],
   ]
 )
 
