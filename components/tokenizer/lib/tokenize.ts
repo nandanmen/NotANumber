@@ -5,7 +5,7 @@ const capitalize = (str: string) => {
 }
 
 export const tokenize = snapshot((input) => {
-  let phase = 'Starting... ⚙'
+  let phase = 'Starting... ⚙️'
   let current = 0
   const tokens = []
 
@@ -33,7 +33,7 @@ export const tokenize = snapshot((input) => {
   }
 
   function finishStringLiteral() {
-    const phase = 'String Literal ✏'
+    const phase = 'String Literal ✏️'
     const candidate = token.stringLiteral('')
     tokens.push(candidate)
     debugger
