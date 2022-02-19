@@ -152,10 +152,16 @@ export const keywords = new Map([['function', token.function]])
 // --
 
 function isAlpha(char: string) {
+  if (!char) {
+    return false
+  }
   return /[a-zA-Z]/.test(char)
 }
 
 function isWhitespace(char: string) {
+  if (!char) {
+    return false
+  }
   return /\s/.test(char)
 }
 
