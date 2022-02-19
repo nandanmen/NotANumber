@@ -10,10 +10,12 @@ import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon
 import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
 import ExternalLink from '@/elements/ExternalLink'
 import { formatPath } from '@/lib/utils'
+import { Svg } from '@/components/Svg'
 
 import { frontMatter as slidingWindow } from './sliding-window.mdx'
 import { frontMatter as debuggerPost } from './debugger.mdx'
 import { frontMatter as howArraysWork } from './how-arrays-work.mdx'
+import { frontMatter as tokenizer } from './tokenizer.mdx'
 
 export default function HomePage() {
   return (
@@ -45,6 +47,12 @@ export default function HomePage() {
         </Header>
         <Divider />
         <Posts>
+          <PostItem>
+            <Icon>
+              <Svg href="tokenizer/logo.svg" />
+            </Icon>
+            <Post post={tokenizer} />
+          </PostItem>
           <PostItem>
             <Icon>
               <HowArraysWorkIcon />
