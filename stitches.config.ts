@@ -62,6 +62,8 @@ export const { styled, keyframes, css } = createStitches({
   media: {
     post: `(min-width: 50rem)`,
     md: `(min-width: 768px)`,
+    lg: `(min-width: 62em)`,
+    xl: `(min-width: 80em)`,
   },
   theme: {
     colors: {
