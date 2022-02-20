@@ -28,7 +28,7 @@ export default function Navigation({ style, className }) {
         </li>
         <li>
           <a
-            href="https://twitter.com/nansdotio"
+            href="https://twitter.com/nandafyi"
             target="_blank"
             rel="noreferrer"
             className="hover:text-green-600"
