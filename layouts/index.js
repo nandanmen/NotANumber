@@ -1,3 +1,4 @@
+import React from 'react'
 import Head from 'next/head'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
@@ -5,6 +6,7 @@ import { MDXProvider } from '@mdx-js/react'
 import FeedbackForm from '@/components/FeedbackForm'
 import NewsletterForm from '@/components/NewsletterForm'
 import Navigation from '@/components/Navigation'
+import { TableOfContents } from '@/components/TableOfContents'
 
 import CodeBlock from '@/elements/CodeBlock'
 import ThematicBreak from '@/elements/ThematicBreak'
@@ -12,8 +14,7 @@ import ExternalLink from '@/elements/ExternalLink'
 import InlineCode from '@/elements/InlineCode'
 import UnorderedList from '@/elements/UnorderedList'
 import OrderedList from '@/elements/OrderedList'
-import Heading from '@/elements/Heading'
-import Subheading from '@/elements/Subheading'
+import { Heading, Subheading, getIdFromChildren } from '@/elements/Heading'
 import ProblemStatement from '@/elements/ProblemStatement'
 
 import { formatPath } from '@/lib/utils'
@@ -38,8 +39,27 @@ const mdxComponents = {
   h3: Subheading,
 }
 
+const getAnchors = (children) => {
+  return React.Children.toArray(children)
+    .filter(
+      (child) =>
+        child.props?.mdxType && ['h2', 'h3'].includes(child.props.mdxType)
+    )
+    .map((child) => {
+      return {
+        url: '#' + getIdFromChildren(child.props.children),
+        depth:
+          (child.props?.mdxType &&
+            parseInt(child.props.mdxType.replace('h', ''), 0)) ??
+          0,
+        text: child.props.children,
+      }
+    })
+}
+
 export default function Layout({ frontMatter = {}, children }) {
   const slug = formatPath(frontMatter.__resourcePath)
+  const anchors = getAnchors(children)
   return (
     <MDXProvider components={mdxComponents}>
       <Article>
@@ -80,6 +100,7 @@ export default function Layout({ frontMatter = {}, children }) {
       <Footer>
         <Navigation style={{ width: 'min(65ch, 100%)' }} tw="mt-8" />
       </Footer>
+      <TableOfContents anchors={anchors} />
     </MDXProvider>
   )
 }
@@ -179,12 +200,12 @@ const Article = styled.article`
     margin-bottom: 48px;
   }
 
-  > ${Heading} {
+  > h2 {
     margin-top: 80px;
     margin-bottom: 32px;
   }
 
-  > ${Subheading} {
+  > h3 {
     margin-top: 32px;
     margin-bottom: 24px;
   }
