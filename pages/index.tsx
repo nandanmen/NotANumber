@@ -8,7 +8,6 @@ import { motion } from 'framer-motion'
 import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
 import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
 import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
-import ExternalLink from '@/elements/ExternalLink'
 import { formatPath } from '@/lib/utils'
 import { Svg } from '@/components/Svg'
 
@@ -28,11 +27,7 @@ export default function HomePage() {
           <Title>Not a Number</Title>
           <Description>
             An interactive blog on computer science and web development, by
-            {` `}
-            <ExternalLink href="https://narendras.io">
-              Nanda Syahrasyad
-            </ExternalLink>
-            .
+            Nanda Syahrasyad.
           </Description>
           <p>
             <Link href="letters">
