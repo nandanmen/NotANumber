@@ -7,7 +7,6 @@ type Anchor = {
 }
 
 export function TableOfContents({ anchors }: { anchors: Anchor[] }) {
-  console.log(anchors)
   return (
     <Wrapper>
       {anchors.map(({ url, depth, text }) => (
