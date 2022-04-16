@@ -1,0 +1,56 @@
+---
+title: "Inside Framer's Magic Motion"
+blurb: "A guide on recreating framer's magical layout animations."
+description: "A guide on recreating framer's magical layout animations."
+publishedAt: '2022-04-07'
+editedAt: '2022-04-15'
+---
+
+import Callout from '@/elements/Callout'
+import { Flip } from '@/components/magic-motion/Flip'
+
+By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
+
+I really like digging into how "magical" things work, so naturally I sought out to figure out how these layout animations work under the hood. This post will cover everything that I learned reimplementing the layout API from scratch.
+
+Let's get started!
+
+<Callout label="Intended Audience">
+
+I try to word my posts to cater to readers of all skill levels, but I realize this post probably makes more sense if you're somewhat comfortable with React and CSS.
+
+</Callout>
+
+## What We're Making
+
+My goal here is to create a component that accepts a boolean prop called `layout`. When `layout` is `true` and the component changes position on the page, it should seamlessly animate from its old position to the new position.
+
+Ultimately, I'm aiming to have my implementation be visually indistinguishable from the framer motion equivalent:
+
+## Animating Position
+
+In our sample animation, notice that there are actually two things changing: (1) the component's **position** and (2) the component's **size**. It turns out that animating size is a tad trickier, so we'll focus on implementing position first.
+
+To implement the position change, we'll use a technique called **FLIP**.
+
+### FLIP
+
+FLIP stands for **F**irst, **L**ast, **I**nverse, **P**lay. Before we do any layout changes, we **first** record the `x` and `y` coordinates of the element:
+
+<Flip />
+
+Then we record the **last** position of the element _after_ the layout change:
+
+<Flip />
+
+Using transforms, we **invert** the layout change to make it look like the element is back to its original position:
+
+<Flip />
+
+Finally, we **play** the animation by animating the transforms back to zero:
+
+<Flip />
+
+## Animating Size
+
+## Correcting Distortions
