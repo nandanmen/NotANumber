@@ -51,6 +51,34 @@ Finally, we **play** the animation by animating the transforms back to zero:
 
 <Flip />
 
+### FLIP (But in React)
+
+> Feel free to skip ahead to the [animating size](#animating-size) section if you're not interested in the code implementation.
+
+We have to do a few tricks to get FLIP working in a React component.
+
+The first thing that we want to do is to record the component's position _before_ a layout change. We can use the [`.getBoundingClientRect()`]() function to get an element's current position, but how do we record it every time a layout change happens?
+
+For starters, you can probably assume that if the layout changes, then the component just re-rendered. So let's try that - using `useEffect` to record the position after every render:
+
+```tsx
+const Motion = (props) => {
+  const ref = React.useRef()
+
+  React.useEffect(() => {
+    const first = ref.current.getBoundingClientRect()
+  }) // omit the dependency array to run every render
+
+  return <div ref={ref} {...props} />
+}
+```
+
+This kinda works, but it looks to be recording the position of the box _after_ the layout change instead of before:
+
+<Flip />
+
 ## Animating Size
+
+Framer motion also lets you animate changes in **size** too, so let's modify our implementation to support this.
 
 ## Correcting Distortions
