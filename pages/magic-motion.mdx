@@ -7,7 +7,8 @@ editedAt: '2022-04-15'
 ---
 
 import Callout from '@/elements/Callout'
-import { Flip } from '@/components/magic-motion/Flip'
+import { First, Last, Invert } from '@/components/magic-motion/Flip'
+import { Quiz } from '@/components/magic-motion/Quiz'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
 
@@ -27,55 +28,82 @@ My goal here is to create a component that accepts a boolean prop called `layout
 
 Ultimately, I'm aiming to have my implementation be visually indistinguishable from the framer motion equivalent:
 
-## Animating Position
+## Animating Position with FLIP
 
 In our sample animation, notice that there are actually two things changing: (1) the component's **position** and (2) the component's **size**. It turns out that animating size is a tad trickier, so we'll focus on implementing position first.
 
-To implement the position change, we'll use a technique called **FLIP**.
+To implement the position change, we'll use a technique called **FLIP**. FLIP stands for **F**irst, **L**ast, **I**nverse, **P**lay. Before we do any layout changes, we **first** record the `x` and `y` coordinates of the element:
 
-### FLIP
-
-FLIP stands for **F**irst, **L**ast, **I**nverse, **P**lay. Before we do any layout changes, we **first** record the `x` and `y` coordinates of the element:
-
-<Flip />
+<First />
 
 Then we record the **last** position of the element _after_ the layout change:
 
-<Flip />
+<Last />
 
 Using transforms, we **invert** the layout change to make it look like the element is back to its original position:
 
-<Flip />
+<Invert />
 
 Finally, we **play** the animation by animating the transforms back to zero:
 
-<Flip />
+<First />
 
-### FLIP (But in React)
+## FLIP (But in React)
 
 > Feel free to skip ahead to the [animating size](#animating-size) section if you're not interested in the code implementation.
 
-We have to do a few tricks to get FLIP working in a React component.
+So what does FLIP look like in React?
 
-The first thing that we want to do is to record the component's position _before_ a layout change. We can use the [`.getBoundingClientRect()`]() function to get an element's current position, but how do we record it every time a layout change happens?
+### Measuring Layout Changes
 
-For starters, you can probably assume that if the layout changes, then the component just re-rendered. So let's try that - using `useEffect` to record the position after every render:
+The first two steps of FLIP involve recording the position of the element both before and after the layout change. To me, this brings up two questions:
+
+1. How do we measure the position of an element?
+2. How do we detect a layout change?
+
+The answer to (1) is thankfully quite simple — we'll use the built-in [`.getBoundingClientRect()`]() method. Given an element, this method returns both the element's `x` and `y` coordinates as well as its `width` and `height` in pixels.
+
+<div>Code sandbox here</div>
+
+What about (2) — detecting layout changes?
+
+I'm going to make the assumption here that layout changes can only happen when the component re-renders. Through this assumption, detecting a layout change turns to detecting _re-renders_. This is much easier because React has a built-in way of doing this — the `useEffect` hook.
 
 ```tsx
 const Motion = (props) => {
   const ref = React.useRef()
 
   React.useEffect(() => {
-    const first = ref.current.getBoundingClientRect()
-  }) // omit the dependency array to run every render
+    // measure the element
+    const box = ref.current.getBoundingClientRect()
+  })
+  // omitting the dependency array means the callback
+  // runs every render
 
   return <div ref={ref} {...props} />
 }
 ```
 
+Quick quiz time:
+
+<Quiz
+  question="In the code snippet, are we measuring the element before or after the layout change?"
+  answers={[
+    {
+      label: 'Before the layout change',
+      tip: "Not quite! The function passed to useEffect will run after the component rerenders, so we're actually measuring the element after the layout change.",
+    },
+    {
+      label: 'After the layout change',
+      tip: "That's right! The function passed to useEffect runs after the render, so we're measuring the element after the layout change has happened.",
+      correct: true,
+    },
+  ]}
+/>
+
 This kinda works, but it looks to be recording the position of the box _after_ the layout change instead of before:
 
-<Flip />
+<First />
 
 ## Animating Size
 
