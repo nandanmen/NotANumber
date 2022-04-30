@@ -3,12 +3,16 @@ import type { ComponentPropsWithRef } from 'react'
 import { motion } from 'framer-motion'
 import { gray, blue } from '@radix-ui/colors'
 
-import Figure from '@/elements/Figure'
+import Figure, { Caption } from '@/elements/Figure'
 import { styled } from '@/stitches'
 
-export const FlipWrapper: React.FC<{}> = ({ children }) => (
+export const FlipWrapper: React.FC<{ caption?: string }> = ({
+  children,
+  caption,
+}) => (
   <Figure size="lg">
     <Wrapper>{children}</Wrapper>
+    {caption && <Caption>{caption}</Caption>}
   </Figure>
 )
 
@@ -41,7 +45,13 @@ export const Square = React.forwardRef<
 >((props, ref) => (
   <SquareWrapper
     ref={ref}
-    variants={{ hover: { borderColor: `rgba(0,145,255,1)`, scale: 1.05 } }}
+    variants={{
+      hover: { borderColor: `rgba(0,145,255,1)`, scale: 1.1 },
+      base: {
+        borderColor: `rgba(23,23,23,1)`,
+        scale: 1,
+      },
+    }}
     whileHover="hover"
     {...props}
   />
@@ -88,4 +98,60 @@ export const YLine = styled(Line, {
   width: 1,
   top: 0,
   bottom: 0,
+})
+
+export const Label = styled('p', {
+  fontFamily: '$mono',
+  fontSize: '$sm',
+  color: '$grey600',
+  position: 'absolute',
+  top: '$4',
+  left: '$4',
+})
+
+export const Outline = styled(Square, {
+  position: 'absolute',
+  left: '$6',
+})
+
+export const Display = styled(FlipDisplay, {
+  variants: {
+    toggled: {
+      true: {
+        justifyContent: 'flex-end',
+      },
+    },
+  },
+})
+
+type DomRectProps = {
+  label: string
+  box: DOMRect
+}
+
+export const DomRect = ({ label, box }: DomRectProps) => {
+  return (
+    <RectWrapper>
+      <RectTitle>{label}</RectTitle>
+      <RectValues>
+        <p>x: {box.x.toFixed()}</p>
+        <p>y: {box.y.toFixed()}</p>
+      </RectValues>
+    </RectWrapper>
+  )
+}
+
+const RectWrapper = styled('li', {
+  fontSize: '$sm',
+})
+
+const RectTitle = styled('h4', {
+  fontWeight: 600,
+  color: '$grey600',
+})
+
+const RectValues = styled('div', {
+  fontFamily: '$mono',
+  display: 'flex',
+  gap: '$4',
 })

@@ -1,40 +1,61 @@
 import React from 'react'
+import { useMotionValue } from 'framer-motion'
 
-import { styled } from '@/stitches'
-import { Slider } from '@/components/Slider'
-import { FlipWrapper, FlipConsole, FlipDisplay, Square } from './shared'
+import { useBox } from '../use-box'
+import {
+  FlipWrapper,
+  FlipConsole,
+  Display,
+  Label,
+  Outline,
+  Square,
+  DomRect,
+} from './shared'
 
-export const Invert = () => {
-  const ref = React.useRef<HTMLButtonElement>(null)
-  const [box, setBox] = React.useState<DOMRect>(null)
-  const [x, setX] = React.useState(0)
+function useReactiveMotionValue<ValueType>(initial: ValueType) {
+  const [reactiveValue, setReactiveValue] = React.useState(initial)
+  const value = useMotionValue(initial)
 
   React.useEffect(() => {
-    setBox(ref.current.getBoundingClientRect())
+    value.onChange(setReactiveValue)
   }, [])
+
+  return [value, reactiveValue] as const
+}
+
+export const Invert = () => {
+  const containerRef = React.useRef()
+  const [dragged, setDragged] = React.useState(false)
+
+  const [x, reactiveX] = useReactiveMotionValue(0)
+  const [originalRef, originalBox] = useBox<HTMLButtonElement>()
+  const [boxRef, box] = useBox<HTMLButtonElement>()
 
   return (
     <FlipWrapper>
-      <Display toggled>
+      <Display toggled ref={containerRef}>
         <Label>justify-content: flex-end</Label>
-        <Outline type="outline" />
-        <Square ref={ref} style={{ x }} />
+        <Outline ref={originalRef} type="outline" />
+        <Square
+          ref={boxRef}
+          drag="x"
+          dragConstraints={containerRef}
+          dragElastic={0.1}
+          style={{ x }}
+          onDragStart={() => setDragged(true)}
+        />
       </Display>
       <FlipConsole>
         {box && (
           <ul>
+            <DomRect label="First position" box={originalBox} />
+            <DomRect label="Last position" box={box} />
             <li>
-              <p>x: {Number(box.x.toFixed()) + x}</p>
-              <p>y: {box.y.toFixed()}</p>
-            </li>
-            <li>
-              <Slider
-                type="range"
-                min="-400"
-                max="0"
-                value={x}
-                onChange={(evt) => setX(evt.target.valueAsNumber)}
-              />
+              {dragged ? (
+                <p>transform: translateX({reactiveX.toFixed()}px)</p>
+              ) : (
+                <p>Drag the box to its original position.</p>
+              )}
             </li>
           </ul>
         )}
@@ -42,27 +63,3 @@ export const Invert = () => {
     </FlipWrapper>
   )
 }
-
-const Label = styled('p', {
-  fontFamily: '$mono',
-  fontSize: '$sm',
-  color: '$grey600',
-  position: 'absolute',
-  top: '$4',
-  left: '$4',
-})
-
-const Outline = styled(Square, {
-  position: 'absolute',
-  left: '$6',
-})
-
-const Display = styled(FlipDisplay, {
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: 'flex-end',
-      },
-    },
-  },
-})

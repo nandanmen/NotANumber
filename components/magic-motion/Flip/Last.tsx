@@ -1,14 +1,15 @@
 import React from 'react'
 
-import { styled } from '@/stitches'
 import { useSequence } from '@/lib/utils'
 import {
   FlipWrapper,
   FlipConsole,
-  FlipDisplay,
   Square,
   XLine,
   YLine,
+  Display,
+  Label,
+  Outline,
 } from './shared'
 
 export const Last = () => {
@@ -68,27 +69,3 @@ export const Last = () => {
     </FlipWrapper>
   )
 }
-
-const Label = styled('p', {
-  fontFamily: '$mono',
-  fontSize: '$sm',
-  color: '$grey600',
-  position: 'absolute',
-  top: '$4',
-  left: '$4',
-})
-
-const Outline = styled(Square, {
-  position: 'absolute',
-  left: '$6',
-})
-
-const Display = styled(FlipDisplay, {
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: 'flex-end',
-      },
-    },
-  },
-})
