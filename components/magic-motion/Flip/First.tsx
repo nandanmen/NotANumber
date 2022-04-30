@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Center } from '@/components/utils/Center'
 import {
   FlipWrapper,
   FlipDisplay,
@@ -8,16 +7,16 @@ import {
   FlipConsole,
   XLine,
   YLine,
+  DomRect,
 } from './shared'
 
 export const First = () => {
   const ref = React.useRef<HTMLButtonElement>()
-  const [box, setBox] = React.useState<{ x: number; y: number }>(null)
+  const [box, setBox] = React.useState<DOMRect>(null)
   const [hovering, setHovering] = React.useState(false)
 
   function record() {
-    const { x, y } = ref.current.getBoundingClientRect()
-    setBox({ x, y })
+    setBox(ref.current.getBoundingClientRect())
   }
 
   return (
@@ -37,16 +36,11 @@ export const First = () => {
         />
       </FlipDisplay>
       <FlipConsole>
-        <Center>
-          {box ? (
-            <div>
-              <p>x: {box.x.toFixed()}</p>
-              <p>y: {box.y.toFixed()}</p>
-            </div>
-          ) : (
-            <p>Click on the box to record its coordinates.</p>
-          )}
-        </Center>
+        {box ? (
+          <DomRect label="First position" box={box} />
+        ) : (
+          <p>Click on the box to record its coordinates.</p>
+        )}
       </FlipConsole>
     </FlipWrapper>
   )

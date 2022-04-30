@@ -126,10 +126,12 @@ export const Display = styled(FlipDisplay, {
 
 type DomRectProps = {
   label: string
-  box: DOMRect
+  box: DOMRect | null
 }
 
 export const DomRect = ({ label, box }: DomRectProps) => {
+  if (!box) return null
+
   return (
     <RectWrapper>
       <RectTitle>{label}</RectTitle>
@@ -141,7 +143,7 @@ export const DomRect = ({ label, box }: DomRectProps) => {
   )
 }
 
-const RectWrapper = styled('li', {
+const RectWrapper = styled('div', {
   fontSize: '$sm',
 })
 

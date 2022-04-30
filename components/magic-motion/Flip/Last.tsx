@@ -1,6 +1,8 @@
 import React from 'react'
 
 import { useSequence } from '@/lib/utils'
+
+import { useBox } from '../use-box'
 import {
   FlipWrapper,
   FlipConsole,
@@ -10,12 +12,15 @@ import {
   Display,
   Label,
   Outline,
+  DomRect,
 } from './shared'
 
 export const Last = () => {
   const ref = React.useRef<HTMLButtonElement>(null)
   const [box, setBox] = React.useState<DOMRect>(null)
   const [hovering, setHovering] = React.useState(false)
+
+  const [originalRef, originalBox] = useBox<HTMLButtonElement>()
   const { state, next } = useSequence(['start', 'toggled', 'measured'] as const)
 
   const record = () => {
@@ -38,7 +43,7 @@ export const Last = () => {
             <YLine style={{ x: '-2rem' }} />
           </>
         )}
-        <Outline type="outline" />
+        <Outline ref={originalRef} type="outline" />
         <Square
           ref={ref}
           onClick={record}
@@ -48,20 +53,14 @@ export const Last = () => {
       </Display>
       <FlipConsole>
         <ul>
-          <li>
-            <p>x: 50</p>
-            <p>y: 50</p>
-          </li>
+          <DomRect label="First position" box={originalBox} />
           <li>
             {state === 'start' && <button onClick={next}>Toggle layout</button>}
             {state === 'toggled' && (
               <p>Click on the box again to record its last coordinates.</p>
             )}
             {state === 'measured' && (
-              <>
-                <p>x: {box.x.toFixed()}</p>
-                <p>y: {box.y.toFixed()}</p>
-              </>
+              <DomRect label="Last position" box={box} />
             )}
           </li>
         </ul>
