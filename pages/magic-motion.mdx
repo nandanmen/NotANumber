@@ -7,7 +7,7 @@ editedAt: '2022-04-15'
 ---
 
 import Callout from '@/elements/Callout'
-import { First, Last, Invert } from '@/components/magic-motion/Flip'
+import { First, Last, Invert, ReactFlip } from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
@@ -87,7 +87,7 @@ const Motion = (props) => {
 Quick quiz time:
 
 <Quiz
-  question="In the code snippet, are we measuring the element before or after the layout change?"
+  question="In the code snippet, is `box` referring to the element's position before or after the layout change?"
   answers={[
     {
       label: 'Before the layout change',
@@ -101,9 +101,160 @@ Quick quiz time:
   ]}
 />
 
-This kinda works, but it looks to be recording the position of the box _after_ the layout change instead of before:
+This kinda works, but it's recording the position of the box _after_ the layout change, not before! This is not a problem necessarily because we need it to implement FLIP anyway, but it's for sure not what we intended. If `useEffect` runs _after_ the render, how do we record the initial position?
 
 <First />
+
+### The `usePrevious` Trick
+
+To fix this problem, I created a custom hook called `usePrevious` that captures the _last_ value of any stateful value. This is what it looks like:
+
+```tsx
+const usePrevious = (value) => {
+  const ref = React.useRef(value)
+
+  React.useEffect(() => {
+    ref.current = value
+  }, [value])
+
+  return ref.current
+}
+```
+
+This definitely looks like one of those blocks of code that shouldn't work, but it does! After all, isn't `useEffect` supposed to be for **synchronizing** values? Shouldn't `ref.current` always be equal to `value` then?
+
+The key here is that **refs don't cause the component to re-render**. Here's the order that the code runs in:
+
+1. `const ref = React.useRef(value)`
+2. `return ref.current`
+3. `ref.current = value`
+
+Because assigning to a ref doesn't trigger a render, code (2) doesn't run again like it would if `ref` was stateful. This means that `usePrevious` would always return the value in the previous render!
+
+### Implementing the Helpers
+
+Going back to the `<Motion />` component, we'll use a regular `ref` to record the box's last position and the `usePrevious` trick to record the box's first position:
+
+```tsx
+const Motion = (props) => {
+  const lastBox = React.useRef()
+  const elementRef = React.useRef()
+
+  React.useEffect(() => {
+    // if lastBox is null, then we just mounted, so the component hasn't moved yet
+    if (!lastBox.current) return
+
+    // measure the final (or current) position of the element
+    const currentBox = ref.current.getBoundingClientRect()
+    const initialBox = lastBox.current
+
+    if (elementMoved({ from: initialBox, to: currentBox })) {
+      // calculate the inverse transform
+      const { x, y } = getInverse({ first: initialBox, last: currentBox })
+
+      // apply the transform to the element, making it look like
+      // it's in its initial position
+      elementRef.current.style.transform = `translate(${x}px, ${y}px)`
+
+      // animate the element into its "real" position
+      play({
+        element: elementRef.current,
+        from: { x, y },
+      })
+    }
+
+    // update the previous value to the current value
+    lastBox.current = currentBox
+  })
+
+  return <div ref={elementRef} {...props} />
+}
+```
+
+For all this to work, we'll still need to implement three helper functions — `elementMoved()`, `getInverse()`, and `play()`:
+
+```tsx highlight=12,14,21-24
+const Motion = (props) => {
+  const lastBox = React.useRef()
+  const elementRef = React.useRef()
+
+  React.useEffect(() => {
+    // if lastBox is null, then we just mounted, so the component hasn't moved yet
+    if (!lastBox.current) return
+
+    // measure the final (or current) position of the element
+    const currentBox = ref.current.getBoundingClientRect()
+    const initialBox = lastBox.current
+
+    if (elementMoved({ from: initialBox, to: currentBox })) {
+      // calculate the inverse transform
+      const { x, y } = getInverse({ first: initialBox, last: currentBox })
+
+      // apply the transform to the element, making it look like
+      // it's in its initial position
+      elementRef.current.style.transform = `translate(${x}px, ${y}px)`
+
+      // animate the element into its "real" position
+      play({
+        element: elementRef.current,
+        from: { x, y },
+      })
+    }
+
+    // update the previous value to the current value
+    lastBox.current = currentBox
+  })
+
+  return <div ref={elementRef} {...props} />
+}
+```
+
+The first function, `elementMoved()`, checks if the two boxes' `x` and `y` coordinates are different:
+
+```tsx
+function elementMoved({ from, to }) {
+  const { x: fromX, y: fromY } = from
+  const { x, y } = to
+  return x !== fromX || y !== fromY
+}
+```
+
+The second function, `getInverse()`, returns the _difference_ between the two positions:
+
+```tsx
+function getInverse({ from, to }) {
+  const { x: fromX, y: fromY } = from
+  const { x, y } = to
+
+  return {
+    x: x - fromX,
+    y: y - fromY,
+  }
+}
+```
+
+Finally, the last function `play()` animates the element's `transform` property back to zero. For this, we'll be using the [`animate()` function from Popmotion](https://popmotion.io/#quick-start-animation-animate).
+
+```tsx
+import { animate } from 'popmotion'
+
+function play({ element, from }) {
+  animate({
+    from,
+    to: { x: 0, y: 0 },
+    onUpdate: ({ x, y }) => {
+      element.style.transform = `translate(${x}px, ${y}px)`
+    },
+    duration: 1500,
+  })
+}
+```
+
+### Putting It Together
+
+And all together now:
+
+<ReactFlip />
 
 ## Animating Size
 

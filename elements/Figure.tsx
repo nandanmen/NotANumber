@@ -18,7 +18,7 @@ const sizeClassNameMap: Record<FigureSizes, string> = {
 
 type FigureProps = {
   children: React.ReactNode
-  size: FigureSizes
+  size?: FigureSizes
 }
 
 function Figure({ children, size = 'base' }: FigureProps) {
