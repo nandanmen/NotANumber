@@ -100,7 +100,6 @@ export default function Layout({ frontMatter = {}, children }) {
       <Footer>
         <Navigation style={{ width: 'min(65ch, 100%)' }} tw="mt-8" />
       </Footer>
-      <TableOfContents anchors={anchors} />
     </MDXProvider>
   )
 }
@@ -188,9 +187,9 @@ const Article = styled.article`
 
       > pre {
         /* For some reason revert doesn't work here so I have to manually set it back */
-        border-radius: 6px;
-        border-right-width: 2px;
-        border-left-width: 2px;
+        border-radius: 8px;
+        border-right-width: 1px;
+        border-left-width: 1px;
       }
     }
   }
