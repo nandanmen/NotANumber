@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import React from 'react'
+import { motion, animate, useMotionValue } from 'framer-motion'
 import { styled } from '@/stitches'
 
 import CodeBlock from '@/elements/CodeBlock'
@@ -136,8 +137,12 @@ const steps = [
   },
 ]
 
-const getPropsFromPhase = (phase: string) => {
-  if (phase === 'first') {
+type LineState = {
+  phase: string
+}
+
+const getPropsFromState = ({ phase }: LineState) => {
+  if (phase === 'first' || phase === 'post-mount') {
     return {
       y: {
         left: 'calc(3rem + 32px)',
@@ -167,6 +172,16 @@ const getPropsFromPhase = (phase: string) => {
       },
     }
   }
+  if (phase === 'inverse-2') {
+    return {
+      x: {
+        bottom: '3rem',
+      },
+      y: {
+        left: '3rem',
+      },
+    }
+  }
   return {
     x: {
       display: 'none',
@@ -177,7 +192,7 @@ const getPropsFromPhase = (phase: string) => {
   }
 }
 
-const Delta = () => {
+const Delta = ({ x, y }) => {
   return (
     <>
       <Measurement
@@ -189,7 +204,7 @@ const Delta = () => {
           delay: 0.2,
         }}
       >
-        10
+        {x.toFixed()}
       </Measurement>
       <Measurement
         style={{ right: '50%', bottom: 'calc(3rem + 8px)' }}
@@ -200,7 +215,7 @@ const Delta = () => {
           delay: 0.2,
         }}
       >
-        10
+        {y.toFixed()}
       </Measurement>
     </>
   )
@@ -211,10 +226,71 @@ const Measurement = styled(motion.p, {
   position: 'absolute',
 })
 
+function getInverse({ from, to }) {
+  const { x: fromX, y: fromY } = from
+  const { x, y } = to
+
+  return {
+    x: x - fromX,
+    y: y - fromY,
+  }
+}
+
 export function ReactFlip() {
   const player = usePlayer(steps, { delay: 1200 })
   const { highlight, phase, block, vars } = player.models.state
-  const { x, y } = getPropsFromPhase(phase)
+  const { x: xLineStyles, y: yLineStyles } = getPropsFromState({ phase })
+
+  const originalRef = React.useRef<HTMLButtonElement>()
+  const squareRef = React.useRef<HTMLButtonElement>()
+  const xSpanRef = React.useRef<HTMLSpanElement>()
+  const ySpanRef = React.useRef<HTMLSpanElement>()
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+
+  const transformExists = ['inverse-2', 'play'].some(
+    (currentPhase) => phase === currentPhase
+  )
+
+  const inverse = () =>
+    getInverse({
+      to: originalRef.current.getBoundingClientRect(),
+      from: squareRef.current.getBoundingClientRect(),
+    })
+
+  React.useEffect(() => {
+    x.onChange((newX) => {
+      xSpanRef.current.textContent = newX.toFixed()
+    })
+    y.onChange((newY) => {
+      ySpanRef.current.textContent = newY.toFixed()
+    })
+  }, [])
+
+  React.useEffect(() => {
+    if (!transformExists) {
+      x.set(0)
+      y.set(0)
+    }
+  }, [transformExists])
+
+  React.useEffect(() => {
+    if (transformExists) {
+      const { x: xInverse, y: yInverse } = inverse()
+      const xControls = animate(x, xInverse, {
+        type: 'tween',
+        duration: 2,
+      })
+      const yControls = animate(y, yInverse, {
+        type: 'tween',
+        duration: 2,
+      })
+      return () => {
+        xControls.stop()
+        yControls.stop()
+      }
+    }
+  }, [phase])
 
   return (
     <>
@@ -232,11 +308,15 @@ export function ReactFlip() {
             </CodeBlock>
           </CodeWrapper>
           <VisualWrapper toggled={player.models.activeStepIndex >= 2}>
-            <XLine layout style={x} />
-            <YLine layout style={y} />
-            <InitialSquare type="outline" />
-            <Square />
-            {phase === 'inverse-1' && <Delta />}
+            <XLine layout style={phase === 'inverse-2' ? { y } : xLineStyles} />
+            <YLine layout style={yLineStyles} />
+            <InitialSquare ref={originalRef} type="outline" />
+            <Square ref={squareRef} style={{ x, y }} />
+            {phase === 'inverse-1' && <Delta {...inverse()} />}
+            <Transform style={{ display: transformExists ? 'revert' : 'none' }}>
+              translate(<span ref={xSpanRef}>0</span>px,{' '}
+              <span ref={ySpanRef}>0</span>px)
+            </Transform>
           </VisualWrapper>
           <ConsoleWrapper>
             {Object.entries(vars).map(([key, value]) => (
@@ -251,6 +331,13 @@ export function ReactFlip() {
   )
 }
 
+const Transform = styled('p', {
+  position: 'absolute',
+  top: '$4',
+  right: '$4',
+  fontFamily: '$mono',
+})
+
 const Controls = styled('div', {
   display: 'flex',
 })
@@ -263,7 +350,7 @@ const Wrapper = styled('div', {
   display: 'grid',
   gridTemplateColumns: 'minmax(0, 1fr) 1fr',
   gridTemplateRows: '5fr 1fr',
-  gap: '$6',
+  gap: '$4',
 })
 
 const VisualWrapper = styled('div', {
