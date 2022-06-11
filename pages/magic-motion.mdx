@@ -7,7 +7,7 @@ editedAt: '2022-04-15'
 ---
 
 import Callout from '@/elements/Callout'
-import { First, Last, Invert, ReactFlip } from '@/components/magic-motion/Flip'
+import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
@@ -34,19 +34,19 @@ In our sample animation, notice that there are actually two things changing: (1)
 
 To implement the position change, we'll use a technique called **FLIP**. FLIP stands for **F**irst, **L**ast, **I**nverse, **P**lay. Before we do any layout changes, we **first** record the `x` and `y` coordinates of the element:
 
-<First />
+<Flip.First />
 
 Then we record the **last** position of the element _after_ the layout change:
 
-<Last />
+<Flip.Last />
 
 Using transforms, we **invert** the layout change to make it look like the element is back to its original position:
 
-<Invert />
+<Flip.Invert />
 
 Finally, we **play** the animation by animating the transforms back to zero:
 
-<First />
+<Flip.Play />
 
 ## FLIP (But in React)
 
@@ -67,7 +67,7 @@ The answer to (1) is thankfully quite simple — we'll use the built-in [`.getBo
 
 What about (2) — detecting layout changes?
 
-I'm going to make the assumption here that layout changes can only happen when the component re-renders. Through this assumption, detecting a layout change turns to detecting _re-renders_. This is much easier because React has a built-in way of doing this — the `useEffect` hook.
+I'm going to make the assumption here that layout changes can only happen when the component re-renders. Through this assumption, we'll check when a layout change happens whenever the component re-renders. And how do we do something when a component re-renders? Using the `useEffect` hook!
 
 ```tsx
 const Motion = (props) => {
@@ -103,7 +103,7 @@ Quick quiz time:
 
 This kinda works, but it's recording the position of the box _after_ the layout change, not before! This is not a problem necessarily because we need it to implement FLIP anyway, but it's for sure not what we intended. If `useEffect` runs _after_ the render, how do we record the initial position?
 
-<First />
+<Flip.First />
 
 ### The `usePrevious` Trick
 
@@ -254,7 +254,7 @@ function play({ element, from }) {
 
 And all together now:
 
-<ReactFlip />
+<Flip.ReactFlip />
 
 ## Animating Size
 
