@@ -258,6 +258,71 @@ And all together now:
 
 ## Animating Size
 
-Framer motion also lets you animate changes in **size** too, so let's modify our implementation to support this.
+Framer motion not only lets you animate changes in position, it lets you animate changes in **size** too. How do we change our implementation to support this?
+
+When I tried implementing this, the first thing that I did was to use the same approach as position - except I would use the `width` and `height` instead of the `x` and `y` coordinates:
+
+```ts
+const {
+  x,
+  y,
+  width: scaleX,
+  height: scaleY,
+} = getInverse({
+  first: initialBox,
+  last: currentBox,
+})
+```
+
+Then use `scaleX()` and `scaleY()` to transform the element back to its initial size:
+
+```ts
+applyTransform({
+  element: elementRef.current,
+  transform: { x, y, scaleX, scaleY },
+})
+```
+
+And finally animate the `scale` back to zero:
+
+```ts
+play({
+  element: elementRef.current,
+  from: { x, y, scaleX, scaleY },
+})
+```
+
+Should work, right? Well, let's try it and see:
+
+Great! Now what if we animate it with position?
+
+Hmm, _not_ so great. What happened?
+
+### Working Together With Position
+
+When an element changes size, the distance that it travels would change as well.
+
+- The animation should convey this relationship
+
+This little bug is happening because our invert algorithm is coming up a little short from where the element used to be:
+
+- Something that shows the algorithm coming up a little short
+
+To get this to work right, we need to make sure that our algorithm takes into account any changes in size as well. But, how do we change it?
+
+<Quiz
+  question="After the layout change, our element is now twice the size it used to be. How do we change the distance travelled so that it shows up back in its original position?"
+  answers={[
+    {
+      label: 'Increase it by width / 2',
+      tip: "Not quite! The function passed to useEffect will run after the component rerenders, so we're actually measuring the element after the layout change.",
+    },
+    {
+      label: 'Decrease it by width / 2',
+      tip: "That's right! The function passed to useEffect runs after the render, so we're measuring the element after the layout change has happened.",
+      correct: true,
+    },
+  ]}
+/>
 
 ## Correcting Distortions
