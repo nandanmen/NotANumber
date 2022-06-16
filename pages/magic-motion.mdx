@@ -325,4 +325,49 @@ To get this to work right, we need to make sure that our algorithm takes into ac
   ]}
 />
 
+Specifically, we need to change the _horizontal_ distance travelled by `(oldWidth - newWidth) / 2` and the _vertical_ distance travelled by `(oldHeight - newHeight) / 2`.
+
+<Callout>
+
+There's actually a _tad_ more nuance than that. The change in distance also depends on the element's **transform origin** — but that's a whole rabbit hole that we won't get to. In this post, we'll assume that the transform origin will _always_ be at the center of the element.
+
+</Callout>
+
 ## Correcting Distortions
+
+Size animations also leads to another problem: **child element distortion**. Animating size changes using `scale()` is great until you have some text that you want to keep legible at all times:
+
+- animation here showcasing distortion
+
+The trick here is to apply a transform to the child element so that it cancels out the transform that's on the parent:
+
+- animation showing transform cancelling out
+
+### Implementing in React
+
+What does that look like in React?
+
+First, the chid element needs to know about what transform is being applied to the parent component. One way to do this is to have the parent render a React `Context` and set its value to the transform when it's about to animate:
+
+```tsx
+<div>
+  <MotionContext.Provider value={{ transform }}>
+    {children}
+  </MotionContext.Provider>
+</div>
+```
+
+The child element then reads from that context and, if the transform exists, calculates and applies an "inverse transform". We wrap this inside a `useEffect` with no dependency array because the parent can only start animating every render.
+
+```tsx
+
+```
+
+## Summary
+
+Framer motion's magical layout animations are powered by the FLIP technique — a clever way to implement performant layout animations. While implementing FLIP with position changes turned out to be pretty straightforward, the same can't be said for changes in size. When we put size into the picture, we have to worry about:
+
+- How a change in size affects the distance the element travelled;
+- Correcting distortions in child elements caused by transforms in the parent element;
+
+And a whole slew of edge cases that I didn't quite get into in this post. That's all for today, thanks for reading!
