@@ -7,6 +7,7 @@ editedAt: '2022-04-15'
 ---
 
 import Callout from '@/elements/Callout'
+import ProblemStatement from '@/elements/ProblemStatement'
 import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
 
@@ -26,33 +27,93 @@ I try to word my posts to cater to readers of all skill levels, but I realize th
 
 My goal here is to create a component that accepts a boolean prop called `layout`. When `layout` is `true` and the component changes position on the page, it should seamlessly animate from its old position to the new position.
 
-Ultimately, I'm aiming to have my implementation be visually indistinguishable from the framer motion equivalent:
+At the end of the day, I want my implementation to be visually indistinguishable from the framer motion equivalent:
+
+But first - what's a layout change, and why is it magical?
+
+## What's a Layout Change?
+
+A layout change happens when an element's style changes in a way that **can** affect the position of other elements on the page. This includes changes in properties like `width`, `display`, `justify-content`, and many others:
+
+- animation here showing the different changes
+
+If a CSS property determines where elements should appear in a page, then a change in that property is a layout change.
+
+### Can We Use CSS?
+
+But wait! If we're trying to animate properties like `width`, can't we just use CSS? Yes, you definitely can! But your animations might end up looking a bit jittery on slower machines:
+
+- slow animations
+
+This is because it's expensive for the browser to recalculate where elements go on the page. When you animate something that triggers layout changes, the browser has to do this _every frame of the animation_.
+
+- browser recalculation
+
+On the other hand, properties like `transform` and `opacity` are much easier for the browser to animate because it only needs to change the appearance of that single element.
+
+<ProblemStatement>
+
+Is there a way for us to keep the performance advantages of `transform` when animating complex layout changes?
+
+</ProblemStatement>
+
+### Animating the Un-Animatable
+
+There's one more problem - **you can't animate all CSS properties**. Here's the [complete list from MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties). Notice that properties like `display` and `justify-content` aren't on there (I was surprised to see `grid-template-columns` _is_ there though - that's kinda awesome). This means that if you want to animate something like this:
+
+- display flex change
+
+You can't slap on a `transition: justify-content 100ms ease-out` and call it a day - the browser won't understand how to transition that property.
+
+<ProblemStatement>
+
+How do you animate changes in un-animatable CSS properties?
+
+</ProblemStatement>
 
 ## Animating Position with FLIP
 
-In our sample animation, notice that there are actually two things changing: (1) the component's **position** and (2) the component's **size**. It turns out that animating size is a tad trickier, so we'll focus on implementing position first.
+In our sample animation, notice that there are actually two things changing: (1) the component's **position** and (2) the component's **size**. We'll focus on implementing position first since animating size has a few caveats.
 
-To implement the position change, we'll use a technique called **FLIP**. FLIP stands for **F**irst, **L**ast, **I**nverse, **P**lay. Before we do any layout changes, we **first** record the `x` and `y` coordinates of the element:
+Since CSS alone doesn't quite have the tools we need for the animations we want, we have to turn to a JavaScript-based approach. For that we'll turn to a technique called **FLIP** or **F**irst, **L**ast, **I**nverse, **P**lay. Here's how it works.
+
+### First
+
+Before we do the layout change, we record the initial or **first** `x` and `y` coordinates of the element:
 
 <Flip.First />
 
-Then we record the **last** position of the element _after_ the layout change:
+### Last
+
+Then we trigger the layout change, and record the coordinates of the element after the change was applied:
 
 <Flip.Last />
+
+### Inverse
 
 Using transforms, we **invert** the layout change to make it look like the element is back to its original position:
 
 <Flip.Invert />
 
+### Play
+
 Finally, we **play** the animation by animating the transforms back to zero:
 
 <Flip.Play />
 
+---
+
+By doing it fast enough, we get...
+
+Voila! Magical layout animations.
+
 ## FLIP (But in React)
 
-> Feel free to skip ahead to the [animating size](#animating-size) section if you're not interested in the code implementation.
+Here's my implementation of FLIP using React hooks:
 
-So what does FLIP look like in React?
+<Flip.ReactFlip />
+
+It turns out to not be _that_ much code! Let's take a look at what each part is actually doing.
 
 ### Measuring Layout Changes
 
