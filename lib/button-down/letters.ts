@@ -13,7 +13,7 @@ export type Letter = {
 const letterCache: Map<string, Letter> = new Map()
 
 export async function getAllLetters(): Promise<Letter[]> {
-  const response = await request({ url: '/scheduled-emails', method: 'GET' })
+  const response = await request({ url: '/emails', method: 'GET' })
   const { results } = await response.json()
   const parsedResults: Letter[] = results.map((result) => {
     const { publish_date, subject, body, id } = result
@@ -29,6 +29,10 @@ export async function getAllLetters(): Promise<Letter[]> {
   parsedResults.forEach((letter) => {
     letterCache.set(letter.key, letter)
   })
+
+  parsedResults.sort(
+    (a, b) => +new Date(b.publish_date) - +new Date(a.publish_date)
+  )
 
   return parsedResults
 }

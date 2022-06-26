@@ -119,6 +119,7 @@ const BackLink = styled(motion.a, {
   display: 'flex',
   alignItems: 'center',
   cursor: 'pointer',
+  fontFamily: '$mono',
 
   '&:hover': {
     color: '$blue',
@@ -192,7 +193,6 @@ const Header = styled('header', {
 const Title = styled('h1', {
   fontFamily: '$serif',
   fontSize: '4rem',
-  fontWeight: 600,
   marginBottom: '$6',
   marginTop: '$16',
 })
@@ -204,6 +204,10 @@ const Blurb = styled('p', {
 const List = styled(motion.ul, {
   listStyle: 'none',
   counterReset: 'letters',
+
+  '> :not(:last-child)': {
+    marginBottom: '$8',
+  },
 })
 
 function LetterLink({ title, date = new Date(), slug }) {
@@ -236,16 +240,14 @@ const LetterWrapper = styled('li', {
 
 const LetterTitle = styled('a', {
   fontFamily: '$serif',
-  fontWeight: 600,
   fontSize: '$2xl',
   lineHeight: 1,
-  marginBottom: '$4',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
 
   span: {
-    marginLeft: '$4',
+    marginLeft: 'auto',
   },
 
   '&:hover': {
@@ -256,4 +258,6 @@ const LetterTitle = styled('a', {
 const LetterDate = styled('p', {
   color: '$grey600',
   marginBottom: '$4',
+  fontFamily: '$mono',
+  fontSize: '$sm',
 })
