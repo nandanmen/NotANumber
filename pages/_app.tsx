@@ -94,7 +94,8 @@ const globals = globalCss({
     '--text-2xl': '1.875rem',
 
     '--text-serif': 'Recoleta, ui-serif, Georgia, serif',
-    '--text-mono': 'Cartograph CF, ui-monospace, monospace',
+    '--text-mono':
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     '--text-sans': 'Karla, system-ui, -apple-system, sans-serif',
 
     '-webkit-font-smoothing': 'antialiased',

@@ -303,9 +303,9 @@ export function ReactFlip() {
       <Figure size="full">
         <Wrapper>
           <CodeWrapper>
-            <CodeBlock highlight={highlight} block={block}>
+            <StyledCodeBlock highlight={highlight} block={block}>
               {code}
-            </CodeBlock>
+            </StyledCodeBlock>
           </CodeWrapper>
           <VisualWrapper toggled={player.models.activeStepIndex >= 2}>
             <XLine layout style={phase === 'inverse-2' ? { y } : xLineStyles} />
@@ -346,21 +346,25 @@ const CodeWrapper = styled('div', {
   gridRow: '1 / -1',
 })
 
+const StyledCodeBlock = styled(CodeBlock, {
+  borderRadius: 0,
+  borderRight: 'none',
+})
+
 const Wrapper = styled('div', {
   display: 'grid',
   gridTemplateColumns: 'minmax(0, 1fr) 1fr',
   gridTemplateRows: '5fr 1fr',
-  gap: '$4',
 })
 
 const VisualWrapper = styled('div', {
   position: 'relative',
-  borderRadius: 8,
   padding: '$12',
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
-  border: '1px solid $grey300',
+  border: '1px solid $black',
+  borderBottom: 'none',
   backgroundImage: `url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(155, 30%, 99%, 1)'/><path d='M 10,-2.55e-7 V 20 Z M -1.1677362e-8,10 H 20 Z'  stroke-width='0.5' stroke='hsla(151, 11%, 95%, 1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>")`,
 
   variants: {
@@ -381,9 +385,8 @@ const InitialSquare = styled(Square, {
 
 const ConsoleWrapper = styled('ul', {
   position: 'relative',
-  background: 'white',
-  border: '1px solid $grey300',
-  borderRadius: 6,
+  background: '$grey100',
+  border: '1px solid $black',
   padding: '$4',
   fontFamily: '$mono',
   fontSize: '$sm',

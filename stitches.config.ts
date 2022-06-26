@@ -87,7 +87,7 @@ export const { styled, keyframes, css, globalCss } = createStitches({
     },
     fonts: {
       serif: `Recoleta, ui-serif, Georgia, serif`,
-      mono: `Cartograph CF, ui-monosapce, monospace`,
+      mono: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
       sans: `Karla, system-ui, -apple-system, sans-serif`,
     },
     fontSizes: {

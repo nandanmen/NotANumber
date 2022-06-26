@@ -10,7 +10,7 @@ module.exports = {
       fontFamily: {
         serif: ['Recoleta', ...defaultTheme.fontFamily.serif],
         sans: ['Karla', ...defaultTheme.fontFamily.sans],
-        mono: ['Cartograph CF', ...defaultTheme.fontFamily.mono],
+        mono: [...defaultTheme.fontFamily.mono],
       },
       colors: {
         blacks: {
