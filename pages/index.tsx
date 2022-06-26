@@ -97,7 +97,7 @@ const Icon = styled('div', {
 
 const PostItem = styled('li', {
   margin: '0 -2rem',
-  width: '100%',
+  width: '100vw',
 
   '@post': {
     display: 'grid',
@@ -105,6 +105,7 @@ const PostItem = styled('li', {
     alignItems: 'center',
     gap: '$8',
     margin: 'revert',
+    width: '100%',
   },
 })
 
@@ -138,9 +139,14 @@ const Posts = styled('ul', {
 })
 
 const Divider = styled('div', {
-  width: '$24',
+  width: 'min(30vw, $space$24)',
+  marginLeft: '-2rem',
   height: '$px',
   background: '$grey400',
+
+  '@media screen and (min-width: 60rem)': {
+    marginLeft: 0,
+  },
 })
 
 // --
