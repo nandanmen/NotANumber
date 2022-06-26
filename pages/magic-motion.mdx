@@ -45,7 +45,7 @@ But wait! If we're trying to animate properties like `width`, can't we just use 
 
 - slow animations
 
-This is because it's expensive for the browser to recalculate where elements go on the page. When you animate something that triggers layout changes, the browser has to do this _every frame of the animation_.
+This is because it's expensive for the browser to recalculate where elements go on the page. When you animate something that triggers layout changes, the browser has to do this for _every frame of the animation_.
 
 - browser recalculation
 
@@ -71,11 +71,13 @@ How do you animate changes in un-animatable CSS properties?
 
 </ProblemStatement>
 
-## Animating Position with FLIP
+## Animating With FLIP
 
-In our sample animation, notice that there are actually two things changing: (1) the component's **position** and (2) the component's **size**. We'll focus on implementing position first since animating size has a few caveats.
+Enter FLIP!
 
-Since CSS alone doesn't quite have the tools we need for the animations we want, we have to turn to a JavaScript-based approach. For that we'll turn to a technique called **FLIP** or **F**irst, **L**ast, **I**nverse, **P**lay. Here's how it works.
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in layout properties like `width` using transforms, essentially giving you the best of both worlds.
+
+Here's how it works:
 
 ### First
 
@@ -109,11 +111,11 @@ Voila! Magical layout animations.
 
 ## FLIP (But in React)
 
-Here's my implementation of FLIP using React hooks:
+Here's an implementation of FLIP using React hooks:
 
 <Flip.ReactFlip />
 
-It turns out to not be _that_ much code! Let's take a look at what each part is actually doing.
+Let's take a look at what each part is actually doing.
 
 ### Measuring Layout Changes
 

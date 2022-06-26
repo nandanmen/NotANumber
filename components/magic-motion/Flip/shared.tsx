@@ -25,7 +25,6 @@ const Wrapper = styled('div', {
   gridTemplateColumns: '2fr 1fr',
   border: '1px solid $black',
   height: '$64',
-  borderRadius: 6,
   overflow: 'hidden',
 })
 
