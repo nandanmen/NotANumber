@@ -199,6 +199,7 @@ const Anchor = styled('a', {
 const PostTitle = styled('h1', {
   fontSize: '$2xl',
   fontFamily: '$serif',
+  lineHeight: '1.1'
 })
 
 const PostDescription = styled('p', {
