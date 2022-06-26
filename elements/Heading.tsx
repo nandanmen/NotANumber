@@ -16,7 +16,6 @@ const H2 = styled('h2', {
   fontSize: '$2xl',
   fontFamily: '$serif',
   position: 'relative',
-  fontWeight: 500,
   scrollMarginTop: '$28',
 
   '&:before': {
@@ -38,6 +37,5 @@ export const Subheading: React.FC<{}> = ({ children }) => {
 const H3 = styled('h3', {
   fontSize: '$xl',
   color: '$grey800',
-  fontWeight: 600,
   scrollMarginTop: '$28',
 })
