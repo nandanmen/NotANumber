@@ -55,6 +55,8 @@ const DateWrapper = styled('p', {
   color: '$grey600',
   marginTop: '$16',
   marginBottom: '$4',
+  fontFamily: '$mono',
+  fontSize: '$sm',
 })
 
 const LetterLink = styled(motion.a, {
@@ -85,7 +87,6 @@ const Title = styled('h1', {
   fontFamily: '$serif',
   fontSize: '3rem',
   lineHeight: 1,
-  fontWeight: 600,
   marginBottom: '$16',
 })
 
@@ -124,7 +125,6 @@ const Article = styled('article', {
 
   '> h2': {
     fontSize: '$2xl',
-    fontWeight: 600,
     fontFamily: '$serif',
     marginTop: '$10',
   },
