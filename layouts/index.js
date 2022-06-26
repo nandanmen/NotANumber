@@ -246,7 +246,6 @@ const Article = styled.article`
 const Title = styled.h1`
   ${tw`mb-8 font-serif`}
 
-  font-weight: 600;
   line-height: 1;
   font-size: 4rem;
 `

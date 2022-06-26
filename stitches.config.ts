@@ -58,7 +58,7 @@ const SPACING = {
   96: '24rem',
 } as const
 
-export const { styled, keyframes, css } = createStitches({
+export const { styled, keyframes, css, globalCss } = createStitches({
   media: {
     post: `(min-width: 50rem)`,
     md: `(min-width: 768px)`,

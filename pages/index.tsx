@@ -73,9 +73,8 @@ export default function HomePage() {
 }
 
 const NewsletterLink = styled(motion.a, {
-  fontFamily: '$serif',
+  fontFamily: '$mono',
   display: 'flex',
-  fontStyle: 'italic',
   alignItems: 'center',
   cursor: 'pointer',
 
@@ -97,61 +96,51 @@ const Icon = styled('div', {
 })
 
 const PostItem = styled('li', {
+  margin: '0 -2rem',
+  width: '100%',
+
   '@post': {
     display: 'grid',
-    gridTemplateColumns: '8rem 40rem',
+    gridTemplateColumns: '8rem 1fr',
     alignItems: 'center',
     gap: '$8',
+    margin: 'revert',
   },
 })
 
 const Wrapper = styled('div', {
-  paddingTop: '$32',
-  paddingBottom: '$32',
+  padding: '$32 0',
 })
 
 const Title = styled('h1', {
   fontFamily: '$serif',
-  textAlign: 'center',
-  fontSize: '6rem',
-  fontWeight: '600',
+  fontSize: '5rem',
   lineHeight: '0.9',
   marginBottom: '$16',
+
+  '@md': {
+    fontSize: '6rem',
+  },
 })
 
 const Header = styled('header', {
   marginBottom: '$16',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  textAlign: 'center',
 })
 
 const Description = styled('p', {
-  fontSize: '$xl',
-  paddingLeft: '$8',
-  paddingRight: '$8',
-  maxWidth: '720px',
-  margin: '0 auto',
+  fontSize: '$lg',
+  maxWidth: '45ch',
   marginBottom: '$8',
 })
 
 const Posts = styled('ul', {
   paddingTop: '$12',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-
-  '> :not(:last-child)': {
-    marginBottom: '$4',
-  },
 })
 
 const Divider = styled('div', {
   width: '$24',
   height: '$px',
   background: '$grey400',
-  transform: 'translateX(calc(50vw - 50%))',
 })
 
 // --
@@ -183,9 +172,7 @@ function Post({ post }: { post: typeof slidingWindow }) {
 }
 
 const PostWrapper = styled('div', {
-  padding: '$4 $8',
-  borderRadius: '12px',
-  width: 'min(100vw, 40rem)',
+  padding: '$8',
 
   '&:hover': {
     background: '$grey200',
@@ -204,7 +191,6 @@ const Anchor = styled('a', {
 })
 
 const PostTitle = styled('h1', {
-  fontWeight: '500',
   fontSize: '$2xl',
   fontFamily: '$serif',
 })
@@ -216,6 +202,7 @@ const PostDescription = styled('p', {
 const PostUpdatedText = styled('p', {
   fontSize: '$sm',
   color: '$grey600',
+  fontFamily: '$mono',
 })
 
 const PostArrow = styled('p', {
