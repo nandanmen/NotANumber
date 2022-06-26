@@ -137,10 +137,10 @@ const Meta = styled.div`
 
 const Article = styled.article`
   display: grid;
-  width: 100%;
   padding-top: 10rem;
   padding-bottom: 80px;
   grid-template-columns: 2rem 1fr 2rem;
+  margin: 0 -2rem;
   line-height: 1.6;
   font-family: var(--text-sans);
 
@@ -262,7 +262,6 @@ const Footer = styled.footer`
   padding: 32px;
   padding-top: 16rem;
   padding-bottom: 6rem;
-  background: var(--gray200);
   color: var(--color-text-secondary);
   height: 320px;
 `

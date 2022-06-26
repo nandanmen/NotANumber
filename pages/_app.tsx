@@ -28,10 +28,12 @@ function MyApp({ Component, pageProps }) {
   globals()
 
   return (
-    <Main>
+    <main>
       <TopNavigation />
-      <Component {...pageProps} />
-    </Main>
+      <PageWrapper>
+        <Component {...pageProps} />
+      </PageWrapper>
+    </main>
   )
 }
 
@@ -41,7 +43,7 @@ export default MyApp
 
 const PAGE_WIDTH = `min(60rem, calc(100vw - 4rem))`
 
-const Main = styled('main', {
+const PageWrapper = styled('main', {
   width: PAGE_WIDTH,
   margin: '0 auto',
 })
@@ -110,6 +112,11 @@ const TopNavigation = styled(Navigation, {
   position: 'fixed',
   padding: '$3',
   borderBottom: '1px solid $grey400',
-  width: PAGE_WIDTH,
   zIndex: 50,
+  width: '100vw',
+
+  '> ul': {
+    width: PAGE_WIDTH,
+    margin: '0 auto',
+  },
 })
