@@ -24,6 +24,28 @@ export const First = () => {
     <FlipWrapper>
       <Display>
         <Grid>
+          {box && (
+            <>
+              <motion.line
+                animate={{ x: 5 + 7.5 }}
+                x1="0"
+                x2="0"
+                y1="0"
+                y2="100"
+                stroke="var(--gray200)"
+                strokeWidth="0.4"
+              />
+              <motion.line
+                animate={{ y: 20 + 7.5 }}
+                x1="0"
+                x2="100"
+                y1="0"
+                y2="0"
+                stroke="var(--gray200)"
+                strokeWidth="0.4"
+              />
+            </>
+          )}
           <motion.g
             style={{ x: 5, y: 20 }}
             whileHover="hover"
@@ -48,6 +70,7 @@ export const First = () => {
               variants={{
                 hover: {
                   strokeWidth: 0.3,
+                  stroke: 'rgba(0,145,255,1)',
                 },
               }}
               onClick={record}

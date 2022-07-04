@@ -75,19 +75,19 @@ How do you animate changes in un-animatable CSS properties?
 
 Enter FLIP!
 
-FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in layout properties like `width` using transforms, essentially giving you the best of both worlds.
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in layout properties like `width` using transforms, giving you the flexibility to change these properties while keeping the performance of transforms.
 
 Here's how it works:
 
 ### First
 
-Before we do the layout change, we record the initial or **first** `x` and `y` coordinates of the element:
+Before we do the layout change, we record the initial position of the element, in terms of `x` and `y` coordinates:
 
 <Flip.First />
 
 ### Last
 
-Then we trigger the layout change, and record the coordinates of the element after the change was applied:
+Then we record the position of the element after a layout change:
 
 <Flip.Last />
 
