@@ -6,6 +6,8 @@ import { gray, blue } from '@radix-ui/colors'
 import Figure, { Caption } from '@/elements/Figure'
 import { styled } from '@/stitches'
 
+import { Grid } from './shared/Grid'
+
 export const FlipWrapper: React.FC<{ caption?: string }> = ({
   children,
   caption,
@@ -28,18 +30,21 @@ const Wrapper = styled('div', {
   overflow: 'hidden',
 })
 
-export const FlipDisplay = styled('div', {
-  backgroundImage: `url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(155, 30%, 99%, 1)'/><path d='M 10,-2.55e-7 V 20 Z M -1.1677362e-8,10 H 20 Z'  stroke-width='0.5' stroke='hsla(151, 11%, 95%, 1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>")`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  position: 'relative',
+export const FlipDisplay = ({ children }) => {
+  return (
+    <DisplayWrapper>
+      <Grid>{children}</Grid>
+    </DisplayWrapper>
+  )
+}
+
+const DisplayWrapper = styled('div', {
+  background: '$white',
   borderRight: '1px solid $black',
-  padding: '0 $6',
 })
 
 export const Square = React.forwardRef<
-  HTMLButtonElement,
+  SVGRectElement,
   ComponentPropsWithRef<typeof SquareWrapper>
 >((props, ref) => (
   <SquareWrapper
@@ -56,30 +61,12 @@ export const Square = React.forwardRef<
   />
 ))
 
-const SquareWrapper = styled(motion.button, {
-  display: 'block',
-  width: '$16',
-  aspectRatio: 1,
-  background: blue.blue6,
-  borderWidth: 1,
-  borderStyle: 'solid',
-  borderColor: `rgba(23,23,23,1)`,
-  borderRadius: 6,
-  boxShadow: '4px 4px 0px rgba(0,0,0,0.1)',
-  zIndex: 10,
-
-  variants: {
-    type: {
-      outline: {
-        background: '$white',
-        boxShadow: 'none',
-        borderWidth: 2,
-        borderStyle: 'dashed',
-        borderColor: gray.gray12,
-        pointerEvents: 'none',
-      },
-    },
-  },
+const SquareWrapper = styled(motion.rect, {
+  cursor: 'pointer',
+  fill: blue.blue6,
+  rx: 1,
+  stroke: 'rgba(23,23,23,1)',
+  strokeWidth: 0.2,
 })
 
 const Line = styled(motion.div, {

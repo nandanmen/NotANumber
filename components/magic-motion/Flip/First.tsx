@@ -1,7 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { styled } from '@/stitches'
-import { range } from '@/lib/utils'
+
+import { Grid } from './shared/Grid'
 
 import {
   FlipWrapper,
@@ -26,21 +27,19 @@ export const First = () => {
         <Grid>
           {box && (
             <>
-              <motion.line
-                animate={{ x: 5 + 7.5 }}
-                x1="0"
-                x2="0"
+              <line
+                x1="12.5"
+                x2="12.5"
                 y1="0"
                 y2="100"
                 stroke="var(--gray200)"
                 strokeWidth="0.4"
               />
-              <motion.line
-                animate={{ y: 20 + 7.5 }}
+              <line
                 x1="0"
                 x2="100"
-                y1="0"
-                y2="0"
+                y1="27.5"
+                y2="27.5"
                 stroke="var(--gray200)"
                 strokeWidth="0.4"
               />
@@ -66,7 +65,7 @@ export const First = () => {
               height="15"
               rx="1"
               stroke="currentColor"
-              strokeWidth="0.1"
+              strokeWidth="0.2"
               variants={{
                 hover: {
                   strokeWidth: 0.3,
@@ -96,46 +95,4 @@ const Square = styled(motion.rect, {
 const Display = styled('div', {
   background: '$white',
   borderRight: '1px solid $black',
-})
-
-const CELL_SIZE = 8
-
-const Grid: React.FC<{ rows?: number; cols?: number }> = ({
-  rows = 10,
-  cols = 15,
-  children,
-}) => {
-  return (
-    <svg width="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <Wrapper>
-        {range(rows).map((index) => (
-          <line
-            key={`row-${index}`}
-            x1="0"
-            x2="100"
-            y1={index * CELL_SIZE}
-            y2={index * CELL_SIZE}
-            stroke="currentColor"
-            strokeWidth="0.2"
-          />
-        ))}
-        {range(cols).map((index) => (
-          <line
-            key={`col-${index}`}
-            x1={index * CELL_SIZE}
-            x2={index * CELL_SIZE}
-            y1="0"
-            y2="100"
-            stroke="currentColor"
-            strokeWidth="0.2"
-          />
-        ))}
-      </Wrapper>
-      {children}
-    </svg>
-  )
-}
-
-const Wrapper = styled('g', {
-  color: '$grey100',
 })
