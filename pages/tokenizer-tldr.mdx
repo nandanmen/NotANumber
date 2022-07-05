@@ -1,0 +1,58 @@
+---
+title: 'Rebuilding Babel: The Tokenizer'
+description: "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer."
+blurb: 'How does a tokenizer convert a code string into a list of tokens?'
+publishedAt: '2022-02-20'
+editedAt: '2022-02-20'
+tldr: 'tokenizer'
+---
+
+import { Tokenizer } from '@/components/tokenizer/Tokenizer'
+import { Svg } from '@/components/Svg'
+import Figure from '@/elements/Figure'
+
+The tokenizer is the part of the compiler that breaks up your code into its smallest parts, known as **tokens**:
+
+<Figure size="base">
+  <Svg href="tokenizer/token-types.svg" />
+</Figure>
+
+The tokenizer works by matching each character in the code to a specific token type. Each token has specific rules that govern what that token looks like — these rules are known as **microsyntax**.
+
+**For single character tokens** like the left paren, the right paren, and the dot, the tokenizer performs an exact match:
+
+<Figure size="lg">
+  <Tokenizer
+    name="singleCharacter"
+    input="{ console.log() }"
+    showKeywords={false}
+  />
+</Figure>
+
+**For identifiers**, the tokenizer first checks if the first character is alphabetical. If it is, it collects the remaining characters into a single token, stopping once it sees a different token type:
+
+<Figure size="lg">
+  <Tokenizer showKnownTokens={false} showKeywords={false} input="console.log" />
+</Figure>
+
+**Keywords** use the same method except it then checks if the sequence of characters is in a list of known keywords:
+
+<Figure size="lg">
+  <Tokenizer showKnownTokens={false} input="const a = function () {}" />
+</Figure>
+
+**Strings** use a similar method except they start with a single quote instead of an alphabetical character:
+
+<Figure size="lg">
+  <Tokenizer
+    showKnownTokens={false}
+    showKeywords={false}
+    input="msg = 'hello, world!'"
+  />
+</Figure>
+
+Putting everything together gives us a tokenizer:
+
+<Figure size="lg">
+  <Tokenizer />
+</Figure>

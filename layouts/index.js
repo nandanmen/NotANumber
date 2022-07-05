@@ -1,7 +1,10 @@
 import React from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import tw, { styled, theme } from 'twin.macro'
 import { MDXProvider } from '@mdx-js/react'
+import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import { motion } from 'framer-motion'
 
 import FeedbackForm from '@/components/FeedbackForm'
 import NewsletterForm from '@/components/NewsletterForm'
@@ -77,6 +80,7 @@ export default function Layout({ frontMatter = {}, children }) {
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <header>
+          {frontMatter.tldr && <Tldr>TL;DR</Tldr>}
           <Title>{frontMatter.title}</Title>
           <Blurb>{frontMatter.blurb}</Blurb>
         </header>
@@ -91,7 +95,29 @@ export default function Layout({ frontMatter = {}, children }) {
             </p>
           )}
         </Meta>
+        {frontMatter.tldr && (
+          <Link href={`/${frontMatter.tldr}`}>
+            <TldrBackLink>
+              <HiArrowLeft /> Read the full article
+            </TldrBackLink>
+          </Link>
+        )}
+        {frontMatter.hasTldr && (
+          <Link href={`/${slug}-tldr`}>
+            <TldrLink whileHover={{ scale: 1.1 }}>
+              TL;DR
+              <HiArrowRight />
+            </TldrLink>
+          </Link>
+        )}
         {children}
+        {frontMatter.tldr && (
+          <Link href={`/${frontMatter.tldr}`}>
+            <TldrBackLink>
+              <HiArrowLeft /> Read the full article
+            </TldrBackLink>
+          </Link>
+        )}
         <FormContainer>
           <FeedbackForm slug={frontMatter.__resourcePath} />
           <NewsletterForm />
@@ -104,6 +130,18 @@ export default function Layout({ frontMatter = {}, children }) {
     </MDXProvider>
   )
 }
+
+const TldrBackLink = styled.a`
+  ${tw`text-sm text-gray-600 cursor-pointer hover:underline flex items-center gap-2`}
+`
+
+const TldrLink = styled(motion.a)`
+  ${tw`font-mono text-sm bg-gray-300 w-min p-1 rounded flex items-center gap-2 mb-12! cursor-pointer`}
+`
+
+const Tldr = styled.p`
+  ${tw`mb-8 font-mono text-sm bg-gray-300 w-min p-1 rounded`}
+`
 
 const Avatar = styled.img`
   width: 32px;
