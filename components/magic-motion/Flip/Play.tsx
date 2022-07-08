@@ -3,7 +3,7 @@ import { useBox } from '../use-box'
 import {
   FlipWrapper,
   FlipConsole,
-  Display,
+  FlipDisplay,
   Label,
   Outline,
   Square,
@@ -24,11 +24,11 @@ export const Play = () => {
 
   return (
     <FlipWrapper>
-      <Display toggled>
+      <FlipDisplay>
         <Label>justify-content: flex-end</Label>
         <Outline ref={originalRef} type="outline" />
         <Square ref={boxRef} style={{ x: getX() }} animate={controls} />
-      </Display>
+      </FlipDisplay>
       <FlipConsole>
         {box && (
           <ul>

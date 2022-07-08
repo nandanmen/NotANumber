@@ -6,7 +6,8 @@ const thumbStyle = {
   borderRadius: '50%',
   cursor: 'pointer',
   background: '$brown',
-  border: '2px solid $border',
+  border: '1px solid $border',
+  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
 }
 
 const trackStyle = {

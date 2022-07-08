@@ -1,28 +1,16 @@
 import React from 'react'
 import type { ComponentPropsWithRef } from 'react'
 import { motion } from 'framer-motion'
-import { gray, blue } from '@radix-ui/colors'
 
-import Figure, { Caption } from '@/elements/Figure'
 import { styled } from '@/stitches'
 
 import { Grid } from './shared/Grid'
-
-export const FlipWrapper: React.FC<{ caption?: string }> = ({
-  children,
-  caption,
-}) => (
-  <Figure size="lg">
-    <Wrapper>{children}</Wrapper>
-    {caption && <Caption>{caption}</Caption>}
-  </Figure>
-)
 
 export const FlipConsole = styled('div', {
   padding: '$6',
 })
 
-const Wrapper = styled('div', {
+export const FlipWrapper = styled('div', {
   display: 'grid',
   gridTemplateColumns: '2fr 1fr',
   border: '1px solid $black',
@@ -38,6 +26,12 @@ export const FlipDisplay = ({ children }) => {
   )
 }
 
+export const List = styled('ul', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$2',
+})
+
 const DisplayWrapper = styled('div', {
   background: '$white',
   borderRight: '1px solid $black',
@@ -45,87 +39,104 @@ const DisplayWrapper = styled('div', {
 
 export const Square = React.forwardRef<
   SVGRectElement,
-  ComponentPropsWithRef<typeof SquareWrapper>
->((props, ref) => (
-  <SquareWrapper
-    ref={ref}
-    variants={{
-      hover: { borderColor: `rgba(0,145,255,1)`, scale: 1.1 },
-      base: {
-        borderColor: `rgba(23,23,23,1)`,
-        scale: 1,
-      },
-    }}
-    whileHover="hover"
+  ComponentPropsWithRef<typeof motion.rect> & {
+    shadow?: boolean
+    disabled?: boolean
+  }
+>(
+  (
+    {
+      style: { x = 0, y = 0, ...otherStyles } = {},
+      shadow = true,
+      disabled = false,
+      ...props
+    }: any,
+    ref
+  ) => (
+    <motion.g style={{ x, y }} whileHover={disabled ? undefined : 'hover'}>
+      {shadow && (
+        <rect fill="var(--gray200)" width="15" height="15" rx="1" x="1" y="1" />
+      )}
+      <SquareWrapper
+        ref={ref}
+        fill="rgb(183, 217, 248)"
+        width="15"
+        height="15"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="0.2"
+        variants={{
+          hover: {
+            strokeWidth: 0.3,
+            stroke: 'rgba(0,145,255,1)',
+          },
+        }}
+        style={otherStyles}
+        {...props}
+      />
+    </motion.g>
+  )
+)
+
+export const Outline = (props) => (
+  <Square
+    shadow={false}
+    disabled
+    strokeDasharray="1"
+    fill="var(--gray100)"
+    stroke="var(--gray600)"
     {...props}
   />
-))
+)
+
+export const XLine = ({ y, ...props }) => {
+  return <Line x1="0" x2="100" y1={y} y2={y} {...props} />
+}
+
+export const YLine = ({ x, ...props }) => {
+  return <Line y1="0" y2="100" x1={x} x2={x} {...props} />
+}
+
+const Line = (props) => {
+  return <line stroke="var(--gray200)" strokeWidth="0.4" {...props} />
+}
 
 const SquareWrapper = styled(motion.rect, {
   cursor: 'pointer',
-  fill: blue.blue6,
-  rx: 1,
-  stroke: 'rgba(23,23,23,1)',
-  strokeWidth: 0.2,
 })
 
-const Line = styled(motion.div, {
-  position: 'absolute',
-  background: gray.gray8,
-})
+export const Label = (props) => {
+  return <LabelText x="3" y="6" {...props} />
+}
 
-export const XLine = styled(Line, {
-  height: 1,
-  left: 0,
-  right: 0,
-})
-
-export const YLine = styled(Line, {
-  width: 1,
-  top: 0,
-  bottom: 0,
-})
-
-export const Label = styled('p', {
+export const LabelText = styled('text', {
   fontFamily: '$mono',
-  fontSize: '$sm',
-  color: '$grey600',
-  position: 'absolute',
-  top: '$4',
-  left: '$4',
-})
-
-export const Outline = styled(Square, {
-  position: 'absolute',
-  left: '$6',
-})
-
-export const Display = styled(FlipDisplay, {
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: 'flex-end',
-      },
-    },
-  },
+  fontSize: 3,
+  fill: '$grey600',
 })
 
 type DomRectProps = {
   label: string
-  box: DOMRect | null
+  box: { x: number; y: number } | null
+}
+
+export const ConsoleItem = ({ label, children }) => {
+  return (
+    <RectWrapper>
+      <RectTitle>{label}</RectTitle>
+      <RectValues>{children}</RectValues>
+    </RectWrapper>
+  )
 }
 
 export const DomRect = ({ label, box }: DomRectProps) => {
   if (!box) return null
 
   return (
-    <RectWrapper>
-      <RectTitle>{label}</RectTitle>
-      <RectValues>
-        <p>x: {box.x.toFixed()}</p>
-        <p>y: {box.y.toFixed()}</p>
-      </RectValues>
-    </RectWrapper>
+    <ConsoleItem label={label}>
+      <p>x: {box.x.toFixed()}</p>
+      <p>y: {box.y.toFixed()}</p>
+    </ConsoleItem>
   )
 }
 

@@ -1,11 +1,11 @@
 import React from 'react'
 
-export function useBox<ElementType extends HTMLElement>() {
+export function useBox<ElementType extends Element>() {
   const ref = React.useRef<ElementType>()
   const [box, setBox] = React.useState<DOMRect>(null)
 
   React.useEffect(() => {
-    setBox(ref.current.getBoundingClientRect())
+    setBox(ref.current?.getBoundingClientRect())
   }, [])
 
   return [ref, box] as const
