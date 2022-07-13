@@ -12,7 +12,6 @@ import {
   Square,
   XLine,
   YLine,
-  Display,
   Label,
   DomRect,
 } from './shared'
