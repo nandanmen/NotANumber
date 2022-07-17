@@ -10,6 +10,7 @@ import Callout from '@/elements/Callout'
 import ProblemStatement from '@/elements/ProblemStatement'
 import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
+import Placeholder from '@/components/utils/Placeholder'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
 
@@ -325,7 +326,7 @@ And all together now:
 
 Framer motion not only lets you animate changes in position, it lets you animate changes in **size** too. How do we change our implementation to support this?
 
-When I tried implementing this, the first thing that I did was to use the same approach as position - except I would use the `width` and `height` instead of the `x` and `y` coordinates:
+When I tried implementing this, the first thing that I did was to use the same approach as position, except I would use the `width` and `height` of the square instead of the `x` and `y` coordinates:
 
 ```ts
 const {
@@ -400,33 +401,104 @@ There's actually a _tad_ more nuance than that. The change in distance also depe
 
 ## Correcting Distortions
 
-Size animations also leads to another problem: **child element distortion**. Animating size changes using `scale()` is great until you have some text that you want to keep legible at all times:
+Size animations also lead to another problem: **child element distortion**. Animating size changes using `scale()` is great until you have some text that you want to keep legible at all times:
 
-- animation here showcasing distortion
+<Placeholder name="distortion" />
 
-The trick here is to apply a transform to the child element so that it cancels out the transform that's on the parent:
+<ProblemStatement>
+  How do we make sure all child elements stay a uniform size during FLIP?
+</ProblemStatement>
 
-- animation showing transform cancelling out
+### Inverse Scale Formula
 
-### Implementing in React
-
-What does that look like in React?
-
-First, the chid element needs to know about what transform is being applied to the parent component. One way to do this is to have the parent render a React `Context` and set its value to the transform when it's about to animate:
-
-```tsx
-<div>
-  <MotionContext.Provider value={{ transform }}>
-    {children}
-  </MotionContext.Provider>
-</div>
-```
-
-The child element then reads from that context and, if the transform exists, calculates and applies an "inverse transform". We wrap this inside a `useEffect` with no dependency array because the parent can only start animating every render.
-
-```tsx
+For the text to look the same size, we need to apply a scale to the text that "cancels out" the parent's size change. The formula for this scale is:
 
 ```
+childScaleX = 1 / parentScaleX
+```
+
+Intuitively, if the parent gets twice as large, the text needs to be scaled down by half to look the same size.
+
+This animation shows the formula in action. Try moving the slider and notice how the text stays the same size no matter where you drag the slider to:
+
+<Placeholder name="scale formula example" />
+
+The next step is to make this work automatically with our layout animations.
+
+### First Attempt
+
+When I was implementing scale correction for the first time, I opted to calculate the inverse scale once at the start of the parent animation.
+
+```ts
+/* this runs in the child when the parent is about to animate */
+
+const inverseTransform = {
+  scaleX: 1 / parentTransform.scaleX,
+  scaleY: 1 / parentTransform.scaleY,
+}
+play({
+  from: inverseTransform,
+  to: { scaleX: 1, scaleY: 1 },
+})
+```
+
+My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Here's what it looks like:
+
+<Placeholder name="first scale correction" />
+
+It's definitely _better_ than no correction, but it still doesn't look right. What's happening here, and how do we make it better?
+
+### The Scale Curve
+
+For starters, the fact that the text is still being stretched out at specific points of the animation suggests that the timing of the inverse transform isn't quite right.
+
+<ProblemStatement>
+  What is the right timing for a correct scale correction?
+</ProblemStatement>
+
+Let's try to figure this out with a simpler animation.
+
+Here, we have a square that stretches to 5x its size, at a constant rate, over 5 seconds:
+
+<Placeholder name="stretchy square" />
+
+The blue line shows how the `scaleX` property of the square changes throughout the animation. Since we're at the "Play" part of a FLIP animation, the box starts with a `scaleX` of `1/5` (to match its initial position) and slowly works its way to a `scaleX` of `1`.
+
+Right now the text looks really small because we don't have any corrections applied to the text. To fix this, we need to apply a `scaleX` to the text that cancels out the parent's `scaleX`.
+
+Based on [our formula](#inverse-scale-formula), we need to apply a `scaleX` of `5`:
+
+<Placeholder name="initial inverse" />
+
+When the animation starts and 1 second has passed, the square doubles in length, so we need to scale down the text by half to keep it the same size:
+
+<Placeholder name="1 sec" />
+
+After 2 seconds, we need to scale the text down by a third:
+
+<Placeholder name="2 sec" />
+
+After 3 seconds, a quarter:
+
+<Placeholder name="3 sec" />
+
+And so on:
+
+<Placeholder name="rest" />
+
+Notice that when we plot these values, they don’t make a straight line!
+
+In comparison, here's what happens when we match the `scaleX` with the parent's timing:
+
+---
+
+What if we now scale back the other way?
+
+Hmm, it's not quite right either. Let's plot the area of the square again:
+
+It's not the same curve! Well, it kinda is, just flipped upside down. If we change the text scale to use _this_ curve now, it looks correct again:
+
+From these examples we can conclude that in order to make the text stay the same size at all times, it needs to counteract its area curve. And the best way to ensure that it does this is to **calculate the transform on every frame of the animation**.
 
 ## Summary
 
