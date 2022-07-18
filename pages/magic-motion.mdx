@@ -10,6 +10,7 @@ import Callout from '@/elements/Callout'
 import ProblemStatement from '@/elements/ProblemStatement'
 import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
+import { InverseScaleFormula } from '@/components/magic-motion/InverseScaleFormula'
 import Placeholder from '@/components/utils/Placeholder'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
@@ -421,7 +422,7 @@ Intuitively, if the parent gets twice as large, the text needs to be scaled down
 
 This animation shows the formula in action. Try moving the slider and notice how the text stays the same size no matter where you drag the slider to:
 
-<Placeholder name="scale formula example" />
+<InverseScaleFormula />
 
 The next step is to make this work automatically with our layout animations.
 
