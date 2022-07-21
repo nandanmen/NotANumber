@@ -19,10 +19,15 @@ const sizeClassNameMap: Record<FigureSizes, string> = {
 type FigureProps = {
   children: React.ReactNode
   size?: FigureSizes
+  className?: string
 }
 
-function Figure({ children, size = 'base' }: FigureProps) {
-  return <figure className={sizeClassNameMap[size]}>{children}</figure>
+function Figure({ children, size = 'base', className = '' }: FigureProps) {
+  return (
+    <figure className={sizeClassNameMap[size] + ` ${className}`}>
+      {children}
+    </figure>
+  )
 }
 
 Figure.sizes = sizes

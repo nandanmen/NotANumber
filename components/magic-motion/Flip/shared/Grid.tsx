@@ -8,7 +8,14 @@ export const Grid: React.FC<{
   rows?: number
   cols?: number
   cellSize?: number
-}> = ({ rows = 10, cols = 15, cellSize = CELL_SIZE, children }) => {
+  className?: string
+}> = ({
+  rows = 10,
+  cols = 15,
+  cellSize = CELL_SIZE,
+  className = '',
+  children,
+}) => {
   const xMax = cols * cellSize
   const yMax = rows * cellSize
   return (
@@ -17,6 +24,7 @@ export const Grid: React.FC<{
       height="100%"
       viewBox={`0 0 ${xMax} ${yMax}`}
       preserveAspectRatio="none"
+      className={className}
     >
       <Wrapper>
         {range(rows)

@@ -12,7 +12,7 @@ export function InverseScaleFormula() {
   const [scaleX, setScaleX] = React.useState(1)
   return (
     <Figure size="lg">
-      <Wrapper>
+      <VisualWrapper>
         <Grid rows={7} cols={15}>
           <motion.g style={{ x: 52, y: 20, scaleX }}>
             <Square stroke="none" rx="0" shadow={false} disabled />
@@ -20,7 +20,7 @@ export function InverseScaleFormula() {
               Hi!
             </Text>
           </motion.g>
-          <motion.g style={{ x: 60, y: 14 }}>
+          <Pointer style={{ x: 60, y: 15 }}>
             <line
               x1="0"
               x2="0"
@@ -30,14 +30,14 @@ export function InverseScaleFormula() {
               strokeWidth="0.3"
             />
             <line
-              x1="-3"
-              x2="3"
+              x1="-2"
+              x2="2"
               y1="8"
               y2="8"
               stroke="currentColor"
               strokeWidth="0.3"
             />
-          </motion.g>
+          </Pointer>
           <SubText x={60} y={40}>
             scaleX({scaleX.toFixed(2)})
           </SubText>
@@ -45,20 +45,31 @@ export function InverseScaleFormula() {
             scaleX({(1 / scaleX).toFixed(2)})
           </LabelText>
         </Grid>
-      </Wrapper>
-      <Slider
-        type="range"
-        min="1"
-        max="5"
-        value={scaleX}
-        onChange={(e) => setScaleX(e.target.valueAsNumber)}
-        step="0.1"
-      />
+      </VisualWrapper>
+      <SliderWrapper>
+        <Slider
+          type="range"
+          min="1"
+          max="5"
+          value={scaleX}
+          onChange={(e) => setScaleX(e.target.valueAsNumber)}
+          step="0.1"
+        />
+      </SliderWrapper>
     </Figure>
   )
 }
 
-const Wrapper = styled('div', {
+const Pointer = styled(motion.g, {
+  color: '$grey600',
+})
+
+const SliderWrapper = styled('div', {
+  marginTop: '$8',
+  padding: '$0 $8',
+})
+
+const VisualWrapper = styled('div', {
   aspectRatio: 2,
 })
 

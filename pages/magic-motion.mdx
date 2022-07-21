@@ -11,6 +11,7 @@ import ProblemStatement from '@/elements/ProblemStatement'
 import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
 import { InverseScaleFormula } from '@/components/magic-motion/InverseScaleFormula'
+import { ScaleCurve } from '@/components/magic-motion/ScaleCurve'
 import Placeholder from '@/components/utils/Placeholder'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
@@ -443,31 +444,25 @@ play({
 })
 ```
 
-My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Here's what it looks like:
+My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Except this assumption is flawed:
 
 <Placeholder name="first scale correction" />
 
-It's definitely _better_ than no correction, but it still doesn't look right. What's happening here, and how do we make it better?
+It turns out the correct approach is to **calculate the inverse scale in every frame of the animation**. But _why_?
 
 ### The Scale Curve
 
-For starters, the fact that the text is still being stretched out at specific points of the animation suggests that the timing of the inverse transform isn't quite right.
-
-<ProblemStatement>
-  What is the right timing for a correct scale correction?
-</ProblemStatement>
-
-Let's try to figure this out with a simpler animation.
+Let's try to build this intuition.
 
 Here, we have a square that stretches to 5x its size, at a constant rate, over 5 seconds:
 
-<Placeholder name="stretchy square" />
+<ScaleCurve />
 
 The blue line shows how the `scaleX` property of the square changes throughout the animation. Since we're at the "Play" part of a FLIP animation, the box starts with a `scaleX` of `1/5` (to match its initial position) and slowly works its way to a `scaleX` of `1`.
 
-Right now the text looks really small because we don't have any corrections applied to the text. To fix this, we need to apply a `scaleX` to the text that cancels out the parent's `scaleX`.
+The text starts off really small because it's being compressed by the parent's `scaleX`. To fix this, we need to apply a `scaleX` to the text that cancels out this effect.
 
-Based on [our formula](#inverse-scale-formula), we need to apply a `scaleX` of `5`:
+Based on [our formula](#inverse-scale-formula), a `scaleX` value of 5 will correctly cancel out the parent's compression effect:
 
 <Placeholder name="initial inverse" />
 
