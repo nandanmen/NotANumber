@@ -1,41 +1,34 @@
-![NaN homepage](nan_homepage.png)
+# Welcome to Remix!
 
-Hello! This repository contains the source code for [Not a Number](https://nan.fyi/), my personal blog on computer science and web development with a focus on interactive articles. Feel free to look around 🎉
+- [Remix Docs](https://remix.run/docs)
 
-## Getting Started
+## Deployment
 
-This blog is built with [Next.js](https://nextjs.org/), [MDX](https://mdxjs.com/) and [Tailwind](https://tailwindcss.com/), supercharged with [styled-components](https://styled-components.com/) and [twin.macro](https://github.com/ben-rogerson/twin.macro). The backend for collecting feedback is built with Next.js and [Fauna](https://fauna.com/).
+After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
 
-To get started:
+If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
 
-1. Clone the repository:
-
-```bash
-git clone https://github.com/narendrasss/NotANumber.git
+```sh
+npm i -g vercel
+vercel
 ```
 
-2. Cd into the directory and install dependencies:
+It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
 
-```bash
-cd NotANumber
-yarn install
+## Development
+
+To run your Remix app locally, make sure your project's local dependencies are installed:
+
+```sh
+npm install
 ```
 
-3. Run the development server:
+Afterwards, start the Remix development server like so:
 
-```bash
-yarn dev
+```sh
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. Note that at this point, the feedback form will NOT work.
+Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
 
-To get the feedback form working using Fauna:
-
-1. Get the API key from [Fauna](https://fauna.com/) by creating an account and provisioning a database
-2. Add the API key to a `.env.local` file in the root directory:
-
-```
-FAUNA_SECRET_KEY=<my api key>
-```
-
-Alternatively, you can change where the feedback form submits by modifying the `submitFeedback` function in [FeedbackForm.js](https://github.com/narendrasss/NotANumber/blob/23cdaa5e0b5f75bbdabb8a53690061f2a6f84595/components/FeedbackForm.js#L98).
+If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.

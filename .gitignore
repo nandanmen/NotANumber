@@ -1,34 +1,14 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# old NotANumber source
+old-src/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules
 
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# vercel
+.cache
+.env
 .vercel
+.output
+
+/build/
+/public/build
+/api/index.js
+app/_dist-content

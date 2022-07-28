@@ -1,38 +1,20 @@
 {
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "jsx": "react-jsx",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "target": "ES2019",
+    "strict": true,
     "baseUrl": ".",
-    "downlevelIteration": true,
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/elements/*": ["elements/*"],
-      "@/lib/*": ["lib/*"],
-      "@/stitches": ["stitches.config.ts"],
-      "@/layouts/*": ["layouts/*"]
-    }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+      "~/*": ["./app/*"]
+    },
+    "noEmit": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }

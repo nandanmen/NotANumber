@@ -1,65 +1,41 @@
 {
-  "name": "blog",
-  "version": "0.1.0",
+  "name": "remix-template-vercel",
   "private": true,
+  "description": "",
+  "license": "",
+  "sideEffects": false,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "yarn build:content && remix build",
+    "build:content": "rm -rf ./app/_dist-content && babel ./app/content --out-dir ./app/_dist-content --copy-files --extensions .ts,.tsx",
+    "dev": "remix dev",
+    "watch:content": "yarn build:content --watch"
   },
   "dependencies": {
-    "@babel/parser": "^7.13.10",
-    "@babel/standalone": "^7.13.10",
-    "@mdx-js/loader": "^1.6.22",
-    "@mdx-js/react": "^1.6.22",
-    "@notionhq/client": "^0.4.13",
-    "@radix-ui/colors": "^0.1.7",
-    "@stitches/react": "^1.2.1",
-    "@use-it/interval": "^1.0.0",
-    "autoprefixer": "^10.1.0",
-    "babel-plugin-styled-components": "^1.12.0",
-    "clsx": "^1.1.1",
-    "fathom-client": "^3.2.0",
-    "faunadb": "^4.0.3",
-    "framer-motion": "^3.1.1",
-    "immer": "^9.0.6",
-    "next": "10.0.6",
-    "next-mdx-enhanced": "^5.0.0",
-    "notion-to-md": "^2.3.0",
-    "postcss": "^8.2.2",
-    "prism-react-renderer": "^1.2.0",
-    "prismjs": "^1.23.0",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-icons": "^4.1.0",
-    "react-intersection-observer": "^8.32.1",
-    "react-simple-code-editor": "^0.11.0",
-    "rfdc": "^1.1.4",
-    "showdown": "^1.9.1",
-    "styled-components": "^5.2.1",
-    "tailwindcss": "^2.0.2",
-    "title-case": "^3.0.3",
-    "twin.macro": "^2.2.3",
-    "use-debounce": "^6.0.1"
+    "@remix-run/node": "^1.4.3",
+    "@remix-run/react": "^1.4.3",
+    "@remix-run/vercel": "^1.4.3",
+    "@stitches/react": "^1.2.8",
+    "@vercel/node": "^1.15.2",
+    "mdx-bundler": "^9.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^3.2.2",
-    "@types/node": "^16.6.1",
-    "@types/react": "^17.0.18",
-    "@types/showdown": "^1.9.4",
-    "babel-plugin-macros": "^3.0.1",
-    "eslint": "^7.17.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.3.0",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.2.1",
-    "typescript": "^4.3.5"
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-syntax-jsx": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@remix-run/dev": "^1.4.3",
+    "@remix-run/eslint-config": "^1.4.3",
+    "@remix-run/serve": "^1.6.0",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "babel-plugin-macros": "^3.1.0",
+    "eslint": "^8.11.0",
+    "typescript": "^4.5.5"
   },
-  "babelMacros": {
-    "twin": {
-      "preset": "styled-components"
-    }
+  "engines": {
+    "node": ">=14"
   }
 }
