@@ -10,13 +10,14 @@ import { Slider } from '../Slider'
 
 export function InverseScaleFormula() {
   const [scaleX, setScaleX] = React.useState(1)
+  const currentWidth = 15 * scaleX
   return (
     <Figure size="lg">
       <VisualWrapper>
         <Grid rows={7} cols={15}>
-          <motion.g style={{ x: 52, y: 20, scaleX }}>
-            <Square stroke="none" rx="0" shadow={false} disabled />
-            <Text x={7.5} y={7.5} style={{ scaleX: 1 / scaleX }}>
+          <motion.g style={{ x: 59.5 - currentWidth / 2, y: 20 }}>
+            <Square disabled width={currentWidth} />
+            <Text x={currentWidth / 2} y={7.5}>
               Hi!
             </Text>
           </motion.g>
@@ -71,6 +72,7 @@ const SliderWrapper = styled('div', {
 
 const VisualWrapper = styled('div', {
   aspectRatio: 2,
+  border: '1px solid $grey200',
 })
 
 const Text = styled(motion.text, {

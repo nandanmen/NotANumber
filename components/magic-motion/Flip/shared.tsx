@@ -55,7 +55,14 @@ export const Square = React.forwardRef<
   ) => (
     <motion.g style={{ x, y }} whileHover={disabled ? undefined : 'hover'}>
       {shadow && (
-        <rect fill="var(--gray200)" width="15" height="15" rx="1" x="1" y="1" />
+        <rect
+          fill="var(--gray200)"
+          width={props.width ?? 15}
+          height="15"
+          rx="1"
+          x="1"
+          y="1"
+        />
       )}
       <SquareWrapper
         ref={ref}

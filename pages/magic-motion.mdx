@@ -12,9 +12,12 @@ import * as Flip from '@/components/magic-motion/Flip'
 import { Quiz } from '@/components/magic-motion/Quiz'
 import { InverseScaleFormula } from '@/components/magic-motion/InverseScaleFormula'
 import { ScaleCurve } from '@/components/magic-motion/ScaleCurve'
+import { LayoutExample } from '@/components/magic-motion/LayoutExample'
 import Placeholder from '@/components/utils/Placeholder'
 
 By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Just slap on the `layout` prop to a motion component and that component will seamlessly animate from one position on the page to the next:
+
+<LayoutExample />
 
 I really like digging into how "magical" things work, so naturally I sought out to figure out how these layout animations work under the hood. This post will cover everything that I learned reimplementing the layout API from scratch.
 
