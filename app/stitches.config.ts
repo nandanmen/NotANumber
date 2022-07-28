@@ -45,7 +45,7 @@ export const theme = {
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `Menlo, ui-monosapce, monospace`,
+    mono: `Cartograph CF, Menlo, ui-monosapce, monospace`,
     sans: `Karla, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {
@@ -57,9 +57,21 @@ export const theme = {
   },
   space: SPACING,
   sizes: SPACING,
+  lineHeights: {
+    body: 1.7,
+    title: 1,
+  },
 };
 
-export const { styled, getCssText, globalCss } = createStitches({ theme });
+export const { styled, getCssText, globalCss } = createStitches({
+  media: {
+    post: `(min-width: 50rem)`,
+    md: `(min-width: 768px)`,
+    lg: `(min-width: 62em)`,
+    xl: `(min-width: 80em)`,
+  },
+  theme,
+});
 
 export const globalStyles = globalCss({
   "*": {
@@ -71,7 +83,10 @@ export const globalStyles = globalCss({
   },
   body: {
     fontFamily: "$sans",
-    background: "$gray3",
+    background: "$gray4",
     color: "$gray12",
+  },
+  "h1, h2": {
+    fontWeight: "normal",
   },
 });
