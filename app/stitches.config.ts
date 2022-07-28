@@ -1,4 +1,5 @@
-import { createStitches, globalCss } from "@stitches/react";
+import { createStitches } from "@stitches/react";
+import { gray } from "@radix-ui/colors";
 
 const SPACING = {
   px: "1px",
@@ -38,23 +39,37 @@ const SPACING = {
   96: "24rem",
 } as const;
 
-export const { styled, getCssText } = createStitches({
-  theme: {
-    fonts: {
-      serif: `Recoleta, ui-serif, Georgia, serif`,
-      mono: `Menlo, ui-monosapce, monospace`,
-      sans: `Karla, system-ui, -apple-system, sans-serif`,
-    },
-    fontSizes: {
-      sm: "0.875rem",
-      base: "1rem",
-      lg: "1.25rem",
-      xl: "1.5rem",
-      "2xl": "1.875rem",
-    },
-    space: SPACING,
-    sizes: SPACING,
+export const theme = {
+  colors: {
+    ...gray,
+  },
+  fonts: {
+    serif: `Recoleta, ui-serif, Georgia, serif`,
+    mono: `Menlo, ui-monosapce, monospace`,
+    sans: `Karla, system-ui, -apple-system, sans-serif`,
+  },
+  fontSizes: {
+    sm: "0.875rem",
+    base: "1rem",
+    lg: "1.25rem",
+    xl: "1.5rem",
+    "2xl": "1.875rem",
+  },
+  space: SPACING,
+  sizes: SPACING,
+};
+
+export const { styled, getCssText, globalCss } = createStitches({ theme });
+
+export const globalStyles = globalCss({
+  "*": {
+    boxSizing: "border-box",
+    margin: 0,
+    padding: 0,
+  },
+  body: {
+    fontFamily: "$sans",
+    background: "$gray3",
+    color: "$gray12",
   },
 });
-
-export const globalStyles = globalCss({});

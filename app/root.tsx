@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -9,12 +9,15 @@ import {
 } from "@remix-run/react";
 
 import { globalStyles, getCssText } from "~/stitches.config";
+import fonts from "./styles/fonts.css";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "New Remix App",
   viewport: "width=device-width,initial-scale=1",
 });
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: fonts }];
 
 export default function App() {
   globalStyles();
