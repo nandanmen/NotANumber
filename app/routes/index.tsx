@@ -56,14 +56,11 @@ export default function HomePage() {
   );
 }
 
-const PAGE_WIDTH = `min(68rem, 100vw)`;
+const PAGE_WIDTH = `min(60rem, 100vw)`;
 
 const PageWrapper = styled("main", {
   width: PAGE_WIDTH,
   margin: "0 auto",
-  background: "$gray1",
-  padding: "0 4rem",
-  minHeight: "100vh",
 });
 
 const Wrapper = styled("div", {
