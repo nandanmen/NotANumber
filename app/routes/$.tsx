@@ -91,4 +91,17 @@ const Article = styled("article", {
   h2: {
     fontFamily: "$serif",
   },
+
+  pre: {
+    border: "1px solid $gray8",
+    padding: "$4",
+    borderRadius: 6,
+    fontSize: "$sm",
+    marginTop: "$4",
+    marginBottom: "$8",
+  },
+
+  "[data-rehype-pretty-code-fragment] > pre": {
+    marginBottom: "$4",
+  },
 });

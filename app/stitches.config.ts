@@ -46,8 +46,8 @@ export const theme = {
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `Menlo, ui-monosapce, monospace`,
-    sans: `system-ui, -apple-system, sans-serif`,
+    mono: `Source Code Pro, ui-monospace, monospace`,
+    sans: `Karla, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {
     sm: "0.875rem",
@@ -93,5 +93,8 @@ export const globalStyles = globalCss({
   /* as recommended in https://rehype-pretty-code.netlify.app/ */
   "pre > code": {
     display: "grid",
+  },
+  code: {
+    fontFamily: "$mono",
   },
 });
