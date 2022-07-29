@@ -13,15 +13,29 @@ export const loader: LoaderFunction = async ({ params }) => {
   return getPost(params["*"]);
 };
 
+const formatter = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  year: "numeric",
+  day: "numeric",
+});
+
 export default function PostPage() {
   const content = useLoaderData<Post>();
   const PostContent = React.useMemo(
     () => getMDXComponent(content.code),
     [content.code]
   );
+  const { frontmatter } = content;
   return (
     <PageWrapper>
       <Article>
+        <Header>
+          <LastUpdated>
+            {formatter.format(new Date(frontmatter.editedAt))}
+          </LastUpdated>
+          <Title>{frontmatter.title}</Title>
+          <Blurb>{frontmatter.blurb}</Blurb>
+        </Header>
         <PostContent />
       </Article>
     </PageWrapper>
@@ -35,11 +49,46 @@ const PageWrapper = styled("main", {
   margin: "0 auto",
 });
 
-const Article = styled("article", {
-  lineHeight: "$body",
-  maxWidth: "65ch",
+const Title = styled("h1", {
+  fontSize: "4rem",
+  fontFamily: "$serif",
+  lineHeight: "$title",
+});
+
+const Blurb = styled("p", {
+  fontSize: "$lg",
+});
+
+const LastUpdated = styled("p", {
+  fontFamily: "$mono",
+  color: "$gray10",
+});
+
+const Header = styled("header", {
+  marginBottom: "8rem",
 
   "> :not(:last-child)": {
+    marginBottom: "$8",
+  },
+});
+
+const Article = styled("article", {
+  lineHeight: "$body",
+  maxWidth: 800,
+  display: "grid",
+  gridTemplateColumns: "min(100%, 65ch) 1fr",
+  margin: "0 auto",
+  marginTop: "$32",
+
+  "> :where(*)": {
+    gridColumn: "1",
+  },
+
+  "> :where(:not(:last-child))": {
     marginBottom: "$4",
+  },
+
+  h2: {
+    fontFamily: "$serif",
   },
 });

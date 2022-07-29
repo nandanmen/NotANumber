@@ -39,7 +39,7 @@ Let's get started!
 Let's deviate for a second to go over how a compiler works at a high level. I think of a compiler as a pipeline with four concrete steps:
 
 <Figure size="xl">
-  <Svg href="tokenizer/pipeline.svg" />
+  <Svg href="pipeline.svg" />
 </Figure>
 
 Each step takes in the output of the previous step and transforms it to something else. The first step, the tokenization step, takes in your original source code as its input, while the last step, the generation step, spits out the modified code.
@@ -67,13 +67,13 @@ function hello() {
 You'll end up with the following tokens:
 
 <Figure size="base">
-  <Svg href="tokenizer/tokens.svg" />
+  <Svg href="tokens.svg" />
 </Figure>
 
 Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
 <Figure size="base">
-  <Svg href="tokenizer/token-types.svg" />
+  <Svg href="token-types.svg" />
 </Figure>
 
 ## Why Do We Do This?
@@ -151,7 +151,7 @@ Let's get started!
 Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In the code snippet we're parsing, that would be all of the following tokens:
 
 <Figure size="lg">
-  <Svg href="tokenizer/single-tokens.svg" />
+  <Svg href="single-tokens.svg" />
 </Figure>
 
 We'll start off by iterating through every character of our input:
