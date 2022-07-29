@@ -8,6 +8,9 @@ import { getPost } from "~/lib/content.server";
 import type { Post } from "~/lib/content.server";
 import { styled } from "~/stitches.config";
 
+import { Heading, Subheading } from "~/components/Heading";
+import { OrderedList } from "~/components/OrderedList";
+
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params["*"], "missing slug!");
   return getPost(params["*"]);
@@ -36,7 +39,13 @@ export default function PostPage() {
           <Title>{frontmatter.title}</Title>
           <Blurb>{frontmatter.blurb}</Blurb>
         </Header>
-        <PostContent />
+        <PostContent
+          components={{
+            h2: Heading as any,
+            h3: Subheading as any,
+            ol: OrderedList as any,
+          }}
+        />
       </Article>
     </PageWrapper>
   );
