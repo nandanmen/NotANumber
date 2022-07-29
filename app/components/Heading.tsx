@@ -38,7 +38,6 @@ export const Subheading: React.FC<{}> = ({ children }) => {
 
 const H3 = styled("h3", {
   fontSize: "$xl",
-  color: "$gray11",
   scrollMarginTop: "$28",
   marginTop: "$8",
   marginBottom: "$6",
