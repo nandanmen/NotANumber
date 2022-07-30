@@ -6,11 +6,18 @@ export type Fn = {
   (...args: any[]): any;
 };
 
+export type AlgorithmOptions = {
+  delay: number;
+  loop: boolean;
+};
+
 export type AlgorithmContext = {
   currentStep: number;
   totalSteps: number;
   next(): void;
   prev(): void;
+  reset(): void;
+  toggle(): void;
   goTo(step: number): void;
 };
 
