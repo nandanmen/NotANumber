@@ -90,8 +90,17 @@ const Article = styled("article", {
   marginTop: "$32",
   padding: "0 $4",
 
-  "> :where(*)": {
+  "> *": {
     gridColumn: "1",
+  },
+
+  "> figure": {
+    marginTop: "$4",
+    marginBottom: "$8",
+  },
+
+  "> .full-width": {
+    gridColumn: "1 / -1",
   },
 
   "> :where(:not(:last-child))": {
