@@ -2,27 +2,37 @@ import rfdc from "rfdc";
 
 const clone = rfdc();
 
-const snapshot = {
-  createSnapshot() {
-    const data = [];
-    return {
-      data,
-      push(snapshot) {
-        data.push(clone(snapshot));
-      },
-    };
-  },
+type Pushable = {
+  push(state: unknown): void;
 };
 
-export function exec(algorithm, inputs) {
-  const snapshots = snapshot.createSnapshot();
-  const returnVal = algorithm(snapshots)(...inputs);
+type StateMetadata<ReturnType> = {
+  __done: boolean;
+  __returnValue: ReturnType;
+};
 
-  const last = snapshots.data[snapshots.data.length - 1];
+export function exec<
+  StateType,
+  ParameterType extends unknown[],
+  ReturnValueType
+>(
+  algorithm: (
+    snapshotter: Pushable
+  ) => (...args: ParameterType) => ReturnValueType,
+  inputs: ParameterType
+) {
+  const snapshots = [] as Array<
+    StateType & Partial<StateMetadata<ReturnValueType>>
+  >;
+  const returnVal = algorithm({
+    push: (state: StateType) => snapshots.push(clone<StateType>(state)),
+  })(...inputs);
+
+  const last = snapshots[snapshots.length - 1];
   if (last) {
     last.__done = true;
     last.__returnValue = returnVal;
   }
 
-  return snapshots.data;
+  return snapshots;
 }
