@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 
+import { GridBackground } from "~/components/Grid";
 import { useAlgorithm } from "~/lib/algorithm";
 import { styled } from "~/stitches.config";
 
@@ -50,48 +51,50 @@ export function Tokenizer({
   };
 
   return (
-    <Wrapper>
-      <Phase>{state.phase}</Phase>
-      <CharacterList state={state} />
-      {(showKnownTokens || showKeywords) && (
-        <KnownCharsWrapper>
-          {showKnownTokens && (
-            <div>
-              <KnownCharsTitle>Known Tokens</KnownCharsTitle>
-              <KnownCharList>
-                {[...knownSingleCharacters.keys()].map((char) => (
-                  <SingleChar key={char} active={state.currentChar === char}>
-                    {char}
-                  </SingleChar>
-                ))}
-              </KnownCharList>
-            </div>
-          )}
-          {showKeywords && (
-            <div>
-              <KnownCharsTitle>Known Keywords</KnownCharsTitle>
-              <KnownCharList>
-                {[...keywords.keys()].map((char) => (
-                  <SingleChar key={char} active={isKeywordActive(char)} flex>
-                    {char}
-                  </SingleChar>
-                ))}
-              </KnownCharList>
-            </div>
-          )}
-        </KnownCharsWrapper>
-      )}
-      <TokenList>
-        {state.tokens.map((token, index) => (
-          <TokenBlock
-            key={index}
-            {...token}
-            animate={{ y: 0, opacity: 1 }}
-            initial={{ y: 8, opacity: 0 }}
-          />
-        ))}
-      </TokenList>
-    </Wrapper>
+    <GridBackground>
+      <Wrapper>
+        <Phase>{state.phase}</Phase>
+        <CharacterList state={state} />
+        {(showKnownTokens || showKeywords) && (
+          <KnownCharsWrapper>
+            {showKnownTokens && (
+              <div>
+                <KnownCharsTitle>Known Tokens</KnownCharsTitle>
+                <KnownCharList>
+                  {[...knownSingleCharacters.keys()].map((char) => (
+                    <SingleChar key={char} active={state.currentChar === char}>
+                      {char}
+                    </SingleChar>
+                  ))}
+                </KnownCharList>
+              </div>
+            )}
+            {showKeywords && (
+              <div>
+                <KnownCharsTitle>Known Keywords</KnownCharsTitle>
+                <KnownCharList>
+                  {[...keywords.keys()].map((char) => (
+                    <SingleChar key={char} active={isKeywordActive(char)} flex>
+                      {char}
+                    </SingleChar>
+                  ))}
+                </KnownCharList>
+              </div>
+            )}
+          </KnownCharsWrapper>
+        )}
+        <TokenList>
+          {state.tokens.map((token, index) => (
+            <TokenBlock
+              key={index}
+              {...token}
+              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: 8, opacity: 0 }}
+            />
+          ))}
+        </TokenList>
+      </Wrapper>
+    </GridBackground>
   );
 }
 
