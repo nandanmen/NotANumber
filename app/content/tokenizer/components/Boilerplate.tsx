@@ -1,12 +1,13 @@
-import { Algorithm } from "./Algorithm";
+import { useAlgorithm } from "~/lib/algorithm";
 import { styled } from "~/stitches.config";
-
-import { CharacterList } from "./CharacterList";
 import snapshot from "~/lib/algorithm/snapshot.macro";
 
-const boilerplate = snapshot(function tokenize(input) {
+import type { Token } from "./lib/tokenize";
+import { CharacterList } from "./CharacterList";
+
+const boilerplate = snapshot(function tokenize(input: string) {
   let current = 0;
-  let tokens = [];
+  let tokens: Token[] = [];
 
   while (current < input.length) {
     // parse tokens
@@ -22,15 +23,18 @@ const input = `function hello() {
   console.log('hello, world!')
 }`;
 
+type BoilerplateState = {
+  input: string;
+  current: number;
+  tokens: Token[];
+};
+
 export function Boilerplate() {
+  const [state] = useAlgorithm<BoilerplateState>(boilerplate, [input]);
   return (
-    <Algorithm algorithm={boilerplate} initialInputs={[input]}>
-      {(context) => (
-        <Wrapper>
-          <CharacterList state={context.state} />
-        </Wrapper>
-      )}
-    </Algorithm>
+    <Wrapper>
+      <CharacterList state={state} />
+    </Wrapper>
   );
 }
 

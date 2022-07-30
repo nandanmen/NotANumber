@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
-import { styled } from "../../../stitches.config";
+import { styled } from "~/stitches.config";
 
-export function CharacterList({ state }) {
+type CharacterListProps = {
+  state: {
+    input: string;
+    current: number;
+  };
+};
+
+export function CharacterList({ state }: CharacterListProps) {
   return (
     <Wrapper>
       <InputWrapper

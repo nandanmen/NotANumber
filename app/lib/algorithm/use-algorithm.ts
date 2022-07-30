@@ -3,7 +3,7 @@ import React from "react";
 import { exec } from "./exec";
 import type { AlgorithmContext, Fn, SnapshottedAlgorithm } from "./types";
 
-export const useAlgorithm = <StateType, FnType extends Fn>(
+export const useAlgorithm = <StateType, FnType extends Fn = Fn>(
   snapshottedAlgorithm: SnapshottedAlgorithm<FnType>,
   inputs: Parameters<FnType>
 ): [StateType, AlgorithmContext] => {

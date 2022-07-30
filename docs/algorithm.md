@@ -18,6 +18,10 @@ type SnapshottedAlgorithm = {
 
 And second, that the React component should only know about the current active state (along with some functions to change that state).
 
+A nicer interface for `SnapshottedAlgorithm` might include the state type so that `useAlgorithm` and everything else can infer the state type from that type instead of having to pass it around everywhere.
+
+> Unfortunately it looks like it's not possible to infer part of the generic list: https://github.com/microsoft/TypeScript/issues/26242
+
 ## Algorithm State Management
 
 For starters, I was thinking the logic to execute the program should live in a custom hook:
@@ -50,6 +54,8 @@ type AlgorithmContext = {
   goTo(step: number): void;
 };
 ```
+
+> Note: This does _not_ include automatically playing algorithms.
 
 ## Editing Algorithm Inputs
 

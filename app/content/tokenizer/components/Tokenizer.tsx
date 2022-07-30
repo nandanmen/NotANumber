@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
-import { Algorithm } from "./Algorithm";
-import { styled } from "../../../stitches.config";
+import { useAlgorithm } from "~/lib/algorithm";
+import { styled } from "~/stitches.config";
 
 import { CharacterList } from "./CharacterList";
 import {
@@ -15,7 +15,7 @@ import { singleCharacter } from "./lib/single-character";
 const algorithms = {
   tokenize,
   singleCharacter,
-};
+} as const;
 
 type TokenizerState = {
   current: number;
@@ -37,7 +37,12 @@ export function Tokenizer({
   showKnownTokens = true,
   showKeywords = true,
 }) {
-  const isKeywordActive = (state: TokenizerState, char: string) => {
+  const [state] = useAlgorithm<TokenizerState>(
+    algorithms[name as keyof typeof algorithms],
+    [input]
+  );
+
+  const isKeywordActive = (char: string) => {
     if (state.candidate && "name" in state.candidate) {
       return state.candidate.name === char;
     }
@@ -45,59 +50,48 @@ export function Tokenizer({
   };
 
   return (
-    <Algorithm algorithm={algorithms[name]} initialInputs={[input]}>
-      {(context) => (
-        <Wrapper>
-          <Phase>{context.state.phase}</Phase>
-          <CharacterList state={context.state} />
-          {(showKnownTokens || showKeywords) && (
-            <KnownCharsWrapper>
-              {showKnownTokens && (
-                <div>
-                  <KnownCharsTitle>Known Tokens</KnownCharsTitle>
-                  <KnownCharList>
-                    {[...knownSingleCharacters.keys()].map((char) => (
-                      <SingleChar
-                        key={char}
-                        active={context.state.currentChar === char}
-                      >
-                        {char}
-                      </SingleChar>
-                    ))}
-                  </KnownCharList>
-                </div>
-              )}
-              {showKeywords && (
-                <div>
-                  <KnownCharsTitle>Known Keywords</KnownCharsTitle>
-                  <KnownCharList>
-                    {[...keywords.keys()].map((char) => (
-                      <SingleChar
-                        key={char}
-                        active={isKeywordActive(context.state, char)}
-                        flex
-                      >
-                        {char}
-                      </SingleChar>
-                    ))}
-                  </KnownCharList>
-                </div>
-              )}
-            </KnownCharsWrapper>
+    <Wrapper>
+      <Phase>{state.phase}</Phase>
+      <CharacterList state={state} />
+      {(showKnownTokens || showKeywords) && (
+        <KnownCharsWrapper>
+          {showKnownTokens && (
+            <div>
+              <KnownCharsTitle>Known Tokens</KnownCharsTitle>
+              <KnownCharList>
+                {[...knownSingleCharacters.keys()].map((char) => (
+                  <SingleChar key={char} active={state.currentChar === char}>
+                    {char}
+                  </SingleChar>
+                ))}
+              </KnownCharList>
+            </div>
           )}
-          <TokenList>
-            {context.state.tokens.map((token, index) => (
-              <TokenBlock
-                key={index}
-                {...token}
-                animate={{ y: 0, opacity: 1 }}
-                initial={{ y: 8, opacity: 0 }}
-              />
-            ))}
-          </TokenList>
-        </Wrapper>
+          {showKeywords && (
+            <div>
+              <KnownCharsTitle>Known Keywords</KnownCharsTitle>
+              <KnownCharList>
+                {[...keywords.keys()].map((char) => (
+                  <SingleChar key={char} active={isKeywordActive(char)} flex>
+                    {char}
+                  </SingleChar>
+                ))}
+              </KnownCharList>
+            </div>
+          )}
+        </KnownCharsWrapper>
       )}
-    </Algorithm>
+      <TokenList>
+        {state.tokens.map((token, index) => (
+          <TokenBlock
+            key={index}
+            {...token}
+            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: 8, opacity: 0 }}
+          />
+        ))}
+      </TokenList>
+    </Wrapper>
   );
 }
 

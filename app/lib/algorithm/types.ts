@@ -20,7 +20,7 @@ export type SnapshottedAlgorithm<Algorithm extends Fn> = {
   code: string;
 };
 
-export type StateWithMetadata<StateType, ReturnType> = StateType & {
+export type StateMetadata<ReturnType> = {
   __done?: boolean;
   __returnValue?: ReturnType;
 };
