@@ -1,13 +1,8 @@
 import rfdc from "rfdc";
 
-import type { Pushable } from "./types";
+import type { Pushable, StateWithMetadata } from "./types";
 
 const clone = rfdc();
-
-type StateMetadata<ReturnType> = {
-  __done: boolean;
-  __returnValue: ReturnType;
-};
 
 export function exec<
   StateType,
@@ -19,9 +14,7 @@ export function exec<
   ) => (...args: ParameterType) => ReturnValueType,
   inputs: ParameterType
 ) {
-  const snapshots = [] as Array<
-    StateType & Partial<StateMetadata<ReturnValueType>>
-  >;
+  const snapshots = [] as Array<StateWithMetadata<StateType, ReturnValueType>>;
   const returnVal = algorithm({
     push: (state: StateType) => snapshots.push(clone<StateType>(state)),
   })(...inputs);
