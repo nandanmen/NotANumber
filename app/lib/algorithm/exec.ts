@@ -1,10 +1,8 @@
 import rfdc from "rfdc";
 
-const clone = rfdc();
+import type { Pushable } from "./types";
 
-type Pushable = {
-  push(state: unknown): void;
-};
+const clone = rfdc();
 
 type StateMetadata<ReturnType> = {
   __done: boolean;

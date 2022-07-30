@@ -1,8 +1,8 @@
 import { Algorithm } from "./Algorithm";
-import { styled } from "../../../stitches.config";
+import { styled } from "~/stitches.config";
 
 import { CharacterList } from "./CharacterList";
-import snapshot from "../../../lib/snapshot.macro";
+import snapshot from "~/lib/algorithm/snapshot.macro";
 
 const boilerplate = snapshot(function tokenize(input) {
   let current = 0;

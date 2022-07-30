@@ -1,5 +1,5 @@
 import React from "react";
-import { exec } from "./lib/exec";
+import { exec } from "~/lib/algorithm/exec";
 import { usePlayer } from "./lib/use-player";
 
 export const Algorithm = ({ algorithm, children, initialInputs }) => {
