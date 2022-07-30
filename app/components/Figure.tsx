@@ -1,4 +1,4 @@
-import { styled } from "../../../stitches.config";
+import { styled } from "~/stitches.config";
 
 export const Figure = styled("figure", {
   gridColumn: "1 / -1",

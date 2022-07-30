@@ -88,6 +88,7 @@ const Article = styled("article", {
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
   marginTop: "$32",
+  padding: "0 $4",
 
   "> :where(*)": {
     gridColumn: "1",
