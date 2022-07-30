@@ -3,6 +3,7 @@ import { exec } from "./lib/exec";
 import { usePlayer } from "./lib/use-player";
 
 export const Algorithm = ({ algorithm, children, initialInputs }) => {
+  console.log(algorithm);
   const steps = React.useMemo(
     () => exec(algorithm.entryPoint, initialInputs),
     [algorithm, initialInputs]
