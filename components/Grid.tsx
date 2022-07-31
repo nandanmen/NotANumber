@@ -62,7 +62,7 @@ export const Grid = ({
 };
 
 const Wrapper = styled("g", {
-  color: "$gray8",
+  color: "$gray6",
 });
 
 type GridBackgroundProps = {
@@ -90,4 +90,5 @@ const GridWrapper = styled(Grid, {
 const GridBackgroundWrapper = styled("div", {
   position: "relative",
   border: "1px solid $gray8",
+  borderRadius: "$base",
 });

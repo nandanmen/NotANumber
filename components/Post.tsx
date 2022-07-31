@@ -49,7 +49,7 @@ const PostIcon = styled("div", {
   display: "none",
   background: "$gray3",
   aspectRatio: 1,
-  borderRadius: 6,
+  borderRadius: "$base",
 
   "@post": {
     display: "revert",

@@ -62,6 +62,12 @@ export const theme = {
     body: 1.7,
     title: 1,
   },
+  shadows: {
+    sm: "1px 1px 0 0 rgba(0, 0, 0, 0.2)",
+  },
+  radii: {
+    base: "6px",
+  },
 };
 
 export const { styled, getCssText, globalCss } = createStitches({

@@ -1,8 +1,6 @@
 import { styled } from "~/stitches.config";
 
-export const Figure = styled("figure", {
-  gridColumn: "1 / -1",
-});
+export const Figure = styled("figure");
 
 export const Caption = styled("p", {
   padding: "$0 $8",

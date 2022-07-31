@@ -117,6 +117,8 @@ const Article = styled("article", {
 
   "> .full-width": {
     gridColumn: "1 / -1",
+    marginTop: "$4",
+    marginBottom: "$8",
   },
 
   "> :where(:not(:last-child))": {
@@ -130,7 +132,7 @@ const Article = styled("article", {
   pre: {
     border: "1px solid $gray8",
     padding: "$4",
-    borderRadius: 6,
+    borderRadius: "$base",
     fontSize: "$sm",
     marginTop: "$4",
     marginBottom: "$8",

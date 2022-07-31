@@ -47,7 +47,7 @@ const InputWrapper = styled(motion.div, {
 });
 
 const InputCharacter = styled("p", {
-  color: "$grey300",
+  color: "$gray9",
   position: "relative",
   variants: {
     type: {
@@ -58,7 +58,7 @@ const InputCharacter = styled("p", {
     },
     active: {
       true: {
-        color: "$black",
+        color: "$gray12",
       },
     },
   },

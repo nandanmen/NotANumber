@@ -9,6 +9,7 @@ hasTldr: true
 
 import { Svg } from "~/components/Svg";
 import { Figure } from "~/components/Figure";
+import { FullWidth } from "~/components/FullWidth";
 import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
 
@@ -67,13 +68,13 @@ function hello() {
 
 You'll end up with the following tokens:
 
-<Figure size="base">
+<Figure>
   <Svg href="tokens.svg" />
 </Figure>
 
 Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
-<Figure size="base">
+<Figure>
   <Svg href="token-types.svg" />
 </Figure>
 
@@ -135,9 +136,9 @@ function hello() {
 
 Here's a preview of the tokenizer we're implementing, making its way through the code snippet:
 
-<Figure size="lg">
+<FullWidth>
   <Tokenizer />
-</Figure>
+</FullWidth>
 
 We'll break down the implementation into three parts:
 
@@ -157,9 +158,9 @@ Let's begin by trying to parse out the simplest tokens first - the ones that are
 
 We'll start off by iterating through every character of our input:
 
-<Figure size="lg">
+<FullWidth>
   <Boilerplate />
-</Figure>
+</FullWidth>
 
 <Callout label="What's that \n?">
 
@@ -171,13 +172,13 @@ As we iterate through the code string, we check if the current character is one 
 
 One way to check if a character is a single character token is to keep a list of all single character tokens we support and checking if the character is in that list:
 
-<Figure size="lg">
+<FullWidth>
   <Tokenizer
     name="singleCharacter"
     input="{ console.log() }"
     showKeywords={false}
   />
-</Figure>
+</FullWidth>
 
 ## Identifiers and Keywords
 
@@ -211,9 +212,9 @@ To recap, an identifier (for our purposes) is any sequence of alphabetical chara
 1. If the current character is alphabetical, start parsing an identifier;
 2. Keep adding characters to the current identifier token until the current character is **not** alphabetical.
 
-<Figure size="lg">
+<FullWidth>
   <Tokenizer showKnownTokens={false} showKeywords={false} input="console.log" />
-</Figure>
+</FullWidth>
 
 ### Keywords
 
@@ -231,9 +232,9 @@ One way is to do the same thing as the single character tokens:
 2. When we're parsing an identifier, check if the parsed name is in this set;
 3. If it is, change the token's type to the keyword's type.
 
-<Figure size="lg">
+<FullWidth>
   <Tokenizer showKnownTokens={false} input="const a = function () {}" />
-</Figure>
+</FullWidth>
 
 ## String Literals
 
@@ -256,13 +257,13 @@ To tokenize a string literal, we're going to do something similar to tokenizing 
 2. Keep collecting characters until either the current character is another apostrophe, marking the end of the string; or
 3. You've reached the end of the file, making the string unterminated - an error!
 
-<Figure size="lg">
+<FullWidth>
   <Tokenizer
     showKnownTokens={false}
     showKeywords={false}
     input="msg = 'hello, world!'"
   />
-</Figure>
+</FullWidth>
 
 ## Summary
 
