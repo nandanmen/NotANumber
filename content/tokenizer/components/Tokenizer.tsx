@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import * as Slider from "@radix-ui/react-slider";
 
 import { GridBackground } from "~/components/Grid";
 import { useAlgorithm } from "~/lib/algorithm";
@@ -38,7 +39,7 @@ export function Tokenizer({
   showKnownTokens = true,
   showKeywords = true,
 }) {
-  const [state] = useAlgorithm<TokenizerState>(
+  const [state, ctx] = useAlgorithm<TokenizerState>(
     algorithms[name as keyof typeof algorithms],
     [input]
   );
@@ -51,50 +52,75 @@ export function Tokenizer({
   };
 
   return (
-    <GridBackground>
-      <Wrapper>
-        <Phase>{state.phase}</Phase>
-        <CharacterList state={state} />
-        {(showKnownTokens || showKeywords) && (
-          <KnownCharsWrapper>
-            {showKnownTokens && (
-              <div>
-                <KnownCharsTitle>Known Tokens</KnownCharsTitle>
-                <KnownCharList>
-                  {[...knownSingleCharacters.keys()].map((char) => (
-                    <SingleChar key={char} active={state.currentChar === char}>
-                      {char}
-                    </SingleChar>
-                  ))}
-                </KnownCharList>
-              </div>
-            )}
-            {showKeywords && (
-              <div>
-                <KnownCharsTitle>Known Keywords</KnownCharsTitle>
-                <KnownCharList>
-                  {[...keywords.keys()].map((char) => (
-                    <SingleChar key={char} active={isKeywordActive(char)} flex>
-                      {char}
-                    </SingleChar>
-                  ))}
-                </KnownCharList>
-              </div>
-            )}
-          </KnownCharsWrapper>
-        )}
-        <TokenList>
-          {state.tokens.map((token, index) => (
-            <TokenBlock
-              key={index}
-              {...token}
-              animate={{ y: 0, opacity: 1 }}
-              initial={{ y: 8, opacity: 0 }}
-            />
-          ))}
-        </TokenList>
-      </Wrapper>
-    </GridBackground>
+    <FigureWrapper>
+      <Controls>
+        <button onClick={ctx.toggle}>Play</button>
+        <SliderRoot>
+          <Track>
+            <Range />
+          </Track>
+          <Thumb />
+        </SliderRoot>
+        <Controls>
+          <p>{ctx.currentStep}</p>
+          <p>/</p>
+          <p>{ctx.totalSteps}</p>
+        </Controls>
+      </Controls>
+      <GridBackground>
+        <Wrapper>
+          <Phase>{state.phase}</Phase>
+          <CharacterList state={state} />
+          {(showKnownTokens || showKeywords) && (
+            <KnownCharsWrapper>
+              {showKnownTokens && (
+                <div>
+                  <KnownCharsTitle>Known Tokens</KnownCharsTitle>
+                  <KnownCharList>
+                    {[...knownSingleCharacters.keys()].map((char) => (
+                      <SingleChar
+                        key={char}
+                        active={state.currentChar === char}
+                      >
+                        {char}
+                      </SingleChar>
+                    ))}
+                  </KnownCharList>
+                </div>
+              )}
+              {showKeywords && (
+                <div>
+                  <KnownCharsTitle>Known Keywords</KnownCharsTitle>
+                  <KnownCharList>
+                    {[...keywords.keys()].map((char) => (
+                      <SingleChar
+                        key={char}
+                        active={isKeywordActive(char)}
+                        flex
+                      >
+                        {char}
+                      </SingleChar>
+                    ))}
+                  </KnownCharList>
+                </div>
+              )}
+            </KnownCharsWrapper>
+          )}
+          {state.tokens.length > 0 && (
+            <TokenList>
+              {state.tokens.map((token, index) => (
+                <TokenBlock
+                  key={index}
+                  {...token}
+                  animate={{ y: 0, opacity: 1 }}
+                  initial={{ y: 8, opacity: 0 }}
+                />
+              ))}
+            </TokenList>
+          )}
+        </Wrapper>
+      </GridBackground>
+    </FigureWrapper>
   );
 }
 
@@ -136,6 +162,46 @@ const SingleChar = styled("li", {
   },
 });
 
+const FigureWrapper = styled("div", {
+  display: "flex",
+  flexDirection: "column",
+  gap: "$6",
+});
+
+const Controls = styled("div", {
+  display: "flex",
+  fontFamily: "$mono",
+});
+
+const SliderRoot = styled(Slider.Root, {
+  position: "relative",
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+});
+
+const Track = styled(Slider.Track, {
+  position: "relative",
+  background: "$gray8",
+  flexGrow: 1,
+  height: 4,
+});
+
+const Range = styled(Slider.Range, {
+  position: "absolute",
+  backgroundColor: "$blue8",
+  height: "100%",
+});
+
+const Thumb = styled(Slider.Thumb, {
+  display: "block",
+  background: "$blue8",
+  border: "1px solid black",
+  width: "$6",
+  height: "$6",
+  borderRadius: 4,
+});
+
 function TokenBlock({ type, name = "", value = "", ...props }) {
   return (
     <TokenWrapper {...props}>
@@ -146,6 +212,7 @@ function TokenBlock({ type, name = "", value = "", ...props }) {
 }
 
 const TokenList = styled("ul", {
+  listStyle: "none",
   "--cols": 2,
 
   display: "grid",
@@ -165,10 +232,10 @@ const TokenWrapper = styled(motion.li, {
 const TokenType = styled("p", {
   padding: "$1",
   marginLeft: "$2",
-  background: "$gray1",
+  background: "$gray4",
   fontSize: "0.75rem",
   width: "fit-content",
-  border: "1px solid $gray6",
+  border: "1px solid $gray8",
   borderTopLeftRadius: 4,
   borderTopRightRadius: 4,
   borderBottom: "none",
@@ -179,7 +246,7 @@ const TokenName = styled("p", {
   position: "relative",
   padding: "$2",
   background: "$gray1",
-  border: "1px solid $gray6",
+  border: "1px solid $gray8",
   boxShadow: "$sm",
   borderRadius: "$base",
   minHeight: 40,
@@ -210,5 +277,5 @@ const Wrapper = styled("div", {
   alignItems: "center",
   gap: "$16",
   position: "relative",
-  paddingTop: "$12",
+  padding: "$12 0",
 });

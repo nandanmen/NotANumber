@@ -58,7 +58,8 @@ const InputCharacter = styled("p", {
     },
     active: {
       true: {
-        color: "$gray12",
+        color: "$gray1",
+        background: "$gray12",
       },
     },
   },
