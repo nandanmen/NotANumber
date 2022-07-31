@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { titleCase } from "title-case";
 
@@ -21,23 +21,25 @@ export function Post({ post, icon }: PostProps) {
     <PostItem>
       <PostIcon>{icon}</PostIcon>
       <PostWrapper>
-        <Anchor to={post.slug}>
-          <PostContent>
-            <PostTitle>{titleCase(post.title)}</PostTitle>
-            <PostDescription>{post.description}</PostDescription>
-            <PostUpdatedText>
-              Last updated{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                month: "long",
-                year: "numeric",
-                day: "numeric",
-              }).format(new Date(post.editedAt))}
-            </PostUpdatedText>
-          </PostContent>
-          <PostArrow>
-            <ArrowRightIcon width="30" height="30" />
-          </PostArrow>
-        </Anchor>
+        <Link href={post.slug}>
+          <Anchor>
+            <PostContent>
+              <PostTitle>{titleCase(post.title)}</PostTitle>
+              <PostDescription>{post.description}</PostDescription>
+              <PostUpdatedText>
+                Last updated{" "}
+                {new Intl.DateTimeFormat("en-US", {
+                  month: "long",
+                  year: "numeric",
+                  day: "numeric",
+                }).format(new Date(post.editedAt))}
+              </PostUpdatedText>
+            </PostContent>
+            <PostArrow>
+              <ArrowRightIcon width="30" height="30" />
+            </PostArrow>
+          </Anchor>
+        </Link>
       </PostWrapper>
     </PostItem>
   );
@@ -77,7 +79,7 @@ const PostWrapper = styled("div", {
   },
 });
 
-const Anchor = styled(Link, {
+const Anchor = styled("a", {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",

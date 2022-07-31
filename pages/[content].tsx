@@ -1,20 +1,37 @@
 import React from "react";
-import { useLoaderData } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/node";
-import invariant from "tiny-invariant";
+import type { GetStaticPropsContext } from "next";
 import { getMDXComponent } from "mdx-bundler/client";
 
-import { getPost } from "~/lib/content.server";
-import type { Post } from "~/lib/content.server";
+import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { styled } from "~/stitches.config";
 
 import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 
-export const loader: LoaderFunction = async ({ params }) => {
-  invariant(params["*"], "missing slug!");
-  return getPost(params["*"]);
-};
+export async function getStaticProps(context: GetStaticPropsContext) {
+  return {
+    props: {
+      content: await getPost(context.params?.content as string),
+    },
+  };
+}
+
+export async function getStaticPaths() {
+  // When this is true (in preview environments) don't
+  // prerender any static pages
+  // (faster builds, but slower initial page load)
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+  const posts = await getAllPosts();
+  return {
+    paths: posts.map((post) => ({ params: { content: post.slug } })),
+    fallback: false,
+  };
+}
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -22,8 +39,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
-export default function PostPage() {
-  const content = useLoaderData<Post>();
+export default function PostPage({ content }: { content: Post }) {
   const PostContent = React.useMemo(
     () => getMDXComponent(content.code),
     [content.code]

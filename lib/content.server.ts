@@ -5,7 +5,7 @@ import glob from "glob";
 import matter from "gray-matter";
 import rehypePrettyCode from "rehype-pretty-code";
 
-const CONTENT_FOLDER = `${__dirname}/../app/_dist-content`;
+const CONTENT_FOLDER = `${process.cwd()}/_dist-content`;
 const POST_FILENAME = "index.mdx";
 
 export type Post = {
@@ -19,7 +19,7 @@ export type PostMetadata = {
 };
 
 const theme = JSON.parse(
-  fs.readFileSync(`${__dirname}/../app/assets/light-colorblind.json`, "utf8")
+  fs.readFileSync(`${process.cwd()}/assets/light-colorblind.json`, "utf8")
 );
 
 /**
@@ -48,6 +48,7 @@ export const getPost = async (slug: string): Promise<Post> => {
       options.loader = {
         ".js": "jsx",
       };
+      options.tsconfig = `${process.cwd()}/tsconfig-esbuild.json`;
       return options;
     },
   });
@@ -62,7 +63,7 @@ export const getAllPosts = async (): Promise<PostMetadata[]> => {
       );
       const { data: frontmatter } = matter(file.toString());
       return {
-        slug: postPath.replace("app/content/", "").replace("/index.mdx", ""),
+        slug: postPath.replace("content/", "").replace("/index.mdx", ""),
         frontmatter,
       };
     })
@@ -71,7 +72,7 @@ export const getAllPosts = async (): Promise<PostMetadata[]> => {
 
 const getAllPostPaths = () => {
   return new Promise<string[]>((resolve, reject) => {
-    glob("app/content/**/index.mdx", (err, matches) => {
+    glob("content/**/index.mdx", (err, matches) => {
       if (err) {
         reject(err);
       } else {

@@ -3,18 +3,21 @@ import { range } from "~/lib/utils";
 
 const CELL_SIZE = 8;
 
-export const Grid: React.FC<{
+type GridProps = {
   rows?: number;
   cols?: number;
   cellSize?: number;
   className?: string;
-}> = ({
+  children?: React.ReactNode;
+};
+
+export const Grid = ({
   rows = 10,
   cols = 15,
   cellSize = CELL_SIZE,
   className = "",
   children,
-}) => {
+}: GridProps) => {
   const xMax = cols * cellSize;
   const yMax = rows * cellSize;
   return (
@@ -62,11 +65,17 @@ const Wrapper = styled("g", {
   color: "$gray8",
 });
 
-export const GridBackground: React.FC<{ rows?: number; cols?: number }> = ({
+type GridBackgroundProps = {
+  rows?: number;
+  cols?: number;
+  children: React.ReactNode;
+};
+
+export const GridBackground = ({
   children,
   rows,
   cols,
-}) => (
+}: GridBackgroundProps) => (
   <GridBackgroundWrapper>
     <GridWrapper rows={rows} cols={cols} />
     {children}
@@ -79,6 +88,6 @@ const GridWrapper = styled(Grid, {
 });
 
 const GridBackgroundWrapper = styled("div", {
-  positon: "relative",
+  position: "relative",
   border: "1px solid $gray8",
 });
