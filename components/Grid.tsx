@@ -73,11 +73,6 @@ export const GridBackground = ({ children }: GridBackgroundProps) => (
   <GridBackgroundWrapper>{children}</GridBackgroundWrapper>
 );
 
-const GridWrapper = styled(Grid, {
-  position: "absolute",
-  inset: "0",
-});
-
 const GridBackgroundWrapper = styled("div", {
   position: "relative",
   border: "1px solid $gray8",

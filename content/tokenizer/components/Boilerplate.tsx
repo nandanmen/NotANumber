@@ -2,6 +2,7 @@ import { useAlgorithm } from "~/lib/algorithm";
 import { styled } from "~/stitches.config";
 import snapshot from "~/lib/algorithm/snapshot.macro";
 import { GridBackground } from "~/components/Grid";
+import { PlayButton } from "~/components/PlayButton";
 
 import type { Token } from "./lib/tokenize";
 import { CharacterList } from "./CharacterList";
@@ -31,12 +32,17 @@ type BoilerplateState = {
 };
 
 export function Boilerplate() {
-  const [state] = useAlgorithm<BoilerplateState>(boilerplate, [input]);
+  const [state, ctx] = useAlgorithm<BoilerplateState>(boilerplate, [input], {
+    delay: 200,
+  });
   return (
     <GridBackground>
       <Wrapper>
         <CharacterList state={state} />
       </Wrapper>
+      <ControlsWrapper>
+        <PlayButton isPlaying={ctx.isPlaying} onClick={ctx.toggle} secondary />
+      </ControlsWrapper>
     </GridBackground>
   );
 }
@@ -47,4 +53,10 @@ const Wrapper = styled("div", {
   justifyContent: "center",
   alignItems: "center",
   padding: "$12 0",
+});
+
+const ControlsWrapper = styled("div", {
+  position: "absolute",
+  left: "$2",
+  bottom: "$2",
 });
