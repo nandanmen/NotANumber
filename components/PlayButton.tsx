@@ -35,6 +35,7 @@ const Wrapper = styled(Row, {
   boxShadow: "$md",
   flexShrink: 0,
   fontSize: "$sm",
+  cursor: "pointer",
 
   "&:hover": {
     color: "$gray1",
