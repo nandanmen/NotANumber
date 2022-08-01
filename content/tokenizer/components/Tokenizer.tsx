@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
-import { FaPlay, FaPause } from "react-icons/fa";
 
 import { GridBackground } from "~/components/Grid";
-import { Row } from "~/components/layout/Row";
-import { Slider } from "~/components/Slider";
+import { AlgorithmControls } from "~/components/AlgorithmControls";
 
 import { useAlgorithm } from "~/lib/algorithm";
 import { styled } from "~/stitches.config";
@@ -57,27 +55,7 @@ export function Tokenizer({
 
   return (
     <FigureWrapper>
-      <Controls center="vertical">
-        <PlayButton
-          as="button"
-          center="all"
-          onClick={ctx.toggle}
-          title={ctx.isPlaying ? "Pause" : "Play"}
-        >
-          {ctx.isPlaying ? <FaPause /> : <FaPlay />}
-        </PlayButton>
-        <Slider
-          min={0}
-          max={ctx.totalSteps - 1}
-          value={[ctx.currentStep]}
-          onValueChange={([step]) => ctx.goTo(step)}
-        />
-        <Row>
-          <p>{ctx.currentStep + 1}</p>
-          <p>/</p>
-          <p>{ctx.totalSteps}</p>
-        </Row>
-      </Controls>
+      <AlgorithmControls context={ctx} />
       <GridBackground>
         <Wrapper>
           <Phase>{state.phase}</Phase>
@@ -135,23 +113,6 @@ export function Tokenizer({
   );
 }
 
-const PlayButton = styled(Row, {
-  background: "$blue6",
-  border: "1px solid black",
-  width: "$8",
-  height: "$8",
-  borderRadius: 4,
-  boxShadow: "$md",
-  flexShrink: 0,
-  fontSize: "$sm",
-
-  "&:hover": {
-    color: "$gray1",
-    background: "$blue9",
-    border: "2px solid $blue11",
-  },
-});
-
 const Phase = styled("h1", {
   color: "$grey600",
   fontWeight: 600,
@@ -194,11 +155,6 @@ const FigureWrapper = styled("div", {
   display: "flex",
   flexDirection: "column",
   gap: "$6",
-});
-
-const Controls = styled(Row, {
-  fontFamily: "$mono",
-  gap: "$4",
 });
 
 function TokenBlock({ type, name = "", value = "", ...props }) {
