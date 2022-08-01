@@ -14,6 +14,7 @@ export type AlgorithmOptions = {
 export type AlgorithmContext = {
   currentStep: number;
   totalSteps: number;
+  isPlaying: boolean;
   next(): void;
   prev(): void;
   reset(): void;

@@ -82,11 +82,17 @@ export const useStepPlayer = <StateType = unknown>(
     {
       currentStep: activeStepIndex,
       totalSteps: steps.length,
+      isPlaying,
       reset,
       toggle,
       next,
       prev,
-      goTo: setActiveStepIndex,
+      goTo: (step) => {
+        if (isPlaying) {
+          setIsPlaying(false);
+        }
+        setActiveStepIndex(step);
+      },
     },
   ];
 };

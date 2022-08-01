@@ -64,6 +64,7 @@ export const theme = {
   },
   shadows: {
     sm: "1px 1px 0 0 rgba(0, 0, 0, 0.2)",
+    md: "2px 2px 0 0 rgba(0, 0, 0, 0.2)",
   },
   radii: {
     base: "6px",

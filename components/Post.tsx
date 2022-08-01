@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { FaArrowRight } from "react-icons/fa";
 import { titleCase } from "title-case";
 
 import { styled } from "~/stitches.config";
@@ -36,7 +36,7 @@ export function Post({ post, icon }: PostProps) {
               </PostUpdatedText>
             </PostContent>
             <PostArrow>
-              <ArrowRightIcon width="30" height="30" />
+              <FaArrowRight width="30" height="30" />
             </PostArrow>
           </Anchor>
         </Link>

@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import * as Slider from "@radix-ui/react-slider";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 import { GridBackground } from "~/components/Grid";
+import { Row } from "~/components/layout/Row";
+import { Slider } from "~/components/Slider";
+
 import { useAlgorithm } from "~/lib/algorithm";
 import { styled } from "~/stitches.config";
 
@@ -41,7 +44,8 @@ export function Tokenizer({
 }) {
   const [state, ctx] = useAlgorithm<TokenizerState>(
     algorithms[name as keyof typeof algorithms],
-    [input]
+    [input],
+    { delay: 300 }
   );
 
   const isKeywordActive = (char: string) => {
@@ -53,19 +57,26 @@ export function Tokenizer({
 
   return (
     <FigureWrapper>
-      <Controls>
-        <button onClick={ctx.toggle}>Play</button>
-        <SliderRoot>
-          <Track>
-            <Range />
-          </Track>
-          <Thumb />
-        </SliderRoot>
-        <Controls>
-          <p>{ctx.currentStep}</p>
+      <Controls center="vertical">
+        <PlayButton
+          as="button"
+          center="all"
+          onClick={ctx.toggle}
+          title={ctx.isPlaying ? "Pause" : "Play"}
+        >
+          {ctx.isPlaying ? <FaPause /> : <FaPlay />}
+        </PlayButton>
+        <Slider
+          min={0}
+          max={ctx.totalSteps - 1}
+          value={[ctx.currentStep]}
+          onValueChange={([step]) => ctx.goTo(step)}
+        />
+        <Row>
+          <p>{ctx.currentStep + 1}</p>
           <p>/</p>
           <p>{ctx.totalSteps}</p>
-        </Controls>
+        </Row>
       </Controls>
       <GridBackground>
         <Wrapper>
@@ -124,6 +135,23 @@ export function Tokenizer({
   );
 }
 
+const PlayButton = styled(Row, {
+  background: "$blue6",
+  border: "1px solid black",
+  width: "$8",
+  height: "$8",
+  borderRadius: 4,
+  boxShadow: "$md",
+  flexShrink: 0,
+  fontSize: "$sm",
+
+  "&:hover": {
+    color: "$gray1",
+    background: "$blue9",
+    border: "2px solid $blue11",
+  },
+});
+
 const Phase = styled("h1", {
   color: "$grey600",
   fontWeight: 600,
@@ -168,38 +196,9 @@ const FigureWrapper = styled("div", {
   gap: "$6",
 });
 
-const Controls = styled("div", {
-  display: "flex",
+const Controls = styled(Row, {
   fontFamily: "$mono",
-});
-
-const SliderRoot = styled(Slider.Root, {
-  position: "relative",
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-});
-
-const Track = styled(Slider.Track, {
-  position: "relative",
-  background: "$gray8",
-  flexGrow: 1,
-  height: 4,
-});
-
-const Range = styled(Slider.Range, {
-  position: "absolute",
-  backgroundColor: "$blue8",
-  height: "100%",
-});
-
-const Thumb = styled(Slider.Thumb, {
-  display: "block",
-  background: "$blue8",
-  border: "1px solid black",
-  width: "$6",
-  height: "$6",
-  borderRadius: 4,
+  gap: "$4",
 });
 
 function TokenBlock({ type, name = "", value = "", ...props }) {
