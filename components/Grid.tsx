@@ -66,20 +66,11 @@ const Wrapper = styled("g", {
 });
 
 type GridBackgroundProps = {
-  rows?: number;
-  cols?: number;
   children: React.ReactNode;
 };
 
-export const GridBackground = ({
-  children,
-  rows,
-  cols,
-}: GridBackgroundProps) => (
-  <GridBackgroundWrapper>
-    <GridWrapper rows={rows} cols={cols} />
-    {children}
-  </GridBackgroundWrapper>
+export const GridBackground = ({ children }: GridBackgroundProps) => (
+  <GridBackgroundWrapper>{children}</GridBackgroundWrapper>
 );
 
 const GridWrapper = styled(Grid, {
@@ -91,4 +82,6 @@ const GridBackgroundWrapper = styled("div", {
   position: "relative",
   border: "1px solid $gray8",
   borderRadius: "$base",
+  backgroundImage: "url(/grid.svg)",
+  backgroundSize: "40px 40px",
 });

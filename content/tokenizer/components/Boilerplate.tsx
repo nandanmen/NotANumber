@@ -33,7 +33,7 @@ type BoilerplateState = {
 export function Boilerplate() {
   const [state] = useAlgorithm<BoilerplateState>(boilerplate, [input]);
   return (
-    <GridBackground rows={3}>
+    <GridBackground>
       <Wrapper>
         <CharacterList state={state} />
       </Wrapper>
