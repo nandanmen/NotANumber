@@ -47,6 +47,9 @@ export default function PostPage({ content }: { content: Post }) {
   const { frontmatter } = content;
   return (
     <PageWrapper>
+      <Nav>
+        <h2>NaN</h2>
+      </Nav>
       <Article>
         <Header>
           <LastUpdated>
@@ -67,10 +70,19 @@ export default function PostPage({ content }: { content: Post }) {
   );
 }
 
-const PAGE_WIDTH = `min(60rem, 100vw)`;
+const Nav = styled("nav", {
+  position: "fixed",
+  top: "$16",
+  bottom: "$16",
+  color: "$gray11",
+
+  h2: {
+    fontFamily: "$serif",
+  },
+});
 
 const PageWrapper = styled("main", {
-  width: PAGE_WIDTH,
+  width: `min(72rem, 100vw)`,
   margin: "0 auto",
 });
 
@@ -90,7 +102,7 @@ const LastUpdated = styled("p", {
 });
 
 const Header = styled("header", {
-  marginBottom: "8rem",
+  marginBottom: "$16",
 
   "> :not(:last-child)": {
     marginBottom: "$8",
@@ -102,8 +114,7 @@ const Article = styled("article", {
   maxWidth: 800,
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
-  margin: "0 auto",
-  marginTop: "$32",
+  margin: "$16 auto $40 auto",
   padding: "0 $4",
 
   "> *": {
@@ -113,6 +124,10 @@ const Article = styled("article", {
   "> figure": {
     marginTop: "$4",
     marginBottom: "$8",
+  },
+
+  "> .note": {
+    gridColumn: "1 / -1",
   },
 
   "> .full-width": {

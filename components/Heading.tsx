@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "~/stitches.config";
 
-export const Heading: React.FC<{}> = ({ children }) => {
+export const Heading = ({ children }) => {
   const id = getIdFromChildren(children);
   return <H2 id={id}>{children}</H2>;
 };
@@ -17,7 +17,7 @@ const H2 = styled("h2", {
   fontFamily: "$serif",
   position: "relative",
   scrollMarginTop: "$28",
-  marginTop: "$32",
+  marginTop: "$24",
   marginBottom: "$8",
 
   "&:before": {
@@ -31,7 +31,7 @@ const H2 = styled("h2", {
   },
 });
 
-export const Subheading: React.FC<{}> = ({ children }) => {
+export const Subheading = ({ children }) => {
   const id = getIdFromChildren(children);
   return <H3 id={id}>{children}</H3>;
 };

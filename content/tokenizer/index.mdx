@@ -12,6 +12,7 @@ import { Figure } from "~/components/Figure";
 import { FullWidth } from "~/components/FullWidth";
 import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
+import * as Note from "~/components/Note";
 
 import { Boilerplate } from "./components/Boilerplate";
 import { Tokenizer } from "./components/Tokenizer";
@@ -140,7 +141,17 @@ Here's a preview of the tokenizer we're implementing, making its way through the
   <Tokenizer />
 </FullWidth>
 
-We'll break down the implementation into three parts:
+<Note.Root>
+
+We'll break down the implementation into three parts\*:
+
+<Note.Content>
+
+\* Can you spot these three parts in the visualization?
+
+</Note.Content>
+
+</Note.Root>
 
 1. Parsing single character tokens;
 2. Parsing identifiers and keywords; and
@@ -243,13 +254,17 @@ Next up is tokenizing the `'hello, world!'` part of the code snippet, also known
 1. Starts and ends with an apostrophe (`'`) or double quotes (`"`) pair, and
 2. Cannot span multiple lines.
 
-To keep things simple, I've opted to support **only apostrophes** and multiple-line strings (turns out the implementation is simpler if we support multiple lines).
+<Note.Root>
 
-<Callout label="Aha, this is microsyntax!">
+To keep things simple, I've opted to support **only apostrophes** and multiple-line strings (turns out the implementation is simpler if we support multiple lines)\*.
 
-This is where our little discussion on microsyntax earlier comes in! By handling the string rules here, other parts of the compiler don't have to worry about whether this string is "correct" or not.
+<Note.Content>
 
-</Callout>
+\* This is a great example of microsyntax! By handling the string rules here, other parts of the compiler don't have to worry about whether this string is "correct" or not.
+
+</Note.Content>
+
+</Note.Root>
 
 To tokenize a string literal, we're going to do something similar to tokenizing identifiers except we only stop when we reach another apostrophe. Specifically:
 
