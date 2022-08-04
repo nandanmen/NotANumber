@@ -9,6 +9,7 @@ import { styled } from "~/stitches.config";
 import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
+import { MobileBottomBar } from "~/components/MobileBottomBar";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -49,6 +50,7 @@ export default function PostPage({ content }: { content: Post }) {
   const { frontmatter, headings } = content;
   return (
     <PageWrapper>
+      <MobileBottomBar />
       <Nav>
         <h2>
           <Link href="/">
