@@ -1,22 +1,18 @@
 import React from "react";
+
 import { styled } from "~/stitches.config";
+import { getId } from "~/lib/utils";
 
 export const Heading = ({ children }) => {
-  const id = getIdFromChildren(children);
+  const id = getId(children);
   return <H2 id={id}>{children}</H2>;
-};
-
-export const getIdFromChildren = (children: React.ReactNode) => {
-  if (typeof children === "string") {
-    return children.toLowerCase().replace(/\s/g, "-").replace(/\.|\?/g, "");
-  }
 };
 
 const H2 = styled("h2", {
   fontSize: "$2xl",
   fontFamily: "$serif",
   position: "relative",
-  scrollMarginTop: "$28",
+  scrollMarginTop: "$16",
   marginTop: "$24",
   marginBottom: "$8",
 
@@ -32,7 +28,7 @@ const H2 = styled("h2", {
 });
 
 export const Subheading = ({ children }) => {
-  const id = getIdFromChildren(children);
+  const id = getId(children);
   return <H3 id={id}>{children}</H3>;
 };
 

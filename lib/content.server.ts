@@ -5,12 +5,20 @@ import glob from "glob";
 import matter from "gray-matter";
 import rehypePrettyCode from "rehype-pretty-code";
 
+import { getId } from "./utils";
+
 const CONTENT_FOLDER = `${process.cwd()}/_dist-content`;
 const POST_FILENAME = "index.mdx";
+
+export type Heading = {
+  id: string;
+  text: string;
+};
 
 export type Post = {
   code: string;
   frontmatter: Record<string, any>;
+  headings: Heading[];
 };
 
 export type PostMetadata = {
@@ -27,13 +35,13 @@ const theme = JSON.parse(
  */
 export const getPost = async (slug: string): Promise<Post> => {
   const postFolder = path.join(CONTENT_FOLDER, slug);
-  const mdxSource = await fs.promises.readFile(
-    path.join(postFolder, POST_FILENAME)
-  );
-  return bundleMDX({
-    source: mdxSource.toString(),
+  const mdxSource = (
+    await fs.promises.readFile(path.join(postFolder, POST_FILENAME))
+  ).toString();
+  const mdxOut = await bundleMDX({
+    source: mdxSource,
     cwd: postFolder,
-    mdxOptions(options, frontmatter) {
+    mdxOptions(options) {
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
         [rehypePrettyCode, { theme }],
@@ -52,6 +60,21 @@ export const getPost = async (slug: string): Promise<Post> => {
       return options;
     },
   });
+  return { ...mdxOut, headings: getHeadings(mdxSource) };
+};
+
+const getHeadings = (content: string): Heading[] => {
+  return (
+    content
+      .split("\n")
+      /* I only care about h2s, so explicitly look for 2 hashtags */
+      .filter((line) => line.match(/^##\s/))
+      .map((line) => line.replace("##", "").trim())
+      .map((text) => ({
+        text,
+        id: getId(text),
+      }))
+  );
 };
 
 export const getAllPosts = async (): Promise<PostMetadata[]> => {

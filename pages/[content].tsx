@@ -44,11 +44,18 @@ export default function PostPage({ content }: { content: Post }) {
     () => getMDXComponent(content.code),
     [content.code]
   );
-  const { frontmatter } = content;
+  const { frontmatter, headings } = content;
   return (
     <PageWrapper>
       <Nav>
         <h2>NaN</h2>
+        <ul>
+          {headings.map((heading) => (
+            <li key={heading.id}>
+              <a href={`#${heading.id}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
       </Nav>
       <Article>
         <Header>
@@ -75,14 +82,36 @@ const Nav = styled("nav", {
   top: "$16",
   bottom: "$16",
   color: "$gray11",
+  maxWidth: "$40",
+  display: "flex",
+  flexDirection: "column",
 
   h2: {
     fontFamily: "$serif",
   },
+
+  ul: {
+    marginTop: "auto",
+    listStyle: "none",
+    fontSize: "$sm",
+
+    "> :not(:last-child)": {
+      marginBottom: "$2",
+    },
+
+    a: {
+      textDecoration: "none",
+      color: "inherit",
+
+      "&:hover": {
+        color: "$blue9",
+      },
+    },
+  },
 });
 
 const PageWrapper = styled("main", {
-  width: `min(72rem, 100vw)`,
+  width: `min(80rem, 100vw)`,
   margin: "0 auto",
 });
 
