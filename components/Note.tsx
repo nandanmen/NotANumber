@@ -13,13 +13,20 @@ const RootWrapper = styled("div", {
     gridColumn: 1,
   },
 
-  "> aside": {
-    gridColumn: 2,
-    gridRow: "1 / -1",
-  },
-
   "> :not(:first-child, aside)": {
     marginTop: "$4",
+  },
+
+  "> aside": {
+    marginTop: "$4",
+  },
+
+  "@md": {
+    "> aside": {
+      marginTop: 0,
+      gridColumn: 2,
+      gridRow: "1 / -1",
+    },
   },
 });
 
@@ -28,7 +35,10 @@ export const Content = ({ children }) => {
 };
 
 const Aside = styled("aside", {
-  position: "absolute",
-  fontSize: "$sm",
   color: "$gray11",
+
+  "@md": {
+    position: "absolute",
+    fontSize: "$sm",
+  },
 });

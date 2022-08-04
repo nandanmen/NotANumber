@@ -96,9 +96,13 @@ const Nav = styled("nav", {
   bottom: "$16",
   color: "$gray11",
   maxWidth: "$40",
-  display: "flex",
+  display: "none",
   flexDirection: "column",
   paddingLeft: "$6",
+
+  "@media (min-width: 72rem)": {
+    display: "flex",
+  },
 
   h2: {
     fontFamily: "$serif",
