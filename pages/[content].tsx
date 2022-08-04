@@ -1,5 +1,6 @@
 import React from "react";
 import type { GetStaticPropsContext } from "next";
+import Link from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
@@ -7,6 +8,7 @@ import { styled } from "~/stitches.config";
 
 import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
+import { NewsletterForm } from "~/components/NewsletterForm";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -48,7 +50,11 @@ export default function PostPage({ content }: { content: Post }) {
   return (
     <PageWrapper>
       <Nav>
-        <h2>NaN</h2>
+        <h2>
+          <Link href="/">
+            <a>NaN</a>
+          </Link>
+        </h2>
         <ul>
           {headings.map((heading) => (
             <li key={heading.id}>
@@ -72,6 +78,7 @@ export default function PostPage({ content }: { content: Post }) {
             ol: OrderedList as any,
           }}
         />
+        <NewsletterForm />
       </Article>
     </PageWrapper>
   );
@@ -90,6 +97,15 @@ const Nav = styled("nav", {
     fontFamily: "$serif",
   },
 
+  a: {
+    textDecoration: "none",
+    color: "inherit",
+
+    "&:hover": {
+      color: "$blue9",
+    },
+  },
+
   ul: {
     marginTop: "auto",
     listStyle: "none",
@@ -97,15 +113,6 @@ const Nav = styled("nav", {
 
     "> :not(:last-child)": {
       marginBottom: "$2",
-    },
-
-    a: {
-      textDecoration: "none",
-      color: "inherit",
-
-      "&:hover": {
-        color: "$blue9",
-      },
     },
   },
 });

@@ -89,6 +89,9 @@ export const globalStyles = globalCss({
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
   },
+  "input, button": {
+    all: "unset",
+  },
   body: {
     fontFamily: "$sans",
     background: "$gray4",
