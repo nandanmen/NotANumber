@@ -1,5 +1,5 @@
 import { createStitches } from "@stitches/react";
-import { gray, blue } from "@radix-ui/colors";
+import { gray, blue, green } from "@radix-ui/colors";
 
 const SPACING = {
   px: "1px",
@@ -43,6 +43,7 @@ export const theme = {
   colors: {
     ...gray,
     ...blue,
+    ...green,
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,

@@ -3,7 +3,7 @@ import { CgSpinner } from "react-icons/cg";
 import { FaPaperPlane } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
-import { Row } from "../layout/Row";
+import { Row } from "./layout/Row";
 
 enum FormEvent {
   Change,
@@ -33,7 +33,13 @@ const transition = (state: FormState, event: FormEvent) => {
   return machine[state][event] ?? state;
 };
 
-export function NewsletterForm() {
+const submitButtonTypeMap = {
+  [FormState.Start]: undefined,
+  [FormState.Loading]: "loading",
+  [FormState.Done]: "success",
+};
+
+export function SubscribeInput() {
   const [state, dispatch] = React.useReducer(transition, FormState.Start);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (evt) => {
@@ -43,13 +49,7 @@ export function NewsletterForm() {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <h4>Newsletter</h4>
-      <p>
-        Sign up for my newsletter to get new content sent straight to your
-        inbox! You'll also receive updates on whatever I'm working on and
-        anything I find interesting.
-      </p>
+    <form onSubmit={handleSubmit}>
       <InputGroup>
         <Label htmlFor="email">Email</Label>
         <Input
@@ -62,56 +62,84 @@ export function NewsletterForm() {
         <SubmitButton
           as={motion.button}
           center="all"
-          style={{ x: -3, y: -3 }}
-          whileTap={{ x: 0, y: 0 }}
+          whileHover={{ scale: 0.95 }}
+          whileTap={{ scale: 0.9 }}
           disabled={state === FormState.Loading}
+          type={submitButtonTypeMap[state]}
         >
           {state === FormState.Start && (
-            <motion.span style={{ y: 2 }}>
+            <Row center="all">
               <FaPaperPlane />
-            </motion.span>
+            </Row>
           )}
           {state === FormState.Loading && (
-            <span>
+            <Row
+              center="all"
+              as={motion.span}
+              animate={{ rotate: 360 }}
+              transition={{
+                type: "tween",
+                duration: 1,
+                ease: "linear",
+                repeat: Infinity,
+              }}
+            >
               <CgSpinner />
-            </span>
+            </Row>
           )}
           {state === FormState.Done && "🎉"}
         </SubmitButton>
       </InputGroup>
       {state === FormState.Done && (
-        <p>Check your inbox—we've sent you a confirmation letter.</p>
+        <SuccessText>
+          Thanks! Check your inbox — we sent you a confirmation email.
+        </SuccessText>
       )}
-    </Form>
+    </form>
   );
 }
 
-const Form = styled("form", {
-  border: "1px solid $gray8",
-  padding: "$4",
-  borderRadius: "$base",
+const SuccessText = styled("p", {
+  marginTop: "$2",
+  fontFamily: "$mono",
+  fontSize: "$sm",
 });
 
 const InputGroup = styled("div", {
   border: "1px solid $gray8",
   borderRadius: 4,
   display: "flex",
+  background: "$gray1",
+  overflow: "hidden",
+  alignItems: "center",
+  paddingRight: 7,
 });
 
 const Label = styled("label", {
   display: "block",
-  padding: "$1 $2",
+  padding: "$3",
   borderRight: "1px solid $gray8",
   color: "$gray11",
+  background: "$gray4",
 });
 
 const SubmitButton = styled(Row, {
   background: "$blue7",
-  outline: "1px solid $gray12",
-  width: "$8",
+  width: "$10",
+  height: "$10",
   flexShrink: 0,
   borderRadius: 4,
-  boxShadow: `3px 3px 0 0 rgba(0, 0, 0, 0.2)`,
+
+  variants: {
+    type: {
+      success: {
+        background: "$green7",
+      },
+      loading: {
+        background: "$gray4",
+      },
+    },
+  },
 });
 
 const Input = styled("input", {

@@ -78,11 +78,17 @@ export default function PostPage({ content }: { content: Post }) {
             ol: OrderedList as any,
           }}
         />
-        <NewsletterForm />
+        <NewsletterWrapper>
+          <NewsletterForm />
+        </NewsletterWrapper>
       </Article>
     </PageWrapper>
   );
 }
+
+const NewsletterWrapper = styled("footer", {
+  marginTop: "$24",
+});
 
 const Nav = styled("nav", {
   position: "fixed",
@@ -92,6 +98,7 @@ const Nav = styled("nav", {
   maxWidth: "$40",
   display: "flex",
   flexDirection: "column",
+  paddingLeft: "$6",
 
   h2: {
     fontFamily: "$serif",
@@ -150,7 +157,7 @@ const Article = styled("article", {
   maxWidth: 800,
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
-  margin: "$16 auto $40 auto",
+  margin: "$16 auto",
   padding: "0 $4",
 
   "> *": {
