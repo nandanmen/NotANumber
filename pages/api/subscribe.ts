@@ -1,7 +1,12 @@
-export default async function handler(req, res) {
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { email } = req.query;
 
-  /* const response = await fetch(`https://api.buttondown.email/v1/subscribers`, {
+  const response = await fetch(`https://api.buttondown.email/v1/subscribers`, {
     method: "POST",
     headers: {
       Authorization: `Token ${process.env.BUTTON_DOWN_API_KEY}`,
@@ -15,10 +20,5 @@ export default async function handler(req, res) {
   }
 
   const { email: errors } = await response.json();
-  return res.status(400).json({ errors }); */
-
-  await sleep(1000);
-  return res.status(201).end();
+  return res.status(400).json({ errors });
 }
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
