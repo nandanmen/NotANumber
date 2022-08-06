@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"next dev\" \"yarn build:content --watch\"",
-    "build": "next build",
+    "build": "yarn build:content && next build",
     "build:content": "rm -rf ./_dist-content && babel ./content --out-dir ./_dist-content --copy-files --extensions .ts,.tsx",
     "start": "next start",
     "lint": "next lint"
