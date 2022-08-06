@@ -47,7 +47,7 @@ export function Post({ post, icon }: PostProps) {
 
 const PostIcon = styled("div", {
   display: "none",
-  background: "$gray3",
+  background: "$gray6",
   aspectRatio: 1,
   borderRadius: "$base",
 
@@ -75,7 +75,7 @@ const PostWrapper = styled("div", {
   "&:hover": {
     margin: "-$8 0",
     padding: "$8",
-    background: "$gray3",
+    background: "$gray6",
   },
 });
 

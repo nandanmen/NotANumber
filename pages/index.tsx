@@ -1,3 +1,4 @@
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 import { Post, type PostProps } from "~/components/Post";
 
@@ -37,7 +38,31 @@ const posts: PostProps[] = [
 export default function HomePage() {
   return (
     <PageWrapper>
-      <Wrapper>
+      <nav>
+        <Links>
+          <li>
+            <a
+              href="https://github.com/narendrasss/NotANumber"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Github"
+            >
+              <FaGithub />
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/nandafyi"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Twitter"
+            >
+              <FaTwitter />
+            </a>
+          </li>
+        </Links>
+      </nav>
+      <ContentWrapper>
         <Header>
           <Title>Not a Number</Title>
           <Description>
@@ -51,20 +76,36 @@ export default function HomePage() {
             <Post key={post.post.slug} icon={post.icon} post={post.post} />
           ))}
         </Posts>
-      </Wrapper>
+      </ContentWrapper>
     </PageWrapper>
   );
 }
 
-const PAGE_WIDTH = `min(60rem, 100vw)`;
+const Links = styled("ul", {
+  display: "flex",
+  justifyContent: "flex-end",
+  listStyle: "none",
+  fontSize: "$xl",
+  gap: "$4",
+  padding: "$4",
+
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+
+    "&:hover": {
+      color: "$blue9",
+    },
+  },
+});
 
 const PageWrapper = styled("main", {
-  width: PAGE_WIDTH,
+  width: "min(64rem, 100vw)" /* 60rem + 2rem padding * 2 */,
   margin: "0 auto",
 });
 
-const Wrapper = styled("div", {
-  padding: "$32 0",
+const ContentWrapper = styled("div", {
+  padding: "$16 $8",
 });
 
 const Title = styled("h1", {
