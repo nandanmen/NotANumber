@@ -117,7 +117,7 @@ const InputGroup = styled("div", {
 
 const Label = styled("label", {
   display: "block",
-  padding: "$3",
+  padding: "$4",
   borderRight: "1px solid $gray8",
   color: "$gray11",
   background: "$gray4",
@@ -145,7 +145,7 @@ const SubmitButton = styled(Row, {
 const Input = styled("input", {
   flexGrow: 1,
   background: "$gray1",
-  padding: "0 $2",
+  padding: "$4",
 });
 
 function subscribe(evt: React.FormEvent<HTMLFormElement>) {

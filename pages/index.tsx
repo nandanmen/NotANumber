@@ -1,6 +1,10 @@
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import React from "react";
+import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
+
 import { styled } from "~/stitches.config";
 import { Post, type PostProps } from "~/components/Post";
+import { SubscribeInput } from "~/components/SubscribeInput";
+import { motion } from "framer-motion";
 
 const posts: PostProps[] = [
   {
@@ -36,6 +40,7 @@ const posts: PostProps[] = [
 ];
 
 export default function HomePage() {
+  const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
     <PageWrapper>
       <nav>
@@ -69,9 +74,18 @@ export default function HomePage() {
             An interactive blog on computer science and web development, by
             Nanda Syahrasyad.
           </Description>
+          <SubscribeButton onClick={toggle}>
+            Subscribe to the newsletter{" "}
+            {subscribing ? <FaTimes /> : <FaArrowRight />}
+          </SubscribeButton>
+          {subscribing && (
+            <SubscribeWrapper animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+              <SubscribeInput />
+            </SubscribeWrapper>
+          )}
         </Header>
-        <Divider />
-        <Posts>
+        <Divider layout />
+        <Posts layout>
           {posts.map((post) => (
             <Post key={post.post.slug} icon={post.icon} post={post.post} />
           ))}
@@ -80,6 +94,24 @@ export default function HomePage() {
     </PageWrapper>
   );
 }
+
+const SubscribeButton = styled("button", {
+  color: "$gray11",
+  display: "flex",
+  alignItems: "center",
+  gap: "$1",
+  fontWeight: "bold",
+  cursor: "pointer",
+
+  "&:hover": {
+    color: "$blue9",
+  },
+});
+
+const SubscribeWrapper = styled(motion.div, {
+  marginTop: "$2",
+  maxWidth: 400,
+});
 
 const Links = styled("ul", {
   display: "flex",
@@ -130,7 +162,7 @@ const Description = styled("p", {
   lineHeight: "$body",
 });
 
-const Posts = styled("ul", {
+const Posts = styled(motion.ul, {
   paddingTop: "$20",
 
   "> :not(:last-child)": {
@@ -138,7 +170,7 @@ const Posts = styled("ul", {
   },
 });
 
-const Divider = styled("div", {
+const Divider = styled(motion.div, {
   width: "min(30vw, $space$24)",
   marginLeft: "-2rem",
   height: "$px",
