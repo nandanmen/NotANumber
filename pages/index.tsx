@@ -137,7 +137,7 @@ const PageWrapper = styled("main", {
 });
 
 const ContentWrapper = styled("div", {
-  padding: "$16 $8",
+  padding: "0 $8",
 });
 
 const Title = styled("h1", {

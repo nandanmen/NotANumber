@@ -4,12 +4,13 @@ import Link from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
+import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -84,9 +85,18 @@ export default function PostPage({ content }: { content: Post }) {
           <NewsletterForm />
         </NewsletterWrapper>
       </Article>
+      <ThemeWrapper>
+        <ThemeToggle />
+      </ThemeWrapper>
     </PageWrapper>
   );
 }
+
+const ThemeWrapper = styled("div", {
+  position: "fixed",
+  top: "50%",
+  right: "$8",
+});
 
 const NewsletterWrapper = styled("footer", {
   marginTop: "$24",
@@ -163,7 +173,7 @@ const Article = styled("article", {
   maxWidth: 800,
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
-  margin: "$16 auto",
+  margin: "0 auto",
   padding: "0 $4",
 
   "> *": {
@@ -193,6 +203,11 @@ const Article = styled("article", {
     fontFamily: "$serif",
   },
 
+  a: {
+    color: "$blue9",
+    textDecoration: "none",
+  },
+
   pre: {
     border: "1px solid $gray8",
     padding: "$4",
@@ -200,6 +215,19 @@ const Article = styled("article", {
     fontSize: "$sm",
     marginTop: "$4",
     marginBottom: "$8",
+
+    "&[data-theme='dark']": {
+      display: "none",
+    },
+
+    [`.${darkTheme} &`]: {
+      "&[data-theme='light']": {
+        display: "none",
+      },
+      "&[data-theme='dark']": {
+        display: "block",
+      },
+    },
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {

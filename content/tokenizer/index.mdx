@@ -17,6 +17,7 @@ import * as Note from "~/components/Note";
 import { Pipeline } from "./components/Pipeline";
 import { Boilerplate } from "./components/Boilerplate";
 import { Tokenizer } from "./components/Tokenizer";
+import { TokenList } from "./components/TokenList";
 
 A few weekends ago, I spent some time rebuilding the Babel compiler from scratch to learn a bit more about how it works internally. You see, I knew enough about compilers to know how to _use_ them (like in my [debugger](/debugger) post), but I didn't know enough to know how to _make_ one from scratch.
 
@@ -71,13 +72,13 @@ function hello() {
 You'll end up with the following tokens:
 
 <FullWidth>
-  <Image href="tokenizer/tokens.svg" />
+  <TokenList hideTypes />
 </FullWidth>
 
 Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
 <FullWidth>
-  <Image href="tokenizer/token-types.svg" />
+  <TokenList />
 </FullWidth>
 
 ## Why Do We Do This?
@@ -165,7 +166,7 @@ Let's get started!
 Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In the code snippet we're parsing, that would be all of the following tokens:
 
 <FullWidth>
-  <Image href="tokenizer/single-tokens.svg" />
+  <TokenList type={["single-character"]} toggleable />
 </FullWidth>
 
 We'll start off by iterating through every character of our input:
@@ -194,7 +195,13 @@ One way to check if a character is a single character token is to keep a list of
 
 ## Identifiers and Keywords
 
-With the single character tokens out of the way, the next thing we have to do is to parse the identifier and keyword tokens. But hold on a second - what's an identifier anyway?
+With the single character tokens out of the way, the next thing we have to do is to parse the identifier and keyword tokens.
+
+<FullWidth>
+  <TokenList type={["keyword", "identifier"]} toggleable />
+</FullWidth>
+
+But hold on a second - what's an identifier anyway?
 
 ### What Makes an Identifier?
 
@@ -250,7 +257,13 @@ One way is to do the same thing as the single character tokens:
 
 ## String Literals
 
-Next up is tokenizing the `'hello, world!'` part of the code snippet, also known as a **string literal**. In JavaScript, a string literal abides by the following rules:
+Next up is tokenizing the `'hello, world!'` part of the code snippet, also known as a **string literal**.
+
+<FullWidth>
+  <TokenList type={["string"]} toggleable />
+</FullWidth>
+
+In JavaScript, a string literal abides by the following rules:
 
 1. Starts and ends with an apostrophe (`'`) or double quotes (`"`) pair, and
 2. Cannot span multiple lines.

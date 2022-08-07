@@ -1,6 +1,7 @@
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { range } from "~/lib/utils";
 import { Row } from "./layout/Row";
+import { motion } from "framer-motion";
 
 const CELL_SIZE = 8;
 
@@ -74,13 +75,17 @@ export const GridBackground = ({ children }: GridBackgroundProps) => (
   <GridBackgroundWrapper>{children}</GridBackgroundWrapper>
 );
 
-const GridBackgroundWrapper = styled("div", {
+const GridBackgroundWrapper = styled(motion.div, {
   position: "relative",
   border: "1px solid $gray8",
   borderRadius: "$base",
   backgroundImage: "url(/grid.svg)",
   backgroundSize: "40px 40px",
   overflow: "auto",
+
+  [`.${darkTheme} &`]: {
+    backgroundImage: "url(/grid-dark.svg)",
+  },
 });
 
 export const GridOverflowBox = ({ children }) => (

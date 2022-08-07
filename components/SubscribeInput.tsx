@@ -116,11 +116,15 @@ const InputGroup = styled("div", {
 });
 
 const Label = styled("label", {
-  display: "block",
+  display: "none",
   padding: "$4",
   borderRight: "1px solid $gray8",
   color: "$gray11",
   background: "$gray4",
+
+  "@md": {
+    display: "block",
+  },
 });
 
 const SubmitButton = styled(Row, {

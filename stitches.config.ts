@@ -1,5 +1,14 @@
 import { createStitches } from "@stitches/react";
-import { gray, blue, green } from "@radix-ui/colors";
+import {
+  gray,
+  blue,
+  green,
+  red,
+  grayDark,
+  blueDark,
+  greenDark,
+  redDark,
+} from "@radix-ui/colors";
 
 const SPACING = {
   px: "1px",
@@ -39,11 +48,12 @@ const SPACING = {
   96: "24rem",
 } as const;
 
-export const theme = {
+export const baseTheme = {
   colors: {
     ...gray,
     ...blue,
     ...green,
+    ...red,
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
@@ -72,14 +82,23 @@ export const theme = {
   },
 };
 
-export const { styled, getCssText, globalCss } = createStitches({
+export const { styled, getCssText, globalCss, createTheme } = createStitches({
   media: {
     post: `(min-width: 50rem)`,
     md: `(min-width: 768px)`,
     lg: `(min-width: 62em)`,
     xl: `(min-width: 80em)`,
   },
-  theme,
+  theme: baseTheme,
+});
+
+export const darkTheme = createTheme({
+  colors: {
+    ...grayDark,
+    ...blueDark,
+    ...greenDark,
+    ...redDark,
+  },
 });
 
 export const globalStyles = globalCss({
@@ -95,8 +114,6 @@ export const globalStyles = globalCss({
   },
   body: {
     fontFamily: "$sans",
-    background: "$gray4",
-    color: "$gray12",
   },
   "h1, h2": {
     fontWeight: "normal",

@@ -26,9 +26,14 @@ export type PostMetadata = {
   slug: string;
 };
 
-const theme = JSON.parse(
-  fs.readFileSync(`${process.cwd()}/assets/light-colorblind.json`, "utf8")
-);
+const theme = {
+  light: JSON.parse(
+    fs.readFileSync(`${process.cwd()}/assets/light-colorblind.json`, "utf8")
+  ),
+  dark: JSON.parse(
+    fs.readFileSync(`${process.cwd()}/assets/dark-default.json`, "utf8")
+  ),
+};
 
 /**
  * Gets the post from `dist/content` and bundles it using MDX bundler
