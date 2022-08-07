@@ -40,17 +40,9 @@ const parseStoryPath = (storyPath) => {
     isContentComponent,
     path,
     postName,
-    asImport: `import * as ${name} from '../${path}'`,
+    asImport: `import * as ${name} from './${path}'`,
   };
 };
-
-const template = `
-import { StoriesPage } from '../layouts/StoriesPage';
-
-export default function Stories() {
-  return <StoriesPage stories={stories} />;
-}
-`;
 
 const main = async () => {
   const files = (await getStories()).map(parseStoryPath);
@@ -62,8 +54,10 @@ const main = async () => {
     )
     .join(`,\n`);
 
-  const header = `${imports}\nconst stories = [\n${storiesProp}\n];`;
-  fs.writeFileSync("./pages/_stories.tsx", header + template);
+  fs.writeFileSync(
+    "./stories.meta.ts",
+    `${imports}\nexport const stories = [${storiesProp}];`
+  );
 };
 
 main();
