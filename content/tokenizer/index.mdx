@@ -7,13 +7,14 @@ editedAt: "2022-02-20"
 hasTldr: true
 ---
 
-import { Svg } from "~/components/Svg";
+import { Image } from "~/components/Image";
 import { Figure } from "~/components/Figure";
 import { FullWidth } from "~/components/FullWidth";
 import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
 import * as Note from "~/components/Note";
 
+import { Pipeline } from "./components/Pipeline";
 import { Boilerplate } from "./components/Boilerplate";
 import { Tokenizer } from "./components/Tokenizer";
 
@@ -41,9 +42,9 @@ Let's get started!
 
 Let's deviate for a second to go over how a compiler works at a high level. I think of a compiler as a pipeline with four concrete steps:
 
-<Figure size="xl">
-  <Svg href="pipeline.svg" />
-</Figure>
+<FullWidth>
+  <Pipeline />
+</FullWidth>
 
 Each step takes in the output of the previous step and transforms it to something else. The first step, the tokenization step, takes in your original source code as its input, while the last step, the generation step, spits out the modified code.
 
@@ -69,15 +70,15 @@ function hello() {
 
 You'll end up with the following tokens:
 
-<Figure>
-  <Svg href="tokens.svg" />
-</Figure>
+<FullWidth>
+  <Image href="tokenizer/tokens.svg" />
+</FullWidth>
 
 Just like how a word in english can be a noun, verb, adjective, etc., each token has a type that represents that token's meaning. In our previous example, those types might be something like:
 
-<Figure>
-  <Svg href="token-types.svg" />
-</Figure>
+<FullWidth>
+  <Image href="tokenizer/token-types.svg" />
+</FullWidth>
 
 ## Why Do We Do This?
 
@@ -163,9 +164,9 @@ Let's get started!
 
 Let's begin by trying to parse out the simplest tokens first - the ones that are only one character long. In the code snippet we're parsing, that would be all of the following tokens:
 
-<Figure size="lg">
-  <Svg href="single-tokens.svg" />
-</Figure>
+<FullWidth>
+  <Image href="tokenizer/single-tokens.svg" />
+</FullWidth>
 
 We'll start off by iterating through every character of our input:
 

@@ -1,5 +1,6 @@
 import { styled } from "~/stitches.config";
 import { range } from "~/lib/utils";
+import { Row } from "./layout/Row";
 
 const CELL_SIZE = 8;
 
@@ -79,4 +80,28 @@ const GridBackgroundWrapper = styled("div", {
   borderRadius: "$base",
   backgroundImage: "url(/grid.svg)",
   backgroundSize: "40px 40px",
+  overflow: "auto",
+});
+
+export const GridOverflowBox = ({ children }) => (
+  <GridBackground>
+    <ContentWrapper>
+      {children}
+      <Spacer />
+    </ContentWrapper>
+  </GridBackground>
+);
+
+const Spacer = styled("div", {
+  width: "$8",
+  flexShrink: 0,
+});
+
+const ContentWrapper = styled(Row, {
+  padding: "$8",
+  paddingRight: 0,
+
+  "@md": {
+    justifyContent: "center",
+  },
 });
