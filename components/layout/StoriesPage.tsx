@@ -1,21 +1,24 @@
-import type { GetStaticProps } from "next";
 import React from "react";
+import Link from "next/link";
 
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { styled } from "~/stitches.config";
-import { stories } from "../stories.meta";
 
-export const getStaticProps: GetStaticProps = async () => {
-  if (process.env.NODE_ENV === "production") {
-    return { notFound: true };
-  }
-  return { props: {} };
+export type Story = {
+  name: string;
+  variants: Record<string, () => JSX.Element>;
 };
 
-export default function StoriesPage() {
-  const [selectedStory, setSelectedStory] = React.useState<string | null>(null);
-  const activeStory = stories.find((story) => story.name === selectedStory);
+export type StoriesPageProps = {
+  stories: Story[];
+  activeStory: string | null;
+};
 
+export default function StoriesPage({
+  stories,
+  activeStory,
+}: StoriesPageProps) {
+  const currentStory = stories.find((story) => story.name === activeStory);
   return (
     <Main>
       <ToggleWrapper>
@@ -25,15 +28,17 @@ export default function StoriesPage() {
         <ul>
           {stories.map(({ name }) => (
             <li key={name}>
-              <button onClick={() => setSelectedStory(name)}>{name}</button>
+              <Link href={`./${name}`}>
+                <a>{name}</a>
+              </Link>
             </li>
           ))}
         </ul>
       </Sidebar>
       <ContentWrapper>
-        {activeStory && (
+        {currentStory && (
           <Content>
-            {Object.entries(activeStory.variants).map(
+            {Object.entries(currentStory.variants).map(
               ([variant, Component]) => (
                 <>
                   <h2>{variant}</h2>
@@ -83,11 +88,13 @@ const Sidebar = styled("aside", {
     },
   },
 
-  button: {
+  a: {
     padding: "$2",
     display: "block",
     width: "100%",
     height: "100%",
+    color: "inherit",
+    textDecoration: "none",
   },
 });
 
