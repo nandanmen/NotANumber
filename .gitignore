@@ -34,3 +34,4 @@ yarn-error.log*
 # generated files
 _dist-content/
 old-src/
+pages/stories.tsx

@@ -6,14 +6,14 @@ import { AlgorithmControls } from "~/components/AlgorithmControls";
 import { useAlgorithm } from "~/lib/algorithm";
 import { darkTheme, styled } from "~/stitches.config";
 
-import { CharacterList } from "./CharacterList";
+import { CharacterList } from "../CharacterList";
 import {
   tokenize,
   knownSingleCharacters,
   type Token,
   keywords,
-} from "./lib/tokenize";
-import { singleCharacter } from "./lib/single-character";
+} from "../lib/tokenize";
+import { singleCharacter } from "../lib/single-character";
 
 const algorithms = {
   tokenize,
