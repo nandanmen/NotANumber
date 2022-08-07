@@ -55,8 +55,8 @@ export default function StoriesPage({
 
 const ToggleWrapper = styled("div", {
   position: "fixed",
-  top: "$8",
-  right: "$8",
+  top: "$2",
+  right: "$2",
 });
 
 const Main = styled("main", {
