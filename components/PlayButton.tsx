@@ -1,5 +1,5 @@
 import { FaPlay, FaPause } from "react-icons/fa";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
 type PlayButtonProps = {
@@ -40,7 +40,18 @@ const Wrapper = styled(Row, {
   "&:hover": {
     color: "$gray1",
     background: "$blue9",
-    border: "2px solid $blue11",
+    borderColor: "$blue11",
+  },
+
+  [`.${darkTheme} &`]: {
+    background: "$blue7",
+    borderColor: "$blue7",
+
+    "&:hover": {
+      color: "inherit",
+      background: "$blue10",
+      borderColor: "$blue10",
+    },
   },
 
   variants: {
@@ -55,6 +66,17 @@ const Wrapper = styled(Row, {
           color: "$gray11",
           background: "$gray7",
           border: "none",
+        },
+
+        [`.${darkTheme} &`]: {
+          background: "none",
+          border: "none",
+
+          "&:hover": {
+            color: "$gray11",
+            background: "$gray7",
+            border: "none",
+          },
         },
       },
     },

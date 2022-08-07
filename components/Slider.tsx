@@ -1,5 +1,5 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const Slider = (props: SliderPrimitive.SliderProps) => {
   return (
@@ -30,6 +30,10 @@ const Range = styled(SliderPrimitive.Range, {
   position: "absolute",
   backgroundColor: "$blue6",
   height: "100%",
+
+  [`.${darkTheme} &`]: {
+    background: "$blue7",
+  },
 });
 
 const Thumb = styled(SliderPrimitive.Thumb, {
@@ -42,11 +46,17 @@ const Thumb = styled(SliderPrimitive.Thumb, {
   boxShadow: "$sm",
   transition: "transform 0.1s ease-out",
   transform: "scale(1)",
+  cursor: "pointer",
 
   "&:hover": {
     color: "$gray1",
     background: "$blue9",
-    border: "2px solid $blue11",
+    borderColor: "$blue11",
     transform: "scale(0.9)",
+  },
+
+  [`.${darkTheme} &`]: {
+    background: "$blue7",
+    borderColor: "$blue7",
   },
 });

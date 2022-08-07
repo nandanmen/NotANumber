@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 type CharacterListProps = {
   state: {
@@ -60,6 +60,10 @@ const InputCharacter = styled("p", {
       true: {
         color: "$gray1",
         background: "$gray12",
+
+        [`.${darkTheme} &`]: {
+          background: "$gray10",
+        },
       },
     },
   },

@@ -4,7 +4,7 @@ import { GridBackground } from "~/components/Grid";
 import { AlgorithmControls } from "~/components/AlgorithmControls";
 
 import { useAlgorithm } from "~/lib/algorithm";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 import { CharacterList } from "./CharacterList";
 import {
@@ -140,6 +140,12 @@ const SingleChar = styled("li", {
         background: "$gray12",
         border: "1px solid $gray12",
         color: "$gray1",
+
+        [`.${darkTheme} &`]: {
+          background: "$blue7",
+          borderColor: "$blue10",
+          color: "inherit",
+        },
       },
     },
     flex: {
@@ -205,6 +211,10 @@ const TokenName = styled("p", {
   boxShadow: "$sm",
   borderRadius: "$base",
   minHeight: 40,
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+  },
 });
 
 const KnownCharsWrapper = styled("div", {

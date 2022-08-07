@@ -1,8 +1,9 @@
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import { titleCase } from "title-case";
 
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 export interface IPost {
   slug: string;
@@ -20,7 +21,7 @@ export function Post({ post, icon }: PostProps) {
   return (
     <PostItem>
       <PostIcon>{icon}</PostIcon>
-      <PostWrapper>
+      <PostWrapper whileHover="hover">
         <Link href={post.slug}>
           <Anchor>
             <PostContent>
@@ -35,7 +36,7 @@ export function Post({ post, icon }: PostProps) {
                 }).format(new Date(post.editedAt))}
               </PostUpdatedText>
             </PostContent>
-            <PostArrow>
+            <PostArrow variants={{ hover: { x: 8 } }}>
               <FaArrowRight width="30" height="30" />
             </PostArrow>
           </Anchor>
@@ -54,6 +55,10 @@ const PostIcon = styled("div", {
   "@post": {
     display: "revert",
   },
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+  },
 });
 
 const PostItem = styled("li", {
@@ -69,13 +74,18 @@ const PostItem = styled("li", {
   },
 });
 
-const PostWrapper = styled("div", {
+const PostWrapper = styled(motion.div, {
   padding: "$0 $8",
+  borderRadius: "$base",
 
   "&:hover": {
     margin: "-$8 0",
     padding: "$8",
     background: "$gray6",
+
+    [`.${darkTheme} &`]: {
+      background: "$gray2",
+    },
   },
 });
 
@@ -109,7 +119,7 @@ const PostUpdatedText = styled("p", {
   fontFamily: "$mono",
 });
 
-const PostArrow = styled("p", {
+const PostArrow = styled(motion.p, {
   fontSize: "$xl",
   color: "$gray11",
 });

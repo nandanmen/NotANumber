@@ -95,7 +95,7 @@ export default function PostPage({ content }: { content: Post }) {
 const ThemeWrapper = styled("div", {
   position: "fixed",
   top: "50%",
-  right: "$8",
+  right: "$4",
 });
 
 const NewsletterWrapper = styled("footer", {
