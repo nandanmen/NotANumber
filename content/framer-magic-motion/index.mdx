@@ -1,0 +1,421 @@
+---
+title: "Inside Framer's Magic Motion"
+blurb: "A guide on recreating framer's magical layout animations."
+description: "A guide on recreating framer's magical layout animations."
+publishedAt: "2022-04-07"
+editedAt: "2022-04-15"
+---
+
+import { Callout } from "~/components/Callout";
+import { ProblemStatement } from "~/components/ProblemStatement";
+import { FullWidth } from "~/components/FullWidth";
+
+import { LayoutExample } from "./components/LayoutExample";
+
+By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Put the `layout` prop to any Framer Motion component and that component will seamlessly animate from one position on the page to the next:
+
+<LayoutExample />
+
+I really like digging into how "magical" things work, so naturally I sought out to figure out how these layout animations work under the hood. This post will cover everything that I learned reimplementing the layout API from scratch.
+
+Let's get started!
+
+<Callout label="Intended Audience">
+
+I try to word my posts to cater to readers of all skill levels, but I realize this post probably makes more sense if you're somewhat comfortable with React and CSS.
+
+</Callout>
+
+## What We're Making
+
+My goal here is to create a component that accepts a boolean prop called `layout`. When `layout` is `true` and the component changes position on the page, it should seamlessly animate from its old position to the new position.
+
+At the end of the day, I want my implementation to be visually indistinguishable from the framer motion equivalent:
+
+But first - what's a layout change, and why is it magical?
+
+## What's a Layout Change?
+
+A layout change happens when an element's style changes in a way that **can** affect the position of other elements on the page. This includes changes in properties like `width`, `display`, `justify-content`, and many others:
+
+- animation here showing the different changes
+
+If a CSS property determines where elements should appear in a page, then a change in that property is a layout change.
+
+### Can We Use CSS?
+
+But wait! If we're trying to animate properties like `width`, can't we just use CSS? Yes, you definitely can! But your animations might end up looking a bit jittery on slower machines:
+
+- slow animations
+
+This is because it's expensive for the browser to recalculate where elements go on the page. When you animate something that triggers layout changes, the browser has to do this for _every frame of the animation_.
+
+- browser recalculation
+
+On the other hand, properties like `transform` and `opacity` are much easier for the browser to animate because it only needs to change the appearance of that single element.
+
+<ProblemStatement>
+
+Is there a way for us to keep the performance advantages of `transform` when animating complex layout changes?
+
+</ProblemStatement>
+
+### Animating the Un-Animatable
+
+There's one more problem - **you can't animate all CSS properties**. Here's the [complete list from MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties). Notice that properties like `display` and `justify-content` aren't on there (I was surprised to see `grid-template-columns` _is_ there though - that's kinda awesome). This means that if you want to animate something like this:
+
+- display flex change
+
+You can't slap on a `transition: justify-content 100ms ease-out` and call it a day - the browser won't understand how to transition that property.
+
+<ProblemStatement>
+
+How do you animate changes in un-animatable CSS properties?
+
+</ProblemStatement>
+
+## Animating With FLIP
+
+Enter FLIP!
+
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in layout properties like `width` using transforms, giving you the flexibility to change these properties while keeping the performance of transforms.
+
+Here's how it works:
+
+### First
+
+Before we do the layout change, we record the initial position of the element, in terms of `x` and `y` coordinates:
+
+### Last
+
+Then we trigger the layout change and record the position of the square again:
+
+### Inverse
+
+Using transforms, we **invert** the layout change to make it look like the element is back to its original position.
+
+Try moving the slider to adjust the transform applied to the square:
+
+### Play
+
+Finally, we **play** the animation by animating the transforms back to zero:
+
+By doing it fast enough, we get...
+
+Voila! Magical layout animations.
+
+## FLIP (But in React)
+
+Here's an implementation of FLIP using React hooks:
+
+Let's take a look at what each part is actually doing.
+
+### Measuring Layout Changes
+
+The first two steps of FLIP involve recording the position of the element both before and after the layout change. To me, this brings up two questions:
+
+1. How do we measure the position of an element?
+2. How do we detect a layout change?
+
+The answer to (1) is thankfully quite simple — we'll use the built-in [`.getBoundingClientRect()`]() method. Given an element, this method returns both the element's `x` and `y` coordinates as well as its `width` and `height` in pixels.
+
+<div>Code sandbox here</div>
+
+What about (2) — detecting layout changes?
+
+I'm going to make the assumption here that layout changes can only happen when the component re-renders. Through this assumption, we'll check when a layout change happens whenever the component re-renders. And how do we do something when a component re-renders? Using the `useEffect` hook!
+
+```tsx
+const Motion = (props) => {
+  const ref = React.useRef();
+  React.useEffect(() => {
+    // measure the element
+    const box = ref.current.getBoundingClientRect();
+  });
+  // omitting the dependency array means the callback
+  // runs every render
+  return <div ref={ref} {...props} />;
+};
+```
+
+Quick quiz time:
+
+This kinda works, but it's recording the position of the box _after_ the layout change, not before! This is not a problem necessarily because we need it to implement FLIP anyway, but it's for sure not what we intended. If `useEffect` runs _after_ the render, how do we record the initial position?
+
+### The `usePrevious` Trick
+
+To fix this problem, I created a custom hook called `usePrevious` that captures the _last_ value of any stateful value. This is what it looks like:
+
+```tsx
+const usePrevious = (value) => {
+  const ref = React.useRef(value);
+  React.useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+```
+
+This definitely looks like one of those blocks of code that shouldn't work, but it does! After all, isn't `useEffect` supposed to be for **synchronizing** values? Shouldn't `ref.current` always be equal to `value` then?
+
+The key here is that **refs don't cause the component to re-render**. Here's the order that the code runs in:
+
+1. `const ref = React.useRef(value)`
+2. `return ref.current`
+3. `ref.current = value`
+
+Because assigning to a ref doesn't trigger a render, code (2) doesn't run again like it would if `ref` was stateful. This means that `usePrevious` would always return the value in the previous render!
+
+### Implementing the Helpers
+
+Going back to the `<Motion />` component, we'll use a regular `ref` to record the box's last position and the `usePrevious` trick to record the box's first position:
+
+```tsx
+const Motion = (props) => {
+  const lastBox = React.useRef();
+  const elementRef = React.useRef();
+  React.useEffect(() => {
+    // if lastBox is null, then we just mounted, so the component hasn't moved yet
+    if (!lastBox.current) return;
+    // measure the final (or current) position of the element
+    const currentBox = ref.current.getBoundingClientRect();
+    const initialBox = lastBox.current;
+    if (elementMoved({ from: initialBox, to: currentBox })) {
+      // calculate the inverse transform
+      const { x, y } = getInverse({ first: initialBox, last: currentBox });
+      // apply the transform to the element, making it look like
+      // it's in its initial position
+      elementRef.current.style.transform = `translate(${x}px, ${y}px)`;
+      // animate the element into its "real" position
+      play({
+        element: elementRef.current,
+        from: { x, y },
+      });
+    }
+    // update the previous value to the current value
+    lastBox.current = currentBox;
+  });
+  return <div ref={elementRef} {...props} />;
+};
+```
+
+For all this to work, we'll still need to implement three helper functions — `elementMoved()`, `getInverse()`, and `play()`:
+
+```tsx highlight=12,14,21-24
+const Motion = (props) => {
+  const lastBox = React.useRef();
+  const elementRef = React.useRef();
+  React.useEffect(() => {
+    // if lastBox is null, then we just mounted, so the component hasn't moved yet
+    if (!lastBox.current) return;
+    // measure the final (or current) position of the element
+    const currentBox = ref.current.getBoundingClientRect();
+    const initialBox = lastBox.current;
+    if (elementMoved({ from: initialBox, to: currentBox })) {
+      // calculate the inverse transform
+      const { x, y } = getInverse({ first: initialBox, last: currentBox });
+      // apply the transform to the element, making it look like
+      // it's in its initial position
+      elementRef.current.style.transform = `translate(${x}px, ${y}px)`;
+      // animate the element into its "real" position
+      play({
+        element: elementRef.current,
+        from: { x, y },
+      });
+    }
+    // update the previous value to the current value
+    lastBox.current = currentBox;
+  });
+  return <div ref={elementRef} {...props} />;
+};
+```
+
+The first function, `elementMoved()`, checks if the two boxes' `x` and `y` coordinates are different:
+
+```tsx
+function elementMoved({ from, to }) {
+  const { x: fromX, y: fromY } = from;
+  const { x, y } = to;
+  return x !== fromX || y !== fromY;
+}
+```
+
+The second function, `getInverse()`, returns the _difference_ between the two positions:
+
+```tsx
+function getInverse({ from, to }) {
+  const { x: fromX, y: fromY } = from;
+  const { x, y } = to;
+  return {
+    x: x - fromX,
+    y: y - fromY,
+  };
+}
+```
+
+Finally, the last function `play()` animates the element's `transform` property back to zero. For this, we'll be using the [`animate()` function from Popmotion](https://popmotion.io/#quick-start-animation-animate).
+
+```tsx
+import { animate } from "popmotion";
+function play({ element, from }) {
+  animate({
+    from,
+    to: { x: 0, y: 0 },
+    onUpdate: ({ x, y }) => {
+      element.style.transform = `translate(${x}px, ${y}px)`;
+    },
+    duration: 1500,
+  });
+}
+```
+
+### Putting It Together
+
+And all together now:
+
+## Animating Size
+
+Framer motion not only lets you animate changes in position, it lets you animate changes in **size** too. How do we change our implementation to support this?
+
+When I tried implementing this, the first thing that I did was to use the same approach as position, except I would use the `width` and `height` of the square instead of the `x` and `y` coordinates:
+
+```ts
+const {
+  x,
+  y,
+  width: scaleX,
+  height: scaleY,
+} = getInverse({
+  first: initialBox,
+  last: currentBox,
+});
+```
+
+Then use `scaleX()` and `scaleY()` to transform the element back to its initial size:
+
+```ts
+applyTransform({
+  element: elementRef.current,
+  transform: { x, y, scaleX, scaleY },
+});
+```
+
+And finally animate the `scale` back to zero:
+
+```ts
+play({
+  element: elementRef.current,
+  from: { x, y, scaleX, scaleY },
+});
+```
+
+Should work, right? Well, let's try it and see:
+
+Great! Now what if we animate it with position?
+
+Hmm, _not_ so great. What happened?
+
+### Working Together With Position
+
+When an element changes size, the distance that it travels would change as well.
+
+- The animation should convey this relationship
+
+This little bug is happening because our invert algorithm is coming up a little short from where the element used to be:
+
+- Something that shows the algorithm coming up a little short
+
+To get this to work right, we need to make sure that our algorithm takes into account any changes in size as well. But, how do we change it?
+
+Specifically, we need to change the _horizontal_ distance travelled by `(oldWidth - newWidth) / 2` and the _vertical_ distance travelled by `(oldHeight - newHeight) / 2`.
+
+<Callout>
+
+There's actually a _tad_ more nuance than that. The change in distance also depends on the element's **transform origin** — but that's a whole rabbit hole that we won't get to. In this post, we'll assume that the transform origin will _always_ be at the center of the element.
+
+</Callout>
+
+## Correcting Distortions
+
+Size animations also lead to another problem: **child element distortion**. Animating size changes using `scale()` is great until you have some text that you want to keep legible at all times:
+
+<ProblemStatement>
+  How do we make sure all child elements stay a uniform size during FLIP?
+</ProblemStatement>
+
+### Inverse Scale Formula
+
+For the text to look the same size, we need to apply a scale to the text that "cancels out" the parent's size change. The formula for this scale is:
+
+```
+childScaleX = 1 / parentScaleX
+```
+
+Intuitively, if the parent gets twice as large, the text needs to be scaled down by half to look the same size.
+
+This animation shows the formula in action. Try moving the slider and notice how the text stays the same size no matter where you drag the slider to:
+
+The next step is to make this work automatically with our layout animations.
+
+### First Attempt
+
+When I was implementing scale correction for the first time, I opted to calculate the inverse scale once at the start of the parent animation.
+
+```ts
+/* this runs in the child when the parent is about to animate */
+const inverseTransform = {
+  scaleX: 1 / parentTransform.scaleX,
+  scaleY: 1 / parentTransform.scaleY,
+};
+play({
+  from: inverseTransform,
+  to: { scaleX: 1, scaleY: 1 },
+});
+```
+
+My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Except this assumption is flawed:
+
+It turns out the correct approach is to **calculate the inverse scale in every frame of the animation**. But _why_?
+
+### The Scale Curve
+
+Let's try to build this intuition.
+
+Here, we have a square that stretches to 5x its size, at a constant rate, over 5 seconds:
+
+The blue line shows how the `scaleX` property of the square changes throughout the animation. Since we're at the "Play" part of a FLIP animation, the box starts with a `scaleX` of `1/5` (to match its initial position) and slowly works its way to a `scaleX` of `1`.
+
+The text starts off really small because it's being compressed by the parent's `scaleX`. To fix this, we need to apply a `scaleX` to the text that cancels out this effect.
+
+Based on [our formula](#inverse-scale-formula), a `scaleX` value of 5 will correctly cancel out the parent's compression effect:
+
+When the animation starts and 1 second has passed, the square doubles in length, so we need to scale down the text by half to keep it the same size:
+
+After 2 seconds, we need to scale the text down by a third:
+
+After 3 seconds, a quarter:
+
+And so on:
+
+Notice that when we plot these values, they don’t make a straight line!
+
+In comparison, here's what happens when we match the `scaleX` with the parent's timing:
+
+---
+
+What if we now scale back the other way?
+
+Hmm, it's not quite right either. Let's plot the area of the square again:
+
+It's not the same curve! Well, it kinda is, just flipped upside down. If we change the text scale to use _this_ curve now, it looks correct again:
+
+From these examples we can conclude that in order to make the text stay the same size at all times, it needs to counteract its area curve. And the best way to ensure that it does this is to **calculate the transform on every frame of the animation**.
+
+## Summary
+
+Framer motion's magical layout animations are powered by the FLIP technique — a clever way to implement performant layout animations. While implementing FLIP with position changes turned out to be pretty straightforward, the same can't be said for changes in size. When we put size into the picture, we have to worry about:
+
+- How a change in size affects the distance the element travelled;
+- Correcting distortions in child elements caused by transforms in the parent element;
+
+And a whole slew of edge cases that I didn't quite get into in this post. That's all for today, thanks for reading!
