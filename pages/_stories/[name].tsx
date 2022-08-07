@@ -24,7 +24,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
       fallback: "blocking",
     };
   }
-  const names = stories.map((story) => story.name);
+  const names = stories.flatMap((group) =>
+    group.stories.map((story) => story.name)
+  );
   return {
     paths: names.map((name) => ({ params: { name } })),
     fallback: false,

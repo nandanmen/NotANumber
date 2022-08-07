@@ -44,13 +44,32 @@ const parseStoryPath = (storyPath) => {
   };
 };
 
+const toGroups = (stories) => {
+  const groups = {};
+  stories.forEach((story) => {
+    const { postName, name } = story;
+    const groupName = postName ? postName : "shared";
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+    groups[groupName].push(name);
+  });
+  return groups;
+};
+
 const main = async () => {
   const files = (await getStories()).map(parseStoryPath);
+  const groups = toGroups(files);
+
+  console.log(groups);
+
   const imports = files.map(({ asImport }) => asImport).join(`\n`);
-  const storiesProp = files
+  const storiesProp = Object.entries(groups)
     .map(
-      (story) =>
-        `{ name: '${story.name}', variants: ${story.name}, postName: '${story.postName}' }`
+      ([groupName, stories]) =>
+        `{ name: \`${groupName}\`, stories: [${stories.map(
+          (story) => `{ name: '${story}', variants: ${story} }`
+        )}] }`
     )
     .join(`,\n`);
 

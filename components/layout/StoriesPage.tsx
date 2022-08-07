@@ -10,7 +10,7 @@ export type Story = {
 };
 
 export type StoriesPageProps = {
-  stories: Story[];
+  stories: Array<{ name: string; stories: Story[] }>;
   activeStory: string | null;
 };
 
@@ -18,7 +18,9 @@ export default function StoriesPage({
   stories,
   activeStory,
 }: StoriesPageProps) {
-  const currentStory = stories.find((story) => story.name === activeStory);
+  const currentStory = stories
+    .flatMap((group) => group.stories)
+    .find((story) => story.name === activeStory);
   return (
     <Main>
       <ToggleWrapper>
@@ -26,11 +28,18 @@ export default function StoriesPage({
       </ToggleWrapper>
       <Sidebar>
         <ul>
-          {stories.map(({ name }) => (
-            <li key={name}>
-              <Link href={`./${name}`}>
-                <a>{name}</a>
-              </Link>
+          {stories.map((group) => (
+            <li key={group.name}>
+              <p>{group.name}</p>
+              <ul>
+                {group.stories.map((story) => (
+                  <li key={story.name}>
+                    <Link href={`./${story.name}`}>
+                      <a>{story.name}</a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
@@ -79,13 +88,8 @@ const Sidebar = styled("aside", {
     listStyle: "none",
   },
 
-  li: {
-    cursor: "pointer",
-
-    "&:hover": {
-      backgroundColor: "$gray6",
-      borderRadius: 4,
-    },
+  p: {
+    color: "$gray11",
   },
 
   a: {
@@ -95,6 +99,12 @@ const Sidebar = styled("aside", {
     height: "100%",
     color: "inherit",
     textDecoration: "none",
+    cursor: "pointer",
+
+    "&:hover": {
+      backgroundColor: "$gray6",
+      borderRadius: 4,
+    },
   },
 });
 
