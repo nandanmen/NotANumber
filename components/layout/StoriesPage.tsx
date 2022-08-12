@@ -34,7 +34,7 @@ export default function StoriesPage({
               <ul>
                 {group.stories.map((story) => (
                   <li key={story.name}>
-                    <Link href={`./${story.name}`}>
+                    <Link href={`/_stories/${story.name}`}>
                       <a>{story.name}</a>
                     </Link>
                   </li>

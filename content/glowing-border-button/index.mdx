@@ -1,0 +1,32 @@
+---
+title: "Making a Glowing Border Animation"
+blurb: "A guide on recreating framer's magical layout animations."
+description: "A guide on recreating framer's magical layout animations."
+publishedAt: "2022-04-07"
+editedAt: "2022-04-15"
+---
+
+import { Button, WithoutMaskAndBlur } from "./components/Button";
+
+I recently came across this tweet by Austin Malerba where he shows a really cool glowing border animation:
+
+[https://twitter.com/austin_malerba/status/1557725372887605249](https://twitter.com/austin_malerba/status/1557725372887605249)
+
+The sandbox that he posted was a gold mine for SVG, CSS and Framer Motion tricks, so I set out to understand it in-depth by building my own version.
+
+Here's the result:
+
+<Button />
+
+In this post, I want to go over everything I learned doing so!
+
+## The Trick
+
+Austin used a CSS `mask` and a blur to make it appear as if the border is moving and glowing. If we take both of those properties away, the trick reveals itself:
+
+<WithoutMaskAndBlur />
+
+This naturally led to me wondering about two things:
+
+1. How can I make the square move around the border like that?
+2. How does a CSS mask work? How are we able to show only the corners of the square?
