@@ -6,96 +6,57 @@ import {
   useMotionTemplate,
 } from "framer-motion";
 import React from "react";
-import { GridBackground } from "~/components/Grid";
 import { styled } from "~/stitches.config";
 
 const DURATION = 2000;
 
-export const Button = () => {
+export const Button = ({ mask = true, blur = true, playing = true }) => {
   const rectRef = React.useRef<SVGRectElement | null>(null);
+  const lastPausedTime = React.useRef(0);
   const currentLength = useMotionValue(0);
 
   useAnimationFrame((elapsedTime) => {
     const length = rectRef.current?.getTotalLength();
-    if (length) {
+    if (!playing) {
+      lastPausedTime.current = elapsedTime;
+    } else if (length) {
       const unitsPerMs = length / DURATION;
-      currentLength.set((elapsedTime * unitsPerMs) % length);
+      currentLength.set(
+        ((elapsedTime - lastPausedTime.current) * unitsPerMs) % length
+      );
     }
   });
 
   const x = useTransform(
     currentLength,
-    (val) => rectRef.current?.getPointAtLength(val).x
+    (val) => rectRef.current?.getPointAtLength(val).x ?? 0
   );
   const y = useTransform(
     currentLength,
-    (val) => rectRef.current?.getPointAtLength(val).y
+    (val) => rectRef.current?.getPointAtLength(val).y ?? 0
   );
 
   const transform = useMotionTemplate`translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`;
 
   return (
-    <GridBackground>
-      <ContentWrapper>
-        <Wrapper>
-          <GlowWrapper mask>
-            <MovingGlowWrapper>
-              <svg preserveAspectRatio="none" width="100%" height="100%">
-                <rect width="100%" height="100%" fill="none" ref={rectRef} />
-                <foreignObject x="0" y="0" width="100%" height="100%">
-                  <GlowBox blur style={{ transform }} />
-                </foreignObject>
-              </svg>
-            </MovingGlowWrapper>
-          </GlowWrapper>
-          <Text>Hello!</Text>
-        </Wrapper>
-      </ContentWrapper>
-    </GridBackground>
-  );
-};
-
-export const WithoutMaskAndBlur = () => {
-  const rectRef = React.useRef<SVGRectElement | null>(null);
-  const currentLength = useMotionValue(0);
-
-  useAnimationFrame((elapsedTime) => {
-    const length = rectRef.current?.getTotalLength();
-    if (length) {
-      const unitsPerMs = length / DURATION;
-      currentLength.set((elapsedTime * unitsPerMs) % length);
-    }
-  });
-
-  const x = useTransform(
-    currentLength,
-    (val) => rectRef.current?.getPointAtLength(val).x
-  );
-  const y = useTransform(
-    currentLength,
-    (val) => rectRef.current?.getPointAtLength(val).y
-  );
-
-  const transform = useMotionTemplate`translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`;
-
-  return (
-    <GridBackground>
-      <ContentWrapper>
-        <Wrapper>
-          <GlowWrapper>
-            <MovingGlowWrapper>
-              <svg preserveAspectRatio="none" width="100%" height="100%">
-                <rect width="100%" height="100%" fill="none" ref={rectRef} />
-                <foreignObject x="0" y="0" width="100%" height="100%">
-                  <GlowBox style={{ transform }} />
-                </foreignObject>
-              </svg>
-            </MovingGlowWrapper>
-          </GlowWrapper>
-          <Text>Hello!</Text>
-        </Wrapper>
-      </ContentWrapper>
-    </GridBackground>
+    <Wrapper>
+      <GlowWrapper mask={mask}>
+        <MovingGlowWrapper>
+          <svg preserveAspectRatio="none" width="100%" height="100%">
+            <rect width="100%" height="100%" fill="none" ref={rectRef} />
+            <foreignObject x="0" y="0" width="100%" height="100%">
+              <GlowBox
+                blur={blur}
+                style={{
+                  transform: playing ? transform : `translate(-50%, -50%)`,
+                }}
+              />
+            </foreignObject>
+          </svg>
+        </MovingGlowWrapper>
+      </GlowWrapper>
+      <Text>Hello!</Text>
+    </Wrapper>
   );
 };
 
@@ -130,7 +91,7 @@ const GlowWrapper = styled("div", {
 const GlowBox = styled(motion.div, {
   height: 32,
   width: 32,
-  background: "$blue10",
+  background: "$blue11",
 
   variants: {
     blur: {
@@ -142,12 +103,6 @@ const GlowBox = styled(motion.div, {
 });
 
 // --
-
-const ContentWrapper = styled("div", {
-  padding: "$8",
-  display: "flex",
-  justifyContent: "center",
-});
 
 const Wrapper = styled("button", {
   position: "relative",

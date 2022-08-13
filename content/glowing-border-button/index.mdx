@@ -6,7 +6,7 @@ publishedAt: "2022-04-07"
 editedAt: "2022-04-15"
 ---
 
-import { Button, WithoutMaskAndBlur } from "./components/Button";
+import { Button } from "./components/Button";
 
 I recently came across this tweet by Austin Malerba where he shows a really cool glowing border animation:
 
@@ -24,7 +24,7 @@ In this post, I want to go over everything I learned doing so!
 
 Austin used a CSS `mask` and a blur to make it appear as if the border is moving and glowing. If we take both of those properties away, the trick reveals itself:
 
-<WithoutMaskAndBlur />
+<Button mask={false} blur={false} />
 
 This naturally led to me wondering about two things:
 
