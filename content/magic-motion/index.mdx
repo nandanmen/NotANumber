@@ -9,82 +9,38 @@ editedAt: "2022-04-15"
 import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
 import { FullWidth } from "~/components/FullWidth";
+import { Caption } from "~/components/Caption";
 
-import { LayoutExample } from "./components/LayoutExample";
+import { TokenList } from "../tokenizer/components/TokenList";
+import { FlipFirst } from "./components/FlipFirst";
 
-By far my favourite part about Framer Motion is its seemingly-magical layout animation API. Put the `layout` prop to any Framer Motion component and that component will seamlessly animate from one position on the page to the next:
+By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
-<LayoutExample />
+<FullWidth>
+  <TokenList type={["single-character"]} toggleable />
+  <Caption>
+    When you click on "Hide types", the squares seamlessly move from one
+    position to the next.
+  </Caption>
+</FullWidth>
 
-I really like digging into how "magical" things work, so naturally I sought out to figure out how these layout animations work under the hood. This post will cover everything that I learned reimplementing the layout API from scratch.
+In this post, I want to dive deep into the techniques that allow these layout animations to happen. Specifically, we'll go over concepts like:
+
+1. **FLIP**, the underlying technique that makes layout animations possible;
+2. **Animating size** using FLIP and its relationship with position;
+3. **Correcting distortions** by applying an inverse scale to all children of animating elements;
 
 Let's get started!
 
-<Callout label="Intended Audience">
+## FLIP
 
-I try to word my posts to cater to readers of all skill levels, but I realize this post probably makes more sense if you're somewhat comfortable with React and CSS.
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in "slow" layout properties like `width` and even animate "un-animatable" CSS properties like `justify-content`. Here's how it works.
 
-</Callout>
+In the following examples, we'll use FLIP to animate this change in `justify-content` from `flex-start` to `flex-end`:
 
-## What We're Making
+**First**. Before we do the layout change, we record the initial position of the element in terms of `x` and `y` coordinates:
 
-My goal here is to create a component that accepts a boolean prop called `layout`. When `layout` is `true` and the component changes position on the page, it should seamlessly animate from its old position to the new position.
-
-At the end of the day, I want my implementation to be visually indistinguishable from the framer motion equivalent:
-
-But first - what's a layout change, and why is it magical?
-
-## What's a Layout Change?
-
-A layout change happens when an element's style changes in a way that **can** affect the position of other elements on the page. This includes changes in properties like `width`, `display`, `justify-content`, and many others:
-
-- animation here showing the different changes
-
-If a CSS property determines where elements should appear in a page, then a change in that property is a layout change.
-
-### Can We Use CSS?
-
-But wait! If we're trying to animate properties like `width`, can't we just use CSS? Yes, you definitely can! But your animations might end up looking a bit jittery on slower machines:
-
-- slow animations
-
-This is because it's expensive for the browser to recalculate where elements go on the page. When you animate something that triggers layout changes, the browser has to do this for _every frame of the animation_.
-
-- browser recalculation
-
-On the other hand, properties like `transform` and `opacity` are much easier for the browser to animate because it only needs to change the appearance of that single element.
-
-<ProblemStatement>
-
-Is there a way for us to keep the performance advantages of `transform` when animating complex layout changes?
-
-</ProblemStatement>
-
-### Animating the Un-Animatable
-
-There's one more problem - **you can't animate all CSS properties**. Here's the [complete list from MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties). Notice that properties like `display` and `justify-content` aren't on there (I was surprised to see `grid-template-columns` _is_ there though - that's kinda awesome). This means that if you want to animate something like this:
-
-- display flex change
-
-You can't slap on a `transition: justify-content 100ms ease-out` and call it a day - the browser won't understand how to transition that property.
-
-<ProblemStatement>
-
-How do you animate changes in un-animatable CSS properties?
-
-</ProblemStatement>
-
-## Animating With FLIP
-
-Enter FLIP!
-
-FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in layout properties like `width` using transforms, giving you the flexibility to change these properties while keeping the performance of transforms.
-
-Here's how it works:
-
-### First
-
-Before we do the layout change, we record the initial position of the element, in terms of `x` and `y` coordinates:
+<FlipFirst />
 
 ### Last
 

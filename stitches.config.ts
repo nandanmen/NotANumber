@@ -112,6 +112,9 @@ export const globalStyles = globalCss({
   "input, button": {
     all: "unset",
   },
+  button: {
+    cursor: "pointer",
+  },
   body: {
     fontFamily: "$sans",
   },
