@@ -9,9 +9,16 @@ const SQUARE_WIDTH = 120;
 
 let key = 1;
 
-export const FlipFirst = () => {
+export const FlipLast = () => {
+  const [toggled, setToggled] = React.useState(false);
   const [box, setBox] = React.useState<{ x: number; y: number } | null>(null);
+  const [firstBox, setFirstBox] = React.useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [hovering, setHovering] = React.useState(false);
+
+  const originalRef = React.useRef<HTMLButtonElement>();
   const buttonRef = React.useRef<HTMLButtonElement>();
 
   const measure = () => {
@@ -25,25 +32,27 @@ export const FlipFirst = () => {
 
   const active = Boolean(box);
 
+  React.useEffect(() => {
+    const { x, y } = originalRef.current.getBoundingClientRect();
+    setFirstBox({ x, y });
+  }, []);
+
   return (
     <FullWidth>
+      <div>
+        <button onClick={() => setToggled(true)}>Toggle</button>
+      </div>
       <GridBackground>
-        <ContentWrapper>
+        <ContentWrapper toggled={toggled}>
           {(hovering || active) && (
             <>
               <XLine active={active} />
               <YLine active={active} />
             </>
           )}
-          <Square
-            ref={buttonRef}
-            onClick={measure}
-            onHoverStart={() => setHovering(true)}
-            onHoverEnd={() => setHovering(false)}
-            whileTap={{ scale: 0.95 }}
-            active={active}
-          >
-            Click me!
+          <Square ref={originalRef} outline css={{ left: "$12" }}>
+            <PositionText>x: {firstBox?.x.toFixed(1)}</PositionText>
+            <PositionText>y: {firstBox?.y.toFixed(1)}</PositionText>
           </Square>
           {active && (
             <Box
@@ -56,6 +65,16 @@ export const FlipFirst = () => {
               <p>y: {box.y.toFixed(1)}</p>
             </Box>
           )}
+          <Square
+            ref={buttonRef}
+            onClick={measure}
+            onHoverStart={() => setHovering(true)}
+            onHoverEnd={() => setHovering(false)}
+            whileTap={{ scale: 0.95 }}
+            active={active}
+          >
+            Click me!
+          </Square>
         </ContentWrapper>
       </GridBackground>
     </FullWidth>
@@ -78,9 +97,9 @@ const Box = styled(motion.div, {
     background: "inherit",
     position: "absolute",
     border: "inherit",
-    borderTop: "none",
-    borderRight: "none",
-    left: -6,
+    borderBottom: "none",
+    borderLeft: "none",
+    right: -6,
     top: "calc(50% - 5px)",
     transform: "rotate(45deg)",
   },
@@ -92,6 +111,14 @@ const ContentWrapper = styled("div", {
   display: "flex",
   alignItems: "center",
   gap: "$4",
+
+  variants: {
+    toggled: {
+      true: {
+        justifyContent: "flex-end",
+      },
+    },
+  },
 });
 
 const XLine = styled(motion.div, {
@@ -115,7 +142,7 @@ const YLine = styled(motion.div, {
   borderLeft: "1px dashed $gray10",
   height: "100%",
   top: 0,
-  transform: `translateX(${SQUARE_WIDTH / 2}px)`,
+  transform: `translateX(-${SQUARE_WIDTH / 2}px)`,
 
   variants: {
     active: {
@@ -146,5 +173,19 @@ const Square = styled(motion.button, {
         borderColor: "$blue10",
       },
     },
+    outline: {
+      true: {
+        position: "absolute",
+        pointerEvents: "none",
+        background: "$gray5",
+        borderStyle: "dashed",
+        borderColor: "$gray8",
+      },
+    },
   },
+});
+
+const PositionText = styled("p", {
+  color: "$gray11",
+  fontFamily: "$mono",
 });
