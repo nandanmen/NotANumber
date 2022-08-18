@@ -15,8 +15,6 @@ import {
 } from "../shared";
 import { machine } from "./machine";
 
-let key = 1;
-
 export const FlipLast = () => {
   const originalRef = React.useRef<HTMLButtonElement>();
   const buttonRef = React.useRef<HTMLButtonElement>();
@@ -61,7 +59,6 @@ export const FlipLast = () => {
               initial={{ x: -4, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              key={key}
               align="left"
             >
               <p>x: {state.context.box?.x.toFixed(1)}</p>
