@@ -1,9 +1,12 @@
 import React from "react";
 import { useMachine } from "@xstate/react";
 import { assign } from "xstate";
+import { motion } from "framer-motion";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
+import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { styled } from "~/stitches.config";
 
 import {
   Tooltip,
@@ -39,9 +42,21 @@ export const FlipLast = () => {
 
   return (
     <FullWidth>
-      <div>
-        <button onClick={() => send("toggle")}>Toggle Layout</button>
-      </div>
+      <Controls>
+        <ToggleButton
+          onClick={() => send("toggle")}
+          disabled={!state.matches("idle")}
+          whileTap={{ scale: 0.95 }}
+        >
+          Toggle Layout
+        </ToggleButton>
+        <AlignmentText>
+          justify-content:{" "}
+          <ChangeIndicator value={state.matches("idle")}>
+            {state.matches("idle") ? "flex-start" : "flex-end"}
+          </ChangeIndicator>
+        </AlignmentText>
+      </Controls>
       <GridBackground>
         <ContentWrapper toggled={!state.matches("idle")}>
           {showRulers && (
@@ -73,10 +88,37 @@ export const FlipLast = () => {
             whileTap={{ scale: 0.95 }}
             active={active}
           >
-            Click me!
+            {state.matches("idle") ? "Toggle my position!" : "Click me!"}
           </Square>
         </ContentWrapper>
       </GridBackground>
     </FullWidth>
   );
 };
+
+const Controls = styled("div", {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  marginBottom: "$3",
+});
+
+const ToggleButton = styled(motion.button, {
+  border: "1px solid $blue7",
+  background: "$blue5",
+  padding: "$1 $2",
+  borderRadius: 4,
+  fontSize: "$sm",
+  color: "$blue11",
+
+  "&:disabled": {
+    borderColor: "$gray8",
+    background: "$gray6",
+    color: "$gray11",
+    cursor: "not-allowed",
+  },
+});
+
+const AlignmentText = styled("p", {
+  fontFamily: "$mono",
+});
