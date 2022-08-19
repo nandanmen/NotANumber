@@ -134,3 +134,33 @@ export const PositionText = styled("p", {
   color: "$gray11",
   fontFamily: "$mono",
 });
+
+export const Controls = styled("div", {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  marginBottom: "$3",
+});
+
+export const ToggleButton = styled(motion.button, {
+  border: "1px solid $gray8",
+  background: "$gray1",
+  padding: "$1 $2",
+  borderRadius: 4,
+  fontSize: "$sm",
+
+  "&:hover": {
+    borderColor: "$gray12",
+  },
+
+  "&:disabled": {
+    borderColor: "$gray7",
+    background: "$gray5",
+    color: "$gray11",
+    cursor: "not-allowed",
+  },
+});
+
+export const AlignmentText = styled("p", {
+  fontFamily: "$mono",
+});

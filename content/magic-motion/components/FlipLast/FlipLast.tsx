@@ -1,12 +1,10 @@
 import React from "react";
 import { useMachine } from "@xstate/react";
 import { assign } from "xstate";
-import { motion } from "framer-motion";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
-import { styled } from "~/stitches.config";
 
 import {
   Tooltip,
@@ -15,6 +13,9 @@ import {
   ContentWrapper,
   XLine,
   YLine,
+  Controls,
+  ToggleButton,
+  AlignmentText,
 } from "../shared";
 import { machine } from "./machine";
 
@@ -95,30 +96,3 @@ export const FlipLast = () => {
     </FullWidth>
   );
 };
-
-const Controls = styled("div", {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "$3",
-});
-
-const ToggleButton = styled(motion.button, {
-  border: "1px solid $blue7",
-  background: "$blue5",
-  padding: "$1 $2",
-  borderRadius: 4,
-  fontSize: "$sm",
-  color: "$blue11",
-
-  "&:disabled": {
-    borderColor: "$gray8",
-    background: "$gray6",
-    color: "$gray11",
-    cursor: "not-allowed",
-  },
-});
-
-const AlignmentText = styled("p", {
-  fontFamily: "$mono",
-});
