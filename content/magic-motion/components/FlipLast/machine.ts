@@ -9,13 +9,13 @@ export const machine = createMachine({
   },
   states: {
     idle: {
-      entry: ["measureOrigin"],
       on: {
         click: "toggled",
         toggle: "toggled",
       },
     },
     toggled: {
+      entry: ["measureOrigin"],
       on: {
         hover: "hovering",
         click: "measured",

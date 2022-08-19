@@ -13,6 +13,8 @@ import { Caption } from "~/components/Caption";
 
 import { TokenList } from "../tokenizer/components/TokenList";
 import { FlipFirst } from "./components/FlipFirst";
+import { FlipLast } from "./components/FlipLast";
+import { FlipExample } from "./components/FlipExample";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -38,13 +40,13 @@ FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underl
 
 In the following examples, we'll use FLIP to animate this change in `justify-content` from `flex-start` to `flex-end`:
 
+<FlipExample />
+
 **First**. Before we do the layout change, we record the initial position of the element in terms of `x` and `y` coordinates:
 
 <FlipFirst />
 
-### Last
-
-Then we trigger the layout change and record the position of the square again:
+**Last**. Then we trigger the layout change and record the position of the square again:
 
 <FlipLast />
 

@@ -25,7 +25,7 @@ export const FlipExample = () => {
         <AlignmentText>
           justify-content:{" "}
           <ChangeIndicator value={toggled}>
-            {toggled ? "flex-start" : "flex-end"}
+            {toggled ? "flex-end" : "flex-start"}
           </ChangeIndicator>
         </AlignmentText>
       </Controls>
