@@ -208,14 +208,7 @@ const Article = styled("article", {
     textDecoration: "none",
   },
 
-  pre: {
-    border: "1px solid $gray8",
-    padding: "$4",
-    borderRadius: "$base",
-    fontSize: "$sm",
-    marginTop: "$4",
-    marginBottom: "$8",
-
+  "*": {
     "&[data-theme='dark']": {
       display: "none",
     },
@@ -225,9 +218,18 @@ const Article = styled("article", {
         display: "none",
       },
       "&[data-theme='dark']": {
-        display: "block",
+        display: "revert",
       },
     },
+  },
+
+  pre: {
+    border: "1px solid $gray8",
+    padding: "$4",
+    borderRadius: "$base",
+    fontSize: "$sm",
+    marginTop: "$4",
+    marginBottom: "$8",
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {

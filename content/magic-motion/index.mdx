@@ -42,13 +42,47 @@ In the following examples, we'll use FLIP to animate this change in `justify-con
 
 <FlipExample />
 
+### First
+
 **First**. Before we do the layout change, we record the initial position of the element in terms of `x` and `y` coordinates:
 
 <FlipFirst />
 
+We can do this in code by using a `ref` and the `getBoundingClientRect(){:js}` method:
+
+```tsx {1,5}
+const Motion = (props) => {
+  const ref = React.useRef();
+
+  React.useEffect(() => {
+    const { x, y } = ref.current.getBoundingClientRect();
+  }, []);
+
+  return <div ref={ref} {...props} />;
+};
+```
+
+### Last
+
 **Last**. Then we trigger the layout change and record the position of the square again:
 
 <FlipLast />
+
+To get this working in code, we'll first assume that **a layout change means the component just re-rendered**. So let's start by removing the dependency array from the `useEffect` hook to make the hook run every render:
+
+```tsx {6}
+const Motion = (props) => {
+  const ref = React.useRef();
+
+  React.useEffect(() => {
+    const { x, y } = ref.current.getBoundingClientRect();
+  });
+
+  return <div ref={ref} {...props} />;
+};
+```
+
+Pop quiz time! **After the layout change**, is `x{:js}` and `y{:js}` in the snippet above referring to the **initial** position or the **final** position of the square?
 
 ### Inverse
 
