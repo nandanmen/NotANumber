@@ -82,15 +82,16 @@ export const baseTheme = {
   },
 };
 
-export const { styled, getCssText, globalCss, createTheme } = createStitches({
-  media: {
-    post: `(min-width: 50rem)`,
-    md: `(min-width: 768px)`,
-    lg: `(min-width: 62em)`,
-    xl: `(min-width: 80em)`,
-  },
-  theme: baseTheme,
-});
+export const { styled, getCssText, globalCss, createTheme, css } =
+  createStitches({
+    media: {
+      post: `(min-width: 50rem)`,
+      md: `(min-width: 768px)`,
+      lg: `(min-width: 62em)`,
+      xl: `(min-width: 80em)`,
+    },
+    theme: baseTheme,
+  });
 
 export const darkTheme = createTheme({
   colors: {

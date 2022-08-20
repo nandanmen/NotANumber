@@ -68,7 +68,9 @@ const Motion = (props) => {
 
 <FlipLast />
 
-To get this working in code, we'll first assume that **a layout change means the component just re-rendered**. So let's start by removing the dependency array from the `useEffect` hook to make the hook run every render:
+To get this working in code, we'll first assume that **a layout change means the component just re-rendered**. So let's start by removing the dependency array from the `useEffect` hook to make the hook run every render.
+
+Try triggering the layout change a few times and check the console to see what `x` and `y` values show up:
 
 ```tsx {6}
 const Motion = (props) => {
