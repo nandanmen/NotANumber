@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 const SQUARE_WIDTH = 120;
 
@@ -109,6 +109,11 @@ export const Square = styled(motion.button, {
   textAlign: "center",
   color: "$blue11",
 
+  [`.${darkTheme} &`]: {
+    background: "$blue7",
+    borderColor: "$blue9",
+  },
+
   "&:hover": {
     borderColor: "$blue10",
   },
@@ -125,6 +130,11 @@ export const Square = styled(motion.button, {
         pointerEvents: "none",
         background: "$gray5",
         borderColor: "$gray8",
+
+        [`.${darkTheme} &`]: {
+          background: "$gray4",
+          borderColor: "$gray7",
+        },
       },
     },
   },
