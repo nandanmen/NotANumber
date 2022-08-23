@@ -5,6 +5,6 @@ export const Default = () => <Sandbox />;
 
 export const Wide = () => (
   <FullWidth>
-    <Sandbox mode="horizontal" showConsole />
+    <Sandbox mode="horizontal" />
   </FullWidth>
 );

@@ -12,13 +12,11 @@ import { styled } from "~/stitches.config";
 
 type SandboxProps = {
   mode?: "horizontal" | "vertical";
-  showConsole?: boolean;
+  files?: any;
 };
 
-export const Sandbox = ({
-  mode = "vertical",
-  showConsole = false,
-}: SandboxProps) => {
+export const Sandbox = ({ mode = "vertical", files }: SandboxProps) => {
+  const [showConsole, setShowConsole] = React.useState(false);
   return (
     <div>
       <Wrapper
@@ -27,11 +25,16 @@ export const Sandbox = ({
         options={{
           autorun: true,
         }}
+        files={files}
       >
         <Layout mode={mode}>
           <SandpackCodeEditor />
-          <SandpackPreview />
-          {showConsole && <Console />}
+          <div>
+            <button onClick={() => setShowConsole(false)}>Preview</button>
+            <button onClick={() => setShowConsole(true)}>Console</button>
+          </div>
+          <SandpackPreview style={{ display: showConsole ? "none" : "flex" }} />
+          <Console style={{ display: showConsole ? "block" : "none" }} />
         </Layout>
       </Wrapper>
     </div>
@@ -59,7 +62,7 @@ const Wrapper = styled(SandpackProvider, {
   "--sp-border-radius": "$radii$base",
 });
 
-const Console = () => {
+const Console = ({ style }) => {
   const { listen } = useSandpack();
   const [logs, setLogs] = React.useState([]);
 
@@ -72,9 +75,9 @@ const Console = () => {
   }, [listen]);
 
   return (
-    <ConsoleWrapper>
+    <ConsoleWrapper style={style}>
       {logs.map((log) => (
-        <li key={log.id}>{log.data}</li>
+        <li key={log.id}>{JSON.stringify(log.data)}</li>
       ))}
     </ConsoleWrapper>
   );
