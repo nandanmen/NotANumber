@@ -7,16 +7,44 @@ import {
   useSandpack,
 } from "@codesandbox/sandpack-react";
 import { githubLight } from "@codesandbox/sandpack-themes";
+import { AiOutlineStop } from "react-icons/ai";
 
-import { styled } from "~/stitches.config";
+import { css, styled } from "~/stitches.config";
+import { GridBackground } from "../Grid";
 
 type SandboxProps = {
-  mode?: "horizontal" | "vertical";
   files?: any;
 };
 
-export const Sandbox = ({ mode = "vertical", files }: SandboxProps) => {
+const previewContainer = css({
+  background: "none !important",
+});
+
+const PREVIEW_HEIGHT = 450;
+
+export const Sandbox = ({ files }: SandboxProps) => {
   const [showConsole, setShowConsole] = React.useState(false);
+  const [logs, setLogs] = React.useState([]);
+
+  const handleConsoleMessage = React.useCallback((message) => {
+    /**
+     * This callback is NOT guaranteed to be called once per console message, so
+     * we want to check that we haven't added the log before to avoid duplicate
+     * logs.
+     */
+    setLogs((logs) => {
+      const newLogs = [...logs];
+      message.log.forEach((log) => {
+        const logExists = newLogs.some(
+          (currentLog) => currentLog.id === log.id
+        );
+        if (logExists) return;
+        newLogs.push(log);
+      });
+      return newLogs;
+    });
+  }, []);
+
   return (
     <div>
       <Wrapper
@@ -24,34 +52,84 @@ export const Sandbox = ({ mode = "vertical", files }: SandboxProps) => {
         theme={githubLight}
         options={{
           autorun: true,
+          classes: {
+            "sp-preview-container": previewContainer(),
+          },
         }}
         files={files}
       >
-        <Layout mode={mode}>
+        <Layout>
           <SandpackCodeEditor />
-          <div>
-            <button onClick={() => setShowConsole(false)}>Preview</button>
-            <button onClick={() => setShowConsole(true)}>Console</button>
-          </div>
-          <SandpackPreview style={{ display: showConsole ? "none" : "flex" }} />
-          <Console style={{ display: showConsole ? "block" : "none" }} />
+          <PreviewTabs>
+            <TabButton
+              data-active={!showConsole}
+              onClick={() => setShowConsole(false)}
+            >
+              Preview
+            </TabButton>
+            <TabButton
+              data-active={showConsole}
+              onClick={() => setShowConsole(true)}
+            >
+              Console
+            </TabButton>
+            {showConsole && (
+              <ClearButton onClick={() => setLogs([])}>
+                <AiOutlineStop />
+              </ClearButton>
+            )}
+          </PreviewTabs>
+          <PreviewBackground style={{ display: showConsole ? "none" : "flex" }}>
+            <SandpackPreview />
+          </PreviewBackground>
+          <Console
+            style={{ display: showConsole ? "block" : "none" }}
+            logs={logs}
+            onConsoleMessage={handleConsoleMessage}
+          />
         </Layout>
       </Wrapper>
     </div>
   );
 };
 
-const Layout = styled(SandpackLayout, {
-  display: "grid !important",
+const PreviewBackground = styled(GridBackground, {
+  border: "none",
+  borderRadius: 0,
+  height: PREVIEW_HEIGHT,
+  padding: "$4",
+});
 
-  variants: {
-    mode: {
-      vertical: {},
-      horizontal: {
-        gridTemplateColumns: "1fr 1fr",
-      },
-    },
+const PreviewTabs = styled("div", {
+  padding: "0 var(--sp-space-2)",
+  display: "flex",
+});
+
+const TabButton = styled("button", {
+  appearance: "none",
+  border: "0px",
+  outline: "none",
+  display: "flex",
+  alignItems: "center",
+  transition:
+    "color var(--sp-transitions-default), background var(--sp-transitions-default)",
+  cursor: "pointer",
+  color: "var(--sp-colors-clickable)",
+  padding: "0 var(--sp-space-2)",
+  height: 40,
+
+  "&[data-active='true'], &:hover": {
+    color: "var(--sp-colors-accent)",
   },
+});
+
+const ClearButton = styled(TabButton, {
+  marginLeft: "auto",
+  fontSize: 18,
+});
+
+const Layout = styled(SandpackLayout, {
+  display: "block !important",
 });
 
 const Wrapper = styled(SandpackProvider, {
@@ -60,33 +138,42 @@ const Wrapper = styled(SandpackProvider, {
   "--sp-colors-surface3": "$colors$gray6",
   "--sp-font-mono": "$fonts$mono",
   "--sp-border-radius": "$radii$base",
+  "--sp-layout-height": `${PREVIEW_HEIGHT}px`,
+  "--sp-space-2": "$space$2",
 });
 
-const Console = ({ style }) => {
+const Console = ({ logs, onConsoleMessage, ...props }) => {
   const { listen } = useSandpack();
-  const [logs, setLogs] = React.useState([]);
 
   React.useEffect(() => {
     return listen((message) => {
       if (message.type === "console" && message.codesandbox) {
-        setLogs((logs) => [...logs, ...message.log]);
+        onConsoleMessage(message);
       }
     });
-  }, [listen]);
+  }, [listen, onConsoleMessage]);
 
   return (
-    <ConsoleWrapper style={style}>
+    <ConsoleWrapper {...props}>
       {logs.map((log) => (
-        <li key={log.id}>{JSON.stringify(log.data)}</li>
+        <ConsoleItem key={log.id}>{JSON.stringify(log.data)}</ConsoleItem>
       ))}
     </ConsoleWrapper>
   );
 };
 
 const ConsoleWrapper = styled("ul", {
-  minHeight: 100,
+  height: PREVIEW_HEIGHT,
   gridColumn: "1 / -1",
-  padding: "$4",
+  padding: "0 $4",
   listStyle: "none",
   fontFamily: "$mono",
+  overflow: "auto",
+});
+
+const ConsoleItem = styled("li", {
+  padding: "$4 0",
+  "&:not(:last-child)": {
+    borderBottom: "1px dashed $gray8",
+  },
 });

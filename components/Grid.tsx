@@ -67,13 +67,7 @@ const Wrapper = styled("g", {
   color: "$gray6",
 });
 
-type GridBackgroundProps = {
-  children: React.ReactNode;
-};
-
-export const GridBackground = ({ children }: GridBackgroundProps) => (
-  <GridBackgroundWrapper>{children}</GridBackgroundWrapper>
-);
+export const GridBackground = (props) => <GridBackgroundWrapper {...props} />;
 
 const GridBackgroundWrapper = styled(motion.div, {
   position: "relative",
