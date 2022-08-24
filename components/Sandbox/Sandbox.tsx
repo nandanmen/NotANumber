@@ -79,9 +79,11 @@ export const Sandbox = ({ files }: SandboxProps) => {
               </ClearButton>
             )}
           </PreviewTabs>
-          <PreviewBackground style={{ display: showConsole ? "none" : "flex" }}>
-            <SandpackPreview />
-          </PreviewBackground>
+          <PreviewContainer style={{ display: showConsole ? "none" : "block" }}>
+            <PreviewBackground>
+              <SandpackPreview />
+            </PreviewBackground>
+          </PreviewContainer>
           <Console
             style={{ display: showConsole ? "block" : "none" }}
             logs={logs}
@@ -93,16 +95,30 @@ export const Sandbox = ({ files }: SandboxProps) => {
   );
 };
 
+const PreviewContainer = styled("div", {
+  borderTop: "none !important",
+  height: PREVIEW_HEIGHT,
+  marginTop: "0px !important",
+  marginRight: -1,
+  background: "$gray5",
+});
+
 const PreviewBackground = styled(GridBackground, {
   border: "none",
   borderRadius: 0,
-  height: PREVIEW_HEIGHT,
   padding: "$4",
+  height: "100%",
+  resize: "horizontal",
+  maxWidth: "calc(100% + 2px)",
+  minWidth: 350,
+  borderRight: "1px solid $gray8",
+  display: "flex",
 });
 
 const PreviewTabs = styled("div", {
   padding: "0 var(--sp-space-2)",
   display: "flex",
+  borderBottom: "1px solid $gray8",
 });
 
 const TabButton = styled("button", {

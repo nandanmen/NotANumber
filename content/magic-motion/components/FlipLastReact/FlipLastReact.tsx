@@ -8,17 +8,14 @@ body {
 }
 
 #motion {
-  border: 1px solid hsl(208, 100%, 47.3%);
-  background: hsl(208, 77.5%, 76.9%);
-  width: 100px;
+  border: 1px solid hsl(208, 77.5%, 76.9%);
+  background: hsl(209, 95%, 90.1%);
+  width: 120px;
   aspect-ratio: 1;
   border-radius: 8px;
 }
 
 #wrapper {
-  padding: 16px;
-  background: hsl(0, 0%, 90.9%);
-  border-radius: 12px;
   margin-top: 8px;
   display: flex;
 }
