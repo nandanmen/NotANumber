@@ -15,6 +15,7 @@ import { TokenList } from "../tokenizer/components/TokenList";
 import { FlipFirst } from "./components/FlipFirst";
 import { FlipLast } from "./components/FlipLast";
 import { FlipExample } from "./components/FlipExample";
+import { FlipLastReact } from "./components/FlipLastReact";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -72,19 +73,9 @@ To get this working in code, we'll first assume that **a layout change means the
 
 Try triggering the layout change a few times and check the console to see what `x` and `y` values show up:
 
-```tsx {6}
-const Motion = (props) => {
-  const ref = React.useRef();
+<FlipLastReact />
 
-  React.useEffect(() => {
-    const { x, y } = ref.current.getBoundingClientRect();
-  });
-
-  return <div ref={ref} {...props} />;
-};
-```
-
-Pop quiz time! **After the layout change**, is `x{:js}` and `y{:js}` in the snippet above referring to the **initial** position or the **final** position of the square?
+Pop quiz time! **After the layout change**, is `box` in the snippet above referring to the **initial** position or the **final** position of the square?
 
 ### Inverse
 

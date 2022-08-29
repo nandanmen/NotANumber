@@ -20,7 +20,7 @@ const previewContainer = css({
   background: "none !important",
 });
 
-const PREVIEW_HEIGHT = 450;
+const PREVIEW_HEIGHT = 400;
 
 export const Sandbox = ({ files }: SandboxProps) => {
   const [showConsole, setShowConsole] = React.useState(false);
