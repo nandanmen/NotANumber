@@ -10,7 +10,6 @@ import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
-import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -85,18 +84,9 @@ export default function PostPage({ content }: { content: Post }) {
           <NewsletterForm />
         </NewsletterWrapper>
       </Article>
-      <ThemeWrapper>
-        <ThemeToggle />
-      </ThemeWrapper>
     </PageWrapper>
   );
 }
-
-const ThemeWrapper = styled("div", {
-  position: "fixed",
-  top: "50%",
-  right: "$4",
-});
 
 const NewsletterWrapper = styled("footer", {
   marginTop: "$24",
