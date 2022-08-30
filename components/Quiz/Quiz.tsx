@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+
 import { styled } from "~/stitches.config";
 
 export const QuizContext = React.createContext(null);
@@ -7,8 +8,8 @@ export const QuizContext = React.createContext(null);
 export const Quiz = (props) => {
   const [selected, select] = React.useState(null);
   return (
-    <QuizWrapper layout>
-      <QuizContext.Provider value={{ selected, select }}>
+    <QuizWrapper id={props.label}>
+      <QuizContext.Provider value={{ selected, select, answer: props.answer }}>
         {props.children}
       </QuizContext.Provider>
     </QuizWrapper>
@@ -19,6 +20,11 @@ const QuizWrapper = styled(motion.div, {
   padding: "$4",
   borderRadius: "$base",
   border: "1px solid $gray8",
+  lineHeight: 1.6,
+
+  "& > *:not(:last-child)": {
+    marginBottom: "$2",
+  },
 });
 
 const Question = (props) => {
@@ -32,7 +38,6 @@ const Options = (props) => {
 const OptionsWrapper = styled("div", {
   display: "flex",
   gap: "$2",
-  marginTop: "$2",
 });
 
 const Option = (props) => {
@@ -62,9 +67,32 @@ const OptionWrapper = styled("button", {
   },
 });
 
-const Tip = (props) => {
-  return <div>{props.children}</div>;
+const Tip = ({ htmlFor, children }) => {
+  const { selected, answer } = React.useContext(QuizContext);
+
+  if (selected !== htmlFor) {
+    return null;
+  }
+
+  const isCorrect = answer === htmlFor;
+  return <TipWrapper correct={isCorrect}>{children}</TipWrapper>;
 };
+
+const TipWrapper = styled(motion.div, {
+  padding: "$2",
+  background: "$yellow4",
+  border: "1px solid $yellow7",
+  borderRadius: 4,
+
+  variants: {
+    correct: {
+      true: {
+        background: "$green4",
+        borderColor: "$green7",
+      },
+    },
+  },
+});
 
 const Spoiler = (props) => {
   return <span>{props.children}</span>;

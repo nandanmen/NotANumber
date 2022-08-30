@@ -4,6 +4,7 @@ import {
   blue,
   green,
   red,
+  yellow,
   grayDark,
   blueDark,
   greenDark,
@@ -54,6 +55,7 @@ export const baseTheme = {
     ...blue,
     ...green,
     ...red,
+    ...yellow,
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
