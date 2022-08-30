@@ -119,6 +119,7 @@ const PreviewTabs = styled("div", {
   padding: "0 var(--sp-space-2)",
   display: "flex",
   borderBottom: "1px solid $gray8",
+  background: "$gray4",
 });
 
 const TabButton = styled("button", {

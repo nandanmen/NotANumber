@@ -10,12 +10,14 @@ import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
 import { FullWidth } from "~/components/FullWidth";
 import { Caption } from "~/components/Caption";
+import { Quiz } from "~/components/Quiz";
 
 import { TokenList } from "../tokenizer/components/TokenList";
 import { FlipFirst } from "./components/FlipFirst";
 import { FlipLast } from "./components/FlipLast";
 import { FlipExample } from "./components/FlipExample";
 import { FlipLastReact } from "./components/FlipLastReact";
+import { InitialPositionSandbox } from "./components/InitialPositionSandbox";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -75,11 +77,57 @@ Try triggering the layout change a few times and check the console to see what `
 
 <FlipLastReact />
 
-Pop quiz time! **After the layout change**, is `box` in the snippet above referring to the **initial** position or the **final** position of the square?
+Pop quiz time!
+
+<Quiz label="box-position" answer="final">
+
+<Quiz.Question>
+  **After the layout change**, is `box` in the snippet above referring to the
+  **initial** position or the **final** position of the square?
+</Quiz.Question>
+
+<Quiz.Options>
+
+<Quiz.Option label="initial">
+  
+The `initial` position
+
+</Quiz.Option>
+
+<Quiz.Option label="final">
+  
+The `final` position
+
+</Quiz.Option>
+
+</Quiz.Options>
+
+<Quiz.Tip htmlFor="initial">
+  Not quite! Because effects run after the component renders, the box is
+  actually referring to the square's final position.
+</Quiz.Tip>
+<Quiz.Tip htmlFor="final">
+  That's right! Because effects run after the component renders, the box is
+  referring to the square's final position.
+</Quiz.Tip>
+
+</Quiz>
+
+If you answered <Quiz.Spoiler htmlFor="box-position">the final position</Quiz.Spoiler>, you'd be right!
+
+This is because **the `useEffect` hook runs after the component renders**. So when we call `getBoundingClientRect(){:js}` in the `useEffect` hook, we're actually getting the position of the square after the layout change.
+
+<Callout label="So how do you get the initial position?">
+
+One way is to create a ref (using `useRef`) and store the last value there every time you measure the box:
+
+<InitialPositionSandbox />
+
+</Callout>
 
 ### Inverse
 
-Using transforms, we **invert** the layout change to make it look like the element is back to its original position.
+In the **inverse** phase, we apply a transform to the square to make it _look_ like the element didn't move at all.
 
 Try moving the slider to adjust the transform applied to the square:
 

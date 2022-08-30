@@ -1,5 +1,4 @@
-import { FullWidth } from "~/components/FullWidth";
-import { MotionSandbox } from "../MotionSandbox";
+import { MotionSandbox } from "./MotionSandbox";
 
 const motionCode = `import React from 'react'
 
@@ -12,13 +11,6 @@ export default function Motion() {
   })
 
   return <div id="motion" ref={squareRef} />
-}
-`;
+}`;
 
-export const FlipLastReact = () => {
-  return (
-    <FullWidth>
-      <MotionSandbox motionCode={motionCode} />
-    </FullWidth>
-  );
-};
+export const Default = () => <MotionSandbox motionCode={motionCode} />;
