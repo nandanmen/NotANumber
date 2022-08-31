@@ -127,7 +127,7 @@ One way is to create a ref (using `useRef`) and store the last value there every
 
 ### Inverse
 
-In the **inverse** phase, we apply a transform to the square to make it _look_ like the element didn't move at all.
+In the **inverse** phase, we modify the position of the square so that it _looks_ like it didn't move at all. To do this, we compare the two measurements we made and calculate a transform that we then apply to the square.
 
 Try moving the slider to adjust the transform applied to the square:
 

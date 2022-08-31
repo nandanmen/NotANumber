@@ -49,10 +49,10 @@ export default function StoriesPage({
           <Content>
             {Object.entries(currentStory.variants).map(
               ([variant, Component]) => (
-                <>
+                <React.Fragment key={variant}>
                   <h2>{variant}</h2>
                   <Component />
-                </>
+                </React.Fragment>
               )
             )}
           </Content>
