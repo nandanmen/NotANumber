@@ -70,18 +70,17 @@ const ToggleWrapper = styled("div", {
 
 const Main = styled("main", {
   display: "grid",
-  gridTemplateColumns: "200px 1fr",
+  gridTemplateColumns: "min-content 1fr",
   gap: "$8",
-  minHeight: "calc(100vh - calc($space$16 * 2))",
+  height: "100vh",
+  margin: "-$16 0",
 });
 
 const Sidebar = styled("aside", {
   borderRight: "1px solid $gray8",
   fontFamily: "$mono",
-  position: "fixed",
   top: "0",
   bottom: "0",
-  width: 200,
   padding: "$4",
 
   ul: {
@@ -110,7 +109,8 @@ const Sidebar = styled("aside", {
 
 const ContentWrapper = styled("div", {
   gridColumn: 2,
-  paddingRight: "$8",
+  padding: "$8 0",
+  overflowY: "scroll",
 });
 
 const Content = styled("ul", {
