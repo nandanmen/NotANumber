@@ -5,8 +5,9 @@ import { assign } from "xstate";
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 
-import { Tooltip, ContentWrapper, Square, XLine, YLine } from "../shared";
+import { Tooltip, ContentWrapper, XLine, YLine } from "../shared";
 import { machine } from "./machine";
+import { styled } from "~/stitches.config";
 
 export const FlipInverse = () => {
   const buttonRef = React.useRef<HTMLButtonElement>();
@@ -28,10 +29,28 @@ export const FlipInverse = () => {
       <GridBackground>
         <ContentWrapper>
           <svg width="100%" height="100%">
-            <rect x="0" y="0" width="120" height="120" fill="white" />
+            <Initial x="1" />
+            <Last x="100%" />
           </svg>
         </ContentWrapper>
       </GridBackground>
     </FullWidth>
   );
 };
+
+const Square = styled("rect", {
+  width: 120,
+  height: 120,
+  fill: "$gray5",
+  stroke: "$gray8",
+  rx: 6,
+  y: "50%",
+});
+
+const Initial = styled(Square, {
+  transform: "translateY(-60px)",
+});
+
+const Last = styled(Square, {
+  transform: "translate(-121px, -60px)",
+});

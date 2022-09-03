@@ -10,6 +10,7 @@ import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
+import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
