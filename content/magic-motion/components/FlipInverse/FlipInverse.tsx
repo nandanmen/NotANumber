@@ -1,44 +1,56 @@
 import React from "react";
-import { useMachine } from "@xstate/react";
-import { assign } from "xstate";
+import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
+import { Slider } from "~/components/Slider";
+import { styled } from "~/stitches.config";
 
 import { Tooltip, ContentWrapper, XLine, YLine } from "../shared";
 import { machine } from "./machine";
-import { styled } from "~/stitches.config";
 
 export const FlipInverse = () => {
-  const buttonRef = React.useRef<HTMLButtonElement>();
-  const [state, send] = useMachine(machine, {
-    actions: {
-      measureBox: assign({
-        box: () => {
-          return buttonRef.current?.getBoundingClientRect();
-        },
-      }),
-    },
-  });
+  const x = useMotionValue(0);
 
-  const active = state.matches("measured");
-  const showRulers = ["hovering", "measured"].some(state.matches);
+  const initialRef = React.useRef<SVGRectElement>();
+  const finalRef = React.useRef<SVGRectElement>();
+
+  const [initialBox, setInitialBox] = React.useState(null);
+  const [finalBox, setFinalBox] = React.useState(null);
+
+  React.useEffect(() => {
+    setInitialBox(initialRef.current.getBoundingClientRect());
+    setFinalBox(finalRef.current.getBoundingClientRect());
+  }, []);
 
   return (
     <FullWidth>
-      <GridBackground>
-        <ContentWrapper>
-          <svg width="100%" height="100%">
-            <Initial x="1" />
-            <Last x="100%" />
-          </svg>
-        </ContentWrapper>
-      </GridBackground>
+      <FigureWrapper>
+        <Slider />
+        <GridBackground>
+          <ContentWrapper>
+            <svg width="100%" height="100%">
+              <Initial ref={initialRef} x="1" />
+              <Final ref={finalRef} x="100%" />
+              <Element
+                x="100%"
+                style={{ transform: `translate(-121px, -60px)` }}
+              />
+            </svg>
+          </ContentWrapper>
+        </GridBackground>
+      </FigureWrapper>
     </FullWidth>
   );
 };
 
-const Square = styled("rect", {
+const FigureWrapper = styled("div", {
+  display: "flex",
+  flexDirection: "column",
+  gap: "$8",
+});
+
+const Square = styled(motion.rect, {
   width: 120,
   height: 120,
   fill: "$gray5",
@@ -51,6 +63,11 @@ const Initial = styled(Square, {
   transform: "translateY(-60px)",
 });
 
-const Last = styled(Square, {
+const Final = styled(Square, {
   transform: "translate(-121px, -60px)",
+});
+
+const Element = styled(Square, {
+  fill: "$blue5",
+  stroke: "$blue7",
 });

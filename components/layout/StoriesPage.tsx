@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
 
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { styled } from "~/stitches.config";
@@ -18,32 +19,45 @@ export default function StoriesPage({
   stories,
   activeStory,
 }: StoriesPageProps) {
+  const [showSidebar, toggle] = React.useReducer((state) => !state, true);
   const currentStory = stories
     .flatMap((group) => group.stories)
     .find((story) => story.name === activeStory);
+
   return (
     <Main>
       <ToggleWrapper>
         <ThemeToggle />
       </ToggleWrapper>
-      <Sidebar>
-        <ul>
-          {stories.map((group) => (
-            <li key={group.name}>
-              <p>{group.name}</p>
-              <ul>
-                {group.stories.map((story) => (
-                  <li key={story.name}>
-                    <Link href={`/_stories/${story.name}`}>
-                      <a>{story.name}</a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </Sidebar>
+      {showSidebar ? (
+        <Sidebar>
+          <button onClick={toggle}>
+            <HiArrowLeft />
+          </button>
+          <ul>
+            {stories.map((group) => (
+              <li key={group.name}>
+                <p>{group.name}</p>
+                <ul>
+                  {group.stories.map((story) => (
+                    <li key={story.name}>
+                      <Link href={`/_stories/${story.name}`}>
+                        <a>{story.name}</a>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </Sidebar>
+      ) : (
+        <SidebarToggleButton>
+          <button onClick={toggle}>
+            <HiArrowRight />
+          </button>
+        </SidebarToggleButton>
+      )}
       <ContentWrapper>
         {currentStory && (
           <Content>
@@ -61,6 +75,12 @@ export default function StoriesPage({
     </Main>
   );
 }
+
+const SidebarToggleButton = styled("div", {
+  position: "fixed",
+  top: "$2",
+  left: "$2",
+});
 
 const ToggleWrapper = styled("div", {
   position: "fixed",
