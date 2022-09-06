@@ -11,6 +11,7 @@ import { AiOutlineStop } from "react-icons/ai";
 
 import { css, styled } from "~/stitches.config";
 import { GridBackground } from "../Grid";
+import { clickHandlerExtension } from "./codemirror";
 
 type SandboxProps = {
   files?: any;
@@ -59,7 +60,7 @@ export const Sandbox = ({ files }: SandboxProps) => {
         files={files}
       >
         <Layout>
-          <SandpackCodeEditor />
+          <SandpackCodeEditor extensions={[clickHandlerExtension]} />
           <PreviewTabs>
             <TabButton
               data-active={!showConsole}
