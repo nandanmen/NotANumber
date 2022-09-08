@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
@@ -7,10 +7,9 @@ import { Slider } from "~/components/Slider";
 import { styled } from "~/stitches.config";
 
 import { Tooltip, ContentWrapper, XLine, YLine } from "../shared";
-import { machine } from "./machine";
 
 export const FlipInverse = () => {
-  const x = useMotionValue(0);
+  const [x, setX] = React.useState(0);
 
   const initialRef = React.useRef<SVGRectElement>();
   const finalRef = React.useRef<SVGRectElement>();
@@ -23,10 +22,17 @@ export const FlipInverse = () => {
     setFinalBox(finalRef.current.getBoundingClientRect());
   }, []);
 
+  const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
+
   return (
     <FullWidth>
       <FigureWrapper>
-        <Slider />
+        <Slider
+          value={[x]}
+          onValueChange={([x]) => setX(x)}
+          max={0}
+          min={-1 * distance}
+        />
         <GridBackground>
           <ContentWrapper>
             <svg width="100%" height="100%">
@@ -34,7 +40,8 @@ export const FlipInverse = () => {
               <Final ref={finalRef} x="100%" />
               <Element
                 x="100%"
-                style={{ transform: `translate(-121px, -60px)` }}
+                animate={{ translateX: -121 + x }}
+                style={{ translateY: -60 }}
               />
             </svg>
           </ContentWrapper>
