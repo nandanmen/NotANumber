@@ -23,6 +23,7 @@ export const FlipInverse = () => {
   }, []);
 
   const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
+  const scale = distance > 0 ? x / distance : 0;
 
   return (
     <FullWidth>
@@ -38,6 +39,17 @@ export const FlipInverse = () => {
             <svg width="100%" height="100%">
               <Initial ref={initialRef} x="1" />
               <Final ref={finalRef} x="100%" />
+              <AnchorLine
+                x1="61"
+                x2="calc(100% - 61px)"
+                y1="50%"
+                y2="50%"
+                style={{
+                  transform: `scaleX(${Math.abs(scale)})`,
+                  transformOrigin: "calc(100% - 61px)",
+                }}
+              />
+              <AnchorCircle animate={{ rotate: x }} />
               <Element
                 x="100%"
                 animate={{ translateX: -121 + x }}
@@ -50,6 +62,21 @@ export const FlipInverse = () => {
     </FullWidth>
   );
 };
+
+const AnchorCircle = styled(motion.circle, {
+  cx: "calc(100% - 60px)",
+  cy: "50%",
+  fill: "$gray5",
+  stroke: "$gray8",
+  strokeWidth: 2,
+  strokeDasharray: "12 2",
+  r: 10,
+});
+
+const AnchorLine = styled("line", {
+  stroke: "$gray8",
+  strokeWidth: 2,
+});
 
 const FigureWrapper = styled("div", {
   display: "flex",
