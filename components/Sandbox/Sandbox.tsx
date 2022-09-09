@@ -11,7 +11,6 @@ import { AiOutlineStop } from "react-icons/ai";
 
 import { css, styled } from "~/stitches.config";
 import { GridBackground } from "../Grid";
-import { clickHandlerExtension } from "./codemirror";
 
 type SandboxProps = {
   files?: any;
@@ -24,6 +23,29 @@ const previewContainer = css({
 const PREVIEW_HEIGHT = 400;
 
 export const Sandbox = ({ files }: SandboxProps) => {
+  return (
+    <div>
+      <Wrapper
+        template="react"
+        theme={githubLight}
+        options={{
+          autorun: true,
+          classes: {
+            "sp-preview-container": previewContainer(),
+          },
+        }}
+        files={files}
+      >
+        <Layout>
+          <SandpackCodeEditor key="code-editor" />
+          <CodeBottomTabs />
+        </Layout>
+      </Wrapper>
+    </div>
+  );
+};
+
+const CodeBottomTabs = () => {
   const [showConsole, setShowConsole] = React.useState(false);
   const [logs, setLogs] = React.useState([]);
 
@@ -47,52 +69,37 @@ export const Sandbox = ({ files }: SandboxProps) => {
   }, []);
 
   return (
-    <div>
-      <Wrapper
-        template="react"
-        theme={githubLight}
-        options={{
-          autorun: true,
-          classes: {
-            "sp-preview-container": previewContainer(),
-          },
-        }}
-        files={files}
-      >
-        <Layout>
-          <SandpackCodeEditor extensions={[clickHandlerExtension]} />
-          <PreviewTabs>
-            <TabButton
-              data-active={!showConsole}
-              onClick={() => setShowConsole(false)}
-            >
-              Preview
-            </TabButton>
-            <TabButton
-              data-active={showConsole}
-              onClick={() => setShowConsole(true)}
-            >
-              Console
-            </TabButton>
-            {showConsole && (
-              <ClearButton onClick={() => setLogs([])}>
-                <AiOutlineStop />
-              </ClearButton>
-            )}
-          </PreviewTabs>
-          <PreviewContainer style={{ display: showConsole ? "none" : "block" }}>
-            <PreviewBackground>
-              <SandpackPreview />
-            </PreviewBackground>
-          </PreviewContainer>
-          <Console
-            style={{ display: showConsole ? "block" : "none" }}
-            logs={logs}
-            onConsoleMessage={handleConsoleMessage}
-          />
-        </Layout>
-      </Wrapper>
-    </div>
+    <>
+      <PreviewTabs>
+        <TabButton
+          data-active={!showConsole}
+          onClick={() => setShowConsole(false)}
+        >
+          Preview
+        </TabButton>
+        <TabButton
+          data-active={showConsole}
+          onClick={() => setShowConsole(true)}
+        >
+          Console
+        </TabButton>
+        {showConsole && (
+          <ClearButton onClick={() => setLogs([])}>
+            <AiOutlineStop />
+          </ClearButton>
+        )}
+      </PreviewTabs>
+      <PreviewContainer style={{ display: showConsole ? "none" : "block" }}>
+        <PreviewBackground>
+          <SandpackPreview />
+        </PreviewBackground>
+      </PreviewContainer>
+      <Console
+        style={{ display: showConsole ? "block" : "none" }}
+        logs={logs}
+        onConsoleMessage={handleConsoleMessage}
+      />
+    </>
   );
 };
 

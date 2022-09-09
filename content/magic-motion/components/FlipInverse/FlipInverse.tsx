@@ -35,7 +35,7 @@ export const FlipInverse = () => {
           min={-1 * distance}
         />
         <GridBackground>
-          <ContentWrapper>
+          <Content>
             <svg width="100%" height="100%">
               <Initial ref={initialRef} x="1" />
               <Final ref={finalRef} x="100%" />
@@ -56,12 +56,16 @@ export const FlipInverse = () => {
                 style={{ translateY: -60 }}
               />
             </svg>
-          </ContentWrapper>
+          </Content>
         </GridBackground>
       </FigureWrapper>
     </FullWidth>
   );
 };
+
+const Content = styled(ContentWrapper, {
+  height: 300,
+});
 
 const AnchorCircle = styled(motion.circle, {
   cx: "calc(100% - 60px)",
