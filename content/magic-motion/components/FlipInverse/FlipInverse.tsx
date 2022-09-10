@@ -37,24 +37,32 @@ export const FlipInverse = () => {
         <GridBackground>
           <Content>
             <svg width="100%" height="100%">
-              <Initial ref={initialRef} x="1" />
-              <Final ref={finalRef} x="100%" />
+              <Initial ref={initialRef} x="45" />
+              <Final ref={finalRef} x="calc(100% - 45px)" />
               <AnchorLine
-                x1="61"
-                x2="calc(100% - 61px)"
+                x1="105"
+                x2="calc(100% - 105px)"
                 y1="50%"
                 y2="50%"
                 style={{
                   transform: `scaleX(${Math.abs(scale)})`,
-                  transformOrigin: "calc(100% - 61px)",
+                  transformOrigin: "calc(100% - 105px)",
                 }}
               />
               <AnchorCircle animate={{ rotate: x }} />
               <Element
-                x="100%"
+                x="calc(100% - 45px)"
                 animate={{ translateX: -121 + x }}
                 style={{ translateY: -60 }}
               />
+              <TranslateText
+                animate={{ translateX: -165 + x }}
+                style={{ translateY: 85 }}
+                x="100%"
+                y="50%"
+              >
+                translateX({x.toFixed(0)}px)
+              </TranslateText>
             </svg>
           </Content>
         </GridBackground>
@@ -63,12 +71,19 @@ export const FlipInverse = () => {
   );
 };
 
+const TranslateText = styled(motion.text, {
+  fontFamily: "$mono",
+  fontSize: "$sm",
+});
+
 const Content = styled(ContentWrapper, {
   height: 300,
+  paddingLeft: 0,
+  paddingRight: 0,
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: "calc(100% - 60px)",
+  cx: "calc(100% - 105px)",
   cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
