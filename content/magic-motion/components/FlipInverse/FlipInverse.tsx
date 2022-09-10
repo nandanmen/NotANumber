@@ -6,7 +6,10 @@ import { FullWidth } from "~/components/FullWidth";
 import { Slider } from "~/components/Slider";
 import { styled } from "~/stitches.config";
 
-import { Tooltip, ContentWrapper, XLine, YLine } from "../shared";
+import { ContentWrapper } from "../shared";
+
+const PADDING = 45;
+const SQUARE_RADIUS = 60;
 
 export const FlipInverse = () => {
   const [x, setX] = React.useState(0);
@@ -37,27 +40,31 @@ export const FlipInverse = () => {
         <GridBackground>
           <Content>
             <svg width="100%" height="100%">
-              <Initial ref={initialRef} x="45" />
-              <Final ref={finalRef} x="calc(100% - 45px)" />
+              <Initial ref={initialRef} x={PADDING} />
+              <Final
+                ref={finalRef}
+                x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
+              />
               <AnchorLine
-                x1="105"
-                x2="calc(100% - 105px)"
+                x1={SQUARE_RADIUS + PADDING}
+                x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
                 y1="50%"
                 y2="50%"
                 style={{
                   transform: `scaleX(${Math.abs(scale)})`,
-                  transformOrigin: "calc(100% - 105px)",
+                  transformOrigin: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
                 }}
               />
               <AnchorCircle animate={{ rotate: x }} />
               <Element
-                x="calc(100% - 45px)"
-                animate={{ translateX: -121 + x }}
-                style={{ translateY: -60 }}
+                x={`calc(100% - ${PADDING}px)`}
+                animate={{ translateX: -(SQUARE_RADIUS * 2) + x }}
+                initial={{ translateX: -(SQUARE_RADIUS * 2) + x }}
               />
               <TranslateText
-                animate={{ translateX: -165 + x }}
-                style={{ translateY: 85 }}
+                animate={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
+                initial={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
+                style={{ translateY: SQUARE_RADIUS + 25 }}
                 x="100%"
                 y="50%"
               >
@@ -78,12 +85,12 @@ const TranslateText = styled(motion.text, {
 
 const Content = styled(ContentWrapper, {
   height: 300,
-  paddingLeft: 0,
-  paddingRight: 0,
+  paddingLeft: `0 !important`,
+  paddingRight: `0 !important`,
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: "calc(100% - 105px)",
+  cx: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
   cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
@@ -109,16 +116,12 @@ const Square = styled(motion.rect, {
   fill: "$gray5",
   stroke: "$gray8",
   rx: 6,
-  y: "50%",
+  y: `calc(50% - ${SQUARE_RADIUS}px)`,
 });
 
-const Initial = styled(Square, {
-  transform: "translateY(-60px)",
-});
+const Initial = styled(Square, {});
 
-const Final = styled(Square, {
-  transform: "translate(-121px, -60px)",
-});
+const Final = styled(Square, {});
 
 const Element = styled(Square, {
   fill: "$blue5",
