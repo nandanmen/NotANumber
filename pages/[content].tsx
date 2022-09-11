@@ -132,7 +132,7 @@ const Nav = styled("nav", {
 });
 
 const PageWrapper = styled("main", {
-  width: `min(80rem, 100vw)`,
+  width: `min(80rem, 100%)`,
   margin: "0 auto",
 });
 

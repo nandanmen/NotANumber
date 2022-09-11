@@ -1,19 +1,24 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { FaUndo } from "react-icons/fa";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
-import { Slider } from "~/components/Slider";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper } from "../shared";
+import { ContentWrapper, ToggleButton, Controls } from "../shared";
 
 const PADDING = 45;
 const SQUARE_RADIUS = 60;
 
-export const FlipInverse = () => {
-  const [x, setX] = React.useState(0);
+export const FlipPlay = () => {
+  const x = useMotionValue(0);
+  const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
+  const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
 
+  /**
+   * Measure the initial and last positions
+   */
   const initialRef = React.useRef<SVGRectElement>();
   const finalRef = React.useRef<SVGRectElement>();
 
@@ -25,18 +30,38 @@ export const FlipInverse = () => {
     setFinalBox(finalRef.current.getBoundingClientRect());
   }, []);
 
+  /**
+   * Move the element to the initial position
+   */
   const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
-  const scale = distance > 0 ? x / distance : 0;
+  React.useEffect(() => x.set(-1 * distance), [distance, x]);
+
+  /**
+   * Updating the line and text with the motion value
+   */
+  const lineRef = React.useRef<SVGLineElement>();
+  const textRef = React.useRef<SVGTextElement>();
+  React.useEffect(() => {
+    return x.onChange((val) => {
+      lineRef.current?.setAttribute(
+        "x1",
+        `calc(100% - ${SQUARE_RADIUS + PADDING}px + ${val}px)`
+      );
+      textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+    });
+  }, [x]);
 
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Slider
-          value={[x]}
-          onValueChange={([x]) => setX(x)}
-          max={0}
-          min={-1 * distance}
-        />
+      <div>
+        <Controls>
+          <ToggleButton onClick={() => animate(x, 0, { duration: 3 })}>
+            Play
+          </ToggleButton>
+          <UndoButton onClick={() => x.set(-1 * distance)}>
+            <FaUndo />
+          </UndoButton>
+        </Controls>
         <GridBackground>
           <Content>
             <svg width="100%" height="100%">
@@ -46,37 +71,40 @@ export const FlipInverse = () => {
                 x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
               />
               <AnchorLine
-                x1={SQUARE_RADIUS + PADDING}
+                ref={lineRef}
                 x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
                 y1="50%"
                 y2="50%"
-                style={{
-                  transform: `scaleX(${Math.abs(scale)})`,
-                  transformOrigin: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
-                }}
               />
-              <AnchorCircle animate={{ rotate: x }} />
+              <AnchorCircle style={{ rotate: x }} />
               <Element
                 x={`calc(100% - ${PADDING}px)`}
-                animate={{ translateX: -(SQUARE_RADIUS * 2) + x }}
-                initial={{ translateX: -(SQUARE_RADIUS * 2) + x }}
+                style={{ translateX: squareTranslateX }}
               />
               <TranslateText
-                animate={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
-                initial={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
-                style={{ translateY: SQUARE_RADIUS + 25 }}
+                ref={textRef}
+                style={{
+                  translateY: SQUARE_RADIUS + 25,
+                  translateX: textTranslateX,
+                }}
                 x="100%"
                 y="50%"
-              >
-                translateX({x.toFixed(0)}px)
-              </TranslateText>
+              />
             </svg>
           </Content>
         </GridBackground>
-      </FigureWrapper>
+      </div>
     </FullWidth>
   );
 };
+
+const UndoButton = styled(ToggleButton, {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "$gray10",
+  height: 22,
+});
 
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
@@ -102,12 +130,6 @@ const AnchorCircle = styled(motion.circle, {
 const AnchorLine = styled("line", {
   stroke: "$gray8",
   strokeWidth: 2,
-});
-
-const FigureWrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  gap: "$8",
 });
 
 const Square = styled(motion.rect, {
