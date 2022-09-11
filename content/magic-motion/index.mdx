@@ -21,6 +21,7 @@ import { FlipInverse } from "./components/FlipInverse";
 import { FlipPlay } from "./components/FlipPlay";
 import { InverseSandbox } from "./components/InverseSandbox";
 import { InitialPositionSandbox } from "./components/InitialPositionSandbox";
+import { PlaySandbox } from "./components/PlaySandbox";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -40,7 +41,7 @@ In this post, I want to dive deep into the techniques that allow these layout an
 
 Let's get started!
 
-## FLIP
+## Introducing FLIP
 
 FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in "slow" layout properties like `width` and even animate "un-animatable" CSS properties like `justify-content`. Here's how it works.
 
@@ -118,15 +119,19 @@ The `final` position
 
 If you answered <Quiz.Spoiler htmlFor="box-position">the final position</Quiz.Spoiler>, you'd be right!
 
-This is because **the `useEffect` hook runs after the component renders**. So when we call `getBoundingClientRect(){:js}` in the `useEffect` hook, we're actually getting the position of the square after the layout change.
+This is because **the `useEffect` hook runs after the component renders**. So when we call `getBoundingClientRect(){:js}` in the `useEffect` hook, we're actually getting the position of the square <Quiz.Spoiler htmlFor="box-position">after</Quiz.Spoiler> the layout change.
 
-<Callout label="So how do you get the initial position?">
+So how do you get the <Quiz.Spoiler htmlFor="box-position">initial</Quiz.Spoiler> position?
 
-One way is to create a ref (using `useRef`) and store the last value there every time you measure the box:
+One way is to create a ref (using `useRef`) and store the previous value there every time you measure the box:
 
 <InitialPositionSandbox />
 
-</Callout>
+If the flow there doesn't quite make sense, maybe this would help:
+
+```
+use effect flow diagram
+```
 
 ### Inverse
 
@@ -150,29 +155,45 @@ In the final step of FLIP, the **Play** step, we animate this transform down to 
 
 <FlipPlay />
 
-By doing it fast enough, we get...
+There are various ways that you can implement this animation; I personally opted to use the `animate` function from [Popmotion](https://popmotion.io/#quick-start-animation-animate):
+
+<PlaySandbox />
+
+### Putting Everything Together
+
+By doing all of the steps fast enough, we get...
 
 Voila! Magical layout animations.
 
 ## Animating Size
 
-Framer motion not only lets you animate changes in position, it lets you animate changes in **size** too. How do we change our implementation to support this?
+So far we've only used FLIP to animate a change in _position_. Can we do the same thing but for _size_?
 
-When I tried implementing this, the first thing that I did was to use the same approach as position, except I would use the `width` and `height` of the square instead of the `x` and `y` coordinates:
+In this section, we'll try to replicate the following animation where the square stretches to fill the whole container:
 
-```ts
-const {
-  x,
-  y,
-  width: scaleX,
-  height: scaleY,
-} = getInverse({
-  first: initialBox,
-  last: currentBox,
-});
+```
+fill container
 ```
 
-Then use `scaleX()` and `scaleY()` to transform the element back to its initial size:
+We won't mix changes in position and size together for now; we'll get to that in a bit.
+
+### Measuring Size Changes
+
+Thankfully, the `.getBoundingClientRect()` method we used to measure the square also returns the `width` and `height` of the element.
+
+```ts
+const { width, height } = squareRef.current.getBoundingClientRect();
+```
+
+We can use this to measure the square's size before and after the layout change:
+
+```
+first and last visual
+```
+
+### Inverting Size Changes
+
+To invert the size change, we use `scale` instead of `translate`:
 
 ```ts
 applyTransform({
@@ -181,7 +202,7 @@ applyTransform({
 });
 ```
 
-And finally animate the `scale` back to zero:
+And instead of animating the scale to zero, we animate the scale to one (if we animate to zero, the element will disappear altogether):
 
 ```ts
 play({
@@ -190,21 +211,78 @@ play({
 });
 ```
 
-Should work, right? Well, let's try it and see:
+### Putting Everything Together
 
-Great! Now what if we animate it with position?
+By putting everything together, we get a square that seamlessly transitions between sizes:
 
-Hmm, _not_ so great. What happened?
+```
+flip with size
+```
 
-### Working Together With Position
+Now that we can animate both position and size, we're surely done, right?
 
-When an element changes size, the distance that it travels would change as well.
+## Consolidating Size with Position
 
-- The animation should convey this relationship
+What happens when we try to animate both size and position together?
+
+```
+broken position and size animation
+```
+
+Hmm, that looks a little off. Ideally, the animation should look seamless like this:
+
+```
+working position and size animation
+```
+
+Let's try to debug this. Here I've broken down the animation to its four FLIP components. Can you spot which step is broken?
+
+```
+broken animation split up into phases
+```
+
+<Quiz label="broken-flip-step" answer="inverse">
+
+<Quiz.Question>Which step is broken?</Quiz.Question>
+
+<Quiz.Options>
+  <Quiz.Option label="first">First</Quiz.Option>
+  <Quiz.Option label="last">Last</Quiz.Option>
+  <Quiz.Option label="inverse">Inverse</Quiz.Option>
+  <Quiz.Option label="play">Play</Quiz.Option>
+</Quiz.Options>
+
+<Quiz.Tip htmlFor="first">
+  Hmm, that's not quite it. Try taking a look at the different phases again.
+</Quiz.Tip>
+<Quiz.Tip htmlFor="last">
+  Hmm, that's not quite it. Try taking a look at the different phases again.
+</Quiz.Tip>
+<Quiz.Tip htmlFor="inverse">
+  That's right! We didn't move the square back to its original position, causing
+  the square to look like it jumped a bit.
+</Quiz.Tip>
+<Quiz.Tip htmlFor="play">
+  Hmm, that's not quite it. Try taking a look at the different phases again.
+</Quiz.Tip>
+
+</Quiz>
+
+What's going wrong in the <Quiz.Spoiler htmlFor="broken-flip-step">inverse</Quiz.Spoiler> phase, and how do we fix it?
+
+### Size Affects Distance Travelled
+
+When an element changes size, the distance that it travels changes as well. Specifically, if an element gets smaller, it has to travel _further_, and if it gets bigger, it has to travel _nearer_.
+
+```
+relationship between size and distance
+```
 
 This little bug is happening because our invert algorithm is coming up a little short from where the element used to be:
 
-- Something that shows the algorithm coming up a little short
+```
+show inverse coming up a bit short
+```
 
 To get this to work right, we need to make sure that our algorithm takes into account any changes in size as well. But, how do we change it?
 

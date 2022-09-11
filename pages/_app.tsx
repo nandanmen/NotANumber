@@ -10,7 +10,6 @@ function MyApp({ Component, pageProps }) {
       value={{ dark: darkTheme.className, light: "light" }}
     >
       <Wrapper>
-        <Background />
         <Component {...pageProps} />
       </Wrapper>
     </ThemeProvider>

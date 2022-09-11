@@ -199,6 +199,12 @@ const Article = styled("article", {
     textDecoration: "none",
   },
 
+  "> p": {
+    "> span > code, > code": {
+      background: "$gray2",
+    },
+  },
+
   "*": {
     "&[data-theme='dark']": {
       display: "none",

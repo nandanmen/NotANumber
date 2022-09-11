@@ -35,6 +35,11 @@ export const Sandbox = ({ files }: SandboxProps) => {
           },
         }}
         files={files}
+        customSetup={{
+          dependencies: {
+            popmotion: "11.0.5",
+          },
+        }}
       >
         <Layout>
           <SandpackCodeEditor key="code-editor" />
