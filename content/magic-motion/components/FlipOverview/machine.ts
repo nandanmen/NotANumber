@@ -1,35 +1,46 @@
 import { createMachine } from "xstate";
 
+export const STATE_ORDER = ["idle", "first", "last", "inverse", "play"];
+
 export const machine = createMachine({
   id: "flipLast",
   initial: "idle",
   context: {
-    origin: null,
-    box: null,
+    firstBox: null,
+    lastBox: null,
   },
   states: {
     idle: {
       on: {
-        click: "toggled",
-        toggle: "toggled",
+        next: "first",
       },
     },
-    toggled: {
-      entry: ["measureOrigin"],
+    first: {
+      entry: ["measureFirst"],
       on: {
-        hover: "hovering",
-        click: "measured",
+        next: "last",
       },
     },
-    hovering: {
+    last: {
+      entry: ["measureLast", "removeTransform"],
       on: {
-        hoverEnd: "toggled",
-        click: "measured",
+        next: "inverse",
+        prev: "first",
       },
     },
-    measured: {
-      type: "final",
-      entry: ["measureBox"],
+    inverse: {
+      entry: ["invert"],
+      on: {
+        next: "play",
+        prev: "last",
+      },
+    },
+    play: {
+      entry: ["play"],
+      on: {
+        prev: "inverse",
+        next: "first",
+      },
     },
   },
 });

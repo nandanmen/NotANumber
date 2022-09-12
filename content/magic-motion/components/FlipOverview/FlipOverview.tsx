@@ -1,12 +1,16 @@
 import React from "react";
+import { useMachine } from "@xstate/react";
+import { assign } from "xstate";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { FaUndo } from "react-icons/fa";
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
+import { BsPlayFill, BsPauseFill } from "react-icons/bs";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper, ToggleButton, Controls } from "../shared";
+import { ContentWrapper, ToggleButton } from "../shared";
+import { machine, STATE_ORDER } from "./machine";
 
 const PADDING = 45;
 const SQUARE_RADIUS = 60;
@@ -16,31 +20,61 @@ export const FlipOverview = () => {
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
   const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
 
-  /**
-   * Measure the initial and last positions
-   */
+  // Playing states
+  const [playing, setPlaying] = React.useState(false);
+
   const initialRef = React.useRef<SVGRectElement>();
   const finalRef = React.useRef<SVGRectElement>();
 
-  const [initialBox, setInitialBox] = React.useState(null);
-  const [finalBox, setFinalBox] = React.useState(null);
+  const [state, send] = useMachine(machine, {
+    actions: {
+      measureFirst: assign({
+        firstBox: () => initialRef.current.getBoundingClientRect(),
+      }),
+      measureLast: assign({
+        lastBox: () => finalRef.current.getBoundingClientRect(),
+      }),
+      invert: () => {
+        const startX = state.context.firstBox?.x ?? 0;
+        const endX = state.context.lastBox?.x ?? 0;
+        const distance = endX - startX;
+        x.set(-1 * distance);
+      },
+      removeTransform: () => {
+        x.set(0);
+      },
+      play: () => {
+        animate(x, 0, { duration: 3, onComplete: () => setPlaying(false) });
+      },
+    },
+  });
 
   React.useEffect(() => {
-    setInitialBox(initialRef.current.getBoundingClientRect());
-    setFinalBox(finalRef.current.getBoundingClientRect());
-  }, []);
+    if (playing) {
+      const timeout = setInterval(() => {
+        if (!state.matches("play")) {
+          send("next");
+        } else {
+          clearInterval(timeout);
+        }
+      }, 1200);
+      return () => clearInterval(timeout);
+    }
+  }, [playing, send, state]);
 
-  /**
-   * Move the element to the initial position
-   */
-  const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
-  React.useEffect(() => x.set(-1 * distance), [distance, x]);
+  const stateAfter = (compareState: string) => {
+    return (
+      STATE_ORDER.indexOf(state.value as string) >=
+      STATE_ORDER.indexOf(compareState)
+    );
+  };
 
   /**
    * Updating the line and text with the motion value
    */
   const lineRef = React.useRef<SVGLineElement>();
   const textRef = React.useRef<SVGTextElement>();
+
   React.useEffect(() => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(
@@ -51,17 +85,37 @@ export const FlipOverview = () => {
     });
   }, [x]);
 
+  const showTransformVisuals = ["inverse", "play"].some(state.matches);
+  const toggled = stateAfter("last");
+
   return (
     <FullWidth>
       <div>
-        <Controls>
-          <ToggleButton onClick={() => animate(x, 0, { duration: 3 })}>
-            Play
-          </ToggleButton>
-          <UndoButton onClick={() => x.set(-1 * distance)}>
-            <FaUndo />
-          </UndoButton>
-        </Controls>
+        <Header>
+          <StateControls>
+            <StateButton onClick={() => setPlaying(!playing)}>
+              {playing ? <BsPauseFill /> : <BsPlayFill />}
+            </StateButton>
+            <StateButton
+              onClick={() => send("prev")}
+              disabled={!state.can("prev")}
+            >
+              <HiArrowLeft />
+            </StateButton>
+            <StateButton
+              onClick={() => send("next")}
+              disabled={!state.can("next")}
+            >
+              <HiArrowRight />
+            </StateButton>
+          </StateControls>
+          <FlipStateList>
+            <FlipState active={state.matches("first")}>First</FlipState>
+            <FlipState active={state.matches("last")}>Last</FlipState>
+            <FlipState active={state.matches("inverse")}>Inverse</FlipState>
+            <FlipState active={state.matches("play")}>Play</FlipState>
+          </FlipStateList>
+        </Header>
         <GridBackground>
           <Content>
             <svg width="100%" height="100%">
@@ -70,25 +124,53 @@ export const FlipOverview = () => {
                 ref={finalRef}
                 x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
               />
+              <TranslateText
+                x={PADDING}
+                y="50%"
+                style={{ translateY: -(SQUARE_RADIUS + 15) }}
+                visible={stateAfter("first")}
+              >
+                x: {state.context.firstBox?.x.toFixed(1)}
+              </TranslateText>
+              <TranslateText
+                x="100%"
+                y="50%"
+                style={{
+                  translateY: -(SQUARE_RADIUS + 15),
+                  translateX: -(SQUARE_RADIUS * 2 + PADDING),
+                }}
+                visible={stateAfter("last")}
+              >
+                x: {state.context.lastBox?.x.toFixed(1)}
+              </TranslateText>
               <AnchorLine
                 ref={lineRef}
                 x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
                 y1="50%"
                 y2="50%"
+                style={{
+                  display: showTransformVisuals ? "block" : "none",
+                }}
               />
-              <AnchorCircle style={{ rotate: x }} />
+              <AnchorCircle
+                style={{
+                  rotate: x,
+                }}
+                hidden={!showTransformVisuals}
+              />
               <Element
-                x={`calc(100% - ${PADDING}px)`}
-                style={{ translateX: squareTranslateX }}
+                x={toggled ? `calc(100% - ${PADDING}px)` : PADDING}
+                style={{ translateX: toggled ? squareTranslateX : 0 }}
               />
               <TranslateText
                 ref={textRef}
+                x="100%"
+                y="50%"
+                visible={showTransformVisuals}
                 style={{
                   translateY: SQUARE_RADIUS + 25,
                   translateX: textTranslateX,
                 }}
-                x="100%"
-                y="50%"
               />
             </svg>
           </Content>
@@ -98,17 +180,57 @@ export const FlipOverview = () => {
   );
 };
 
-const UndoButton = styled(ToggleButton, {
+const StateButton = styled(ToggleButton, {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   color: "$gray10",
-  height: 22,
+});
+
+const StateControls = styled("div", {
+  display: "flex",
+  gap: "$1",
+});
+
+const Header = styled("header", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: "$2",
+});
+
+const FlipStateList = styled("ol", {
+  listStyle: "none",
+  display: "flex",
+  gap: "$1",
+});
+
+const FlipState = styled("li", {
+  opacity: 0.2,
+  transition: "opacity 0.3s ease-out",
+
+  variants: {
+    active: {
+      true: {
+        opacity: 1,
+      },
+    },
+  },
 });
 
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
+  opacity: 0,
+  transition: "opacity 0.3s ease-out",
+
+  variants: {
+    visible: {
+      true: {
+        opacity: 1,
+      },
+    },
+  },
 });
 
 const Content = styled(ContentWrapper, {
@@ -125,6 +247,13 @@ const AnchorCircle = styled(motion.circle, {
   strokeWidth: 2,
   strokeDasharray: "12 2",
   r: 10,
+  variants: {
+    hidden: {
+      true: {
+        opacity: 0,
+      },
+    },
+  },
 });
 
 const AnchorLine = styled("line", {

@@ -59,8 +59,8 @@ export const baseTheme = {
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `Source Code Pro, ui-monospace, monospace`,
-    sans: `system-ui, -apple-system, sans-serif`,
+    mono: `Berkeley Mono, ui-monospace, monospace`,
+    sans: `Karla, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {
     sm: "0.875rem",
