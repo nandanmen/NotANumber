@@ -227,6 +227,7 @@ const Article = styled("article", {
     fontSize: "$sm",
     marginTop: "$4",
     marginBottom: "$8",
+    overflowX: "auto",
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {
