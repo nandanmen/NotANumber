@@ -23,6 +23,7 @@ import { FlipOverview } from "./components/FlipOverview";
 import { InverseSandbox } from "./components/InverseSandbox";
 import { InitialPositionSandbox } from "./components/InitialPositionSandbox";
 import { PlaySandbox } from "./components/PlaySandbox";
+import { SizeLayoutExample } from "./components/SizeLayoutExample";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -174,9 +175,7 @@ So far we've only used FLIP to animate a change in _position_. Can we do the sam
 
 In this section, we'll try to replicate the following animation where the square stretches to fill the whole container:
 
-```
-fill container
-```
+<SizeLayoutExample />
 
 We won't mix changes in position and size together for now; we'll get to that in a bit.
 
