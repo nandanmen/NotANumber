@@ -64,8 +64,7 @@ export const FlipOverview = () => {
 
   const stateAfter = (compareState: string) => {
     return (
-      STATE_ORDER.indexOf(state.value as string) >=
-      STATE_ORDER.indexOf(compareState)
+      STATE_ORDER.indexOf(state.value as string) >= STATE_ORDER.indexOf(compareState)
     );
   };
 
@@ -77,13 +76,15 @@ export const FlipOverview = () => {
 
   React.useEffect(() => {
     return x.onChange((val) => {
+      const distance =
+        (state.context.lastBox?.x ?? 0) - (state.context.firstBox?.x ?? 0);
       lineRef.current?.setAttribute(
         "x1",
-        `calc(100% - ${SQUARE_RADIUS + PADDING}px + ${val}px)`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
       );
       textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
     });
-  }, [x]);
+  }, [x, state]);
 
   const showTransformVisuals = ["inverse", "play"].some(state.matches);
   const toggled = stateAfter("last");
@@ -96,16 +97,10 @@ export const FlipOverview = () => {
             <StateButton onClick={() => setPlaying(!playing)}>
               {playing ? <BsPauseFill /> : <BsPlayFill />}
             </StateButton>
-            <StateButton
-              onClick={() => send("prev")}
-              disabled={!state.can("prev")}
-            >
+            <StateButton onClick={() => send("prev")} disabled={!state.can("prev")}>
               <HiArrowLeft />
             </StateButton>
-            <StateButton
-              onClick={() => send("next")}
-              disabled={!state.can("next")}
-            >
+            <StateButton onClick={() => send("next")} disabled={!state.can("next")}>
               <HiArrowRight />
             </StateButton>
           </StateControls>
@@ -145,16 +140,18 @@ export const FlipOverview = () => {
               </TranslateText>
               <AnchorLine
                 ref={lineRef}
-                x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
+                x2="100%"
                 y1="50%"
                 y2="50%"
                 style={{
+                  transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
                   display: showTransformVisuals ? "block" : "none",
                 }}
               />
               <AnchorCircle
                 style={{
                   rotate: x,
+                  translateX: -(SQUARE_RADIUS + PADDING),
                 }}
                 hidden={!showTransformVisuals}
               />
@@ -240,13 +237,13 @@ const Content = styled(ContentWrapper, {
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
+  cx: "100%",
   cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
   strokeWidth: 2,
   strokeDasharray: "12 2",
-  r: 10,
+  r: "10px",
   variants: {
     hidden: {
       true: {
@@ -266,7 +263,7 @@ const Square = styled(motion.rect, {
   height: 120,
   fill: "$gray5",
   stroke: "$gray8",
-  rx: 6,
+  rx: "6px",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
 });
 

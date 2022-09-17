@@ -26,7 +26,6 @@ export const FlipInverse = () => {
   }, []);
 
   const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
-  const scale = distance > 0 ? x / distance : 0;
 
   return (
     <FullWidth>
@@ -46,16 +45,15 @@ export const FlipInverse = () => {
                 x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
               />
               <AnchorLine
-                x1={SQUARE_RADIUS + PADDING}
-                x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
+                x1={(SQUARE_RADIUS + PADDING) * 2 + x + distance}
+                x2="100%"
                 y1="50%"
                 y2="50%"
-                style={{
-                  transform: `scaleX(${Math.abs(scale)})`,
-                  transformOrigin: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
-                }}
+                style={{ transform: `translateX(-${SQUARE_RADIUS + PADDING}px)` }}
               />
-              <AnchorCircle animate={{ rotate: x }} />
+              <AnchorCircle
+                animate={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
+              />
               <Element
                 x={`calc(100% - ${PADDING}px)`}
                 animate={{ translateX: -(SQUARE_RADIUS * 2) + x }}
@@ -90,13 +88,13 @@ const Content = styled(ContentWrapper, {
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
+  cx: "100%",
   cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
   strokeWidth: 2,
   strokeDasharray: "12 2",
-  r: 10,
+  r: "10px",
 });
 
 const AnchorLine = styled("line", {
@@ -115,7 +113,7 @@ const Square = styled(motion.rect, {
   height: 120,
   fill: "$gray5",
   stroke: "$gray8",
-  rx: 6,
+  rx: "6px",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
 });
 

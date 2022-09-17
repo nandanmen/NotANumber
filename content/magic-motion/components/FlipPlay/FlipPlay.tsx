@@ -45,11 +45,11 @@ export const FlipPlay = () => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(
         "x1",
-        `calc(100% - ${SQUARE_RADIUS + PADDING}px + ${val}px)`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
       );
       textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
     });
-  }, [x]);
+  }, [x, distance]);
 
   return (
     <FullWidth>
@@ -72,11 +72,15 @@ export const FlipPlay = () => {
               />
               <AnchorLine
                 ref={lineRef}
-                x2={`calc(100% - ${SQUARE_RADIUS + PADDING}px)`}
+                x1={(SQUARE_RADIUS + PADDING) * 2}
+                x2="100%"
                 y1="50%"
                 y2="50%"
+                style={{ transform: `translateX(-${SQUARE_RADIUS + PADDING}px)` }}
               />
-              <AnchorCircle style={{ rotate: x }} />
+              <AnchorCircle
+                style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
+              />
               <Element
                 x={`calc(100% - ${PADDING}px)`}
                 style={{ translateX: squareTranslateX }}
@@ -89,7 +93,9 @@ export const FlipPlay = () => {
                 }}
                 x="100%"
                 y="50%"
-              />
+              >
+                translateX(-{distance.toFixed(0)}px)
+              </TranslateText>
             </svg>
           </Content>
         </GridBackground>
@@ -118,13 +124,13 @@ const Content = styled(ContentWrapper, {
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: `calc(100% - ${SQUARE_RADIUS + PADDING}px)`,
+  cx: "100%",
   cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
   strokeWidth: 2,
   strokeDasharray: "12 2",
-  r: 10,
+  r: "10px",
 });
 
 const AnchorLine = styled("line", {
@@ -137,7 +143,7 @@ const Square = styled(motion.rect, {
   height: 120,
   fill: "$gray5",
   stroke: "$gray8",
-  rx: 6,
+  rx: "6px",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
 });
 

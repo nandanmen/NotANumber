@@ -4,15 +4,9 @@ import "../styles/fonts.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      value={{ dark: darkTheme.className, light: "light" }}
-    >
-      <Wrapper>
-        <Component {...pageProps} />
-      </Wrapper>
-    </ThemeProvider>
+    <Wrapper>
+      <Component {...pageProps} />
+    </Wrapper>
   );
 }
 
