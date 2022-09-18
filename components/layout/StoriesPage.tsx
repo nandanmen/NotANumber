@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
 
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { styled } from "~/stitches.config";
@@ -18,41 +19,54 @@ export default function StoriesPage({
   stories,
   activeStory,
 }: StoriesPageProps) {
+  const [showSidebar, toggle] = React.useReducer((state) => !state, true);
   const currentStory = stories
     .flatMap((group) => group.stories)
     .find((story) => story.name === activeStory);
+
   return (
     <Main>
       <ToggleWrapper>
         <ThemeToggle />
       </ToggleWrapper>
-      <Sidebar>
-        <ul>
-          {stories.map((group) => (
-            <li key={group.name}>
-              <p>{group.name}</p>
-              <ul>
-                {group.stories.map((story) => (
-                  <li key={story.name}>
-                    <Link href={`./${story.name}`}>
-                      <a>{story.name}</a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </Sidebar>
+      {showSidebar ? (
+        <Sidebar>
+          <button onClick={toggle}>
+            <HiArrowLeft />
+          </button>
+          <ul>
+            {stories.map((group) => (
+              <li key={group.name}>
+                <p>{group.name}</p>
+                <ul>
+                  {group.stories.map((story) => (
+                    <li key={story.name}>
+                      <Link href={`/_stories/${story.name}`}>
+                        <a>{story.name}</a>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </Sidebar>
+      ) : (
+        <SidebarToggleButton>
+          <button onClick={toggle}>
+            <HiArrowRight />
+          </button>
+        </SidebarToggleButton>
+      )}
       <ContentWrapper>
         {currentStory && (
           <Content>
             {Object.entries(currentStory.variants).map(
               ([variant, Component]) => (
-                <>
+                <React.Fragment key={variant}>
                   <h2>{variant}</h2>
                   <Component />
-                </>
+                </React.Fragment>
               )
             )}
           </Content>
@@ -62,6 +76,12 @@ export default function StoriesPage({
   );
 }
 
+const SidebarToggleButton = styled("div", {
+  position: "fixed",
+  top: "$2",
+  left: "$2",
+});
+
 const ToggleWrapper = styled("div", {
   position: "fixed",
   top: "$2",
@@ -70,18 +90,17 @@ const ToggleWrapper = styled("div", {
 
 const Main = styled("main", {
   display: "grid",
-  gridTemplateColumns: "200px 1fr",
+  gridTemplateColumns: "min-content 1fr",
   gap: "$8",
-  minHeight: "calc(100vh - calc($space$16 * 2))",
+  height: "100vh",
+  margin: "-$16 0",
 });
 
 const Sidebar = styled("aside", {
   borderRight: "1px solid $gray8",
   fontFamily: "$mono",
-  position: "fixed",
   top: "0",
   bottom: "0",
-  width: 200,
   padding: "$4",
 
   ul: {
@@ -110,7 +129,8 @@ const Sidebar = styled("aside", {
 
 const ContentWrapper = styled("div", {
   gridColumn: 2,
-  paddingRight: "$8",
+  padding: "$8 0",
+  overflowY: "scroll",
 });
 
 const Content = styled("ul", {
