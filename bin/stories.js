@@ -40,6 +40,7 @@ const parseStoryPath = (storyPath) => {
     isContentComponent,
     path,
     postName,
+    groupName: isContentComponent ? postName : parts[0],
     asImport: `import * as ${name} from './${path}'`,
   };
 };
@@ -47,8 +48,7 @@ const parseStoryPath = (storyPath) => {
 const toGroups = (stories) => {
   const groups = {};
   stories.forEach((story) => {
-    const { postName, name } = story;
-    const groupName = postName ? postName : "shared";
+    const { postName, name, groupName } = story;
     if (!groups[groupName]) {
       groups[groupName] = [];
     }

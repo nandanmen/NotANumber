@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "component": "node bin/component.js",
     "dev": "concurrently \"next dev\" \"yarn build:content --watch\"",
     "build": "yarn build:content && next build",
     "build:content": "rm -rf ./_dist-content && babel ./content --out-dir ./_dist-content --copy-files --extensions .ts,.tsx",
     "start": "next start",
+    "stories": "node bin/stories.js",
     "lint": "next lint"
   },
   "dependencies": {
