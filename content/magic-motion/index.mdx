@@ -195,21 +195,19 @@ first and last visual
 
 ### Inverting Size Changes
 
-To invert the size change, we use `scale` instead of `translate`:
+To invert the size change, we'll use `scale` instead of `translate`:
 
 ```ts
-applyTransform({
-  element: elementRef.current,
-  transform: { x, y, scaleX, scaleY },
-});
+const deltaWidth = box.width / initialBoxRef.current.width;
 ```
 
-And instead of animating the scale to zero, we animate the scale to one (if we animate to zero, the element will disappear altogether):
+And instead of animating the scale to zero like we did with position, we'll animate the scale to one (if we animate to zero instead, the element will disappear altogether):
 
 ```ts
-play({
-  element: elementRef.current,
-  from: { x, y, scaleX, scaleY },
+animate({
+  from: deltaWidth,
+  to: 1,
+  // ...
 });
 ```
 
@@ -220,8 +218,6 @@ By putting everything together, we get a square that seamlessly transitions betw
 ```
 flip with size
 ```
-
-Now that we can animate both position and size, we're surely done, right?
 
 ## Consolidating Size with Position
 
@@ -274,11 +270,17 @@ What's going wrong in the <Quiz.Spoiler htmlFor="broken-flip-step">inverse</Quiz
 
 ### Size Affects Distance Travelled
 
-When an element changes size, the distance that it travels changes as well. Specifically, if an element gets smaller, it has to travel _further_, and if it gets bigger, it has to travel _nearer_.
+Let's try to figure this out.
+
+Here's the animation again. Try changing the final size of the square and see if you notice anything about how the distance changes:
 
 ```
 relationship between size and distance
 ```
+
+Did you see it?
+
+It turns out that when an element changes size, the distance that element travels will change too! In particular, if an element gets smaller, it has to travel further, and if it gets bigger, it has to travel closer (to its original position).
 
 This little bug is happening because our invert algorithm is coming up a little short from where the element used to be:
 
