@@ -76,8 +76,8 @@ export const baseTheme = {
     title: 1,
   },
   shadows: {
-    sm: "1px 1px 0 0 rgba(0, 0, 0, 0.2)",
-    md: "2px 2px 0 0 rgba(0, 0, 0, 0.2)",
+    md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    sm: "0 8px 16px hsla(0, 0%, 0%, 0.03)",
   },
   radii: {
     base: "6px",

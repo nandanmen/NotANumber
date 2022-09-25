@@ -76,7 +76,9 @@ export const FlipPlay = () => {
                 x2="100%"
                 y1="50%"
                 y2="50%"
-                style={{ transform: `translateX(-${SQUARE_RADIUS + PADDING}px)` }}
+                style={{
+                  transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
+                }}
               />
               <AnchorCircle
                 style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
@@ -145,6 +147,7 @@ const Square = styled(motion.rect, {
   stroke: "$gray8",
   rx: "6px",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
+  filter: "drop-shadow(var(--shadows-sm))",
 });
 
 const Element = styled(Square, {

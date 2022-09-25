@@ -64,7 +64,8 @@ export const FlipOverview = () => {
 
   const stateAfter = (compareState: string) => {
     return (
-      STATE_ORDER.indexOf(state.value as string) >= STATE_ORDER.indexOf(compareState)
+      STATE_ORDER.indexOf(state.value as string) >=
+      STATE_ORDER.indexOf(compareState)
     );
   };
 
@@ -97,10 +98,16 @@ export const FlipOverview = () => {
             <StateButton onClick={() => setPlaying(!playing)}>
               {playing ? <BsPauseFill /> : <BsPlayFill />}
             </StateButton>
-            <StateButton onClick={() => send("prev")} disabled={!state.can("prev")}>
+            <StateButton
+              onClick={() => send("prev")}
+              disabled={!state.can("prev")}
+            >
               <HiArrowLeft />
             </StateButton>
-            <StateButton onClick={() => send("next")} disabled={!state.can("next")}>
+            <StateButton
+              onClick={() => send("next")}
+              disabled={!state.can("next")}
+            >
               <HiArrowRight />
             </StateButton>
           </StateControls>
@@ -265,6 +272,7 @@ const Square = styled(motion.rect, {
   stroke: "$gray8",
   rx: "6px",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
+  filter: "drop-shadow(var(--shadows-sm))",
 });
 
 const Element = styled(Square, {

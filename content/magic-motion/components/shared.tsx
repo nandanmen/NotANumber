@@ -10,7 +10,7 @@ export const Tooltip = styled(motion.div, {
   background: "$gray2",
   borderRadius: "$base",
   border: "1px solid $gray9",
-  boxShadow: "$md",
+  boxShadow: "$sm",
 
   "&:after": {
     content: "",
@@ -108,6 +108,7 @@ export const Square = styled(motion.button, {
   border: "1px solid $blue7",
   textAlign: "center",
   color: "$blue11",
+  boxShadow: "$sm",
 
   [`.${darkTheme} &`]: {
     background: "$blue7",
