@@ -175,3 +175,20 @@ export const ToggleButton = styled(motion.button, {
 export const AlignmentText = styled("p", {
   fontFamily: "$mono",
 });
+
+export const DynamicIsland = styled(motion.div, {
+  position: "relative",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  zIndex: 10,
+  background: "$gray4",
+  boxShadow: "$sm",
+  padding: "$2",
+  borderRadius: "$base",
+  border: "1px solid hsla(0, 0%, 0%, 0.2)",
+  width: "fit-content",
+  margin: "0 auto",
+  marginTop: "-$4",
+  gap: "$1",
+});

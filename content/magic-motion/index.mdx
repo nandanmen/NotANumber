@@ -171,9 +171,7 @@ Voila! Magical layout animations.
 
 ## Animating Size
 
-So far we've only used FLIP to animate a change in _position_. Can we do the same thing but for _size_?
-
-In this section, we'll try to replicate the following animation where the square stretches to fill the whole container:
+So far we've only used FLIP to animate a change in _position_. Can we do the same thing but for _size_? Let's try to replicate the following animation where the square stretches to fill the whole container:
 
 <SizeLayoutExample />
 
@@ -181,13 +179,11 @@ We won't mix changes in position and size together for now; we'll get to that in
 
 ### Measuring Size Changes
 
-Thankfully, the `.getBoundingClientRect()` method we used to measure the square also returns the `width` and `height` of the element.
+We'll start off by measuring the size of the square before and after the layout change. Thankfully, the `.getBoundingClientRect()` method we used to measure the square also happens to return the `width` and `height` of the element:
 
 ```ts
 const { width, height } = squareRef.current.getBoundingClientRect();
 ```
-
-We can use this to measure the square's size before and after the layout change:
 
 ```
 first and last visual

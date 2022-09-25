@@ -9,7 +9,7 @@ import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper, ToggleButton } from "../shared";
+import { ContentWrapper, ToggleButton, DynamicIsland } from "../shared";
 import { machine, STATE_ORDER } from "./machine";
 
 const PADDING = 45;
@@ -93,29 +93,6 @@ export const FlipOverview = () => {
   return (
     <FullWidth>
       <div>
-        <Header>
-          <StateButton onClick={() => setPlaying(!playing)}>
-            {playing ? <BsPauseFill /> : <BsPlayFill />}
-          </StateButton>
-          <FlipStateList>
-            <FlipState active={state.matches("first")}>First</FlipState>
-            <FlipState active={state.matches("last")}>Last</FlipState>
-            <FlipState active={state.matches("inverse")}>Inverse</FlipState>
-            <FlipState active={state.matches("play")}>Play</FlipState>
-          </FlipStateList>
-          <StateButton
-            onClick={() => send("prev")}
-            disabled={!state.can("prev")}
-          >
-            <HiArrowLeft />
-          </StateButton>
-          <StateButton
-            onClick={() => send("next")}
-            disabled={!state.can("next")}
-          >
-            <HiArrowRight />
-          </StateButton>
-        </Header>
         <GridBackground>
           <Content>
             <svg width="100%" height="100%">
@@ -177,6 +154,29 @@ export const FlipOverview = () => {
             </svg>
           </Content>
         </GridBackground>
+        <DynamicIsland>
+          <StateButton onClick={() => setPlaying(!playing)}>
+            {playing ? <BsPauseFill /> : <BsPlayFill />}
+          </StateButton>
+          <FlipStateList>
+            <FlipState active={state.matches("first")}>First</FlipState>
+            <FlipState active={state.matches("last")}>Last</FlipState>
+            <FlipState active={state.matches("inverse")}>Inverse</FlipState>
+            <FlipState active={state.matches("play")}>Play</FlipState>
+          </FlipStateList>
+          <StateButton
+            onClick={() => send("prev")}
+            disabled={!state.can("prev")}
+          >
+            <HiArrowLeft />
+          </StateButton>
+          <StateButton
+            onClick={() => send("next")}
+            disabled={!state.can("next")}
+          >
+            <HiArrowRight />
+          </StateButton>
+        </DynamicIsland>
       </div>
     </FullWidth>
   );
@@ -187,23 +187,6 @@ const StateButton = styled(ToggleButton, {
   alignItems: "center",
   justifyContent: "center",
   color: "$gray10",
-});
-
-const Header = styled("header", {
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  zIndex: 10,
-  background: "$gray3",
-  boxShadow: "$sm",
-  padding: "$2",
-  borderRadius: "$base",
-  border: "1px solid hsla(0, 0%, 0%, 0.2)",
-  width: "fit-content",
-  margin: "0 auto",
-  marginBottom: "-$2",
-  gap: "$1",
 });
 
 const FlipStateList = styled("ol", {

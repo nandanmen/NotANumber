@@ -4,20 +4,13 @@ import { BsPlayFill, BsPauseFill } from "react-icons/bs";
 
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
-import { ChangeIndicator } from "~/components/ChangeIndicator";
 import { styled } from "~/stitches.config";
 import { useStepPlayer } from "~/lib/algorithm";
 
-import {
-  Square,
-  ContentWrapper,
-  Controls,
-  ToggleButton,
-  AlignmentText,
-} from "../shared";
+import { ContentWrapper, ToggleButton } from "../shared";
+import { SizeExample } from "../size";
 
 export const SizeMeasurements = () => {
-  const [toggled, toggle] = React.useReducer((state) => !state, false);
   const [step, player] = useStepPlayer(["first", "last"]);
 
   return (
@@ -47,11 +40,7 @@ export const SizeMeasurements = () => {
       </Header>
       <GridBackground>
         <Content>
-          <DisplayOnlySquare
-            layout
-            transition={{ duration: 1 }}
-            toggled={step === "last"}
-          />
+          <SizeExample toggled={step === "last"} />
         </Content>
       </GridBackground>
     </FullWidth>
@@ -95,20 +84,6 @@ const FlipState = styled("li", {
     active: {
       true: {
         opacity: 1,
-      },
-    },
-  },
-});
-
-const DisplayOnlySquare = styled(Square, {
-  pointerEvents: "none",
-  height: 120,
-
-  variants: {
-    toggled: {
-      true: {
-        width: "100%",
-        aspectRatio: "auto",
       },
     },
   },
