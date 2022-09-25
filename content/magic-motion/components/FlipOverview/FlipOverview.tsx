@@ -94,29 +94,27 @@ export const FlipOverview = () => {
     <FullWidth>
       <div>
         <Header>
-          <StateControls>
-            <StateButton onClick={() => setPlaying(!playing)}>
-              {playing ? <BsPauseFill /> : <BsPlayFill />}
-            </StateButton>
-            <StateButton
-              onClick={() => send("prev")}
-              disabled={!state.can("prev")}
-            >
-              <HiArrowLeft />
-            </StateButton>
-            <StateButton
-              onClick={() => send("next")}
-              disabled={!state.can("next")}
-            >
-              <HiArrowRight />
-            </StateButton>
-          </StateControls>
+          <StateButton onClick={() => setPlaying(!playing)}>
+            {playing ? <BsPauseFill /> : <BsPlayFill />}
+          </StateButton>
           <FlipStateList>
             <FlipState active={state.matches("first")}>First</FlipState>
             <FlipState active={state.matches("last")}>Last</FlipState>
             <FlipState active={state.matches("inverse")}>Inverse</FlipState>
             <FlipState active={state.matches("play")}>Play</FlipState>
           </FlipStateList>
+          <StateButton
+            onClick={() => send("prev")}
+            disabled={!state.can("prev")}
+          >
+            <HiArrowLeft />
+          </StateButton>
+          <StateButton
+            onClick={() => send("next")}
+            disabled={!state.can("next")}
+          >
+            <HiArrowRight />
+          </StateButton>
         </Header>
         <GridBackground>
           <Content>
@@ -191,22 +189,28 @@ const StateButton = styled(ToggleButton, {
   color: "$gray10",
 });
 
-const StateControls = styled("div", {
-  display: "flex",
-  gap: "$1",
-});
-
 const Header = styled("header", {
+  position: "relative",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  marginBottom: "$2",
+  zIndex: 10,
+  background: "$gray3",
+  boxShadow: "$sm",
+  padding: "$2",
+  borderRadius: "$base",
+  border: "1px solid hsla(0, 0%, 0%, 0.2)",
+  width: "fit-content",
+  margin: "0 auto",
+  marginBottom: "-$2",
+  gap: "$1",
 });
 
 const FlipStateList = styled("ol", {
   listStyle: "none",
   display: "flex",
-  gap: "$1",
+  gap: "$2",
+  margin: "0 $10",
 });
 
 const FlipState = styled("li", {
