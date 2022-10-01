@@ -24,6 +24,7 @@ import { InverseSandbox } from "./components/InverseSandbox";
 import { InitialPositionSandbox } from "./components/InitialPositionSandbox";
 import { PlaySandbox } from "./components/PlaySandbox";
 import { SizeLayoutExample } from "./components/SizeLayoutExample";
+import { SizeMeasurements } from "./components/SizeMeasurements";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -185,16 +186,24 @@ We'll start off by measuring the size of the square before and after the layout 
 const { width, height } = squareRef.current.getBoundingClientRect();
 ```
 
-```
-first and last visual
-```
+<SizeMeasurements />
 
 ### Inverting Size Changes
 
-To invert the size change, we'll use `scale` instead of `translate`:
+To invert the size change, we'll divide the final size with the initial size:
 
 ```ts
 const deltaWidth = box.width / initialBoxRef.current.width;
+```
+
+This gives us a number that we can pass to `scale`:
+
+```ts
+squareRef.current.style.transform = `scaleX(${deltaWidth})`;
+```
+
+```
+inverse scale slider
 ```
 
 And instead of animating the scale to zero like we did with position, we'll animate the scale to one (if we animate to zero instead, the element will disappear altogether):
@@ -205,6 +214,10 @@ animate({
   to: 1,
   // ...
 });
+```
+
+```
+scale play animation
 ```
 
 ### Putting Everything Together
