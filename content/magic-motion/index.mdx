@@ -25,6 +25,7 @@ import { InitialPositionSandbox } from "./components/InitialPositionSandbox";
 import { PlaySandbox } from "./components/PlaySandbox";
 import { SizeLayoutExample } from "./components/SizeLayoutExample";
 import { SizeMeasurements } from "./components/SizeMeasurements";
+import { InverseSizeSlider } from "./components/InverseSizeSlider";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -202,9 +203,7 @@ This gives us a number that we can pass to `scale`:
 squareRef.current.style.transform = `scaleX(${deltaWidth})`;
 ```
 
-```
-inverse scale slider
-```
+<InverseSizeSlider />
 
 And instead of animating the scale to zero like we did with position, we'll animate the scale to one (if we animate to zero instead, the element will disappear altogether):
 
