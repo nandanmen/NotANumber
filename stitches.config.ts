@@ -84,7 +84,7 @@ export const baseTheme = {
   },
 };
 
-export const { styled, getCssText, globalCss, createTheme, css } =
+export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
   createStitches({
     media: {
       post: `(min-width: 50rem)`,

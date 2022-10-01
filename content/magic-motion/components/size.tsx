@@ -1,26 +1,34 @@
+import React from "react";
 import { motion } from "framer-motion";
 
 import { styled } from "~/stitches.config";
 import { Square } from "./shared";
 
-export const SizeExample = ({ toggled }) => {
+export const SizeExample = React.forwardRef<
+  HTMLButtonElement,
+  { toggled: boolean; layout?: boolean }
+>(function SizeExample({ toggled, layout = true }, ref) {
   return (
     <>
-      <FakeBorder
-        layout
-        transition={{ duration: 1 }}
-        toggled={toggled}
-        style={{ borderRadius: 7 }}
-      />
+      {layout && (
+        <FakeBorder
+          layout={layout}
+          transition={{ duration: 1 }}
+          toggled={toggled}
+          style={{ borderRadius: 7 }}
+        />
+      )}
       <DisplayOnlySquare
-        layout
+        ref={ref}
+        layout={layout}
         transition={{ duration: 1 }}
         toggled={toggled}
         style={{ borderRadius: 6 }}
+        noBorder={layout}
       />
     </>
   );
-};
+});
 
 const FakeBorder = styled(motion.div, {
   position: "absolute",
@@ -41,7 +49,6 @@ const FakeBorder = styled(motion.div, {
 const DisplayOnlySquare = styled(Square, {
   position: "relative",
   pointerEvents: "none",
-  border: "none",
   height: 120,
 
   variants: {
@@ -49,6 +56,11 @@ const DisplayOnlySquare = styled(Square, {
       true: {
         width: "100%",
         aspectRatio: "auto",
+      },
+    },
+    noBorder: {
+      true: {
+        border: "none",
       },
     },
   },
