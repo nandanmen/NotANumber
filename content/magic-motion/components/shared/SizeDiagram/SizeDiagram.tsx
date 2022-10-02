@@ -2,9 +2,7 @@ import React from "react";
 import { motion, MotionValue } from "framer-motion";
 
 import { styled } from "~/stitches.config";
-
-const PADDING = 45;
-const SQUARE_RADIUS = 60;
+import { SQUARE_RADIUS, PADDING, SvgSquare } from "../styles";
 
 export type SizeDiagramProps = {
   scale: MotionValue<number>;
@@ -62,18 +60,22 @@ export const SizeDiagram = ({ scale, onWidthChange }: SizeDiagramProps) => {
   );
 };
 
-const OriginalSquareWrapper = styled("foreignObject", {
-  height: 120,
-  rx: "6px",
+const Square = styled(SvgSquare, {
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
-  filter: "drop-shadow(var(--shadows-sm))",
+});
+
+const OriginalSquareWrapper = styled("foreignObject", {
+  height: SQUARE_RADIUS * 2,
+  rx: "$radii$base",
+  y: `calc(50% - ${SQUARE_RADIUS}px)`,
+  filter: "drop-shadow($shadows$sm)",
   x: PADDING,
 });
 
 const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient( -45deg, $colors$gray8, $colors$gray8 5px, transparent 5px, transparent 10px )`,
+  background: `repeating-linear-gradient(-45deg, $colors$gray8, $colors$gray8 5px, transparent 5px, transparent 10px)`,
   border: "1px solid $gray8",
-  height: 120,
+  height: SQUARE_RADIUS * 2,
   width: "100%",
   borderRadius: "$base",
 });
@@ -88,13 +90,4 @@ const AnchorLine = styled("line", {
   stroke: "$blue7",
   strokeWidth: 1,
   strokeDasharray: "6",
-});
-
-const Square = styled(motion.rect, {
-  height: 120,
-  rx: "6px",
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
-  filter: "drop-shadow(var(--shadows-sm))",
-  fill: "$blue5",
-  stroke: "$blue7",
 });
