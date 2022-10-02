@@ -228,52 +228,19 @@ flip with size
 
 ## Consolidating Size with Position
 
-What happens when we try to animate both size and position together?
+Cool! So far we're able to use FLIP to animate changes in position and size. What happens when we try to animate both size _and_ position?
 
 ```
 broken position and size animation
 ```
 
-Hmm, that looks a little off. Ideally, the animation should look seamless like this:
+Hmm, that looks a little off. What's going on here? If we break down the animation into its individual steps, we can see that the **inverse** step is the culprit:
 
 ```
-working position and size animation
+broken position and size animation inverse
 ```
 
-Let's try to debug this. Here I've broken down the animation to its four FLIP components. Can you spot which step is broken?
-
-```
-broken animation split up into phases
-```
-
-<Quiz label="broken-flip-step" answer="inverse">
-
-<Quiz.Question>Which step is broken?</Quiz.Question>
-
-<Quiz.Options>
-  <Quiz.Option label="first">First</Quiz.Option>
-  <Quiz.Option label="last">Last</Quiz.Option>
-  <Quiz.Option label="inverse">Inverse</Quiz.Option>
-  <Quiz.Option label="play">Play</Quiz.Option>
-</Quiz.Options>
-
-<Quiz.Tip htmlFor="first">
-  Hmm, that's not quite it. Try taking a look at the different phases again.
-</Quiz.Tip>
-<Quiz.Tip htmlFor="last">
-  Hmm, that's not quite it. Try taking a look at the different phases again.
-</Quiz.Tip>
-<Quiz.Tip htmlFor="inverse">
-  That's right! We didn't move the square back to its original position, causing
-  the square to look like it jumped a bit.
-</Quiz.Tip>
-<Quiz.Tip htmlFor="play">
-  Hmm, that's not quite it. Try taking a look at the different phases again.
-</Quiz.Tip>
-
-</Quiz>
-
-What's going wrong in the <Quiz.Spoiler htmlFor="broken-flip-step">inverse</Quiz.Spoiler> phase, and how do we fix it?
+The square should line up exactly with its initial position but it's not quite doing that here.
 
 ### Size Affects Distance Travelled
 
