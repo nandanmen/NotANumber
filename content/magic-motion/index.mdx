@@ -27,6 +27,7 @@ import { SizeLayoutExample } from "./components/SizeLayoutExample";
 import { SizeMeasurements } from "./components/SizeMeasurements";
 import { InverseSizeSlider } from "./components/InverseSizeSlider";
 import { SizePlayAnimation } from "./components/SizePlayAnimation";
+import { SizeDistanceRelationship } from "./components/SizeDistanceRelationship";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -246,31 +247,27 @@ The square should line up exactly with its initial position but it's not quite d
 
 Let's try to figure this out.
 
-Here's the animation again. Try changing the final size of the square and see if you notice anything about how the distance changes:
+Here we have two examples. The first compares the distance between the left _edges_ of the squares, while the second compares the distance between the _centers_ of the squares. Use the slider to change the size of the square and try to spot the difference between the two distances:
 
-```
-relationship between size and distance
-```
+<SizeDistanceRelationship />
 
 Did you see it?
 
-It turns out that when an element changes size, the distance that element travels will change too! In particular, if an element gets smaller, it has to travel further, and if it gets bigger, it has to travel closer (to its original position).
+When the square gets smaller, the distance between the centers is _less_ than the distance between the left edges. But when the square gets bigger, the distance between the centers is _more_ than the distance between the left edges.
 
-This little bug is happening because our invert algorithm is coming up a little short from where the element used to be:
+The distance between the left edges is what we get when we compare the `x` coordinates of the squares as returned by `.getBoundingClientRect()`. This is how our inverse step works currently. On the other hand, the distance between the centers is what we get when we compare the _transform origins_ of the two squares.
+
+Here's what happens when we invert using the distance between the left edges, as we've been doing so far:
 
 ```
 show inverse coming up a bit short
 ```
 
-To get this to work right, we need to make sure that our algorithm takes into account any changes in size as well. But, how do we change it?
+Now what happens if we use the distance between the centers instead?
 
-Specifically, we need to change the _horizontal_ distance travelled by `(oldWidth - newWidth) / 2` and the _vertical_ distance travelled by `(oldHeight - newHeight) / 2`.
-
-<Callout>
-
-There's actually a _tad_ more nuance than that. The change in distance also depends on the element's **transform origin** — but that's a whole rabbit hole that we won't get to. In this post, we'll assume that the transform origin will _always_ be at the center of the element.
-
-</Callout>
+```
+corrected animation with centers
+```
 
 ## Correcting Distortions
 

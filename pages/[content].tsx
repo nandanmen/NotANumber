@@ -201,7 +201,9 @@ const Article = styled("article", {
 
   "> p": {
     "> span > code, > code": {
-      background: "$gray2",
+      background: "$gray7",
+      padding: 2,
+      fontSize: "$sm",
     },
   },
 

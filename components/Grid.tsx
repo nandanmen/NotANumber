@@ -80,6 +80,14 @@ const GridBackgroundWrapper = styled(motion.div, {
   [`.${darkTheme} &`]: {
     backgroundImage: "url(/grid-dark.svg)",
   },
+
+  variants: {
+    noOverflow: {
+      true: {
+        overflow: "hidden",
+      },
+    },
+  },
 });
 
 export const GridOverflowBox = ({ children }) => (
