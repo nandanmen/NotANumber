@@ -11,10 +11,10 @@ import { ToggleButton, Controls } from "../shared";
 import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
 
-const BASE_WIDTH = SQUARE_RADIUS * 2;
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;
 const PADDING = 45;
+const BASE_WIDTH = SQUARE_RADIUS * 2 + 50;
 
 export const IncorrectInverseAnimation = () => {
   const x = useMotionValue(PADDING);
@@ -105,7 +105,7 @@ export const IncorrectInverseAnimation = () => {
               duration: 3,
               onComplete: () => {
                 setShowScale(true);
-                animate(scale, BASE_WIDTH / width, { duration: 1.5 });
+                animate(scale, (SQUARE_RADIUS * 2) / width, { duration: 1.5 });
               },
             });
           }}
@@ -212,26 +212,13 @@ export const IncorrectInverseAnimation = () => {
       <WidthSlider
         value={[width]}
         onValueChange={([newWidth]) => setWidth(newWidth)}
-        max={BASE_WIDTH + MAX_HEIGHT_DELTA}
-        min={BASE_WIDTH - MAX_HEIGHT_DELTA}
+        max={SQUARE_RADIUS * 2 + MAX_HEIGHT_DELTA}
+        min={SQUARE_RADIUS * 2 - MAX_HEIGHT_DELTA}
         step={1}
       />
     </FullWidth>
   );
 };
-
-const OriginalSquareWrapper = styled(motion.foreignObject, {
-  rx: "$radii$base",
-  x: PADDING,
-});
-
-const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient(-45deg, $colors$blue7, $colors$blue7 5px, transparent 5px, transparent 10px)`,
-  border: "1px solid $blue7",
-  height: SQUARE_RADIUS * 2,
-  width: "100%",
-  borderRadius: "$base",
-});
 
 const WidthSlider = styled(Slider, {
   marginTop: "$6",
