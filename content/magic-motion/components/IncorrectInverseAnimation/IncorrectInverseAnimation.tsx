@@ -28,7 +28,6 @@ export const IncorrectInverseAnimation = () => {
   const squareLeftSide = containerWidth - PADDING - width;
 
   const reset = React.useCallback(() => {
-    console.log("resetting...");
     x.set(squareLeftSide);
     scale.set(1);
     setShowScale(false);
