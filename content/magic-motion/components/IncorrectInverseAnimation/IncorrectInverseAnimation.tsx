@@ -1,5 +1,5 @@
 import React from "react";
-import { useMotionValue, animate, motion, motionValue } from "framer-motion";
+import { useMotionValue, animate, motion, useTransform } from "framer-motion";
 import { FaUndo } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
@@ -45,7 +45,7 @@ export const IncorrectInverseAnimation = () => {
   const translateEndpointRef = React.useRef<SVGCircleElement>();
 
   React.useEffect(() => {
-    x.onChange((currentX) => {
+    return x.onChange((currentX) => {
       translateLineRef.current?.setAttribute("x2", currentX.toString());
       translateEndpointRef.current?.setAttribute("cx", currentX.toString());
       squareRef.current?.setAttribute("x", currentX.toString());
@@ -56,44 +56,59 @@ export const IncorrectInverseAnimation = () => {
   const scaleLineRef = React.useRef<SVGLineElement>();
   const scaleEndpointRef = React.useRef<SVGCircleElement>();
 
+  const currentWidth = useTransform(scale, (scale) => width * scale);
+  const lineY = useTransform(currentWidth, (width) => -width / 2);
+  const lineX = useTransform(scale, (scale) => (width / 2) * scale + width / 2);
+
   React.useEffect(() => {
-    scale.onChange((currentScale) => {
-      const y = (-(width * currentScale) / 2).toString();
-      const x = ((width / 2) * currentScale + width / 2).toString();
-      scaleLineRef.current?.setAttribute("y2", y);
-      scaleLineRef.current?.setAttribute("x2", x);
-      scaleEndpointRef.current?.setAttribute("cy", y);
-      scaleEndpointRef.current?.setAttribute("cx", x);
+    return lineY.onChange((y) => {
+      scaleLineRef.current?.setAttribute("y2", y.toString());
+      scaleEndpointRef.current?.setAttribute("cy", y.toString());
     });
-  }, [scale, width]);
+  }, [lineY]);
+
+  React.useEffect(() => {
+    return lineX.onChange((x) => {
+      scaleLineRef.current?.setAttribute("x2", x.toString());
+      scaleEndpointRef.current?.setAttribute("cx", x.toString());
+    });
+  }, [lineX]);
 
   const squareRef = React.useRef<SVGRectElement>();
   const maskRef = React.useRef<SVGRectElement>();
+
   React.useEffect(() => {
-    return scale.onChange((newScale) => {
-      const currentWidth = width * newScale;
-      squareRef.current?.setAttribute("width", currentWidth.toString());
-      squareRef.current?.setAttribute("height", currentWidth.toString());
-      squareRef.current?.setAttribute(
-        "y",
-        (CONTENT_HEIGHT / 2 - currentWidth / 2).toString()
-      );
-      squareRef.current?.setAttribute(
-        "x",
-        ((width / 2) * newScale + width / 2 + PADDING - currentWidth).toString()
-      );
-      maskRef.current?.setAttribute("width", currentWidth.toString());
-      maskRef.current?.setAttribute("height", currentWidth.toString());
-      maskRef.current?.setAttribute(
-        "y",
-        (CONTENT_HEIGHT / 2 - currentWidth / 2).toString()
-      );
-      maskRef.current?.setAttribute(
-        "x",
-        ((width / 2) * newScale + width / 2 + PADDING - currentWidth).toString()
-      );
+    return currentWidth.onChange((width) => {
+      squareRef.current?.setAttribute("width", width.toString());
+      squareRef.current?.setAttribute("height", width.toString());
+      maskRef.current?.setAttribute("width", width.toString());
+      maskRef.current?.setAttribute("height", width.toString());
     });
-  }, [scale, width]);
+  }, [currentWidth]);
+
+  const squareY = useTransform(
+    currentWidth,
+    (currentWidth) => CONTENT_HEIGHT / 2 - currentWidth / 2
+  );
+
+  React.useEffect(() => {
+    return squareY.onChange((y) => {
+      squareRef.current?.setAttribute("y", y.toString());
+      maskRef.current?.setAttribute("y", y.toString());
+    });
+  }, [squareY]);
+
+  const squareX = useTransform(scale, (scale) => {
+    const currentWidth = width * scale;
+    return (width / 2) * scale + width / 2 + PADDING - currentWidth;
+  });
+
+  React.useEffect(() => {
+    return squareX.onChange((x) => {
+      squareRef.current?.setAttribute("x", x.toString());
+      maskRef.current?.setAttribute("x", x.toString());
+    });
+  }, [squareX]);
 
   return (
     <FullWidth>

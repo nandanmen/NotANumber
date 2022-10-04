@@ -1,11 +1,18 @@
+import { ThemeProvider } from "next-themes";
 import { styled, darkTheme } from "~/stitches.config";
 import "../styles/fonts.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Wrapper>
-      <Component {...pageProps} />
-    </Wrapper>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      value={{ dark: darkTheme.className, light: "light" }}
+    >
+      <Wrapper>
+        <Component {...pageProps} />
+      </Wrapper>
+    </ThemeProvider>
   );
 }
 
