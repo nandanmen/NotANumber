@@ -1,4 +1,5 @@
-import { styled } from "~/stitches.config";
+import { motion } from "framer-motion";
+import { keyframes, styled } from "~/stitches.config";
 
 export const HorizontalRuler = ({
   from,
@@ -62,15 +63,32 @@ const RulerText = styled("text", {
   },
 });
 
-export const Line = styled("line", {
-  stroke: "$blue8",
-  strokeDasharray: "4",
+const fadeIn = keyframes({
+  from: {
+    opacity: 0,
+  },
+  to: {
+    opacity: 1,
+  },
 });
 
-export const LineEndpoint = styled("circle", {
+export const Line = styled(motion.line, {
+  stroke: "$blue8",
+  strokeDasharray: "4",
+  animationName: `${fadeIn}`,
+  animationDuration: "500ms",
+  animationFillMode: "forwards",
+  animationTimingFunction: "ease-out",
+});
+
+export const LineEndpoint = styled(motion.circle, {
   r: 6,
   fill: "$blue2",
   stroke: "$blue7",
+  animationName: `${fadeIn}`,
+  animationDuration: "500ms",
+  animationFillMode: "forwards",
+  animationTimingFunction: "ease-out",
 
   variants: {
     small: {

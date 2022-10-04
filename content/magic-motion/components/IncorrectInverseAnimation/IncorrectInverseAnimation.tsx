@@ -1,5 +1,5 @@
 import React from "react";
-import { useMotionValue, animate, motion } from "framer-motion";
+import { useMotionValue, animate, motion, motionValue } from "framer-motion";
 import { FaUndo } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
@@ -12,8 +12,8 @@ import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
 
 const BASE_WIDTH = SQUARE_RADIUS * 2;
-const CONTENT_HEIGHT = 350;
-const MAX_HEIGHT_DELTA = 50;
+const CONTENT_HEIGHT = 300;
+const MAX_HEIGHT_DELTA = 100;
 const PADDING = 45;
 
 export const IncorrectInverseAnimation = () => {
@@ -23,14 +23,15 @@ export const IncorrectInverseAnimation = () => {
   const containerRef = React.useRef<HTMLDivElement>();
   const [width, setWidth] = React.useState(BASE_WIDTH);
   const [containerWidth, setContainerWidth] = React.useState(0);
-  const [showScale, setShowScale] = React.useState(true);
+  const [showScale, setShowScale] = React.useState(false);
 
   const squareLeftSide = containerWidth - PADDING - width;
 
   const reset = React.useCallback(() => {
-    // x.set(squareLeftSide);
+    console.log("resetting...");
+    x.set(squareLeftSide);
     scale.set(1);
-    // setShowScale(false);
+    setShowScale(false);
   }, [x, scale, squareLeftSide]);
 
   React.useEffect(() => {
@@ -48,6 +49,8 @@ export const IncorrectInverseAnimation = () => {
     x.onChange((currentX) => {
       translateLineRef.current?.setAttribute("x2", currentX.toString());
       translateEndpointRef.current?.setAttribute("cx", currentX.toString());
+      squareRef.current?.setAttribute("x", currentX.toString());
+      maskRef.current?.setAttribute("x", currentX.toString());
     });
   }, [x]);
 
@@ -56,56 +59,93 @@ export const IncorrectInverseAnimation = () => {
 
   React.useEffect(() => {
     scale.onChange((currentScale) => {
-      scaleLineRef.current?.setAttribute(
-        "y2",
-        (-(width * currentScale) / 2).toString()
+      const y = (-(width * currentScale) / 2).toString();
+      const x = ((width / 2) * currentScale + width / 2).toString();
+      scaleLineRef.current?.setAttribute("y2", y);
+      scaleLineRef.current?.setAttribute("x2", x);
+      scaleEndpointRef.current?.setAttribute("cy", y);
+      scaleEndpointRef.current?.setAttribute("cx", x);
+    });
+  }, [scale, width]);
+
+  const squareRef = React.useRef<SVGRectElement>();
+  const maskRef = React.useRef<SVGRectElement>();
+  React.useEffect(() => {
+    return scale.onChange((newScale) => {
+      const currentWidth = width * newScale;
+      squareRef.current?.setAttribute("width", currentWidth.toString());
+      squareRef.current?.setAttribute("height", currentWidth.toString());
+      squareRef.current?.setAttribute(
+        "y",
+        (CONTENT_HEIGHT / 2 - currentWidth / 2).toString()
       );
-      scaleLineRef.current?.setAttribute(
-        "x2",
-        (width * currentScale + 15).toString()
+      squareRef.current?.setAttribute(
+        "x",
+        ((width / 2) * newScale + width / 2 + PADDING - currentWidth).toString()
       );
-      scaleEndpointRef.current?.setAttribute(
-        "cy",
-        (-(width * currentScale) / 2).toString()
+      maskRef.current?.setAttribute("width", currentWidth.toString());
+      maskRef.current?.setAttribute("height", currentWidth.toString());
+      maskRef.current?.setAttribute(
+        "y",
+        (CONTENT_HEIGHT / 2 - currentWidth / 2).toString()
       );
-      scaleEndpointRef.current?.setAttribute(
-        "cx",
-        (width * currentScale + 15).toString()
+      maskRef.current?.setAttribute(
+        "x",
+        ((width / 2) * newScale + width / 2 + PADDING - currentWidth).toString()
       );
     });
   }, [scale, width]);
 
   return (
     <FullWidth>
-      <Slider
-        value={[width]}
-        onValueChange={([newWidth]) => setWidth(newWidth)}
-        max={BASE_WIDTH + MAX_HEIGHT_DELTA}
-        min={BASE_WIDTH - MAX_HEIGHT_DELTA}
-        step={1}
-      />
       <Controls>
         <ToggleButton
           onClick={() => {
-            animate(scale, BASE_WIDTH / width, { duration: 1.5 });
-            /* animate(x, PADDING, {
+            animate(x, PADDING, {
               duration: 3,
               onComplete: () => {
                 setShowScale(true);
                 animate(scale, BASE_WIDTH / width, { duration: 1.5 });
               },
-            }); */
+            });
           }}
         >
           Play
         </ToggleButton>
-        <UndoButton onClick={reset}>
+        <UndoButton
+          onClick={() => {
+            reset();
+            setWidth(BASE_WIDTH);
+          }}
+        >
           <FaUndo />
         </UndoButton>
       </Controls>
       <GridBackground noOverflow>
         <ContentWrapper ref={containerRef}>
           <svg width="100%" height="100%">
+            <mask id="rect-mask">
+              <rect x="0" y="0" width="100%" height="100%" fill="black" />
+              <rect
+                ref={maskRef}
+                width={width}
+                height={width}
+                y={CONTENT_HEIGHT / 2 - width / 2}
+                fill="white"
+                rx="6"
+              />
+            </mask>
+            <defs>
+              <pattern
+                id="pattern"
+                width="10"
+                height="10"
+                patternUnits="userSpaceOnUse"
+                patternTransform="rotate(45 50 50)"
+              >
+                <line stroke="var(--colors-blue6)" strokeWidth="10" y2="10" />
+              </pattern>
+            </defs>
             <SvgSquare
               width={SQUARE_RADIUS * 2}
               type="secondary"
@@ -113,13 +153,20 @@ export const IncorrectInverseAnimation = () => {
               y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
             />
             <BaseSvgSquare
+              ref={squareRef}
               width={width}
               height={width}
               y={CONTENT_HEIGHT / 2 - width / 2}
-              style={{
-                x,
-                scale,
-              }}
+            />
+            <rect
+              width={SQUARE_RADIUS * 2}
+              height={SQUARE_RADIUS * 2}
+              x={PADDING}
+              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+              rx="6"
+              fill="url(#pattern)"
+              stroke="var(--colors-blue7)"
+              mask="url(#rect-mask)"
             />
             {showScale ? (
               <motion.g
@@ -162,9 +209,33 @@ export const IncorrectInverseAnimation = () => {
           </svg>
         </ContentWrapper>
       </GridBackground>
+      <WidthSlider
+        value={[width]}
+        onValueChange={([newWidth]) => setWidth(newWidth)}
+        max={BASE_WIDTH + MAX_HEIGHT_DELTA}
+        min={BASE_WIDTH - MAX_HEIGHT_DELTA}
+        step={1}
+      />
     </FullWidth>
   );
 };
+
+const OriginalSquareWrapper = styled(motion.foreignObject, {
+  rx: "$radii$base",
+  x: PADDING,
+});
+
+const OriginalSquare = styled("div", {
+  background: `repeating-linear-gradient(-45deg, $colors$blue7, $colors$blue7 5px, transparent 5px, transparent 10px)`,
+  border: "1px solid $blue7",
+  height: SQUARE_RADIUS * 2,
+  width: "100%",
+  borderRadius: "$base",
+});
+
+const WidthSlider = styled(Slider, {
+  marginTop: "$6",
+});
 
 const UndoButton = styled(ToggleButton, {
   display: "flex",
