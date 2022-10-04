@@ -14,27 +14,25 @@ export const SizePlayAnimation = () => {
   const scale = useMotionValue(1);
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Controls>
-          <ToggleButton onClick={() => animate(scale, 1, { duration: 3 })}>
-            Play
-          </ToggleButton>
-          <UndoButton onClick={() => scale.set(120 / width)}>
-            <FaUndo />
-          </UndoButton>
-        </Controls>
-        <GridBackground>
-          <Content>
-            <SizeDiagram
-              scale={scale}
-              onWidthChange={(width) => {
-                setWidth(width);
-                scale.set(120 / width);
-              }}
-            />
-          </Content>
-        </GridBackground>
-      </FigureWrapper>
+      <Controls>
+        <ToggleButton onClick={() => animate(scale, 1, { duration: 3 })}>
+          Play
+        </ToggleButton>
+        <UndoButton onClick={() => scale.set(120 / width)}>
+          <FaUndo />
+        </UndoButton>
+      </Controls>
+      <GridBackground>
+        <Content>
+          <SizeDiagram
+            scale={scale}
+            onWidthChange={(width) => {
+              setWidth(width);
+              scale.set(120 / width);
+            }}
+          />
+        </Content>
+      </GridBackground>
     </FullWidth>
   );
 };
@@ -51,9 +49,4 @@ const Content = styled(ContentWrapper, {
   height: 300,
   paddingLeft: `0 !important`,
   paddingRight: `0 !important`,
-});
-
-const FigureWrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
 });
