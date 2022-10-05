@@ -16,7 +16,7 @@ const MAX_HEIGHT_DELTA = 100;
 const PADDING = 45;
 const BASE_WIDTH = SQUARE_RADIUS * 2 + 50;
 
-export const IncorrectInverseAnimation = () => {
+export const CorrectedInverseAnimation = () => {
   const x = useMotionValue(PADDING);
   const scale = useMotionValue(1);
 
@@ -28,10 +28,10 @@ export const IncorrectInverseAnimation = () => {
   const squareLeftSide = containerWidth - PADDING - width;
 
   const reset = React.useCallback(() => {
-    x.set(squareLeftSide);
+    x.set(squareLeftSide + width / 2);
     scale.set(1);
     setShowScale(false);
-  }, [x, scale, squareLeftSide]);
+  }, [x, scale, squareLeftSide, width]);
 
   React.useEffect(() => {
     setContainerWidth(containerRef.current?.getBoundingClientRect().width);
@@ -45,13 +45,19 @@ export const IncorrectInverseAnimation = () => {
   const translateEndpointRef = React.useRef<SVGCircleElement>();
 
   React.useEffect(() => {
-    return x.onChange((currentX) => {
-      translateLineRef.current?.setAttribute("x2", currentX.toString());
-      translateEndpointRef.current?.setAttribute("cx", currentX.toString());
-      squareRef.current?.setAttribute("x", currentX.toString());
-      maskRef.current?.setAttribute("x", currentX.toString());
+    return x.onChange((x) => {
+      translateLineRef.current?.setAttribute("x2", x.toString());
+      translateEndpointRef.current?.setAttribute("cx", x.toString());
     });
   }, [x]);
+
+  const xCenter = useTransform(x, (x) => x - width / 2);
+  React.useEffect(() => {
+    return xCenter.onChange((x) => {
+      squareRef.current?.setAttribute("x", x.toString());
+      maskRef.current?.setAttribute("x", x.toString());
+    });
+  }, [xCenter]);
 
   const scaleLineRef = React.useRef<SVGLineElement>();
   const scaleEndpointRef = React.useRef<SVGCircleElement>();
@@ -115,7 +121,7 @@ export const IncorrectInverseAnimation = () => {
       <Controls>
         <ToggleButton
           onClick={() => {
-            animate(x, PADDING, {
+            animate(x, PADDING + SQUARE_RADIUS, {
               duration: 3,
               onComplete: () => {
                 setShowScale(true);
