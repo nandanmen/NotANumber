@@ -6,6 +6,7 @@ import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { GridBackground } from "~/components/Grid";
 import { Slider } from "~/components/Slider";
+import { SvgGridWrapper } from "~/components/SvgGridWrapper";
 
 import { ToggleButton, Controls } from "../shared";
 import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
@@ -135,94 +136,86 @@ export const IncorrectInverseAnimation = () => {
           <FaUndo />
         </UndoButton>
       </Controls>
-      <GridBackground noOverflow>
-        <ContentWrapper ref={containerRef}>
-          <svg width="100%" height="100%">
-            <mask id="rect-mask">
-              <rect x="0" y="0" width="100%" height="100%" fill="black" />
-              <rect
-                ref={maskRef}
-                width={width}
-                height={width}
-                y={CONTENT_HEIGHT / 2 - width / 2}
-                fill="white"
-                rx="6"
-              />
-            </mask>
-            <defs>
-              <pattern
-                id="pattern"
-                width="10"
-                height="10"
-                patternUnits="userSpaceOnUse"
-                patternTransform="rotate(45 50 50)"
-              >
-                <line stroke="var(--colors-blue6)" strokeWidth="10" y2="10" />
-              </pattern>
-            </defs>
-            <SvgSquare
-              width={SQUARE_RADIUS * 2}
-              type="secondary"
-              x={PADDING}
-              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+      <SvgGridWrapper noOverflow ref={containerRef}>
+        <mask id="rect-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="black" />
+          <rect
+            ref={maskRef}
+            width={width}
+            height={width}
+            y={CONTENT_HEIGHT / 2 - width / 2}
+            fill="white"
+            rx="6"
+          />
+        </mask>
+        <defs>
+          <pattern
+            id="pattern"
+            width="10"
+            height="10"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45 50 50)"
+          >
+            <line stroke="var(--colors-blue6)" strokeWidth="10" y2="10" />
+          </pattern>
+        </defs>
+        <SvgSquare
+          width={SQUARE_RADIUS * 2}
+          type="secondary"
+          x={PADDING}
+          y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+        />
+        <BaseSvgSquare
+          ref={squareRef}
+          width={width}
+          height={width}
+          y={CONTENT_HEIGHT / 2 - width / 2}
+        />
+        <rect
+          width={SQUARE_RADIUS * 2}
+          height={SQUARE_RADIUS * 2}
+          x={PADDING}
+          y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+          rx="6"
+          fill="url(#pattern)"
+          stroke="var(--colors-blue6)"
+          mask="url(#rect-mask)"
+        />
+        {showScale ? (
+          <motion.g
+            style={{
+              y: CONTENT_HEIGHT / 2,
+              x,
+            }}
+          >
+            <Line
+              ref={scaleLineRef}
+              x1={width / 2}
+              x2={width}
+              y1="0"
+              y2={-(width / 2)}
             />
-            <BaseSvgSquare
-              ref={squareRef}
-              width={width}
-              height={width}
-              y={CONTENT_HEIGHT / 2 - width / 2}
+            <LineEndpoint cx={width / 2} cy="0" />
+            <LineEndpoint cx={width} cy={-(width / 2)} ref={scaleEndpointRef} />
+          </motion.g>
+        ) : (
+          <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
+            <Line
+              ref={translateLineRef}
+              x1={PADDING}
+              y1="0"
+              y2="0"
+              x2={squareLeftSide}
             />
-            <rect
-              width={SQUARE_RADIUS * 2}
-              height={SQUARE_RADIUS * 2}
-              x={PADDING}
-              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
-              rx="6"
-              fill="url(#pattern)"
-              stroke="var(--colors-blue6)"
-              mask="url(#rect-mask)"
+            <LineEndpoint
+              ref={translateEndpointRef}
+              cx={squareLeftSide}
+              cy="0"
             />
-            {showScale ? (
-              <motion.g
-                style={{
-                  y: CONTENT_HEIGHT / 2,
-                  x,
-                }}
-              >
-                <Line
-                  ref={scaleLineRef}
-                  x1={width / 2}
-                  x2={width}
-                  y1="0"
-                  y2={-(width / 2)}
-                />
-                <LineEndpoint cx={width / 2} cy="0" />
-                <LineEndpoint
-                  cx={width}
-                  cy={-(width / 2)}
-                  ref={scaleEndpointRef}
-                />
-              </motion.g>
-            ) : (
-              <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
-                <Line
-                  ref={translateLineRef}
-                  x1={PADDING}
-                  y1="0"
-                  y2="0"
-                  x2={squareLeftSide}
-                />
-                <LineEndpoint
-                  ref={translateEndpointRef}
-                  cx={squareLeftSide}
-                  cy="0"
-                />
-                <LineEndpoint cx={PADDING} cy="0" />
-              </g>
-            )}
-          </svg>
-        </ContentWrapper>
-      </GridBackground>
+            <LineEndpoint cx={PADDING} cy="0" />
+          </g>
+        )}
+      </SvgGridWrapper>
       <WidthSlider
         value={[width]}
         onValueChange={([newWidth]) => setWidth(newWidth)}

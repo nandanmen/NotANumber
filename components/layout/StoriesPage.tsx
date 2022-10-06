@@ -92,7 +92,7 @@ const Main = styled("main", {
   display: "grid",
   gridTemplateColumns: "min-content 1fr",
   gap: "$8",
-  height: "100vh",
+  minHeight: "100vh",
   margin: "-$16 0",
 });
 

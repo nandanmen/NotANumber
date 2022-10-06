@@ -67,9 +67,7 @@ const Wrapper = styled("g", {
   color: "$gray6",
 });
 
-export const GridBackground = (props) => <GridBackgroundWrapper {...props} />;
-
-const GridBackgroundWrapper = styled(motion.div, {
+export const GridBackground = styled(motion.div, {
   position: "relative",
   border: "1px solid $gray8",
   borderRadius: "$base",
