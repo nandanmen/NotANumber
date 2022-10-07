@@ -11,6 +11,7 @@ import { ProblemStatement } from "~/components/ProblemStatement";
 import { FullWidth } from "~/components/FullWidth";
 import { Caption } from "~/components/Caption";
 import { Quiz } from "~/components/Quiz";
+import { SharedState } from "~/components/SharedState";
 
 import { TokenList } from "../tokenizer/components/TokenList";
 import { FlipFirst } from "./components/FlipFirst";
@@ -28,7 +29,7 @@ import { SizeMeasurements } from "./components/SizeMeasurements";
 import { InverseSizeSlider } from "./components/InverseSizeSlider";
 import { SizePlayAnimation } from "./components/SizePlayAnimation";
 import { SizeDistanceRelationship } from "./components/SizeDistanceRelationship";
-import { IncorrectInverseAnimation } from "./components/IncorrectInverseAnimation";
+import { CorrectedInverseAnimation } from "./components/CorrectedInverseAnimation";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -260,15 +261,17 @@ The distance between the left edges is what we get when we compare the `x` coord
 
 Here's what happens when we invert using the distance between the left edges, as we've been doing so far:
 
-<IncorrectInverseAnimation />
+<SharedState initialState={170}>
+
+<CorrectedInverseAnimation />
 
 The squares only line up if they're exactly the same size.
 
 But if we use the distance between the centers...
 
-```
-corrected animation with centers
-```
+<CorrectedInverseAnimation corrected />
+
+</SharedState>
 
 Would you look at that; it works!
 

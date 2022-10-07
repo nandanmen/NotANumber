@@ -1,13 +1,13 @@
 import React from "react";
 import { useMotionValue, animate, motion, useTransform } from "framer-motion";
-import { FaUndo } from "react-icons/fa";
+import { FaUndo, FaPlay } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { Slider } from "~/components/Slider";
-import { SvgGridWrapper } from "~/components/SvgGridWrapper";
+import { GridBackground } from "~/components/Grid";
+import { useSharedState } from "~/components/SharedState";
 
-import { ToggleButton, Controls } from "../shared";
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
@@ -19,12 +19,16 @@ const BASE_WIDTH = SQUARE_RADIUS * 2 + 50;
 const TARGET_WIDTH = SQUARE_RADIUS * 2;
 
 export const CorrectedInverseAnimation = ({ corrected = false }) => {
+  const id = React.useId();
+
+  const [isPlaying, setIsPlaying] = React.useState(false);
   const [showScaleRulers, setShowScaleRulers] = React.useState(false);
-  const [initialWidth, setInitialWidth] = React.useState(BASE_WIDTH);
+  const [initialWidth, setInitialWidth] = useSharedState(BASE_WIDTH);
   const width = useMotionValue(BASE_WIDTH);
   const lineRef = React.useRef<SVGLineElement>();
 
   React.useEffect(() => {
+    setShowScaleRulers(false);
     width.set(initialWidth);
   }, [width, initialWidth]);
 
@@ -69,76 +73,94 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
 
   return (
     <FullWidth>
-      <WidthSlider
-        value={[initialWidth]}
-        onValueChange={([newWidth]) => {
-          setShowScaleRulers(false);
-          setInitialWidth(newWidth);
-        }}
-        max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
-        min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
-        step={1}
-      />
-      <SvgGridWrapper noOverflow ref={containerRef}>
-        <mask id={`react-mask-${corrected}`}>
-          <rect x="0" y="0" width="100%" height="100%" fill="black" />
-          <motion.g
-            style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}
+      <FigureWrapper>
+        <Visualization noOverflow ref={containerRef}>
+          <ContentWrapper>
+            <svg width="100%" height="100%">
+              <mask id={`react-mask-${id}`}>
+                <rect x="0" y="0" width="100%" height="100%" fill="black" />
+                <motion.g
+                  style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}
+                >
+                  <motion.rect
+                    style={{ width, height: width }}
+                    fill="white"
+                    rx="6"
+                  />
+                </motion.g>
+              </mask>
+              <motion.g
+                style={{ x: PADDING, y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS }}
+              >
+                <SvgSquare width={SQUARE_RADIUS * 2} type="secondary" />
+              </motion.g>
+              <motion.g
+                style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}
+              >
+                <MotionSquare width={width} />
+              </motion.g>
+              <PatternMask maskId={`react-mask-${id}`} />
+              {showScaleRulers ? (
+                <motion.g style={{ x: xOffset, y }}>
+                  <ScaleRulers width={width} />
+                </motion.g>
+              ) : (
+                <motion.g style={{ y: CONTENT_HEIGHT / 2 }}>
+                  <Line
+                    ref={lineRef}
+                    x1={corrected ? to + initialWidth / 2 : to}
+                    y1="0"
+                    y2="0"
+                  />
+                  <LineEndpoint
+                    style={{ x: corrected ? to + initialWidth / 2 : to }}
+                  />
+                  <LineEndpoint
+                    style={{ x: corrected ? squareCenter : squareLeftSide }}
+                  />
+                </motion.g>
+              )}
+            </svg>
+          </ContentWrapper>
+        </Visualization>
+        <Controls>
+          <IconButton
+            onClick={() => {
+              setIsPlaying(true);
+              animate(squareLeftSide, to, {
+                duration: 2.5,
+                onComplete: () => {
+                  setShowScaleRulers(true);
+                  animate(width, TARGET_WIDTH, {
+                    duration: 1.5,
+                    onComplete: () => setIsPlaying(false),
+                  });
+                },
+              });
+            }}
           >
-            <motion.rect style={{ width, height: width }} fill="white" rx="6" />
-          </motion.g>
-        </mask>
-        <motion.g style={{ x: PADDING, y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS }}>
-          <SvgSquare width={SQUARE_RADIUS * 2} type="secondary" />
-        </motion.g>
-        <motion.g style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}>
-          <MotionSquare width={width} />
-        </motion.g>
-        <PatternMask maskId={`react-mask-${corrected}`} />
-        {showScaleRulers ? (
-          <motion.g style={{ x: xOffset, y }}>
-            <ScaleRulers width={width} />
-          </motion.g>
-        ) : (
-          <motion.g style={{ y: CONTENT_HEIGHT / 2 }}>
-            <Line
-              ref={lineRef}
-              x1={corrected ? to + initialWidth / 2 : to}
-              y1="0"
-              y2="0"
-            />
-            <LineEndpoint
-              style={{ x: corrected ? to + initialWidth / 2 : to }}
-            />
-            <LineEndpoint
-              style={{ x: corrected ? squareCenter : squareLeftSide }}
-            />
-          </motion.g>
-        )}
-      </SvgGridWrapper>
-      <Controls>
-        <ToggleButton
-          onClick={() => {
-            animate(squareLeftSide, to, {
-              duration: 2.5,
-              onComplete: () => {
-                setShowScaleRulers(true);
-                animate(width, TARGET_WIDTH, { duration: 1.5 });
-              },
-            });
-          }}
-        >
-          Play
-        </ToggleButton>
-        <UndoButton
-          onClick={() => {
-            setShowScaleRulers(false);
-            setInitialWidth(BASE_WIDTH);
-          }}
-        >
-          <FaUndo />
-        </UndoButton>
-      </Controls>
+            <FaPlay />
+          </IconButton>
+          <Slider
+            value={[initialWidth]}
+            onValueChange={([newWidth]) => {
+              setInitialWidth(newWidth);
+            }}
+            max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
+            min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
+            step={1}
+          />
+          <IconButton
+            onClick={() => {
+              setShowScaleRulers(false);
+              setInitialWidth(BASE_WIDTH);
+            }}
+          >
+            <FaUndo />
+          </IconButton>
+          {isPlaying && <DisabledOverlay />}
+        </Controls>
+      </FigureWrapper>
     </FullWidth>
   );
 };
@@ -162,6 +184,28 @@ const PatternMask = ({ maskId }) => {
   );
 };
 
+const DisabledOverlay = styled("div", {
+  position: "absolute",
+  inset: 0,
+  backgroundColor: "rgba(0, 0, 0, 0.05)",
+  cursor: "not-allowed",
+});
+
+const Visualization = styled(GridBackground, {
+  border: "none",
+  borderRadius: "none",
+});
+
+const FigureWrapper = styled("div", {
+  border: "1px solid $gray8",
+  borderRadius: "$base",
+  overflow: "hidden",
+});
+
+const ContentWrapper = styled("div", {
+  height: CONTENT_HEIGHT,
+});
+
 const StripedSquare = styled("rect", {
   width: SQUARE_RADIUS * 2,
   height: SQUARE_RADIUS * 2,
@@ -177,14 +221,26 @@ const StripeLine = styled("line", {
   strokeWidth: 10,
 });
 
-const WidthSlider = styled(Slider, {
-  marginBottom: "$6",
-});
-
-const UndoButton = styled(ToggleButton, {
+const IconButton = styled("button", {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "$gray10",
-  height: 22,
+  color: "$gray9",
+  padding: "$2",
+  borderRadius: "$base",
+
+  "&:hover": {
+    background: "$gray6",
+  },
+});
+
+const Controls = styled("div", {
+  padding: "$2",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "$4",
+  borderTop: "1px solid $gray8",
+  background: "$gray5",
+  position: "relative",
 });
