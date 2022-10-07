@@ -13,9 +13,20 @@ export const MotionSquare = ({
   width,
   showScaleRulers = false,
 }: MotionSquareProps) => {
+  return (
+    <g>
+      <BaseSvgSquare style={{ width, height: width }} />
+      {showScaleRulers && <ScaleRulers width={width} />}
+    </g>
+  );
+};
+
+export const ScaleRulers = ({ width }: { width: MotionValue<number> }) => {
+  const lineRef = React.useRef<SVGLineElement>();
   const radius = useTransform(width, (width) => width / 2);
 
-  const lineRef = React.useRef<SVGLineElement>();
+  const initialWidth = width.get();
+  const initialRadius = radius.get();
 
   React.useEffect(() => {
     return width.onChange((width) => {
@@ -30,25 +41,17 @@ export const MotionSquare = ({
     });
   }, [radius]);
 
-  const initialWidth = width.get();
-  const initialRadius = radius.get();
-
   return (
     <g>
-      <BaseSvgSquare style={{ width, height: width }} />
-      {showScaleRulers && (
-        <g>
-          <Line
-            ref={lineRef}
-            x1={initialRadius}
-            x2={initialWidth}
-            y1={initialRadius}
-            y2="0"
-          />
-          <LineEndpoint style={{ x: radius, y: radius }} />
-          <LineEndpoint style={{ x: width }} />
-        </g>
-      )}
+      <Line
+        ref={lineRef}
+        x1={initialRadius}
+        x2={initialWidth}
+        y1={initialRadius}
+        y2="0"
+      />
+      <LineEndpoint style={{ x: radius, y: radius }} />
+      <LineEndpoint style={{ x: width }} />
     </g>
   );
 };
