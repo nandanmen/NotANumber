@@ -73,8 +73,8 @@ const OriginalSquareWrapper = styled("foreignObject", {
 });
 
 const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient(-45deg, $colors$gray8, $colors$gray8 5px, transparent 5px, transparent 10px)`,
-  border: "1px solid $gray8",
+  background: `repeating-linear-gradient(-45deg, $colors$gray7, $colors$gray7 5px, transparent 5px, transparent 10px)`,
+  border: "1px solid $gray7",
   height: SQUARE_RADIUS * 2,
   width: "100%",
   borderRadius: "$base",

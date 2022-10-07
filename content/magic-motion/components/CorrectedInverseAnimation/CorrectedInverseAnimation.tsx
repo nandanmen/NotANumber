@@ -5,8 +5,8 @@ import { FaUndo, FaPlay } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { Slider } from "~/components/Slider";
-import { GridBackground } from "~/components/Grid";
 import { useSharedState } from "~/components/SharedState";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
@@ -73,8 +73,8 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
 
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Visualization noOverflow ref={containerRef}>
+      <Visualizer>
+        <Content noOverflow ref={containerRef}>
           <ContentWrapper>
             <svg width="100%" height="100%">
               <mask id={`react-mask-${id}`}>
@@ -122,45 +122,47 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
               )}
             </svg>
           </ContentWrapper>
-        </Visualization>
+        </Content>
         <Controls>
-          <IconButton
-            onClick={() => {
-              setIsPlaying(true);
-              animate(squareLeftSide, to, {
-                duration: 2.5,
-                onComplete: () => {
-                  setShowScaleRulers(true);
-                  animate(width, TARGET_WIDTH, {
-                    duration: 1.5,
-                    onComplete: () => setIsPlaying(false),
-                  });
-                },
-              });
-            }}
-          >
-            <FaPlay />
-          </IconButton>
-          <Slider
-            value={[initialWidth]}
-            onValueChange={([newWidth]) => {
-              setInitialWidth(newWidth);
-            }}
-            max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
-            min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
-            step={1}
-          />
-          <IconButton
-            onClick={() => {
-              setShowScaleRulers(false);
-              setInitialWidth(BASE_WIDTH);
-            }}
-          >
-            <FaUndo />
-          </IconButton>
-          {isPlaying && <DisabledOverlay />}
+          <ControlsWrapper>
+            <IconButton
+              onClick={() => {
+                setIsPlaying(true);
+                animate(squareLeftSide, to, {
+                  duration: 2.5,
+                  onComplete: () => {
+                    setShowScaleRulers(true);
+                    animate(width, TARGET_WIDTH, {
+                      duration: 1.5,
+                      onComplete: () => setIsPlaying(false),
+                    });
+                  },
+                });
+              }}
+            >
+              <FaPlay />
+            </IconButton>
+            <Slider
+              value={[initialWidth]}
+              onValueChange={([newWidth]) => {
+                setInitialWidth(newWidth);
+              }}
+              max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
+              min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
+              step={1}
+            />
+            <IconButton
+              onClick={() => {
+                setShowScaleRulers(false);
+                setInitialWidth(BASE_WIDTH);
+              }}
+            >
+              <FaUndo />
+            </IconButton>
+            {isPlaying && <DisabledOverlay />}
+          </ControlsWrapper>
         </Controls>
-      </FigureWrapper>
+      </Visualizer>
     </FullWidth>
   );
 };
@@ -189,17 +191,6 @@ const DisabledOverlay = styled("div", {
   inset: 0,
   backgroundColor: "rgba(0, 0, 0, 0.05)",
   cursor: "not-allowed",
-});
-
-const Visualization = styled(GridBackground, {
-  border: "none",
-  borderRadius: "none",
-});
-
-const FigureWrapper = styled("div", {
-  border: "1px solid $gray8",
-  borderRadius: "$base",
-  overflow: "hidden",
 });
 
 const ContentWrapper = styled("div", {
@@ -234,13 +225,9 @@ const IconButton = styled("button", {
   },
 });
 
-const Controls = styled("div", {
-  padding: "$2",
+const ControlsWrapper = styled("div", {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
   gap: "$4",
-  borderTop: "1px solid $gray8",
-  background: "$gray5",
-  position: "relative",
 });
