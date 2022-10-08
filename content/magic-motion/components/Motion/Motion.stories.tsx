@@ -4,21 +4,6 @@ import { Motion } from "./Motion";
 import { styled } from "~/stitches.config";
 import { GridBackground } from "~/components/Grid";
 
-export const Default = () => {
-  const [toggled, setToggled] = React.useState(false);
-  return (
-    <>
-      <button onClick={() => setToggled(!toggled)}>Toggle</button>
-      <GridBackground>
-        <Wrapper toggled={toggled}>
-          <Original />
-          <Motion size={toggled ? 200 : 120} corrected={false} />
-        </Wrapper>
-      </GridBackground>
-    </>
-  );
-};
-
 export const Corrected = () => {
   const [toggled, setToggled] = React.useState(false);
   return (

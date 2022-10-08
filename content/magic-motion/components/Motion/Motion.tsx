@@ -3,9 +3,27 @@ import { animate } from "popmotion";
 
 import { styled } from "~/stitches.config";
 
-export function Motion({ size = 120, corrected = true }) {
-  const ref = React.useRef();
-  const lastRect = React.useRef();
+type MotionProps = {
+  size?: number;
+  corrected?: boolean;
+  parentElement?: HTMLElement;
+};
+
+export function Motion({ size = 120, corrected = true }: MotionProps) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const lastRect = React.useRef<DOMRect>(null);
+  const lastRectY = React.useRef(0);
+  const scrollTop = React.useRef(0);
+
+  React.useEffect(() => {
+    return document.addEventListener("scroll", () => {
+      const newOffset = document.documentElement.scrollTop;
+      const deltaScroll = newOffset - scrollTop.current;
+      if (lastRect.current) {
+        lastRect.current.y = lastRectY.current - deltaScroll;
+      }
+    });
+  }, []);
 
   React.useLayoutEffect(() => {
     const box = ref.current?.getBoundingClientRect();
@@ -26,6 +44,8 @@ export function Motion({ size = 120, corrected = true }) {
     }
 
     lastRect.current = box;
+    lastRectY.current = box.y;
+    scrollTop.current = document.documentElement.scrollTop;
   });
 
   return <Square ref={ref} css={{ width: size, height: size }} />;
@@ -37,7 +57,7 @@ const Square = styled("div", {
   borderRadius: "$base",
 });
 
-function isBoxDifferent(box, lastBox) {
+function isBoxDifferent(box: DOMRect, lastBox: DOMRect) {
   // first mount
   if (!lastBox) {
     return false;

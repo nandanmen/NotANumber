@@ -31,6 +31,7 @@ import { SizePlayAnimation } from "./components/SizePlayAnimation";
 import { SizeDistanceRelationship } from "./components/SizeDistanceRelationship";
 import { CorrectedInverseAnimation } from "./components/CorrectedInverseAnimation";
 import { SizeDistanceExample } from "./components/SizeDistanceExample";
+import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSnapshot";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -236,23 +237,21 @@ Cool! So far we're able to use FLIP to animate changes in position and size. Wha
 
 <SizeDistanceExample />
 
-Hmm, that looks a little off. What's going on here? If we pause the animation just before the play step, we can see that something went wrong in the inverse step:
+Hmm, that looks a little off. What's going on here? If we pause the animation just before the play step, we can see that something went wrong in the inverse step - the square isn't quite lining up with its original position:
 
-```
-broken position and size animation inverse
-```
+<SizeDistanceInverseSnapshot />
 
-It looks like the square isn't quite lining up with its original position.
-
-### Size Affects Distance Travelled
+### Fixing Transform Origins
 
 Let's try to figure this out.
 
-When we combine changes in position and size, we're performing two separate transformations in the inverse step — a translation and a scale. If we take a look at those transformations individually, it becomes pretty clear how the square ended up where it did:
+When we combine changes in position and size, we're performing two separate transformations in the inverse step — a translation and a scale. If we take a look at those transformations individually, we can see how the square ended up where it did:
 
-Here we have two examples. The first compares the distance between the left _edges_ of the squares, while the second compares the distance between the _centers_ of the squares. Use the slider to change the size of the square and try to spot the difference between the two distances:
+```
+inverse animation
+```
 
-<SizeDistanceRelationship />
+Our algorithm first lines up the top left of the final position with the top left point of the original position, and then it scales it down to the initial size.
 
 Did you see it?
 
@@ -276,13 +275,7 @@ But if we use the distance between the centers...
 
 Would you look at that; it works!
 
-### Why Does This Work?
-
-You might have noticed it from looking at the first animation, but the reason why the original approach doesn't work is because the transform origin ends up misaligned:
-
-By default, the transform origin of the square will be its center—this causes the misalignment that we see above. But if we change the transform origin to the left edge, notice that our original inverse implementation now works:
-
-You might be thinking then, _"why go to the trouble of using the center at all? Can't we just change the transform origin?"_ Well, what if we're inverting to the _right_ instead? Would using the left edge still work?
+### What if Transform Origins Change?
 
 ## Correcting Distortions
 
