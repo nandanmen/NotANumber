@@ -105,7 +105,7 @@ export const CorrectedInverseAnimation = () => {
                     ref={lineRef}
                     x1={to}
                     y1={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
-                    y2="0"
+                    y2={CONTENT_HEIGHT / 2 - initialWidth / 2}
                   />
                   <LineEndpoint
                     style={{ x: to, y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS }}
@@ -120,6 +120,9 @@ export const CorrectedInverseAnimation = () => {
           <ControlsWrapper>
             <IconButton
               onClick={() => {
+                setShowScaleRulers(false);
+                width.set(initialWidth);
+
                 setIsPlaying(true);
                 animate(1, 0, {
                   duration: 2.5,
