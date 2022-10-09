@@ -241,7 +241,16 @@ When we combine changes in position and size, we're performing two separate tran
 
 <SharedState initialState={170}>
 
-<CorrectedInverseAnimation />
+<CorrectedInverseAnimation
+  from={(width, container) => ({
+    x: container.width - width - container.padding,
+    y: container.height / 2 - width / 2,
+  })}
+  to={(width, container) => ({
+    x: container.padding,
+    y: container.height / 2 - width / 2,
+  })}
+/>
 
 Our algorithm first lines up the top left point of the final position with the top left point of the original position, and then it scales it down to the initial size.
 
@@ -251,11 +260,19 @@ The scale transform seems to be the culprit here - it's scaling from the _center
 squareRef.current.style.transformOrigin = "top left";
 ```
 
-<CorrectedInverseAnimation corrected />
+<CorrectedInverseAnimation
+  from={(width, container) => ({
+    x: container.width - width - container.padding,
+    y: container.height / 2 - width / 2,
+  })}
+  to={(width, container) => ({
+    x: container.padding,
+    y: container.height / 2 - width / 2,
+  })}
+  origin="topLeft"
+/>
 
 Would you look at that; it works!
-
-</SharedState>
 
 ### What if Transform Origins Change?
 
@@ -273,9 +290,18 @@ When the final square is larger, the distance between the centers is _larger_ th
 
 With this insight, we can also solve the bug by using the distance between the centers instead of the top left points:
 
-```
-inverse centers animation
-```
+<CorrectedInverseAnimation
+  from={(width, container) => ({
+    x: container.width - width / 2 - container.padding,
+    y: container.height / 2,
+  })}
+  to={(width, container) => ({
+    x: container.padding + width / 2,
+    y: container.height / 2,
+  })}
+/>
+
+</SharedState>
 
 ## Correcting Distortions
 
