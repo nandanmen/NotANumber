@@ -251,7 +251,11 @@ When we combine changes in position and size, we're performing two separate tran
 
 Our algorithm first lines up the top left point of the final position with the top left point of the original position, and then it scales it down to the initial size.
 
-The scale transform seems to be the culprit here - it's scaling from the _center_ of the square, causing the square to end up in the wrong location.
+The scale transform seems to be the culprit here - it's scaling from the _center_ of the square, causing the square to end up in the wrong location. Now if we change the transform origin to the top left instead so that it lines up with the translation...
+
+```ts
+squareRef.current.style.transformOrigin = "top left";
+```
 
 ### What if Transform Origins Change?
 

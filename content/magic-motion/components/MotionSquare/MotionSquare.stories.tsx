@@ -58,3 +58,34 @@ export const WithChangingWidth = () => {
     </FullWidth>
   );
 };
+
+export const TopLeft = () => {
+  const width = useMotionValue(120);
+  return (
+    <FullWidth>
+      <Wrapper width={width}>
+        <MotionSquare width={width} showScaleRulers topLeft />
+      </Wrapper>
+    </FullWidth>
+  );
+};
+
+export const WithChangingWidthTopLeft = () => {
+  const width = useMotionValue(120);
+  return (
+    <FullWidth>
+      <Slider
+        css={{ marginBottom: "$8" }}
+        defaultValue={[width.get()]}
+        min={90}
+        max={150}
+        onValueChange={([newWidth]) => {
+          width.set(newWidth);
+        }}
+      />
+      <Wrapper width={width}>
+        <MotionSquare width={width} showScaleRulers topLeft />
+      </Wrapper>
+    </FullWidth>
+  );
+};
