@@ -1,5 +1,11 @@
 import React from "react";
-import { useMotionValue, animate, motion } from "framer-motion";
+import {
+  useMotionValue,
+  animate,
+  motion,
+  MotionValue,
+  useTransform,
+} from "framer-motion";
 import { FaUndo, FaPlay } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
@@ -23,7 +29,33 @@ const ORIGIN_TOP_LEFT = {
   y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
 };
 
-export const CorrectedInverseAnimation = ({ corrected = false }) => {
+const mapOriginToOffset = {
+  center: ({ width, initialWidth }) => {
+    return {
+      x: initialWidth / 2 - width / 2,
+      y: initialWidth / 2 - width / 2,
+    };
+  },
+  topLeft: () => {
+    return { x: 0, y: 0 };
+  },
+} as const;
+
+type Container = { width: number; height: number; padding: number };
+
+type Position = { x: number; y: number };
+
+type CorrectedInverseAnimationProps = {
+  from: (width: number, container: Container) => Position;
+  to: (width: number, container: Container) => Position;
+  origin?: keyof typeof mapOriginToOffset;
+};
+
+export const CorrectedInverseAnimation = ({
+  from,
+  to,
+  origin = "center",
+}: CorrectedInverseAnimationProps) => {
   const id = React.useId();
 
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -41,14 +73,25 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
 
   // --
 
-  const width = useMotionValue(BASE_WIDTH);
-  const y = useMotionValue(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
-  const squareLeftSide = useMotionValue(0);
+  const container = {
+    width: containerWidth,
+    height: CONTENT_HEIGHT,
+    padding: PADDING,
+  };
 
-  const lineRef = React.useRef<SVGLineElement>();
+  const fromPos = from(initialWidth, container);
+  const targetPos = to(SQUARE_RADIUS * 2, container);
+
+  const width = useMotionValue(BASE_WIDTH);
+
+  const squareY = useMotionValue(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
+  const squareX = useMotionValue(0);
 
   const topLeftX = containerWidth - initialWidth - PADDING;
   const topLeftY = CONTENT_HEIGHT / 2 - initialWidth / 2;
+
+  const deltaX = fromPos.x - topLeftX;
+  const deltaY = fromPos.y - topLeftY;
 
   React.useEffect(() => {
     setShowScaleRulers(false);
@@ -56,31 +99,17 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
   }, [width, initialWidth]);
 
   React.useEffect(() => {
-    y.set(topLeftY);
-  }, [y, topLeftY]);
+    squareY.set(topLeftY);
+  }, [squareY, topLeftY]);
 
   React.useEffect(() => {
-    squareLeftSide.set(topLeftX);
-  }, [squareLeftSide, topLeftX]);
+    squareX.set(topLeftX);
+  }, [squareX, topLeftX]);
 
-  const to = PADDING;
+  const squarePos = { x: squareX, y: squareY };
 
-  const squareCenter = {
-    x: squareLeftSide,
-    y,
-  };
-
-  React.useEffect(() => {
-    return squareLeftSide.onChange((x) => {
-      lineRef.current?.setAttribute("x2", x.toString());
-    });
-  }, [squareLeftSide]);
-
-  React.useEffect(() => {
-    return y.onChange((y) => {
-      lineRef.current?.setAttribute("y2", y.toString());
-    });
-  }, [y]);
+  const fromX = useTransform(squareX, (x) => x + deltaX);
+  const fromY = useTransform(squareY, (y) => y + deltaY);
 
   return (
     <FullWidth>
@@ -90,7 +119,7 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
             <svg width="100%" height="100%">
               <mask id={`react-mask-${id}`}>
                 <rect x="0" y="0" width="100%" height="100%" fill="black" />
-                <motion.g style={squareCenter}>
+                <motion.g style={squarePos}>
                   <motion.rect
                     style={{ width, height: width }}
                     fill="white"
@@ -101,25 +130,24 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
               <motion.g style={ORIGIN_TOP_LEFT}>
                 <SvgSquare width={SQUARE_RADIUS * 2} type="secondary" />
               </motion.g>
-              <motion.g style={squareCenter}>
+              <motion.g style={squarePos}>
                 <MotionSquare width={width} />
               </motion.g>
               <PatternMask maskId={`react-mask-${id}`} />
               {showScaleRulers ? (
-                <motion.g style={{ x: squareLeftSide, y }}>
-                  <ScaleRulers width={width} topLeft={corrected} />
+                <motion.g style={{ x: squareX, y: squareY }}>
+                  <ScaleRulers width={width} topLeft={origin === "topLeft"} />
                 </motion.g>
               ) : (
                 <g>
-                  <Line
-                    ref={lineRef}
-                    x1={to}
-                    x2={topLeftX}
-                    y1={ORIGIN_TOP_LEFT.y}
-                    y2={topLeftY}
+                  <DistanceRuler
+                    x1={targetPos.x}
+                    x2={fromX}
+                    y1={targetPos.y}
+                    y2={fromY}
                   />
-                  <LineEndpoint style={{ x: to, y: ORIGIN_TOP_LEFT.y }} />
-                  <LineEndpoint style={{ x: squareLeftSide, y }} />
+                  <LineEndpoint style={{ x: targetPos.x, y: targetPos.y }} />
+                  <LineEndpoint style={{ x: fromX, y: fromY }} />
                 </g>
               )}
             </svg>
@@ -136,26 +164,28 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
                 animate(1, 0, {
                   duration: 2.5,
                   onUpdate: (progress) => {
-                    const { x: endX, y: endY } = ORIGIN_TOP_LEFT;
+                    const { x: endX, y: endY } = targetPos;
+                    const { x: fromX, y: fromY } = fromPos;
 
-                    const currentX = (topLeftX - endX) * progress + endX;
-                    squareLeftSide.set(currentX);
+                    const currentX = (fromX - endX) * progress + endX;
+                    squareX.set(currentX - deltaX);
 
-                    const currentY = (topLeftY - endY) * progress + endY;
-                    y.set(currentY);
+                    const currentY = (fromY - endY) * progress + endY;
+                    squareY.set(currentY - deltaY);
                   },
                   onComplete: () => {
                     setShowScaleRulers(true);
                     animate(width, TARGET_WIDTH, {
                       duration: 1.5,
                       onUpdate: (width) => {
-                        if (!corrected) {
-                          const { x, y: startY } = ORIGIN_TOP_LEFT;
-                          squareLeftSide.set(
-                            x + (initialWidth / 2 - width / 2)
-                          );
-                          y.set(startY + (initialWidth / 2 - width / 2));
-                        }
+                        const x = targetPos.x - deltaX;
+                        const y = targetPos.y - deltaY;
+                        const offset = mapOriginToOffset[origin]({
+                          width,
+                          initialWidth,
+                        });
+                        squareX.set(x + offset.x);
+                        squareY.set(y + offset.y);
                       },
                       onComplete: () => setIsPlaying(false),
                     });
@@ -178,8 +208,8 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
               onClick={() => {
                 setShowScaleRulers(false);
                 setInitialWidth(BASE_WIDTH);
-                squareLeftSide.set(containerWidth - BASE_WIDTH - PADDING);
-                y.set(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
+                squareX.set(containerWidth - BASE_WIDTH - PADDING);
+                squareY.set(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
                 width.set(BASE_WIDTH);
               }}
             >
@@ -193,7 +223,32 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
   );
 };
 
-const PatternMask = ({ maskId }) => {
+type DistanceRulerProps = {
+  x1: number;
+  y1: number;
+  x2: MotionValue<number>;
+  y2: MotionValue<number>;
+};
+
+const DistanceRuler = ({ x1, y1, x2, y2 }: DistanceRulerProps) => {
+  const lineRef = React.useRef<SVGLineElement>();
+
+  React.useEffect(() => {
+    return x2.onChange((x) => {
+      lineRef.current?.setAttribute("x2", x.toString());
+    });
+  }, [x2]);
+
+  React.useEffect(() => {
+    return y2.onChange((y) => {
+      lineRef.current?.setAttribute("y2", y.toString());
+    });
+  }, [y2]);
+
+  return <Line ref={lineRef} x1={x1} x2={x2.get()} y1={y1} y2={y2.get()} />;
+};
+
+const PatternMask = ({ maskId }: { maskId: string }) => {
   return (
     <>
       <defs>
