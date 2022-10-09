@@ -247,33 +247,11 @@ Let's try to figure this out.
 
 When we combine changes in position and size, we're performing two separate transformations in the inverse step — a translation and a scale. If we take a look at those transformations individually, we can see how the square ended up where it did:
 
-```
-inverse animation
-```
-
-Our algorithm first lines up the top left of the final position with the top left point of the original position, and then it scales it down to the initial size.
-
-Did you see it?
-
-When the square gets smaller, the distance between the centers is _less_ than the distance between the left edges. But when the square gets bigger, the distance between the centers is _more_ than the distance between the left edges.
-
-The distance between the left edges is what we get when we compare the `x` coordinates of the squares as returned by `.getBoundingClientRect()`. This is how our inverse step works currently. On the other hand, the distance between the centers is what we get when we compare the _transform origins_ of the two squares.
-
-Here's what happens when we invert using the distance between the left edges, as we've been doing so far:
-
-<SharedState initialState={170}>
-
 <CorrectedInverseAnimation />
 
-The squares only line up if they're exactly the same size.
+Our algorithm first lines up the top left point of the final position with the top left point of the original position, and then it scales it down to the initial size.
 
-But if we use the distance between the centers...
-
-<CorrectedInverseAnimation corrected />
-
-</SharedState>
-
-Would you look at that; it works!
+The scale transform seems to be the culprit here - it's scaling from the _center_ of the square, causing the square to end up in the wrong location.
 
 ### What if Transform Origins Change?
 

@@ -18,19 +18,27 @@ const PADDING = 45;
 const BASE_WIDTH = SQUARE_RADIUS * 2 + 50;
 const TARGET_WIDTH = SQUARE_RADIUS * 2;
 
-export const CorrectedInverseAnimation = ({ corrected = false }) => {
+export const CorrectedInverseAnimation = () => {
   const id = React.useId();
 
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [showScaleRulers, setShowScaleRulers] = React.useState(false);
   const [initialWidth, setInitialWidth] = useSharedState(BASE_WIDTH);
+
   const width = useMotionValue(BASE_WIDTH);
+  const y = useMotionValue(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
+  const squareLeftSide = useMotionValue(0);
+
   const lineRef = React.useRef<SVGLineElement>();
 
   React.useEffect(() => {
     setShowScaleRulers(false);
     width.set(initialWidth);
   }, [width, initialWidth]);
+
+  React.useEffect(() => {
+    y.set(CONTENT_HEIGHT / 2 - initialWidth / 2);
+  }, [y, initialWidth]);
 
   const containerRef = React.useRef<HTMLDivElement>();
   const [containerWidth, setContainerWidth] = React.useState(0);
@@ -39,37 +47,28 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
     setContainerWidth(containerRef.current?.getBoundingClientRect().width);
   }, []);
 
-  const to = corrected ? PADDING + SQUARE_RADIUS - initialWidth / 2 : PADDING;
+  React.useEffect(() => {
+    squareLeftSide.set(containerWidth - initialWidth - PADDING);
+  }, [squareLeftSide, containerWidth, initialWidth]);
 
-  const squareLeftSide = useTransform(
-    width,
-    (width) => containerWidth - width - PADDING
-  );
-  const xOffset = useTransform(
-    width,
-    (width) => to + (initialWidth / 2 - width / 2)
-  );
-  const y = useTransform(width, (width) => CONTENT_HEIGHT / 2 - width / 2);
-  const squareCenter = useTransform(
-    squareLeftSide,
-    (x) => x + initialWidth / 2
-  );
+  const to = PADDING;
+
+  const squareCenter = {
+    x: squareLeftSide,
+    y,
+  };
 
   React.useEffect(() => {
-    if (corrected) {
-      return squareCenter.onChange((x) => {
-        lineRef.current?.setAttribute("x2", x.toString());
-      });
-    }
-  }, [squareCenter, corrected]);
+    return squareLeftSide.onChange((x) => {
+      lineRef.current?.setAttribute("x2", x.toString());
+    });
+  }, [squareLeftSide]);
 
   React.useEffect(() => {
-    if (!corrected) {
-      return squareLeftSide.onChange((x) => {
-        lineRef.current?.setAttribute("x2", x.toString());
-      });
-    }
-  }, [squareLeftSide, corrected]);
+    return y.onChange((y) => {
+      lineRef.current?.setAttribute("y2", y.toString());
+    });
+  }, [y]);
 
   return (
     <FullWidth>
@@ -79,9 +78,7 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
             <svg width="100%" height="100%">
               <mask id={`react-mask-${id}`}>
                 <rect x="0" y="0" width="100%" height="100%" fill="black" />
-                <motion.g
-                  style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}
-                >
+                <motion.g style={squareCenter}>
                   <motion.rect
                     style={{ width, height: width }}
                     fill="white"
@@ -94,31 +91,27 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
               >
                 <SvgSquare width={SQUARE_RADIUS * 2} type="secondary" />
               </motion.g>
-              <motion.g
-                style={{ x: showScaleRulers ? xOffset : squareLeftSide, y }}
-              >
+              <motion.g style={squareCenter}>
                 <MotionSquare width={width} />
               </motion.g>
               <PatternMask maskId={`react-mask-${id}`} />
               {showScaleRulers ? (
-                <motion.g style={{ x: xOffset, y }}>
+                <motion.g style={{ x: squareLeftSide, y }}>
                   <ScaleRulers width={width} />
                 </motion.g>
               ) : (
-                <motion.g style={{ y: CONTENT_HEIGHT / 2 }}>
+                <g>
                   <Line
                     ref={lineRef}
-                    x1={corrected ? to + initialWidth / 2 : to}
-                    y1="0"
+                    x1={to}
+                    y1={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
                     y2="0"
                   />
                   <LineEndpoint
-                    style={{ x: corrected ? to + initialWidth / 2 : to }}
+                    style={{ x: to, y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS }}
                   />
-                  <LineEndpoint
-                    style={{ x: corrected ? squareCenter : squareLeftSide }}
-                  />
-                </motion.g>
+                  <LineEndpoint style={{ x: squareLeftSide, y }} />
+                </g>
               )}
             </svg>
           </ContentWrapper>
@@ -128,12 +121,31 @@ export const CorrectedInverseAnimation = ({ corrected = false }) => {
             <IconButton
               onClick={() => {
                 setIsPlaying(true);
-                animate(squareLeftSide, to, {
+                animate(1, 0, {
                   duration: 2.5,
+                  onUpdate: (progress) => {
+                    const startX = containerWidth - initialWidth - PADDING;
+                    const endX = PADDING;
+                    const currentX = (startX - endX) * progress + endX;
+                    squareLeftSide.set(currentX);
+
+                    const startY = CONTENT_HEIGHT / 2 - initialWidth / 2;
+                    const endY = CONTENT_HEIGHT / 2 - SQUARE_RADIUS;
+                    const currentY = (startY - endY) * progress + endY;
+                    y.set(currentY);
+                  },
                   onComplete: () => {
                     setShowScaleRulers(true);
                     animate(width, TARGET_WIDTH, {
                       duration: 1.5,
+                      onUpdate: (width) => {
+                        squareLeftSide.set(to + (initialWidth / 2 - width / 2));
+                        y.set(
+                          CONTENT_HEIGHT / 2 -
+                            SQUARE_RADIUS +
+                            (initialWidth / 2 - width / 2)
+                        );
+                      },
                       onComplete: () => setIsPlaying(false),
                     });
                   },
