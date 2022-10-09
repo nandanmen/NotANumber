@@ -223,14 +223,6 @@ animate({
 
 <SizePlayAnimation />
 
-### Putting Everything Together
-
-By putting everything together, we get a square that seamlessly transitions between sizes:
-
-```
-flip with size
-```
-
 ## Consolidating Size with Position
 
 Cool! So far we're able to use FLIP to animate changes in position and size. What happens when we try to animate both size _and_ position?
@@ -247,6 +239,8 @@ Let's try to figure this out.
 
 When we combine changes in position and size, we're performing two separate transformations in the inverse step — a translation and a scale. If we take a look at those transformations individually, we can see how the square ended up where it did:
 
+<SharedState initialState={170}>
+
 <CorrectedInverseAnimation />
 
 Our algorithm first lines up the top left point of the final position with the top left point of the original position, and then it scales it down to the initial size.
@@ -257,7 +251,31 @@ The scale transform seems to be the culprit here - it's scaling from the _center
 squareRef.current.style.transformOrigin = "top left";
 ```
 
+<CorrectedInverseAnimation corrected />
+
+Would you look at that; it works!
+
+</SharedState>
+
 ### What if Transform Origins Change?
+
+Of course, the big caveat with this solution is that we've hard coded in the transform origin value. What if the user wants a different transform origin? The layout animation should still work in this case.
+
+The trick, it turns out, is to make sure the inverse step compares the distance between the _transform origins_ of the two squares. To put it another way, the bug is happening because of a discrepancy between the measured distance and the transform origins: `getBoundingClientRect()` returns the _top left_ point of the element whereas the transform origin is at the _center_ of the element by default.
+
+The distance between the top left point and the distance between the centers are only equivalent when the two squares are the same size:
+
+<SizeDistanceRelationship />
+
+_I'm only comparing the horizontal distance here for simplicity - the same concept applies if we take into account the vertical distance too._
+
+When the final square is larger, the distance between the centers is _larger_ than the distance between the top left points. Similarly, when the final square is smaller, the distance between the centers is _smaller_ than the distance between the top left points.
+
+With this insight, we can also solve the bug by using the distance between the centers instead of the top left points:
+
+```
+inverse centers animation
+```
 
 ## Correcting Distortions
 
