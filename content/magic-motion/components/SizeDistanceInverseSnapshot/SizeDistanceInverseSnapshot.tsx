@@ -70,6 +70,7 @@ const Square = styled(motion.div, {
   width: 120,
   aspectRatio: 1,
   borderRadius: "$base",
+  boxShadow: "$sm",
 
   variants: {
     large: {
@@ -81,11 +82,13 @@ const Square = styled(motion.div, {
       true: {
         "--background": "$colors$gray6",
         border: "1px solid $gray7",
+        boxShadow: "none",
       },
     },
     striped: {
       true: {
         background: `repeating-linear-gradient(-45deg, var(--background), var(--background) 5px, transparent 5px, transparent 10px)`,
+        boxShadow: "none",
       },
     },
   },

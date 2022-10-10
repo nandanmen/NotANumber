@@ -32,6 +32,7 @@ import { SizeDistanceRelationship } from "./components/SizeDistanceRelationship"
 import { CorrectedInverseAnimation } from "./components/CorrectedInverseAnimation";
 import { SizeDistanceExample } from "./components/SizeDistanceExample";
 import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSnapshot";
+import { InverseScaleFormula } from "./components/InverseScaleFormula";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -311,21 +312,25 @@ Great! So far, we're able to make a layout animation that can seamlessly transit
 
 Oh no! The text appears to be changing size. How do we fix this?
 
+The culprit here is once again the inverse scale transform. When we're inverting to a smaller square, the text ends up smaller because the square is scaled down. Similarly, when we're inverting to a larger square, the text ends up larger because the square is scaled up.
+
+This leads us to our problem:
+
 <ProblemStatement>
   How do we make sure all child elements stay a uniform size during FLIP?
 </ProblemStatement>
 
 ### Inverse Scale Formula
 
-For the text to look the same size, we need to apply a scale to the text that "cancels out" the parent's size change. The formula for this scale is:
+One way is to apply _another_ transform on the child element that "cancels out" the parent's transform. One transform we can do is:
 
 ```
-childScaleX = 1 / parentScaleX
+childScale = 1 / parentScale
 ```
 
-Intuitively, if the parent gets twice as large, the text needs to be scaled down by half to look the same size.
+The idea is if the parent gets twice as large, then the child needs to halve its size for it to stay the same size. Try moving the slider below and notice how the text stays the same size regardless of the size of the square:
 
-This animation shows the formula in action. Try moving the slider and notice how the text stays the same size no matter where you drag the slider to:
+<InverseScaleFormula />
 
 The next step is to make this work automatically with our layout animations.
 
