@@ -7,9 +7,14 @@ type MotionProps = {
   size?: number;
   corrected?: boolean;
   parentElement?: HTMLElement;
+  children?: React.ReactNode;
 };
 
-export function Motion({ size = 120, corrected = true }: MotionProps) {
+export function Motion({
+  size = 120,
+  corrected = true,
+  children,
+}: MotionProps) {
   const ref = React.useRef<HTMLDivElement>(null);
   const lastRect = React.useRef<DOMRect>(null);
   const lastRectY = React.useRef(0);
@@ -48,13 +53,20 @@ export function Motion({ size = 120, corrected = true }: MotionProps) {
     scrollTop.current = document.documentElement.scrollTop;
   });
 
-  return <Square ref={ref} css={{ width: size, height: size }} />;
+  return (
+    <Square ref={ref} css={{ width: size, height: size }}>
+      {children}
+    </Square>
+  );
 }
 
 const Square = styled("div", {
   background: "$blue5",
   border: "1px solid $blue7",
   borderRadius: "$base",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
 function isBoxDifferent(box: DOMRect, lastBox: DOMRect) {

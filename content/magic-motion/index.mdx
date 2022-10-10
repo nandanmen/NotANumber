@@ -303,9 +303,13 @@ With this insight, we can also solve the bug by using the distance between the c
 
 </SharedState>
 
-## Correcting Distortions
+## Correcting Child Distortions
 
-Size animations also lead to another problem: **child element distortion**. Animating size changes using `scale()` is great until you have some text that you want to keep legible at all times:
+Great! So far, we're able to make a layout animation that can seamlessly transition changes in size and position. Now let's add another test - what happens if our element has **child elements**?
+
+<SizeDistanceExample text="Hello!" corrected />
+
+Oh no! The text appears to be changing size. How do we fix this?
 
 <ProblemStatement>
   How do we make sure all child elements stay a uniform size during FLIP?

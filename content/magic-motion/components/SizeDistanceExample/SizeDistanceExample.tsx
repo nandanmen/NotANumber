@@ -6,14 +6,16 @@ import { styled } from "~/stitches.config";
 
 import { Motion } from "../Motion";
 
-export const SizeDistanceExample = () => {
+export const SizeDistanceExample = ({ text = null, corrected = false }) => {
   const [toggled, setToggled] = React.useState(false);
   return (
     <FullWidth>
       <Visualizer>
         <Content>
           <Wrapper toggled={toggled}>
-            <Motion size={toggled ? 200 : 120} corrected={false} />
+            <Motion size={toggled ? 200 : 120} corrected={corrected}>
+              {text}
+            </Motion>
           </Wrapper>
         </Content>
         <Controls>
