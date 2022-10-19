@@ -1,4 +1,6 @@
 import React from "react";
+import { motion } from "framer-motion";
+
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import {
@@ -7,7 +9,8 @@ import {
   Controls as BaseControls,
 } from "~/components/Visualizer";
 import { Slider } from "~/components/Slider";
-import { motion } from "framer-motion";
+import { Checkbox } from "~/components/Checkbox";
+import { RiCheckboxBlankFill } from "react-icons/ri";
 
 export const InverseScaleFormula = () => {
   const [corrected, setCorrected] = React.useState(true);
@@ -40,14 +43,11 @@ export const InverseScaleFormula = () => {
           </TooltipWrapper>
         </Content>
         <Controls>
-          <label>
-            <input
-              type="checkbox"
-              checked={corrected}
-              onChange={() => setCorrected(!corrected)}
-            />
-            Corrected
-          </label>
+          <Checkbox
+            checked={corrected}
+            onCheckedChange={() => setCorrected(!corrected)}
+            label="Corrected"
+          />
           <Slider
             min={0.5}
             max={3}
@@ -95,7 +95,10 @@ const Text = styled("span", {
 });
 
 const Controls = styled(BaseControls, {
-  padding: "$6",
+  padding: "$4",
+  display: "flex",
+  alignItems: "center",
+  gap: "$4",
 });
 
 const Content = styled(BaseContent, {

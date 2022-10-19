@@ -16,6 +16,7 @@
     "@codesandbox/sandpack-react": "^1.5.1",
     "@codesandbox/sandpack-themes": "^1.5.0",
     "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-slider": "^1.0.0",
     "@stitches/react": "^1.2.8",
     "@use-it/interval": "^1.0.0",

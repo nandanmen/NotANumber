@@ -336,7 +336,7 @@ Great! Now how would we integrate this with our layout animations?
 
 ### First Attempt
 
-When I was implementing scale correction for the first time, I opted to calculate the inverse scale once at the start of the parent animation.
+The first thing that I tried was to calculate the inverse scale _once_, just before the parent is about to animate:
 
 ```ts
 /* this runs in the child when the parent is about to animate */
@@ -350,9 +350,13 @@ play({
 });
 ```
 
-My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Except this assumption is flawed:
+So if the parent is animating from `scaleX: 2` to `scaleX: 1`, then the child will be animating from `scaleX: 1 / 2` to `scaleX: 1`. My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Here's what this approach looked like:
 
-It turns out the correct approach is to **calculate the inverse scale in every frame of the animation**. But _why_?
+```
+incorrect scale correction animation
+```
+
+It's doing _something_, but the text is still clearly changing size throughout the animation.
 
 ### The Scale Curve
 

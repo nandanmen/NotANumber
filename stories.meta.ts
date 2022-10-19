@@ -1,3 +1,4 @@
+import * as Checkbox from './components/Checkbox/Checkbox.stories'
 import * as Quiz from './components/Quiz/Quiz.stories'
 import * as Sandbox from './components/Sandbox/Sandbox.stories'
 import * as SvgGridWrapper from './components/SvgGridWrapper/SvgGridWrapper.stories'
@@ -28,7 +29,7 @@ import * as SizeMeasurements from './_dist-content/magic-motion/components/SizeM
 import * as SizePlayAnimation from './_dist-content/magic-motion/components/SizePlayAnimation/SizePlayAnimation.stories'
 import * as Tokenizer from './_dist-content/tokenizer/components/Tokenizer/Tokenizer.stories'
 import * as TopDownParser from './experiments/TopDownParser/TopDownParser.stories'
-export const stories = [{ name: `components`, stories: [{ name: 'Quiz', variants: Quiz },{ name: 'Sandbox', variants: Sandbox },{ name: 'SvgGridWrapper', variants: SvgGridWrapper },{ name: 'Visualizer', variants: Visualizer }] },
+export const stories = [{ name: `components`, stories: [{ name: 'Checkbox', variants: Checkbox },{ name: 'Quiz', variants: Quiz },{ name: 'Sandbox', variants: Sandbox },{ name: 'SvgGridWrapper', variants: SvgGridWrapper },{ name: 'Visualizer', variants: Visualizer }] },
 { name: `magic-motion`, stories: [{ name: 'CorrectedInverseAnimation', variants: CorrectedInverseAnimation },{ name: 'FlipExample', variants: FlipExample },{ name: 'FlipFirst', variants: FlipFirst },{ name: 'FlipInverse', variants: FlipInverse },{ name: 'FlipLast', variants: FlipLast },{ name: 'FlipLastReact', variants: FlipLastReact },{ name: 'FlipOverview', variants: FlipOverview },{ name: 'FlipPlay', variants: FlipPlay },{ name: 'InitialPositionSandbox', variants: InitialPositionSandbox },{ name: 'InverseSandbox', variants: InverseSandbox },{ name: 'InverseScaleFormula', variants: InverseScaleFormula },{ name: 'InverseSizeSlider', variants: InverseSizeSlider },{ name: 'Motion', variants: Motion },{ name: 'MotionSandbox', variants: MotionSandbox },{ name: 'MotionSquare', variants: MotionSquare },{ name: 'PlaySandbox', variants: PlaySandbox },{ name: 'HorizontalRuler', variants: HorizontalRuler },{ name: 'SizeDiagram', variants: SizeDiagram },{ name: 'SizeDistanceExample', variants: SizeDistanceExample },{ name: 'SizeDistanceInverseSnapshot', variants: SizeDistanceInverseSnapshot },{ name: 'SizeDistanceRelationship', variants: SizeDistanceRelationship },{ name: 'SizeLayoutExample', variants: SizeLayoutExample },{ name: 'SizeMeasurements', variants: SizeMeasurements },{ name: 'SizePlayAnimation', variants: SizePlayAnimation }] },
 { name: `tokenizer`, stories: [{ name: 'Tokenizer', variants: Tokenizer }] },
 { name: `experiments`, stories: [{ name: 'TopDownParser', variants: TopDownParser }] }];
