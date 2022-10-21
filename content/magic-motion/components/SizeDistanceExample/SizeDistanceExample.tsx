@@ -26,6 +26,33 @@ export const SizeDistanceExample = ({ text = null, corrected = false }) => {
   );
 };
 
+export const NaiveScaleCorrection = () => {
+  const [toggled, setToggled] = React.useState(false);
+  return (
+    <FullWidth>
+      <Visualizer>
+        <Content>
+          <Wrapper center>
+            <Motion
+              css={
+                toggled
+                  ? { width: "100%", height: 200 }
+                  : { width: 120, height: 120 }
+              }
+              scaleCorrection="naive"
+            >
+              Hello
+            </Motion>
+          </Wrapper>
+        </Content>
+        <Controls>
+          <button onClick={() => setToggled(!toggled)}>Toggle</button>
+        </Controls>
+      </Visualizer>
+    </FullWidth>
+  );
+};
+
 const Wrapper = styled("div", {
   padding: "$8",
   display: "flex",
@@ -36,6 +63,11 @@ const Wrapper = styled("div", {
     toggled: {
       true: {
         justifyContent: "flex-end",
+      },
+    },
+    center: {
+      true: {
+        justifyContent: "center",
       },
     },
   },

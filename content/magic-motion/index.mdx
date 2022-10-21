@@ -30,7 +30,10 @@ import { InverseSizeSlider } from "./components/InverseSizeSlider";
 import { SizePlayAnimation } from "./components/SizePlayAnimation";
 import { SizeDistanceRelationship } from "./components/SizeDistanceRelationship";
 import { CorrectedInverseAnimation } from "./components/CorrectedInverseAnimation";
-import { SizeDistanceExample } from "./components/SizeDistanceExample";
+import {
+  SizeDistanceExample,
+  NaiveScaleCorrection,
+} from "./components/SizeDistanceExample";
 import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSnapshot";
 import { InverseScaleFormula } from "./components/InverseScaleFormula";
 
@@ -336,7 +339,7 @@ Great! Now how would we integrate this with our layout animations?
 
 ### First Attempt
 
-The first thing that I tried was to calculate the inverse scale _once_, just before the parent is about to animate:
+The first thing that I tried was to calculate the inverse scale _once_, just before the parent is about to animate, and then running a separate animation on the child:
 
 ```ts
 /* this runs in the child when the parent is about to animate */
@@ -350,19 +353,23 @@ play({
 });
 ```
 
-So if the parent is animating from `scaleX: 2` to `scaleX: 1`, then the child will be animating from `scaleX: 1 / 2` to `scaleX: 1`. My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work. Here's what this approach looked like:
+For example, if the parent is animating from `scaleX: 2` to `scaleX: 1`, then the child will be animating from `scaleX: 1 / 2` to `scaleX: 1` using the same timing. My thinking was that as long as the timing of the scale correction is the same as the parent animation, this approach should work.
 
-```
-incorrect scale correction animation
-```
+Except I was wrong, because this is what the approach produces:
 
-It's doing _something_, but the text is still clearly changing size throughout the animation.
+<NaiveScaleCorrection />
 
-### The Scale Curve
+Er, it's doing _something_, but the text is still clearly changing size throughout the animation.
 
-Let's try to build this intuition.
+### The Correct Scale Timing
 
-Here, we have a square that stretches to 5x its size, at a constant rate, over 5 seconds:
+The problem here lies in this assumption:
+
+> As long as the timing of the scale correction is the same as the parent animation, this approach should work.
+
+In reality, the "correct" inverse scale does not change in the same manner as the parent animation. Let's try to build this intution.
+
+In the following example, we're changing the scale of the parent from 1 to 2 at a _constant_ rate. Every time we change the scale, we apply an inverse scale to the child, plotting the inverse scale along the way. Let's see what that chart looks like:
 
 The blue line shows how the `scaleX` property of the square changes throughout the animation. Since we're at the "Play" part of a FLIP animation, the box starts with a `scaleX` of `1/5` (to match its initial position) and slowly works its way to a `scaleX` of `1`.
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 import { animate } from "popmotion";
 
 import { styled } from "~/stitches.config";
@@ -8,14 +8,19 @@ type MotionProps = {
   corrected?: boolean;
   parentElement?: HTMLElement;
   children?: React.ReactNode;
-};
+  scaleCorrection?: "naive" | "final";
+} & ComponentPropsWithoutRef<typeof Square>;
 
 export function Motion({
   size = 120,
   corrected = true,
+  scaleCorrection,
   children,
+  ...props
 }: MotionProps) {
   const ref = React.useRef<HTMLDivElement>(null);
+  const childRef = React.useRef<HTMLSpanElement>(null);
+
   const lastRect = React.useRef<DOMRect>(null);
   const lastRectY = React.useRef(0);
   const scrollTop = React.useRef(0);
@@ -46,6 +51,18 @@ export function Motion({
         el: ref.current,
         transform,
       });
+
+      if (scaleCorrection === "naive") {
+        play({
+          el: childRef.current,
+          transform: {
+            x: 0,
+            y: 0,
+            scaleX: 1 / transform.scaleX,
+            scaleY: 1 / transform.scaleY,
+          },
+        });
+      }
     }
 
     lastRect.current = box;
@@ -54,8 +71,8 @@ export function Motion({
   });
 
   return (
-    <Square ref={ref} css={{ width: size, height: size }}>
-      {children}
+    <Square ref={ref} css={{ width: size, height: size }} {...props}>
+      <span ref={childRef}>{children}</span>
     </Square>
   );
 }

@@ -10,7 +10,6 @@ import {
 } from "~/components/Visualizer";
 import { Slider } from "~/components/Slider";
 import { Checkbox } from "~/components/Checkbox";
-import { RiCheckboxBlankFill } from "react-icons/ri";
 
 export const InverseScaleFormula = () => {
   const [corrected, setCorrected] = React.useState(true);
