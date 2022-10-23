@@ -232,6 +232,13 @@ const Article = styled("article", {
     overflowX: "auto",
   },
 
+  blockquote: {
+    paddingLeft: "$4",
+    borderLeft: "2px solid $gray8",
+    color: "$gray11",
+    fontStyle: "italic",
+  },
+
   "[data-rehype-pretty-code-fragment] > pre": {
     marginBottom: "$4",
   },

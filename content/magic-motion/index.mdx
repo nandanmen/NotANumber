@@ -36,6 +36,7 @@ import {
 } from "./components/SizeDistanceExample";
 import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSnapshot";
 import { InverseScaleFormula } from "./components/InverseScaleFormula";
+import { InverseScaleSandbox } from "./components/InverseScaleSandbox";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -367,43 +368,73 @@ The problem here lies in this assumption:
 
 > As long as the timing of the scale correction is the same as the parent animation, this approach should work.
 
-In reality, the "correct" inverse scale does not change in the same manner as the parent animation. Let's try to build this intution.
+In reality, the "correct" inverse scale does not change in the same manner as the parent animation. Instead it kinda does its own thing:
 
-In the following example, we're changing the scale of the parent from 1 to 2 at a _constant_ rate. Every time we change the scale, we apply an inverse scale to the child, plotting the inverse scale along the way. Let's see what that chart looks like:
+```
+inverse scale graph
+```
 
-The blue line shows how the `scaleX` property of the square changes throughout the animation. Since we're at the "Play" part of a FLIP animation, the box starts with a `scaleX` of `1/5` (to match its initial position) and slowly works its way to a `scaleX` of `1`.
+In the example above, the blue line shows the scale of the parent, while the yellow line shows the scale of the child. Notice that the blue line is a straight line whereas the yellow line is a bit of a curve. This tells us that the timing of the inverse scale is not the same as the parent scale!
 
-The text starts off really small because it's being compressed by the parent's `scaleX`. To fix this, we need to apply a `scaleX` to the text that cancels out this effect.
+To fix this, we can either:
 
-Based on [our formula](#inverse-scale-formula), a `scaleX` value of 5 will correctly cancel out the parent's compression effect:
+1. Calculate the correct timing ahead of time, or;
+2. Calculate the inverse scale every time the parent scale changes.
 
-When the animation starts and 1 second has passed, the square doubles in length, so we need to scale down the text by half to keep it the same size:
+(2) happens to be drastically simpler than (1), and also allows us to handle all sorts of different timings on the parent. This also happens to be the approach that Framer Motion uses.
 
-After 2 seconds, we need to scale the text down by a third:
+```ts
+animate({
+  from: inverseTransform,
+  to: {
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+  },
+  onUpdate: ({ x, y, scaleX, scaleY }) => {
+    parentRef.style.transform = `...`;
 
-After 3 seconds, a quarter:
+    const inverseScaleX = 1 / scaleX;
+    const inverseScaleY = 1 / scaleY;
+    childRef.style.transform = `scaleX(${inverseScaleX}) scaleY(${inverseScaleY}) ...`;
+  },
+});
+```
 
-And so on:
+<InverseScaleSandbox />
 
-Notice that when we plot these values, they don’t make a straight line!
+### That's Not How it Really Works, Right?
 
-In comparison, here's what happens when we match the `scaleX` with the parent's timing:
+The way that I made the scale correction work in this case is by wrapping the child element in a `<div>` and applying the scale correction to the `<div>`. This implies a few things:
 
----
+1. There are two elements in the DOM for one Motion component, which may be problematic from a UX perspective;
+2. All child components are scale corrected — there's no way for one child to be corrected and another not;
+3. There _may_ be issues if the child component is also animating — I haven't tested this, but I assume the scale correction will cause issues because we're distorting the child's coordinate space.
 
-What if we now scale back the other way?
+Framer Motion does things a bit differently; you have to _opt in_ to scale correction by making your child component a layout component:
 
-Hmm, it's not quite right either. Let's plot the area of the square again:
+```tsx
+<motion.article layout>
+  <motion.h1 layout>Hello!</motion.h1> <-- is scale corrected
+  <p>World!</p> <-- is not scale corrected
+</motion.article>
+```
 
-It's not the same curve! Well, it kinda is, just flipped upside down. If we change the text scale to use _this_ curve now, it looks correct again:
+This API implies that the child component needs to be able to "hook in" to the parent's animation, which makes the implementation a tad more complex.
 
-From these examples we can conclude that in order to make the text stay the same size at all times, it needs to counteract its area curve. And the best way to ensure that it does this is to **calculate the transform on every frame of the animation**.
+I opted to not implement things this way because I didn't want to take away from the core scale correction concept. If you're interested though, [this part of the Framer Motion source code]() seems to be a good place to start — it looks like they maintain their own DOM-like tree of motion components!
 
 ## Summary
 
 Framer motion's magical layout animations are powered by the FLIP technique — a clever way to implement performant layout animations. While implementing FLIP with position changes turned out to be pretty straightforward, the same can't be said for changes in size. When we put size into the picture, we have to worry about:
 
-- How a change in size affects the distance the element travelled;
-- Correcting distortions in child elements caused by transforms in the parent element;
+1. How a change in size affects the distance the element travelled;
+2. Correcting distortions in child elements caused by transforms in the parent element;
 
-And a whole slew of edge cases that I didn't quite get into in this post. That's all for today, thanks for reading!
+And a whole slew of edge cases that I didn't quite get into in this post, such as:
+
+1. What if a child component is animating during a layout change?
+2. What if the element is inside a scrollable container?
+
+That's all for today, thanks for reading!

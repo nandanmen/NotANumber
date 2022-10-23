@@ -4,6 +4,7 @@ const css = `
 body {
   margin: 0;
   padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 #motion {
@@ -12,6 +13,9 @@ body {
   width: 120px;
   aspect-ratio: 1;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #wrapper {
@@ -24,7 +28,9 @@ const code = `import React from 'react'
 import Motion from './Motion'
 import './styles.css'
 
-export default function App() {
+`;
+
+const defaultAppCode = `export default function App() {
   const [toggled, toggle] = React.useReducer(state => !state, false)
 
   return (
@@ -35,13 +41,14 @@ export default function App() {
       </div>
     </div>
   )
-}`;
+}
+`;
 
-export const MotionSandbox = ({ motionCode }) => {
+export const MotionSandbox = ({ motionCode, appCode = defaultAppCode }) => {
   return (
     <Sandbox
       files={{
-        "/App.js": code,
+        "/App.js": code + appCode,
         "/Motion.js": {
           code: motionCode,
           active: true,
