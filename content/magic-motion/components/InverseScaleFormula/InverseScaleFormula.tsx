@@ -30,6 +30,7 @@ export const InverseScaleFormula = ({
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               css={{ position: "absolute", top: -1, left: "100%" }}
+              secondary
             >
               scaleX: {(1 / scale).toFixed(2)}
             </ScaleTooltip>
@@ -113,11 +114,25 @@ const ScaleTooltip = styled(motion.div, {
     left: "-$6",
     top: -1,
   },
+
+  variants: {
+    secondary: {
+      true: {
+        color: "$yellow11",
+        background: "$yellow1",
+        border: "1px solid $yellow7",
+
+        "&:before": {
+          background: "$yellow7",
+        },
+      },
+    },
+  },
 });
 
 const Text = styled("span", {
-  background: "$blue4",
-  border: "1px solid $blue7",
+  background: "$yellow4",
+  border: "1px solid $yellow7",
   padding: "$2",
   position: "relative",
 });

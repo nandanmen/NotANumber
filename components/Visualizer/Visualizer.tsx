@@ -26,6 +26,9 @@ export const Content = styled(GridBackground, {
       md: {
         padding: "$6",
       },
+      lg: {
+        padding: "$8",
+      },
     },
   },
 });
