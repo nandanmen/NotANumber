@@ -116,6 +116,7 @@ export function Tokenizer({
 const Phase = styled("h1", {
   color: "$grey600",
   fontWeight: 600,
+  fontSize: "$base",
 });
 
 const center = {

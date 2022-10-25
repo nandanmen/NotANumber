@@ -55,13 +55,6 @@ const posts = [
         "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
       editedAt: "2021-11-13",
     },
-    children: (
-      <Tokenizer
-        name="singleCharacter"
-        input="{ console.log() }"
-        showKeywords={false}
-      />
-    ),
   },
   {
     post: {
@@ -71,13 +64,6 @@ const posts = [
         "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
       editedAt: "2021-05-15",
     },
-    children: (
-      <Tokenizer
-        name="singleCharacter"
-        input="{ console.log() }"
-        showKeywords={false}
-      />
-    ),
   },
   {
     post: {
@@ -86,13 +72,6 @@ const posts = [
       description: "An interactive look at a classic array algorithm pattern.",
       editedAt: "2021-03-21",
     },
-    children: (
-      <Tokenizer
-        name="singleCharacter"
-        input="{ console.log() }"
-        showKeywords={false}
-      />
-    ),
   },
 ];
 
@@ -191,12 +170,20 @@ const Links = styled(motion.ul, {
 const PageWrapper = styled("main", {
   width: "fit-content",
   margin: "0 auto",
+  padding: "$4",
+  maxWidth: "42rem",
+
+  "@media screen and (min-width: 75rem)": {
+    maxWidth: "initial",
+  },
 });
 
 const ContentWrapper = styled("div", {
-  display: "grid",
-  gridTemplateColumns: "26rem 42rem",
-  gap: "$16",
+  "@media screen and (min-width: 75rem)": {
+    display: "grid",
+    gridTemplateColumns: "26rem 42rem",
+    gap: "$16",
+  },
 });
 
 const Title = styled("h1", {
@@ -207,14 +194,22 @@ const Title = styled("h1", {
 });
 
 const Header = styled("header", {
-  position: "fixed",
   display: "flex",
   flexDirection: "column",
   gap: "$8",
-  paddingRight: "$16",
-  borderRight: "1px solid $gray8",
   height: "fit-content",
-  maxWidth: "26rem",
+  paddingBottom: "$8",
+  borderBottom: "1px solid $gray8",
+  marginBottom: "$8",
+
+  "@media screen and (min-width: 75rem)": {
+    paddingBottom: 0,
+    borderBottom: "none",
+    position: "fixed",
+    maxWidth: "26rem",
+    paddingRight: "$16",
+    borderRight: "1px solid $gray8",
+  },
 });
 
 const Description = styled("p", {
