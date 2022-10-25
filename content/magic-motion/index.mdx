@@ -37,6 +37,7 @@ import {
 import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSnapshot";
 import { InverseScaleFormula } from "./components/InverseScaleFormula";
 import { InverseScaleSandbox } from "./components/InverseScaleSandbox";
+import { InverseScaleGraph } from "./components/InverseScaleGraph";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
@@ -370,9 +371,7 @@ The problem here lies in this assumption:
 
 In reality, the "correct" inverse scale does not change in the same manner as the parent animation. Instead it kinda does its own thing:
 
-```
-inverse scale graph
-```
+<InverseScaleGraph />
 
 In the example above, the blue line shows the scale of the parent, while the yellow line shows the scale of the child. Notice that the blue line is a straight line whereas the yellow line is a bit of a curve. This tells us that the timing of the inverse scale is not the same as the parent scale!
 
@@ -423,7 +422,7 @@ Framer Motion does things a bit differently; you have to _opt in_ to scale corre
 
 This API implies that the child component needs to be able to "hook in" to the parent's animation, which makes the implementation a tad more complex.
 
-I opted to not implement things this way because I didn't want to take away from the core scale correction concept. If you're interested though, [this part of the Framer Motion source code]() seems to be a good place to start — it looks like they maintain their own DOM-like tree of motion components!
+I opted to not implement things this way because I didn't want to take away from the core scale correction concept. If you're interested though, [this part of the Framer Motion source code](https://github.com/framer/motion/blob/main/packages/framer-motion/src/projection/node/create-projection-node.ts) seems to be a good place to start — it looks like they maintain their own DOM-like tree of motion components using something called "projection nodes".
 
 ## Summary
 

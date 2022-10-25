@@ -17,4 +17,15 @@ export const Controls = styled("div", {
 export const Content = styled(GridBackground, {
   border: "none",
   borderRadius: "none",
+
+  variants: {
+    padding: {
+      sm: {
+        padding: "$4",
+      },
+      md: {
+        padding: "$6",
+      },
+    },
+  },
 });

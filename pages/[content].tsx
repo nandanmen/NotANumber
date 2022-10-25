@@ -1,6 +1,6 @@
 import React from "react";
 import type { GetStaticPropsContext } from "next";
-import Link from "next/link";
+import NextLink from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
@@ -10,7 +10,8 @@ import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
-import { ThemeToggle } from "~/components/ThemeToggle";
+import { Link } from "~/components/Link";
+// import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -54,9 +55,9 @@ export default function PostPage({ content }: { content: Post }) {
       <MobileBottomBar />
       <Nav>
         <h2>
-          <Link href="/">
+          <NextLink href="/">
             <a>NaN</a>
-          </Link>
+          </NextLink>
         </h2>
         <ul>
           {headings.map((heading) => (
@@ -79,6 +80,7 @@ export default function PostPage({ content }: { content: Post }) {
             h2: Heading as any,
             h3: Subheading as any,
             ol: OrderedList as any,
+            a: Link as any,
           }}
         />
         <NewsletterWrapper>
@@ -140,6 +142,7 @@ const Title = styled("h1", {
   fontSize: "4rem",
   fontFamily: "$serif",
   lineHeight: "$title",
+  fontWeight: 500,
 });
 
 const Blurb = styled("p", {
@@ -192,11 +195,6 @@ const Article = styled("article", {
 
   h2: {
     fontFamily: "$serif",
-  },
-
-  a: {
-    color: "$blue9",
-    textDecoration: "none",
   },
 
   "> p": {
