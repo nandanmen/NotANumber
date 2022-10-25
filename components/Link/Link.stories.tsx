@@ -1,3 +1,3 @@
-import { Link } from './Link'
+import { Link } from "./Link";
 
-export const Default = () => <Link />
+export const Default = () => <Link href="#internal">Hello</Link>;
