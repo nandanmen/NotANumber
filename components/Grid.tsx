@@ -67,15 +67,7 @@ const Wrapper = styled("g", {
   color: "$gray6",
 });
 
-type GridBackgroundProps = {
-  children: React.ReactNode;
-};
-
-export const GridBackground = ({ children }: GridBackgroundProps) => (
-  <GridBackgroundWrapper>{children}</GridBackgroundWrapper>
-);
-
-const GridBackgroundWrapper = styled(motion.div, {
+export const GridBackground = styled(motion.div, {
   position: "relative",
   border: "1px solid $gray8",
   borderRadius: "$base",
@@ -85,6 +77,14 @@ const GridBackgroundWrapper = styled(motion.div, {
 
   [`.${darkTheme} &`]: {
     backgroundImage: "url(/grid-dark.svg)",
+  },
+
+  variants: {
+    noOverflow: {
+      true: {
+        overflow: "hidden",
+      },
+    },
   },
 });
 

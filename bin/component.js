@@ -3,6 +3,7 @@ const fs = require("fs/promises");
 const storiesTemplate = (
   componentName
 ) => `import { ${componentName} } from './${componentName}'
+
 export const Default = () => <${componentName} />
 `;
 

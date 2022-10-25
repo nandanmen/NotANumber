@@ -4,6 +4,7 @@ import {
   blue,
   green,
   red,
+  yellow,
   grayDark,
   blueDark,
   greenDark,
@@ -54,11 +55,12 @@ export const baseTheme = {
     ...blue,
     ...green,
     ...red,
+    ...yellow,
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `Source Code Pro, ui-monospace, monospace`,
-    sans: `Karla, system-ui, -apple-system, sans-serif`,
+    mono: `Berkeley Mono, ui-monospace, monospace`,
+    sans: `Nunito, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {
     sm: "0.875rem",
@@ -74,23 +76,24 @@ export const baseTheme = {
     title: 1,
   },
   shadows: {
-    sm: "1px 1px 0 0 rgba(0, 0, 0, 0.2)",
-    md: "2px 2px 0 0 rgba(0, 0, 0, 0.2)",
+    md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    sm: "0 8px 16px hsla(0, 0%, 0%, 0.03)",
   },
   radii: {
     base: "6px",
   },
 };
 
-export const { styled, getCssText, globalCss, createTheme } = createStitches({
-  media: {
-    post: `(min-width: 50rem)`,
-    md: `(min-width: 768px)`,
-    lg: `(min-width: 62em)`,
-    xl: `(min-width: 80em)`,
-  },
-  theme: baseTheme,
-});
+export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
+  createStitches({
+    media: {
+      post: `(min-width: 50rem)`,
+      md: `(min-width: 768px)`,
+      lg: `(min-width: 62em)`,
+      xl: `(min-width: 80em)`,
+    },
+    theme: baseTheme,
+  });
 
 export const darkTheme = createTheme({
   colors: {
@@ -112,8 +115,12 @@ export const globalStyles = globalCss({
   "input, button": {
     all: "unset",
   },
+  button: {
+    cursor: "pointer",
+  },
   body: {
     fontFamily: "$sans",
+    background: "$gray4",
   },
   "h1, h2": {
     fontWeight: "normal",

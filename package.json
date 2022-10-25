@@ -5,6 +5,7 @@
   "scripts": {
     "component": "node bin/component.js",
     "dev": "concurrently \"next dev\" \"yarn build:content --watch\"",
+    "dev:remote": "concurrently \"next-remote-watch ./_dist-content/**/*\" \"yarn build:content --watch\"",
     "build": "yarn build:content && next build",
     "build:content": "rm -rf ./_dist-content && babel ./content --out-dir ./_dist-content --copy-files --extensions .ts,.tsx",
     "start": "next start",
@@ -12,10 +13,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^1.5.1",
+    "@codesandbox/sandpack-themes": "^1.5.0",
     "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-slider": "^1.0.0",
     "@stitches/react": "^1.2.8",
     "@use-it/interval": "^1.0.0",
+    "@xstate/react": "^3.0.1",
     "esbuild": "^0.14.51",
     "framer-motion": "^6.5.1",
     "glob": "^8.0.3",
@@ -23,13 +28,15 @@
     "mdx-bundler": "^9.0.1",
     "next": "12.2.3",
     "next-themes": "^0.2.0",
+    "popmotion": "^11.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "rehype-pretty-code": "^0.3.2",
     "rfdc": "^1.3.0",
     "shiki": "^0.10.1",
-    "title-case": "^3.0.3"
+    "title-case": "^3.0.3",
+    "xstate": "^4.33.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.9",
@@ -44,6 +51,7 @@
     "concurrently": "^7.3.0",
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.3",
+    "next-remote-watch": "^1.0.0",
     "typescript": "^4.7.4"
   }
 }

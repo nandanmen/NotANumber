@@ -1,0 +1,68 @@
+---
+title: 'What exactly is a "stack overflow"?'
+blurb: "It's more than a website."
+description: "It's more than a website."
+publishedAt: '2021-06-02'
+editedAt: '2021-06-02'
+---
+
+It's the holy grail of websites, for one.
+
+But it's also a pretty big security vulnerability, and one you probably won't encounter if you spend all day writing JavaScript (like yours truly!) Nevertheless, I still think it's pretty cool to go a few abstractions down and learn more about what a stack overflow is and how you can abuse it to harm other people's computers (please don't). In the process, we'll get to learn more about how computers work.
+
+Let's begin.
+
+## How does a computer call a function?
+
+If someone handed you a piece of paper full of code and told you to run it manually, how would you do it? Let's try to execute the following piece of code:
+
+```jsx
+const first = 5
+const second = a + 10
+
+function add(a, b) {
+  return a + b
+}
+
+const c = add(first, second)
+```
+
+A good place to start would be to go top-down, line by line.
+
+When we reach a variable assignment, we would write down what value that variable is assigned to.
+
+```jsx
+const a = 5
+```
+
+What happens, then, when you reach a function call? Let’s use a simple add function:
+
+```jsx
+function add(a, b) {
+  return a + b
+}
+
+const c = add(1, 2)
+```
+
+For me, I would probably be thinking:
+
+1. The function takes parameters a and b
+2. What are the values of a and b?
+3. It’s called with 1 and 2, so a is 1 and b is 2. Let’s take a note of that
+4. Let’s _jump_ into the function body
+5. I need to calculate a + b. In our notes, a is 1 and b is 2, so a + b is 3.
+6. We want to return this value, so let’s take note that the return value is 3.
+7. We’re done with this function, so let’s _jump back_ to where we were before.
+8. Hold on — let's remove the values of a and b since we're not in the function anymore.
+9. We want to assign this return value to a new variable c. We know the return value is 3 because we wrote that here, so let’s assign 3 to the variable c.
+
+Interestingly, this is more or less what the _computer_ thinks when it's executing your code. I want to highlight steps (4) and (7) here. In step 4, we have to jump into the function body, do stuff there, then jump back out in step 7. While we're in the function, we had to keep track of the values of a and b, the arguments passed into the function, and the value of a + b, the return value of the function.
+
+That's quite a few things to keep track of so let's note that down:
+
+- We need to know the **arguments passed into the function**,
+- The **return value** of the function, and
+- Where to **jump back to** once we're done with the function
+
+On top of keeping track of this information, we want to get rid of it completely once we're done with the function call.

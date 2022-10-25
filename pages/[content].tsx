@@ -1,6 +1,6 @@
 import React from "react";
 import type { GetStaticPropsContext } from "next";
-import Link from "next/link";
+import NextLink from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
@@ -10,7 +10,8 @@ import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
-import { ThemeToggle } from "~/components/ThemeToggle";
+import { Link } from "~/components/Link";
+// import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -54,9 +55,9 @@ export default function PostPage({ content }: { content: Post }) {
       <MobileBottomBar />
       <Nav>
         <h2>
-          <Link href="/">
+          <NextLink href="/">
             <a>NaN</a>
-          </Link>
+          </NextLink>
         </h2>
         <ul>
           {headings.map((heading) => (
@@ -79,24 +80,16 @@ export default function PostPage({ content }: { content: Post }) {
             h2: Heading as any,
             h3: Subheading as any,
             ol: OrderedList as any,
+            a: Link as any,
           }}
         />
         <NewsletterWrapper>
           <NewsletterForm />
         </NewsletterWrapper>
       </Article>
-      <ThemeWrapper>
-        <ThemeToggle />
-      </ThemeWrapper>
     </PageWrapper>
   );
 }
-
-const ThemeWrapper = styled("div", {
-  position: "fixed",
-  top: "50%",
-  right: "$4",
-});
 
 const NewsletterWrapper = styled("footer", {
   marginTop: "$24",
@@ -141,7 +134,7 @@ const Nav = styled("nav", {
 });
 
 const PageWrapper = styled("main", {
-  width: `min(80rem, 100vw)`,
+  width: `min(80rem, 100%)`,
   margin: "0 auto",
 });
 
@@ -149,6 +142,7 @@ const Title = styled("h1", {
   fontSize: "4rem",
   fontFamily: "$serif",
   lineHeight: "$title",
+  fontWeight: 500,
 });
 
 const Blurb = styled("p", {
@@ -203,19 +197,15 @@ const Article = styled("article", {
     fontFamily: "$serif",
   },
 
-  a: {
-    color: "$blue9",
-    textDecoration: "none",
+  "> p": {
+    "> span > code, > code": {
+      background: "$gray7",
+      padding: 2,
+      fontSize: "$sm",
+    },
   },
 
-  pre: {
-    border: "1px solid $gray8",
-    padding: "$4",
-    borderRadius: "$base",
-    fontSize: "$sm",
-    marginTop: "$4",
-    marginBottom: "$8",
-
+  "*": {
     "&[data-theme='dark']": {
       display: "none",
     },
@@ -225,9 +215,26 @@ const Article = styled("article", {
         display: "none",
       },
       "&[data-theme='dark']": {
-        display: "block",
+        display: "revert",
       },
     },
+  },
+
+  pre: {
+    border: "1px solid $gray8",
+    padding: "$4",
+    borderRadius: "$base",
+    fontSize: "$sm",
+    marginTop: "$4",
+    marginBottom: "$8",
+    overflowX: "auto",
+  },
+
+  blockquote: {
+    paddingLeft: "$4",
+    borderLeft: "2px solid $gray8",
+    color: "$gray11",
+    fontStyle: "italic",
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {

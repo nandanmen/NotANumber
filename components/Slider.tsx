@@ -1,7 +1,7 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { darkTheme, styled } from "~/stitches.config";
 
-export const Slider = (props: SliderPrimitive.SliderProps) => {
+export const Slider = (props) => {
   return (
     <SliderRoot {...props}>
       <Track>

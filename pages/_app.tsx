@@ -6,7 +6,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="light"
       value={{ dark: darkTheme.className, light: "light" }}
     >
       <Wrapper>
@@ -17,7 +17,6 @@ function MyApp({ Component, pageProps }) {
 }
 
 const Wrapper = styled("div", {
-  background: "$gray4",
   color: "$gray12",
   padding: "$16 0",
   minHeight: "100vh",
