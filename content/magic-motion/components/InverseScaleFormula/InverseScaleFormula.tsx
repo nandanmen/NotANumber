@@ -11,36 +11,61 @@ import {
 import { Slider } from "~/components/Slider";
 import { Checkbox } from "~/components/Checkbox";
 
-export const InverseScaleFormula = () => {
+type InverseScaleFormulaProps = {
+  corrected: boolean;
+  scale: number;
+};
+
+export const InverseScaleFormula = ({
+  corrected,
+  scale,
+}: InverseScaleFormulaProps) => {
+  return (
+    <Content>
+      <Square style={{ transform: `scaleX(${scale})` }}>
+        <Text style={{ transform: `scaleX(${corrected ? 1 / scale : 1})` }}>
+          Hello
+          {corrected && (
+            <ScaleTooltip
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              css={{ position: "absolute", top: -1, left: "100%" }}
+            >
+              scaleX: {(1 / scale).toFixed(2)}
+            </ScaleTooltip>
+          )}
+        </Text>
+      </Square>
+      <TooltipWrapper
+        style={{ transform: `translate(${60 * scale}px, -60px)` }}
+      >
+        <ScaleTooltip css={{ transform: `translate(50%, 50%)` }}>
+          scaleX: {scale.toFixed(2)}
+        </ScaleTooltip>
+      </TooltipWrapper>
+    </Content>
+  );
+};
+
+const Content = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+});
+
+// --
+
+export const InverseScaleFormulaSandbox = () => {
   const [corrected, setCorrected] = React.useState(true);
   const [scale, setScale] = React.useState(1);
 
   return (
     <FullWidth>
       <Visualizer>
-        <Content>
-          <Square style={{ transform: `scaleX(${scale})` }}>
-            <Text style={{ transform: `scaleX(${corrected ? 1 / scale : 1})` }}>
-              Hello
-              {corrected && (
-                <ScaleTooltip
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  css={{ position: "absolute", top: -1, left: "100%" }}
-                >
-                  scaleX: {(1 / scale).toFixed(2)}
-                </ScaleTooltip>
-              )}
-            </Text>
-          </Square>
-          <TooltipWrapper
-            style={{ transform: `translate(${60 * scale}px, -60px)` }}
-          >
-            <ScaleTooltip css={{ transform: `translate(50%, 50%)` }}>
-              scaleX: {scale.toFixed(2)}
-            </ScaleTooltip>
-          </TooltipWrapper>
-        </Content>
+        <ContentWrapper>
+          <InverseScaleFormula corrected={corrected} scale={scale} />
+        </ContentWrapper>
         <Controls>
           <Checkbox
             checked={corrected}
@@ -59,6 +84,10 @@ export const InverseScaleFormula = () => {
     </FullWidth>
   );
 };
+
+const ContentWrapper = styled(BaseContent, {
+  height: 220,
+});
 
 const TooltipWrapper = styled("div", {
   position: "absolute",
@@ -98,13 +127,6 @@ const Controls = styled(BaseControls, {
   display: "flex",
   alignItems: "center",
   gap: "$4",
-});
-
-const Content = styled(BaseContent, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  height: 220,
 });
 
 const Square = styled("div", {
