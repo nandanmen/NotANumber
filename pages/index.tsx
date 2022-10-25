@@ -1,24 +1,37 @@
 import React from "react";
 import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
-
-import { styled } from "~/stitches.config";
-import { Post, type PostProps } from "~/components/Post";
-import { SubscribeInput } from "~/components/SubscribeInput";
 import { motion } from "framer-motion";
 
-const posts: PostProps[] = [
+import { styled } from "~/stitches.config";
+import { Post } from "~/components/Post";
+import { SubscribeInput } from "~/components/SubscribeInput";
+
+import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
+import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
+
+const posts = [
   {
-    icon: "Hi!",
     post: {
-      slug: "tokenizer",
-      title: "Rebuilding Babel: The Tokenizer",
+      slug: "magic-motion",
+      title: "Inside Framer's Magic Motion",
       description:
-        "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
-      editedAt: "2022-02-20",
+        "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
+      editedAt: "2022-10-25",
     },
+    children: (
+      <CorrectedInverseAnimation
+        from={(width, container) => ({
+          x: container.width - width - container.padding,
+          y: container.height / 2 - width / 2,
+        })}
+        to={(width, container) => ({
+          x: container.padding,
+          y: container.height / 2 - width / 2,
+        })}
+      />
+    ),
   },
   {
-    icon: "Hi!",
     post: {
       slug: "tokenizer",
       title: "Rebuilding Babel: The Tokenizer",
@@ -26,16 +39,60 @@ const posts: PostProps[] = [
         "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
       editedAt: "2022-02-20",
     },
+    children: (
+      <Tokenizer
+        name="singleCharacter"
+        input="{ console.log() }"
+        showKeywords={false}
+      />
+    ),
   },
   {
-    icon: "Hi!",
     post: {
-      slug: "tokenizer",
-      title: "Rebuilding Babel: The Tokenizer",
+      slug: "how-arrays-work",
+      title: "How do Arrays Work?",
       description:
-        "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
-      editedAt: "2022-02-20",
+        "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
+      editedAt: "2021-11-13",
     },
+    children: (
+      <Tokenizer
+        name="singleCharacter"
+        input="{ console.log() }"
+        showKeywords={false}
+      />
+    ),
+  },
+  {
+    post: {
+      slug: "debugger",
+      title: "Building a Debugger",
+      description:
+        "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
+      editedAt: "2021-05-15",
+    },
+    children: (
+      <Tokenizer
+        name="singleCharacter"
+        input="{ console.log() }"
+        showKeywords={false}
+      />
+    ),
+  },
+  {
+    post: {
+      slug: "sliding-window",
+      title: "The Sliding Window Pattern",
+      description: "An interactive look at a classic array algorithm pattern.",
+      editedAt: "2021-03-21",
+    },
+    children: (
+      <Tokenizer
+        name="singleCharacter"
+        input="{ console.log() }"
+        showKeywords={false}
+      />
+    ),
   },
 ];
 
@@ -43,30 +100,6 @@ export default function HomePage() {
   const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
     <PageWrapper>
-      <nav>
-        <Links>
-          <li>
-            <a
-              href="https://github.com/narendrasss/NotANumber"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Github"
-            >
-              <FaGithub />
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://twitter.com/nandafyi"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Twitter"
-            >
-              <FaTwitter />
-            </a>
-          </li>
-        </Links>
-      </nav>
       <ContentWrapper>
         <Header>
           <Title>Not a Number</Title>
@@ -74,20 +107,46 @@ export default function HomePage() {
             An interactive blog on computer science and web development, by
             Nanda Syahrasyad.
           </Description>
-          <SubscribeButton onClick={toggle}>
-            Subscribe to the newsletter{" "}
-            {subscribing ? <FaTimes /> : <FaArrowRight />}
-          </SubscribeButton>
-          {subscribing && (
-            <SubscribeWrapper animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-              <SubscribeInput />
-            </SubscribeWrapper>
-          )}
+          <div>
+            <SubscribeButton onClick={toggle}>
+              Subscribe to the newsletter{" "}
+              {subscribing ? <FaTimes /> : <FaArrowRight />}
+            </SubscribeButton>
+            {subscribing && (
+              <SubscribeWrapper
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+              >
+                <SubscribeInput />
+              </SubscribeWrapper>
+            )}
+          </div>
+          <Links layout>
+            <li>
+              <a
+                href="https://github.com/narendrasss/NotANumber"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Github"
+              >
+                <FaGithub />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://twitter.com/nandafyi"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Twitter"
+              >
+                <FaTwitter />
+              </a>
+            </li>
+          </Links>
         </Header>
-        <Divider layout />
-        <Posts layout>
+        <Posts>
           {posts.map((post) => (
-            <Post key={post.post.slug} icon={post.icon} post={post.post} />
+            <Post key={post.post.slug} {...post} />
           ))}
         </Posts>
       </ContentWrapper>
@@ -113,13 +172,11 @@ const SubscribeWrapper = styled(motion.div, {
   maxWidth: 400,
 });
 
-const Links = styled("ul", {
-  display: "flex",
-  justifyContent: "flex-end",
-  listStyle: "none",
+const Links = styled(motion.ul, {
   fontSize: "$xl",
   gap: "$4",
-  padding: "$4",
+  display: "flex",
+  listStyle: "none",
 
   a: {
     color: "inherit",
@@ -132,51 +189,42 @@ const Links = styled("ul", {
 });
 
 const PageWrapper = styled("main", {
-  width: "min(64rem, 100vw)" /* 60rem + 2rem padding * 2 */,
+  width: "fit-content",
   margin: "0 auto",
 });
 
 const ContentWrapper = styled("div", {
-  padding: "0 $8",
+  display: "grid",
+  gridTemplateColumns: "26rem 42rem",
+  gap: "$16",
 });
 
 const Title = styled("h1", {
   fontFamily: "$serif",
-  fontSize: "5rem",
+  fontSize: "3rem",
   lineHeight: "$title",
-  marginBottom: "$16",
-
-  "@md": {
-    fontSize: "6rem",
-  },
+  fontWeight: 500,
 });
 
 const Header = styled("header", {
-  marginBottom: "$16",
+  position: "fixed",
+  display: "flex",
+  flexDirection: "column",
+  gap: "$8",
+  paddingRight: "$16",
+  borderRight: "1px solid $gray8",
+  height: "fit-content",
+  maxWidth: "26rem",
 });
 
 const Description = styled("p", {
-  fontSize: "$lg",
-  maxWidth: "45ch",
-  marginBottom: "$8",
   lineHeight: "$body",
 });
 
 const Posts = styled(motion.ul, {
-  paddingTop: "$20",
+  gridColumn: 2,
 
   "> :not(:last-child)": {
-    marginBottom: "$20",
-  },
-});
-
-const Divider = styled(motion.div, {
-  width: "min(30vw, $space$24)",
-  marginLeft: "-2rem",
-  height: "$px",
-  background: "$gray8",
-
-  "@media screen and (min-width: 60rem)": {
-    marginLeft: 0,
+    marginBottom: "$12",
   },
 });

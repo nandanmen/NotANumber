@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
+import { BsArrowRight } from "react-icons/bs";
 import { titleCase } from "title-case";
 
-import { styled, darkTheme } from "~/stitches.config";
+import { styled } from "~/stitches.config";
 
 export interface IPost {
   slug: string;
@@ -14,98 +14,82 @@ export interface IPost {
 
 export type PostProps = {
   post: IPost;
-  icon: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-export function Post({ post, icon }: PostProps) {
+export function Post({ post, children }: PostProps) {
   return (
-    <PostItem>
-      <PostIcon>{icon}</PostIcon>
-      <PostWrapper whileHover="hover">
+    <PostWrapper>
+      <PostContent>
+        <PostTitle whileHover="hover">
+          <Link href={post.slug}>
+            <TitleAnchor>
+              {titleCase(post.title)}
+              <PostArrow variants={{ hover: { x: 8 } }}>
+                <BsArrowRight width="24" height="24" />
+              </PostArrow>
+            </TitleAnchor>
+          </Link>
+        </PostTitle>
+        <PostUpdatedText>
+          Last updated{" "}
+          {new Intl.DateTimeFormat("en-US", {
+            month: "long",
+            year: "numeric",
+            day: "numeric",
+          }).format(new Date(post.editedAt))}
+        </PostUpdatedText>
+        <PostDescription>{post.description}</PostDescription>
+        <div>{children}</div>
         <Link href={post.slug}>
-          <Anchor>
-            <PostContent>
-              <PostTitle>{titleCase(post.title)}</PostTitle>
-              <PostDescription>{post.description}</PostDescription>
-              <PostUpdatedText>
-                Last updated{" "}
-                {new Intl.DateTimeFormat("en-US", {
-                  month: "long",
-                  year: "numeric",
-                  day: "numeric",
-                }).format(new Date(post.editedAt))}
-              </PostUpdatedText>
-            </PostContent>
-            <PostArrow variants={{ hover: { x: 8 } }}>
-              <FaArrowRight width="30" height="30" />
-            </PostArrow>
-          </Anchor>
+          <TitleAnchor small>
+            Read now
+            <BsArrowRight width="12" height="12" />
+          </TitleAnchor>
         </Link>
-      </PostWrapper>
-    </PostItem>
+      </PostContent>
+    </PostWrapper>
   );
 }
 
-const PostIcon = styled("div", {
-  display: "none",
-  background: "$gray6",
-  aspectRatio: 1,
-  borderRadius: "$base",
-
-  "@post": {
-    display: "revert",
-  },
-
-  [`.${darkTheme} &`]: {
-    background: "$gray2",
-  },
-});
-
-const PostItem = styled("li", {
-  margin: "0 -2rem",
-  width: "100vw",
-
-  "@post": {
-    display: "grid",
-    gridTemplateColumns: "8rem 1fr",
-    gap: "$8",
-    margin: "revert",
-    width: "100%",
-  },
-});
-
-const PostWrapper = styled(motion.div, {
-  padding: "$0 $8",
-  borderRadius: "$base",
+const TitleAnchor = styled(motion.a, {
+  color: "inherit",
+  textDecoration: "none",
+  display: "flex",
+  cursor: "pointer",
+  alignItems: "center",
+  gap: "$4",
 
   "&:hover": {
-    margin: "-$8 0",
-    padding: "$8",
-    background: "$gray6",
+    color: "$blue9",
+  },
 
-    [`.${darkTheme} &`]: {
-      background: "$gray2",
+  variants: {
+    small: {
+      true: {
+        color: "$gray11",
+        gap: "$2",
+        fontWeight: "bold",
+      },
     },
   },
 });
 
-const Anchor = styled("a", {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  cursor: "pointer",
-  color: "inherit",
-  textDecoration: "none",
+const PostWrapper = styled(motion.li, {
+  borderRadius: "$base",
+  listStyle: "none",
 
-  "> :not(:last-child)": {
-    marginRight: "$8",
+  "&:not(:last-child)": {
+    paddingBottom: "$12",
+    borderBottom: "1px dashed $gray8",
   },
 });
 
-const PostTitle = styled("h1", {
+const PostTitle = styled(motion.h1, {
   fontSize: "$2xl",
   fontFamily: "$serif",
   lineHeight: "$title",
+  fontWeight: 500,
 });
 
 const PostDescription = styled("p", {
@@ -119,13 +103,12 @@ const PostUpdatedText = styled("p", {
   fontFamily: "$mono",
 });
 
-const PostArrow = styled(motion.p, {
+const PostArrow = styled(motion.span, {
   fontSize: "$xl",
-  color: "$gray11",
 });
 
 const PostContent = styled("div", {
   "> :not(:last-child)": {
-    marginBottom: "$4",
+    marginBottom: "$6",
   },
 });
