@@ -32,7 +32,7 @@ const Range = styled(SliderPrimitive.Range, {
   height: "100%",
 
   [`.${darkTheme} &`]: {
-    background: "$blue7",
+    background: "$blue8",
   },
 });
 
@@ -56,7 +56,7 @@ const Thumb = styled(SliderPrimitive.Thumb, {
   },
 
   [`.${darkTheme} &`]: {
-    background: "$blue7",
-    borderColor: "$blue7",
+    background: "$blue8",
+    borderColor: "$blue8",
   },
 });

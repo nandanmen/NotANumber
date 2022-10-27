@@ -7,6 +7,7 @@ import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
 import { InverseScaleFormula } from "../InverseScaleFormula";
+import { ToggleButton } from "../shared";
 
 const points = [
   {
@@ -95,7 +96,7 @@ export const InverseScaleGraph = () => {
           </Wrapper>
         </Content>
         <Controls>
-          <button
+          <ToggleButton
             onClick={async () => {
               await controls.start({
                 pathLength: 0,
@@ -110,7 +111,7 @@ export const InverseScaleGraph = () => {
             }}
           >
             Play
-          </button>
+          </ToggleButton>
         </Controls>
       </Visualizer>
     </FullWidth>
@@ -143,8 +144,12 @@ const GraphPoint = styled("circle", {
 
 const Wrapper = styled("div", {
   display: "grid",
-  gridTemplateColumns: "1fr 3fr",
-  gap: "$2",
+  gap: "$8",
+
+  "@md": {
+    gridTemplateColumns: "1fr 3fr",
+    gap: "$2",
+  },
 });
 
 const GraphWrapper = styled("div", {
@@ -156,5 +161,7 @@ const GraphWrapper = styled("div", {
 });
 
 const InverseScaleVisualWrapper = styled("div", {
-  gridColumn: 2,
+  "@md": {
+    gridColumn: 2,
+  },
 });

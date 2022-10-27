@@ -33,7 +33,7 @@ const RulerTextBackground = styled("rect", {
   fill: "$blue2",
   height: 30,
   rx: 4,
-  stroke: "$blue7",
+  stroke: "$blue8",
   x: -30,
   y: -15,
 
@@ -84,7 +84,7 @@ export const Line = styled(motion.line, {
 export const LineEndpoint = styled(motion.circle, {
   r: 6,
   fill: "$blue2",
-  stroke: "$blue7",
+  stroke: "$blue8",
   animationName: `${fadeIn}`,
   animationDuration: "500ms",
   animationFillMode: "forwards",

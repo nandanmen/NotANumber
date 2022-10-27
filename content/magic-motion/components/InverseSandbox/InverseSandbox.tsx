@@ -16,9 +16,7 @@ export default function Motion() {
       console.log(deltaX, deltaY);
 
       // apply the transform to the box
-      // uncomment this line and notice that the square doesn't
-      // move when you press toggle!
-      // squareRef.current.style.transform = \`translate(\${deltaX}px, \${deltaY}px)\`;
+      squareRef.current.style.transform = \`translate(\${deltaX}px, \${deltaY}px)\`;
     }
     initialPositionRef.current = box;
   });

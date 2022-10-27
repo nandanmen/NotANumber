@@ -105,7 +105,7 @@ export const FlipInverse = () => {
           </svg>
         </ContentWrapper>
         <Controls css={{ alignItems: "center" }}>
-          <ToggleButton onClick={() => animate(x, -distance, { duration: 2 })}>
+          <ToggleButton onClick={() => animate(x, -distance, { duration: 3 })}>
             Invert
           </ToggleButton>
           <IconButton onClick={() => x.set(0)} secondary>
@@ -152,6 +152,6 @@ const Square = styled(motion.rect, {
 });
 
 const Element = styled(Square, {
-  fill: "$blue5",
-  stroke: "$blue7",
+  fill: "$blue6",
+  stroke: "$blue8",
 });

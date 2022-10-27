@@ -6,7 +6,7 @@ import {
   MotionValue,
   useTransform,
 } from "framer-motion";
-import { FaUndo, FaPlay, FaMinus, FaPlus } from "react-icons/fa";
+import { FaUndo, FaPlay } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
@@ -16,12 +16,12 @@ import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
-import { IconButton } from "../shared";
+import { Counter, IconButton } from "../shared";
 
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;
 const PADDING = 45;
-const BASE_WIDTH = SQUARE_RADIUS * 2 + 50;
+const BASE_WIDTH = SQUARE_RADIUS * 2 + 40;
 const TARGET_WIDTH = SQUARE_RADIUS * 2;
 
 const ORIGIN_TOP_LEFT = {
@@ -223,37 +223,6 @@ export const CorrectedInverseAnimation = ({
   );
 };
 
-const Counter = ({ value, onChange, min, max, step = 1 }) => {
-  return (
-    <CounterWrapper>
-      <IconButton
-        secondary
-        onClick={() => onChange(Math.max(min, value - step))}
-      >
-        <FaMinus />
-      </IconButton>
-      <Value>{value}px</Value>
-      <IconButton
-        secondary
-        onClick={() => onChange(Math.min(max, value + step))}
-      >
-        <FaPlus />
-      </IconButton>
-    </CounterWrapper>
-  );
-};
-
-const CounterWrapper = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  gap: "$2",
-});
-
-const Value = styled("div", {
-  fontFamily: "$mono",
-  color: "$gray11",
-});
-
 type DistanceRulerProps = {
   x1: number;
   y1: number;
@@ -316,10 +285,10 @@ const StripedSquare = styled("rect", {
   y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
   rx: 6,
   fill: "url(#pattern)",
-  stroke: "$blue6",
+  stroke: "$blue7",
 });
 
 const StripeLine = styled("line", {
-  stroke: "$blue6",
+  stroke: "$blue7",
   strokeWidth: 10,
 });

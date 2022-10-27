@@ -6,7 +6,7 @@ export const Visualizer = styled("div", {
   borderRadius: "$base",
   overflow: "hidden",
 
-  "> :nth-child(2)": {
+  "> :not(:first-child)": {
     borderTop: "1px solid $gray8",
   },
 });

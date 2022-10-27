@@ -5,6 +5,7 @@ import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
 import { Motion } from "../Motion";
+import { ToggleButton } from "../shared";
 
 export const SizeDistanceExample = ({ text = null, corrected = false }) => {
   const [toggled, setToggled] = React.useState(false);
@@ -19,7 +20,9 @@ export const SizeDistanceExample = ({ text = null, corrected = false }) => {
           </Wrapper>
         </Content>
         <Controls>
-          <button onClick={() => setToggled(!toggled)}>Toggle</button>
+          <ToggleButton onClick={() => setToggled(!toggled)}>
+            Toggle
+          </ToggleButton>
         </Controls>
       </Visualizer>
     </FullWidth>
@@ -46,7 +49,9 @@ export const NaiveScaleCorrection = () => {
           </Wrapper>
         </Content>
         <Controls>
-          <button onClick={() => setToggled(!toggled)}>Toggle</button>
+          <ToggleButton onClick={() => setToggled(!toggled)}>
+            Toggle
+          </ToggleButton>
         </Controls>
       </Visualizer>
     </FullWidth>

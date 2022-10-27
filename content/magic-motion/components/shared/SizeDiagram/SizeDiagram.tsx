@@ -87,7 +87,7 @@ const TranslateText = styled(motion.text, {
 });
 
 const AnchorLine = styled("line", {
-  stroke: "$blue7",
+  stroke: "$blue8",
   strokeWidth: 1,
   strokeDasharray: "6",
 });

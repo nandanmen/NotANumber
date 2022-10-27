@@ -76,8 +76,8 @@ const OptionWrapper = styled(motion.button, {
   justifyContent: "center",
 
   '&[data-active="true"], &:hover': {
-    background: "$blue5",
-    borderColor: "$blue7",
+    background: "$blue6",
+    borderColor: "$blue8",
   },
 });
 

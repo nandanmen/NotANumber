@@ -128,7 +128,7 @@ const Label = styled("label", {
 });
 
 const SubmitButton = styled(Row, {
-  background: "$blue7",
+  background: "$blue8",
   width: "$10",
   height: "$10",
   flexShrink: 0,

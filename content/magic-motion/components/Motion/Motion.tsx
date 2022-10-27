@@ -78,8 +78,8 @@ export function Motion({
 }
 
 const Square = styled("div", {
-  background: "$blue5",
-  border: "1px solid $blue7",
+  background: "$blue6",
+  border: "1px solid $blue8",
   borderRadius: "$base",
   display: "flex",
   alignItems: "center",

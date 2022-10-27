@@ -143,7 +143,7 @@ const SingleChar = styled("li", {
         color: "$gray1",
 
         [`.${darkTheme} &`]: {
-          background: "$blue7",
+          background: "$blue8",
           borderColor: "$blue10",
           color: "inherit",
         },

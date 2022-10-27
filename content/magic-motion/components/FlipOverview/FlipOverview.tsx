@@ -258,6 +258,6 @@ const Square = styled(motion.rect, {
 });
 
 const Element = styled(Square, {
-  fill: "$blue5",
-  stroke: "$blue7",
+  fill: "$blue6",
+  stroke: "$blue8",
 });

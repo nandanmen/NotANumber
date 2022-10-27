@@ -154,7 +154,7 @@ const Token = styled(motion.li, {
         borderColor: "$red8",
       },
       identifier: {
-        background: "$blue7",
+        background: "$blue8",
         borderColor: "$blue8",
       },
       "single-character": {

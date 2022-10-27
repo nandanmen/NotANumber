@@ -7,8 +7,8 @@ export const SQUARE_RADIUS = 60;
 export const BaseSvgSquare = styled(motion.rect, {
   rx: "$radii$base",
   filter: "drop-shadow($shadows$sm)",
-  fill: "$blue5",
-  stroke: "$blue7",
+  fill: "$blue6",
+  stroke: "$blue8",
 
   variants: {
     type: {

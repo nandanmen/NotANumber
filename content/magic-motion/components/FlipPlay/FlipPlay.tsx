@@ -92,7 +92,7 @@ export const FlipPlay = () => {
           </svg>
         </ContentWrapper>
         <Controls>
-          <IconButton onClick={() => animate(x, 0, { duration: 2 })} secondary>
+          <IconButton onClick={() => animate(x, 0, { duration: 3 })} secondary>
             <FaPlay />
           </IconButton>
           <IconButton onClick={() => x.set(-1 * distance)} secondary>
@@ -139,6 +139,6 @@ const Square = styled(motion.rect, {
 });
 
 const Element = styled(Square, {
-  fill: "$blue5",
-  stroke: "$blue7",
+  fill: "$blue6",
+  stroke: "$blue8",
 });

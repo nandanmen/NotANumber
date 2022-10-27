@@ -126,11 +126,11 @@ const fadeIn = keyframes({
 });
 
 const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient( -45deg, $colors$blue7, $colors$blue7 5px, transparent 5px, transparent 10px )`,
+  background: `repeating-linear-gradient( -45deg, $colors$blue8, $colors$blue8 5px, transparent 5px, transparent 10px )`,
   width: 120,
   height: 120,
   borderRadius: "$base",
-  border: "1px solid $blue7",
+  border: "1px solid $blue8",
   position: "absolute",
   animationName: `${fadeIn}`,
   animationDuration: "500ms",

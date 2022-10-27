@@ -2,15 +2,15 @@ import React from "react";
 
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
-import { GridBackground } from "~/components/Grid";
-import { Slider } from "~/components/Slider";
+import { Content, Visualizer, Controls } from "~/components/Visualizer";
 
+import { Counter } from "../shared";
 import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
 
 const BASE_WIDTH = SQUARE_RADIUS * 2;
-const CONTENT_HEIGHT = 350;
-const MAX_HEIGHT_DELTA = 50;
-const PADDING = 45;
+const CONTENT_HEIGHT = 300;
+const MAX_HEIGHT_DELTA = 60;
+const PADDING = 32;
 
 export const SizeDistanceRelationship = () => {
   const containerRef = React.useRef<HTMLDivElement>();
@@ -25,113 +25,115 @@ export const SizeDistanceRelationship = () => {
 
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Slider
-          value={[width]}
-          onValueChange={([newWidth]) => setWidth(newWidth)}
-          max={BASE_WIDTH + MAX_HEIGHT_DELTA}
-          min={BASE_WIDTH - MAX_HEIGHT_DELTA}
-          step={1}
-        />
-        <GridBackground noOverflow>
-          <ContentWrapper ref={containerRef}>
-            <svg width="100%" height="100%">
-              <SvgSquare
-                width={SQUARE_RADIUS * 2}
-                type="secondary"
-                x={PADDING}
-                y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+      <Visualizer>
+        <Controls css={{ justifyContent: "center" }}>
+          <Counter
+            value={width}
+            onChange={setWidth}
+            min={BASE_WIDTH - MAX_HEIGHT_DELTA}
+            max={BASE_WIDTH + MAX_HEIGHT_DELTA}
+            step={20}
+          />
+        </Controls>
+        <ContentWrapper ref={containerRef}>
+          <svg width="100%" height="100%">
+            <SvgSquare
+              width={SQUARE_RADIUS * 2}
+              type="secondary"
+              x={PADDING}
+              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+            />
+            <BaseSvgSquare
+              width={width}
+              height={width}
+              x={squareLeftSide}
+              y={CONTENT_HEIGHT / 2 - width / 2}
+            />
+            <g
+              style={{
+                transform: `translateY(${
+                  CONTENT_HEIGHT / 2 - SQUARE_RADIUS
+                }px)`,
+              }}
+            >
+              <HorizontalRuler
+                from={PADDING}
+                to={PADDING + SQUARE_RADIUS * 2}
+                small
               />
-              <BaseSvgSquare
-                width={width}
-                height={width}
-                x={squareLeftSide}
-                y={CONTENT_HEIGHT / 2 - width / 2}
+            </g>
+            <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
+              <HorizontalRuler from={PADDING} to={squareLeftSide} />
+            </g>
+            <g
+              style={{
+                transform: `translateY(${CONTENT_HEIGHT / 2 - width / 2}px)`,
+              }}
+            >
+              <HorizontalRuler
+                from={squareLeftSide}
+                to={squareLeftSide + width}
+                showLine={false}
+                small
               />
-              <g
-                style={{
-                  transform: `translateY(${
-                    CONTENT_HEIGHT / 2 - SQUARE_RADIUS
-                  }px)`,
-                }}
-              >
-                <HorizontalRuler
-                  from={PADDING}
-                  to={PADDING + SQUARE_RADIUS * 2}
-                  small
-                />
-              </g>
-              <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
-                <HorizontalRuler from={PADDING} to={squareLeftSide} />
-              </g>
-              <g
-                style={{
-                  transform: `translateY(${CONTENT_HEIGHT / 2 - width / 2}px)`,
-                }}
-              >
-                <HorizontalRuler
-                  from={squareLeftSide}
-                  to={squareLeftSide + width}
-                  showLine={false}
-                  small
-                />
-              </g>
-            </svg>
-          </ContentWrapper>
-        </GridBackground>
-        <GridBackground noOverflow>
-          <ContentWrapper>
-            <svg width="100%" height="100%">
-              <SvgSquare
-                width={SQUARE_RADIUS * 2}
-                type="secondary"
-                x={PADDING}
-                y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+            </g>
+          </svg>
+        </ContentWrapper>
+        <ContentWrapper>
+          <svg width="100%" height="100%">
+            <SvgSquare
+              width={SQUARE_RADIUS * 2}
+              type="secondary"
+              x={PADDING}
+              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+            />
+            <BaseSvgSquare
+              width={width}
+              height={width}
+              x={squareLeftSide}
+              y={CONTENT_HEIGHT / 2 - width / 2}
+            />
+            <g
+              style={{
+                transform: `translateY(${
+                  CONTENT_HEIGHT / 2 - SQUARE_RADIUS
+                }px)`,
+              }}
+            >
+              <HorizontalRuler
+                from={PADDING}
+                to={PADDING + SQUARE_RADIUS * 2}
+                small
               />
-              <BaseSvgSquare
-                width={width}
-                height={width}
-                x={squareLeftSide}
-                y={CONTENT_HEIGHT / 2 - width / 2}
+            </g>
+            <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
+              <HorizontalRuler
+                from={PADDING + SQUARE_RADIUS}
+                to={squareLeftSide + width / 2}
               />
-              <g
-                style={{
-                  transform: `translateY(${
-                    CONTENT_HEIGHT / 2 - SQUARE_RADIUS
-                  }px)`,
-                }}
-              >
-                <HorizontalRuler
-                  from={PADDING}
-                  to={PADDING + SQUARE_RADIUS * 2}
-                  small
-                />
-              </g>
-              <g style={{ transform: `translateY(${CONTENT_HEIGHT / 2}px)` }}>
-                <HorizontalRuler
-                  from={PADDING + SQUARE_RADIUS}
-                  to={squareLeftSide + width / 2}
-                />
-              </g>
-              <g
-                style={{
-                  transform: `translateY(${CONTENT_HEIGHT / 2 - width / 2}px)`,
-                }}
-              >
-                <HorizontalRuler
-                  from={squareLeftSide}
-                  to={squareLeftSide + width}
-                  showLine={false}
-                  small
-                />
-              </g>
-            </svg>
-          </ContentWrapper>
-        </GridBackground>
-      </FigureWrapper>
+            </g>
+            <g
+              style={{
+                transform: `translateY(${CONTENT_HEIGHT / 2 - width / 2}px)`,
+              }}
+            >
+              <HorizontalRuler
+                from={squareLeftSide}
+                to={squareLeftSide + width}
+                showLine={false}
+                small
+              />
+            </g>
+          </svg>
+        </ContentWrapper>
+      </Visualizer>
     </FullWidth>
   );
 };
+
+const ContentWrapper = styled(Content, {
+  height: 300,
+});
 
 const HorizontalRuler = ({ from, to, showLine = true, small = false }) => {
   const distance = to - from;
@@ -160,7 +162,7 @@ const RulerTextBackground = styled("rect", {
   fill: "$blue2",
   height: 30,
   rx: 4,
-  stroke: "$blue7",
+  stroke: "$blue8",
   x: -30,
   y: -15,
 
@@ -199,7 +201,7 @@ const LineEndpoint = styled("circle", {
   cy: 0,
   r: 6,
   fill: "$blue2",
-  stroke: "$blue7",
+  stroke: "$blue8",
 
   variants: {
     small: {
@@ -208,14 +210,4 @@ const LineEndpoint = styled("circle", {
       },
     },
   },
-});
-
-const ContentWrapper = styled("div", {
-  height: CONTENT_HEIGHT,
-});
-
-const FigureWrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  gap: "$8",
 });

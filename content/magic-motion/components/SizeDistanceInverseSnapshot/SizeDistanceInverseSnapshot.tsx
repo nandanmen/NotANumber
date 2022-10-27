@@ -63,10 +63,10 @@ const ContentWrapper = styled(Content, {
 });
 
 const Square = styled(motion.div, {
-  "--background": "$colors$blue5",
+  "--background": "$colors$blue6",
 
   background: `var(--background)`,
-  border: "1px solid $blue7",
+  border: "1px solid $blue8",
   width: 120,
   aspectRatio: 1,
   borderRadius: "$base",

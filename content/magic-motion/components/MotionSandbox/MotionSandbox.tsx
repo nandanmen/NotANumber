@@ -9,7 +9,7 @@ body {
 
 #motion {
   border: 1px solid hsl(208, 77.5%, 76.9%);
-  background: hsl(209, 95%, 90.1%);
+  background: hsl(209, 81.2%, 84.5%);
   width: 120px;
   aspect-ratio: 1;
   border-radius: 8px;
