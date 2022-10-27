@@ -6,17 +6,17 @@ import {
   MotionValue,
   useTransform,
 } from "framer-motion";
-import { FaUndo, FaPlay } from "react-icons/fa";
+import { FaUndo, FaPlay, FaMinus, FaPlus } from "react-icons/fa";
 
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
-import { Slider } from "~/components/Slider";
 import { useSharedState } from "~/components/SharedState";
 import { Visualizer, Content, Controls } from "~/components/Visualizer";
 
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
+import { IconButton } from "../shared";
 
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;
@@ -153,75 +153,106 @@ export const CorrectedInverseAnimation = ({
             </svg>
           </ContentWrapper>
         </Content>
-        <Controls>
-          <ControlsWrapper>
-            <IconButton
-              onClick={() => {
-                setShowScaleRulers(false);
-                width.set(initialWidth);
+        <Controls css={{ alignItems: "center", gap: "$4" }}>
+          <IconButton
+            secondary
+            onClick={() => {
+              setShowScaleRulers(false);
+              width.set(initialWidth);
 
-                setIsPlaying(true);
-                animate(1, 0, {
-                  duration: 2.5,
-                  onUpdate: (progress) => {
-                    const { x: endX, y: endY } = targetPos;
-                    const { x: fromX, y: fromY } = fromPos;
+              setIsPlaying(true);
+              animate(1, 0, {
+                duration: 2.5,
+                onUpdate: (progress) => {
+                  const { x: endX, y: endY } = targetPos;
+                  const { x: fromX, y: fromY } = fromPos;
 
-                    const currentX = (fromX - endX) * progress + endX;
-                    squareX.set(currentX - deltaX);
+                  const currentX = (fromX - endX) * progress + endX;
+                  squareX.set(currentX - deltaX);
 
-                    const currentY = (fromY - endY) * progress + endY;
-                    squareY.set(currentY - deltaY);
-                  },
-                  onComplete: () => {
-                    setShowScaleRulers(true);
-                    animate(width, TARGET_WIDTH, {
-                      duration: 1.5,
-                      onUpdate: (width) => {
-                        const x = targetPos.x - deltaX;
-                        const y = targetPos.y - deltaY;
-                        const offset = mapOriginToOffset[origin]({
-                          width,
-                          initialWidth,
-                        });
-                        squareX.set(x + offset.x);
-                        squareY.set(y + offset.y);
-                      },
-                      onComplete: () => setIsPlaying(false),
-                    });
-                  },
-                });
-              }}
-            >
-              <FaPlay />
-            </IconButton>
-            <Slider
-              value={[initialWidth]}
-              onValueChange={([newWidth]) => {
-                setInitialWidth(newWidth);
-              }}
-              max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
-              min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
-              step={1}
-            />
-            <IconButton
-              onClick={() => {
-                setShowScaleRulers(false);
-                setInitialWidth(BASE_WIDTH);
-                squareX.set(containerWidth - BASE_WIDTH - PADDING);
-                squareY.set(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
-                width.set(BASE_WIDTH);
-              }}
-            >
-              <FaUndo />
-            </IconButton>
-            {isPlaying && <DisabledOverlay />}
-          </ControlsWrapper>
+                  const currentY = (fromY - endY) * progress + endY;
+                  squareY.set(currentY - deltaY);
+                },
+                onComplete: () => {
+                  setShowScaleRulers(true);
+                  animate(width, TARGET_WIDTH, {
+                    duration: 1.5,
+                    onUpdate: (width) => {
+                      const x = targetPos.x - deltaX;
+                      const y = targetPos.y - deltaY;
+                      const offset = mapOriginToOffset[origin]({
+                        width,
+                        initialWidth,
+                      });
+                      squareX.set(x + offset.x);
+                      squareY.set(y + offset.y);
+                    },
+                    onComplete: () => setIsPlaying(false),
+                  });
+                },
+              });
+            }}
+          >
+            <FaPlay />
+          </IconButton>
+          <Counter
+            value={initialWidth}
+            onChange={(newWidth) => {
+              setInitialWidth(newWidth);
+            }}
+            max={TARGET_WIDTH + MAX_HEIGHT_DELTA}
+            min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
+            step={20}
+          />
+          <IconButton
+            secondary
+            onClick={() => {
+              setShowScaleRulers(false);
+              setInitialWidth(BASE_WIDTH);
+              squareX.set(containerWidth - BASE_WIDTH - PADDING);
+              squareY.set(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
+              width.set(BASE_WIDTH);
+            }}
+          >
+            <FaUndo />
+          </IconButton>
+          {isPlaying && <DisabledOverlay />}
         </Controls>
       </Visualizer>
     </FullWidth>
   );
 };
+
+const Counter = ({ value, onChange, min, max, step = 1 }) => {
+  return (
+    <CounterWrapper>
+      <IconButton
+        secondary
+        onClick={() => onChange(Math.max(min, value - step))}
+      >
+        <FaMinus />
+      </IconButton>
+      <Value>{value}px</Value>
+      <IconButton
+        secondary
+        onClick={() => onChange(Math.min(max, value + step))}
+      >
+        <FaPlus />
+      </IconButton>
+    </CounterWrapper>
+  );
+};
+
+const CounterWrapper = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  gap: "$2",
+});
+
+const Value = styled("div", {
+  fontFamily: "$mono",
+  color: "$gray11",
+});
 
 type DistanceRulerProps = {
   x1: number;
@@ -291,24 +322,4 @@ const StripedSquare = styled("rect", {
 const StripeLine = styled("line", {
   stroke: "$blue6",
   strokeWidth: 10,
-});
-
-const IconButton = styled("button", {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray9",
-  padding: "$2",
-  borderRadius: "$base",
-
-  "&:hover": {
-    background: "$gray6",
-  },
-});
-
-const ControlsWrapper = styled("div", {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "$4",
 });
