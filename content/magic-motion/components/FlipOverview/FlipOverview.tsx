@@ -2,17 +2,16 @@ import React from "react";
 import { useMachine } from "@xstate/react";
 import { assign } from "xstate";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
-import { BsPlayFill, BsPauseFill } from "react-icons/bs";
+import { FaArrowLeft, FaArrowRight, FaPause, FaPlay } from "react-icons/fa";
 
-import { GridBackground } from "~/components/Grid";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper, ToggleButton, DynamicIsland } from "../shared";
+import { IconButton } from "../shared";
 import { machine, STATE_ORDER } from "./machine";
 
-const PADDING = 45;
+const PADDING = 32;
 const SQUARE_RADIUS = 60;
 
 export const FlipOverview = () => {
@@ -92,108 +91,106 @@ export const FlipOverview = () => {
 
   return (
     <FullWidth>
-      <div>
-        <GridBackground>
-          <Content>
-            <svg width="100%" height="100%">
-              <Square ref={initialRef} x={PADDING} />
-              <Square
-                ref={finalRef}
-                x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-              />
-              <TranslateText
-                x={PADDING}
-                y="50%"
-                style={{ translateY: -(SQUARE_RADIUS + 15) }}
-                visible={stateAfter("first")}
-              >
-                x: {state.context.firstBox?.x.toFixed(1)}
-              </TranslateText>
-              <TranslateText
-                x="100%"
-                y="50%"
-                style={{
-                  translateY: -(SQUARE_RADIUS + 15),
-                  translateX: -(SQUARE_RADIUS * 2 + PADDING),
-                }}
-                visible={stateAfter("last")}
-              >
-                x: {state.context.lastBox?.x.toFixed(1)}
-              </TranslateText>
-              <AnchorLine
-                ref={lineRef}
-                x2="100%"
-                y1="50%"
-                y2="50%"
-                style={{
-                  transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
-                  display: showTransformVisuals ? "block" : "none",
-                }}
-              />
-              <AnchorCircle
-                style={{
-                  rotate: x,
-                  translateX: -(SQUARE_RADIUS + PADDING),
-                }}
-                hidden={!showTransformVisuals}
-              />
-              <Element
-                x={toggled ? `calc(100% - ${PADDING}px)` : PADDING}
-                style={{ translateX: toggled ? squareTranslateX : 0 }}
-              />
-              <TranslateText
-                ref={textRef}
-                x="100%"
-                y="50%"
-                visible={showTransformVisuals}
-                style={{
-                  translateY: SQUARE_RADIUS + 25,
-                  translateX: textTranslateX,
-                }}
-              />
-            </svg>
-          </Content>
-        </GridBackground>
-        <DynamicIsland>
-          <StateButton onClick={() => setPlaying(!playing)}>
-            {playing ? <BsPauseFill /> : <BsPlayFill />}
-          </StateButton>
+      <Visualizer>
+        <ContentWrapper>
+          <svg width="100%" height="100%">
+            <Square ref={initialRef} x={PADDING} />
+            <Square
+              ref={finalRef}
+              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
+            />
+            <TranslateText
+              x={PADDING}
+              y="50%"
+              style={{ translateY: -(SQUARE_RADIUS + 15) }}
+              visible={stateAfter("first")}
+            >
+              x: {state.context.firstBox?.x.toFixed(1)}
+            </TranslateText>
+            <TranslateText
+              x="100%"
+              y="50%"
+              style={{
+                translateY: -(SQUARE_RADIUS + 15),
+                translateX: -(SQUARE_RADIUS * 2 + PADDING),
+              }}
+              visible={stateAfter("last")}
+            >
+              x: {state.context.lastBox?.x.toFixed(1)}
+            </TranslateText>
+            <AnchorLine
+              ref={lineRef}
+              x2="100%"
+              y1="50%"
+              y2="50%"
+              style={{
+                transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
+                display: showTransformVisuals ? "block" : "none",
+              }}
+            />
+            <AnchorCircle
+              style={{
+                rotate: x,
+                translateX: -(SQUARE_RADIUS + PADDING),
+              }}
+              hidden={!showTransformVisuals}
+            />
+            <Element
+              x={toggled ? `calc(100% - ${PADDING}px)` : PADDING}
+              style={{ translateX: toggled ? squareTranslateX : 0 }}
+            />
+            <TranslateText
+              ref={textRef}
+              x="100%"
+              y="50%"
+              visible={showTransformVisuals}
+              style={{
+                translateY: SQUARE_RADIUS + 25,
+                translateX: textTranslateX,
+              }}
+            />
+          </svg>
+        </ContentWrapper>
+        <Controls css={{ alignItems: "center" }}>
+          <IconButton onClick={() => setPlaying(!playing)} secondary>
+            {playing ? <FaPause /> : <FaPlay />}
+          </IconButton>
           <FlipStateList>
             <FlipState active={state.matches("first")}>First</FlipState>
             <FlipState active={state.matches("last")}>Last</FlipState>
             <FlipState active={state.matches("inverse")}>Inverse</FlipState>
             <FlipState active={state.matches("play")}>Play</FlipState>
           </FlipStateList>
-          <StateButton
-            onClick={() => send("prev")}
-            disabled={!state.can("prev")}
-          >
-            <HiArrowLeft />
-          </StateButton>
-          <StateButton
-            onClick={() => send("next")}
-            disabled={!state.can("next")}
-          >
-            <HiArrowRight />
-          </StateButton>
-        </DynamicIsland>
-      </div>
+          <StepControls>
+            <IconButton
+              onClick={() => send("prev")}
+              disabled={!state.can("prev")}
+              secondary
+            >
+              <FaArrowLeft />
+            </IconButton>
+            <IconButton
+              onClick={() => send("next")}
+              disabled={!state.can("next")}
+              secondary
+            >
+              <FaArrowRight />
+            </IconButton>
+          </StepControls>
+        </Controls>
+      </Visualizer>
     </FullWidth>
   );
 };
 
-const StateButton = styled(ToggleButton, {
+const StepControls = styled("div", {
   display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
 });
 
 const FlipStateList = styled("ol", {
   listStyle: "none",
   display: "flex",
   gap: "$2",
-  margin: "0 $10",
 });
 
 const FlipState = styled("li", {
@@ -224,10 +221,8 @@ const TranslateText = styled(motion.text, {
   },
 });
 
-const Content = styled(ContentWrapper, {
+const ContentWrapper = styled(Content, {
   height: 300,
-  paddingLeft: `0 !important`,
-  paddingRight: `0 !important`,
 });
 
 const AnchorCircle = styled(motion.circle, {

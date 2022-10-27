@@ -1,12 +1,11 @@
 import React from "react";
 import { animate, useMotionValue } from "framer-motion";
-import { FaUndo } from "react-icons/fa";
+import { FaUndo, FaPlay } from "react-icons/fa";
 
-import { GridBackground } from "~/components/Grid";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
-import { styled } from "~/stitches.config";
 
-import { ContentWrapper, ToggleButton, Controls } from "../shared";
+import { ToggleButton, IconButton } from "../shared";
 import { SizeDiagram } from "../shared/SizeDiagram";
 
 export const SizePlayAnimation = () => {
@@ -14,16 +13,8 @@ export const SizePlayAnimation = () => {
   const scale = useMotionValue(1);
   return (
     <FullWidth>
-      <Controls>
-        <ToggleButton onClick={() => animate(scale, 1, { duration: 3 })}>
-          Play
-        </ToggleButton>
-        <UndoButton onClick={() => scale.set(120 / width)}>
-          <FaUndo />
-        </UndoButton>
-      </Controls>
-      <GridBackground>
-        <Content>
+      <Visualizer>
+        <Content css={{ height: 300 }}>
           <SizeDiagram
             scale={scale}
             onWidthChange={(width) => {
@@ -32,21 +23,18 @@ export const SizePlayAnimation = () => {
             }}
           />
         </Content>
-      </GridBackground>
+        <Controls>
+          <IconButton
+            onClick={() => animate(scale, 1, { duration: 3 })}
+            secondary
+          >
+            <FaPlay />
+          </IconButton>
+          <IconButton onClick={() => scale.set(120 / width)} secondary>
+            <FaUndo />
+          </IconButton>
+        </Controls>
+      </Visualizer>
     </FullWidth>
   );
 };
-
-const UndoButton = styled(ToggleButton, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
-  height: 22,
-});
-
-const Content = styled(ContentWrapper, {
-  height: 300,
-  paddingLeft: `0 !important`,
-  paddingRight: `0 !important`,
-});

@@ -1,18 +1,22 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import { FaUndo } from "react-icons/fa";
 
-import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
-import { Slider } from "~/components/Slider";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper } from "../shared";
+import { ToggleButton, IconButton } from "../shared";
 
-const PADDING = 45;
+const PADDING = 32;
 const SQUARE_RADIUS = 60;
 
 export const FlipInverse = () => {
-  const [x, setX] = React.useState(0);
+  const x = useMotionValue(0);
+  const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
+  const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
+
+  // -- measure initial and final positions --
 
   const initialRef = React.useRef<SVGRectElement>();
   const finalRef = React.useRef<SVGRectElement>();
@@ -25,55 +29,90 @@ export const FlipInverse = () => {
     setFinalBox(finalRef.current.getBoundingClientRect());
   }, []);
 
+  // --
+
   const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
+
+  const lineRef = React.useRef<SVGLineElement>();
+  const textRef = React.useRef<SVGTextElement>();
+  React.useEffect(() => {
+    return x.onChange((val) => {
+      lineRef.current?.setAttribute(
+        "x1",
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
+      );
+      textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+    });
+  }, [x, distance]);
 
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Slider
-          value={[x]}
-          onValueChange={([x]) => setX(x)}
-          max={0}
-          min={-1 * distance}
-        />
-        <GridBackground>
-          <Content>
-            <svg width="100%" height="100%">
-              <Square ref={initialRef} x={PADDING} />
-              <Square
-                ref={finalRef}
-                x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-              />
-              <AnchorLine
-                x1={(SQUARE_RADIUS + PADDING) * 2 + x + distance}
-                x2="100%"
-                y1="50%"
-                y2="50%"
-                style={{
-                  transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
-                }}
-              />
-              <AnchorCircle
-                animate={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
-              />
-              <Element
-                x={`calc(100% - ${PADDING}px)`}
-                animate={{ translateX: -(SQUARE_RADIUS * 2) + x }}
-                initial={{ translateX: -(SQUARE_RADIUS * 2) + x }}
-              />
-              <TranslateText
-                animate={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
-                initial={{ translateX: -(SQUARE_RADIUS * 2 + PADDING) + x }}
-                style={{ translateY: SQUARE_RADIUS + 25 }}
-                x="100%"
-                y="50%"
-              >
-                translateX({x.toFixed(0)}px)
-              </TranslateText>
-            </svg>
-          </Content>
-        </GridBackground>
-      </FigureWrapper>
+      <Visualizer>
+        <ContentWrapper noOverflow>
+          <svg width="100%" height="100%">
+            <Square ref={initialRef} x={PADDING} />
+            <TranslateText
+              style={{
+                translateY: -SQUARE_RADIUS - 15,
+              }}
+              x={PADDING}
+              y="50%"
+            >
+              x: {initialBox?.x.toFixed(0)}
+            </TranslateText>
+            <Square
+              ref={finalRef}
+              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
+            />
+            <AnchorLine
+              ref={lineRef}
+              x1="100%"
+              x2="100%"
+              y1="50%"
+              y2="50%"
+              style={{
+                transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
+              }}
+            />
+            <AnchorCircle
+              style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
+            />
+            <Element
+              x={`calc(100% - ${PADDING}px)`}
+              style={{ translateX: squareTranslateX }}
+            />
+            <TranslateText
+              style={{
+                translateY: -SQUARE_RADIUS - 15,
+                translateX: -(SQUARE_RADIUS * 2 + PADDING),
+              }}
+              x="100%"
+              y="50%"
+            >
+              x: {finalBox?.x.toFixed(0)}
+            </TranslateText>
+            <TranslateText
+              ref={textRef}
+              style={{
+                translateY: SQUARE_RADIUS + 25,
+                translateX: textTranslateX,
+              }}
+              x="100%"
+              y="50%"
+            >
+              translateX(0px)
+            </TranslateText>
+          </svg>
+        </ContentWrapper>
+        <Controls>
+          <ToggleButton onClick={() => animate(x, -distance, { duration: 2 })}>
+            Invert
+          </ToggleButton>
+          <IconButton onClick={() => x.set(0)} secondary>
+            <FaUndo />
+          </IconButton>
+        </Controls>
+      </Visualizer>
     </FullWidth>
   );
 };
@@ -83,10 +122,8 @@ const TranslateText = styled(motion.text, {
   fontSize: "$sm",
 });
 
-const Content = styled(ContentWrapper, {
+const ContentWrapper = styled(Content, {
   height: 300,
-  paddingLeft: `0 !important`,
-  paddingRight: `0 !important`,
 });
 
 const AnchorCircle = styled(motion.circle, {
@@ -102,12 +139,6 @@ const AnchorCircle = styled(motion.circle, {
 const AnchorLine = styled("line", {
   stroke: "$gray8",
   strokeWidth: 2,
-});
-
-const FigureWrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  gap: "$8",
 });
 
 const Square = styled(motion.rect, {

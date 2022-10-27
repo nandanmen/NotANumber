@@ -28,6 +28,7 @@ const posts = [
           x: container.padding,
           y: container.height / 2 - width / 2,
         })}
+        origin="topLeft"
       />
     ),
   },
@@ -181,7 +182,7 @@ const PageWrapper = styled("main", {
 const ContentWrapper = styled("div", {
   "@media screen and (min-width: 75rem)": {
     display: "grid",
-    gridTemplateColumns: "26rem 42rem",
+    gridTemplateColumns: "24rem 42rem",
     gap: "$16",
   },
 });
@@ -206,8 +207,8 @@ const Header = styled("header", {
     paddingBottom: 0,
     borderBottom: "none",
     position: "fixed",
-    maxWidth: "26rem",
-    paddingRight: "$16",
+    maxWidth: "24rem",
+    paddingRight: "$8",
     borderRight: "1px solid $gray8",
   },
 });

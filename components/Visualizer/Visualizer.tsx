@@ -5,18 +5,23 @@ export const Visualizer = styled("div", {
   border: "1px solid $gray8",
   borderRadius: "$base",
   overflow: "hidden",
+
+  "> :nth-child(2)": {
+    borderTop: "1px solid $gray8",
+  },
 });
 
 export const Controls = styled("div", {
-  borderTop: "1px solid $gray8",
   background: "$gray5",
   position: "relative",
   padding: "$2",
+  display: "flex",
+  justifyContent: "space-between",
 });
 
 export const Content = styled(GridBackground, {
   border: "none",
-  borderRadius: "none",
+  borderRadius: 0,
 
   variants: {
     padding: {

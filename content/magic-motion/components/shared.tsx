@@ -149,7 +149,7 @@ export const PositionText = styled("p", {
 export const Controls = styled("div", {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "flex-end",
+  alignItems: "center",
   marginBottom: "$3",
 });
 
@@ -170,10 +170,38 @@ export const ToggleButton = styled(motion.button, {
     color: "$gray11",
     cursor: "not-allowed",
   },
+
+  variants: {
+    secondary: {
+      true: {
+        background: "none",
+        border: "none",
+
+        "&:hover": {
+          background: "$gray7",
+        },
+
+        "&:disabled": {
+          color: "$gray8",
+          cursor: "not-allowed",
+          pointerEvents: "none",
+        },
+      },
+    },
+  },
+});
+
+export const IconButton = styled(ToggleButton, {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "$gray10",
+  height: 22,
 });
 
 export const AlignmentText = styled("p", {
   fontFamily: "$mono",
+  fontSize: "$sm",
 });
 
 export const DynamicIsland = styled(motion.div, {

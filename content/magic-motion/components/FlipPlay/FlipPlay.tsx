@@ -1,14 +1,14 @@
 import React from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { FaUndo } from "react-icons/fa";
+import { FaPlay, FaUndo } from "react-icons/fa";
 
-import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper, ToggleButton, Controls } from "../shared";
+import { IconButton } from "../shared";
 
-const PADDING = 45;
+const PADDING = 32;
 const SQUARE_RADIUS = 60;
 
 export const FlipPlay = () => {
@@ -53,76 +53,64 @@ export const FlipPlay = () => {
 
   return (
     <FullWidth>
-      <div>
+      <Visualizer>
+        <ContentWrapper noOverflow>
+          <svg width="100%" height="100%">
+            <Square ref={initialRef} x={PADDING} />
+            <Square
+              ref={finalRef}
+              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
+            />
+            <AnchorLine
+              ref={lineRef}
+              x1={(SQUARE_RADIUS + PADDING) * 2}
+              x2="100%"
+              y1="50%"
+              y2="50%"
+              style={{
+                transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
+              }}
+            />
+            <AnchorCircle
+              style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
+            />
+            <Element
+              x={`calc(100% - ${PADDING}px)`}
+              style={{ translateX: squareTranslateX }}
+            />
+            <TranslateText
+              ref={textRef}
+              style={{
+                translateY: SQUARE_RADIUS + 25,
+                translateX: textTranslateX,
+              }}
+              x="100%"
+              y="50%"
+            >
+              translateX(-{distance.toFixed(0)}px)
+            </TranslateText>
+          </svg>
+        </ContentWrapper>
         <Controls>
-          <ToggleButton onClick={() => animate(x, 0, { duration: 3 })}>
-            Play
-          </ToggleButton>
-          <UndoButton onClick={() => x.set(-1 * distance)}>
+          <IconButton onClick={() => animate(x, 0, { duration: 2 })} secondary>
+            <FaPlay />
+          </IconButton>
+          <IconButton onClick={() => x.set(-1 * distance)} secondary>
             <FaUndo />
-          </UndoButton>
+          </IconButton>
         </Controls>
-        <GridBackground>
-          <Content>
-            <svg width="100%" height="100%">
-              <Square ref={initialRef} x={PADDING} />
-              <Square
-                ref={finalRef}
-                x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-              />
-              <AnchorLine
-                ref={lineRef}
-                x1={(SQUARE_RADIUS + PADDING) * 2}
-                x2="100%"
-                y1="50%"
-                y2="50%"
-                style={{
-                  transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
-                }}
-              />
-              <AnchorCircle
-                style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
-              />
-              <Element
-                x={`calc(100% - ${PADDING}px)`}
-                style={{ translateX: squareTranslateX }}
-              />
-              <TranslateText
-                ref={textRef}
-                style={{
-                  translateY: SQUARE_RADIUS + 25,
-                  translateX: textTranslateX,
-                }}
-                x="100%"
-                y="50%"
-              >
-                translateX(-{distance.toFixed(0)}px)
-              </TranslateText>
-            </svg>
-          </Content>
-        </GridBackground>
-      </div>
+      </Visualizer>
     </FullWidth>
   );
 };
-
-const UndoButton = styled(ToggleButton, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
-  height: 22,
-});
 
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
 });
 
-const Content = styled(ContentWrapper, {
+const ContentWrapper = styled(Content, {
   height: 300,
-  paddingLeft: `0 !important`,
-  paddingRight: `0 !important`,
 });
 
 const AnchorCircle = styled(motion.circle, {
