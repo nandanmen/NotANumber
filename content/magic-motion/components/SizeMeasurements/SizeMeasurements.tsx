@@ -1,14 +1,13 @@
 import React from "react";
-import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
-import { BsPlayFill, BsPauseFill } from "react-icons/bs";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled, keyframes } from "~/stitches.config";
 import { useStepPlayer } from "~/lib/algorithm";
 
-import { ContentWrapper, ToggleButton } from "../shared";
+import { IconButton } from "../shared";
 import { SizeExample } from "../size";
 
 export const SizeMeasurements = () => {
@@ -22,7 +21,6 @@ export const SizeMeasurements = () => {
     if (step === "last") {
       const box = boxRef.current?.getBoundingClientRect();
       setBox(box);
-      console.log(box);
     }
   }, [step]);
 
@@ -34,31 +32,11 @@ export const SizeMeasurements = () => {
 
   return (
     <FullWidth>
-      <Header>
-        <StateControls>
-          <StateButton onClick={player.toggle}>
-            {player.isPlaying ? <BsPauseFill /> : <BsPlayFill />}
-          </StateButton>
-          <StateButton
-            onClick={player.prev}
-            disabled={player.currentStep === 0}
-          >
-            <HiArrowLeft />
-          </StateButton>
-          <StateButton
-            onClick={player.next}
-            disabled={player.currentStep === player.totalSteps - 1}
-          >
-            <HiArrowRight />
-          </StateButton>
-        </StateControls>
-        <FlipStateList>
-          <FlipState active={step === "first"}>First</FlipState>
-          <FlipState active={step === "last"}>Last</FlipState>
-        </FlipStateList>
-      </Header>
-      <GridBackground>
-        <Content>
+      <Visualizer>
+        <Content
+          css={{ height: 300, display: "flex", alignItems: "center" }}
+          padding="lg"
+        >
           <RulerWrapper key={key} style={{ transform: "translateY(-90px)" }}>
             <RulerText>120px</RulerText>
             <Ruler />
@@ -74,7 +52,29 @@ export const SizeMeasurements = () => {
             </>
           )}
         </Content>
-      </GridBackground>
+        <Controls css={{ alignItems: "center" }}>
+          <FlipStateList>
+            <FlipState active={step === "first"}>First</FlipState>
+            <FlipState active={step === "last"}>Last</FlipState>
+          </FlipStateList>
+          <StateControls>
+            <IconButton
+              onClick={player.prev}
+              disabled={player.currentStep === 0}
+              secondary
+            >
+              <FaArrowLeft />
+            </IconButton>
+            <IconButton
+              onClick={player.next}
+              disabled={player.currentStep === player.totalSteps - 1}
+              secondary
+            >
+              <FaArrowRight />
+            </IconButton>
+          </StateControls>
+        </Controls>
+      </Visualizer>
     </FullWidth>
   );
 };
@@ -110,7 +110,7 @@ const RulerWrapper = styled("div", {
   variants: {
     full: {
       true: {
-        width: "calc(100% - $space$12 * 2)",
+        width: "calc(100% - $space$8 * 2)",
       },
     },
   },
@@ -178,27 +178,9 @@ const Measurement = styled("div", {
   },
 });
 
-const Content = styled(ContentWrapper, {
-  height: 300,
-});
-
-const StateButton = styled(ToggleButton, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
-});
-
 const StateControls = styled("div", {
   display: "flex",
   gap: "$1",
-});
-
-const Header = styled("header", {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  marginBottom: "$2",
 });
 
 const FlipStateList = styled("ol", {

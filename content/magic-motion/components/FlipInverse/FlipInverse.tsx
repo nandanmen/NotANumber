@@ -104,7 +104,7 @@ export const FlipInverse = () => {
             </TranslateText>
           </svg>
         </ContentWrapper>
-        <Controls>
+        <Controls css={{ alignItems: "center" }}>
           <ToggleButton onClick={() => animate(x, -distance, { duration: 2 })}>
             Invert
           </ToggleButton>
