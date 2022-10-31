@@ -92,7 +92,7 @@ export const FlipOverview = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper>
+        <ContentWrapper noOverflow>
           <svg width="100%" height="100%">
             <Square ref={initialRef} x={PADDING} />
             <Square

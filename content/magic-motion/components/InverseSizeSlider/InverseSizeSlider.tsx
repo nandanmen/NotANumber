@@ -1,12 +1,13 @@
 import React from "react";
-import { useMotionValue } from "framer-motion";
+import { FaUndo, FaPlay } from "react-icons/fa";
+import { animate, useMotionValue } from "framer-motion";
 
-import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
-import { Slider } from "~/components/Slider";
+import { Visualizer, Content, Controls } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-import { ContentWrapper } from "../shared";
+import { IconButton } from "../shared";
+import { Ruler, RulerWrapper, RulerText } from "../shared/Ruler";
 import { SizeDiagram } from "../shared/SizeDiagram";
 
 export const InverseSizeSlider = () => {
@@ -15,35 +16,45 @@ export const InverseSizeSlider = () => {
 
   return (
     <FullWidth>
-      <FigureWrapper>
-        <Slider
-          defaultValue={[1]}
-          onValueChange={([newScale]) => scale.set(newScale)}
-          max={1}
-          min={120 / width}
-          step={0.01}
-        />
-        <GridBackground>
-          <Content>
-            <SizeDiagram
-              scale={scale}
-              onWidthChange={(width) => setWidth(width)}
-            />
-          </Content>
-        </GridBackground>
-      </FigureWrapper>
+      <Visualizer>
+        <Content
+          css={{
+            height: 300,
+            display: "flex",
+            alignItems: "center",
+            padding: `calc($space$8 - 2px)`,
+          }}
+        >
+          <RulerWrapper style={{ transform: "translateY(-90px)" }}>
+            <RulerText>120px</RulerText>
+            <Ruler />
+          </RulerWrapper>
+          <SizeDiagram scale={scale} padding={1} onWidthChange={setWidth} />
+          <OriginalSquare />
+          <RulerWrapper full style={{ transform: "translateY(90px)" }}>
+            <Ruler />
+            <RulerText>{width}px</RulerText>
+          </RulerWrapper>
+        </Content>
+        <Controls>
+          <IconButton
+            secondary
+            onClick={() => animate(scale, 120 / width, { duration: 3 })}
+          >
+            <FaPlay />
+          </IconButton>
+          <IconButton secondary onClick={() => scale.set(1)}>
+            <FaUndo />
+          </IconButton>
+        </Controls>
+      </Visualizer>
     </FullWidth>
   );
 };
 
-const Content = styled(ContentWrapper, {
-  height: 300,
-  paddingLeft: `0 !important`,
-  paddingRight: `0 !important`,
-});
-
-const FigureWrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  gap: "$8",
+const OriginalSquare = styled("div", {
+  width: 121,
+  height: 120,
+  borderRight: "1px dashed $blue8",
+  position: "absolute",
 });

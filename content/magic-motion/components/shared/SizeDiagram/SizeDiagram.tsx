@@ -7,9 +7,14 @@ import { SQUARE_RADIUS, PADDING, SvgSquare } from "../styles";
 export type SizeDiagramProps = {
   scale: MotionValue<number>;
   onWidthChange?: (width: number) => void;
+  padding?: number;
 };
 
-export const SizeDiagram = ({ scale, onWidthChange }: SizeDiagramProps) => {
+export const SizeDiagram = ({
+  scale,
+  onWidthChange,
+  padding = PADDING,
+}: SizeDiagramProps) => {
   const [width, setWidth] = React.useState(SQUARE_RADIUS * 2);
 
   const svgRef = React.useRef<SVGSVGElement>();
@@ -17,8 +22,8 @@ export const SizeDiagram = ({ scale, onWidthChange }: SizeDiagramProps) => {
 
   React.useEffect(() => {
     const { width } = svgRef.current.getBoundingClientRect();
-    setWidth(width - PADDING * 2);
-  }, []);
+    setWidth(width - padding * 2);
+  }, [padding]);
 
   const lineRef = React.useRef<SVGLineElement>();
   const textRef = React.useRef<SVGTextElement>();
@@ -48,11 +53,11 @@ export const SizeDiagram = ({ scale, onWidthChange }: SizeDiagramProps) => {
 
   return (
     <svg ref={svgRef} width="100%" height="100%">
-      <OriginalSquareWrapper width={width}>
+      <OriginalSquareWrapper width={width} x={padding}>
         <OriginalSquare />
       </OriginalSquareWrapper>
-      <Square ref={finalRef} x={PADDING} />
-      <motion.g style={{ x: PADDING, y: `calc(50% - ${SQUARE_RADIUS}px)` }}>
+      <Square ref={finalRef} x={padding} />
+      <motion.g style={{ x: padding, y: `calc(50% - ${SQUARE_RADIUS}px)` }}>
         <AnchorLine ref={lineRef} x1="2" y1="2" y2="118" />
         <TranslateText ref={textRef} y={64} textAnchor="middle" />
       </motion.g>
@@ -69,12 +74,11 @@ const OriginalSquareWrapper = styled("foreignObject", {
   rx: "$radii$base",
   y: `calc(50% - ${SQUARE_RADIUS}px)`,
   filter: "drop-shadow($shadows$sm)",
-  x: PADDING,
 });
 
 const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient(-45deg, $colors$gray7, $colors$gray7 5px, transparent 5px, transparent 10px)`,
-  border: "1px solid $gray7",
+  background: `repeating-linear-gradient(-45deg, $colors$gray8, $colors$gray8 8px, transparent 8px, transparent 16px)`,
+  border: "1px solid $gray8",
   height: SQUARE_RADIUS * 2,
   width: "100%",
   borderRadius: "$base",

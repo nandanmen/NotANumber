@@ -46,10 +46,14 @@ export const Tooltip = styled(motion.div, {
 
 export const ContentWrapper = styled("div", {
   position: "relative",
-  padding: "$12",
+  padding: "$8",
   display: "flex",
   alignItems: "center",
   gap: "$4",
+
+  "@md": {
+    padding: "$12",
+  },
 
   variants: {
     toggled: {

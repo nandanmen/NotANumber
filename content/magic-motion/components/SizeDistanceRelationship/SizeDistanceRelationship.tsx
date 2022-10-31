@@ -35,7 +35,7 @@ export const SizeDistanceRelationship = () => {
             step={20}
           />
         </Controls>
-        <ContentWrapper ref={containerRef}>
+        <ContentWrapper ref={containerRef} noOverflow>
           <svg width="100%" height="100%">
             <SvgSquare
               width={SQUARE_RADIUS * 2}
@@ -79,7 +79,7 @@ export const SizeDistanceRelationship = () => {
             </g>
           </svg>
         </ContentWrapper>
-        <ContentWrapper>
+        <ContentWrapper noOverflow>
           <svg width="100%" height="100%">
             <SvgSquare
               width={SQUARE_RADIUS * 2}

@@ -5,11 +5,13 @@ import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import {
   Visualizer,
-  Content as BaseContent,
-  Controls as BaseControls,
+  Content as VisualizerContent,
+  Controls,
 } from "~/components/Visualizer";
-import { Slider } from "~/components/Slider";
 import { Checkbox } from "~/components/Checkbox";
+import { IconButton } from "../shared";
+import { FaPlay, FaUndo } from "react-icons/fa";
+import useInterval from "@use-it/interval";
 
 type InverseScaleFormulaProps = {
   corrected: boolean;
@@ -53,41 +55,6 @@ const Content = styled("div", {
   alignItems: "center",
   justifyContent: "center",
   height: "100%",
-});
-
-// --
-
-export const InverseScaleFormulaSandbox = () => {
-  const [corrected, setCorrected] = React.useState(true);
-  const [scale, setScale] = React.useState(1);
-
-  return (
-    <FullWidth>
-      <Visualizer>
-        <ContentWrapper>
-          <InverseScaleFormula corrected={corrected} scale={scale} />
-        </ContentWrapper>
-        <Controls>
-          <Checkbox
-            checked={corrected}
-            onCheckedChange={() => setCorrected(!corrected)}
-            label="Corrected"
-          />
-          <Slider
-            min={0.5}
-            max={3}
-            value={[scale]}
-            onValueChange={([scale]) => setScale(scale)}
-            step={0.1}
-          />
-        </Controls>
-      </Visualizer>
-    </FullWidth>
-  );
-};
-
-const ContentWrapper = styled(BaseContent, {
-  height: 220,
 });
 
 const TooltipWrapper = styled("div", {
@@ -137,13 +104,6 @@ const Text = styled("span", {
   position: "relative",
 });
 
-const Controls = styled(BaseControls, {
-  padding: "$4",
-  display: "flex",
-  alignItems: "center",
-  gap: "$4",
-});
-
 const Square = styled("div", {
   width: 120,
   height: 120,
@@ -156,3 +116,51 @@ const Square = styled("div", {
   justifyContent: "center",
   position: "relative",
 });
+
+// --
+
+export const InverseScaleFormulaSandbox = () => {
+  const [corrected, setCorrected] = React.useState(true);
+  const [scale, setScale] = React.useState(1);
+  const [playing, setPlaying] = React.useState(false);
+
+  useInterval(
+    () => {
+      if (scale < 3) {
+        setScale(scale + 0.1);
+      } else {
+        setPlaying(false);
+      }
+    },
+    playing ? 100 : null
+  );
+
+  return (
+    <FullWidth>
+      <Visualizer>
+        <VisualizerContent css={{ height: 220 }}>
+          <InverseScaleFormula corrected={corrected} scale={scale} />
+        </VisualizerContent>
+        <Controls>
+          <IconButton secondary onClick={() => setPlaying(true)}>
+            <FaPlay />
+          </IconButton>
+          <Checkbox
+            checked={corrected}
+            onCheckedChange={() => setCorrected(!corrected)}
+            label="Corrected"
+          />
+          <IconButton
+            secondary
+            onClick={() => {
+              setPlaying(false);
+              setScale(1);
+            }}
+          >
+            <FaUndo />
+          </IconButton>
+        </Controls>
+      </Visualizer>
+    </FullWidth>
+  );
+};

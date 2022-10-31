@@ -32,10 +32,14 @@ export const SizeExample = React.forwardRef<
 
 const FakeBorder = styled(motion.div, {
   position: "absolute",
-  left: `calc($space$12 - 1px)`,
+  left: `calc($space$8 - 1px)`,
   background: "$blue8",
   width: 122,
   height: 122,
+
+  "@md": {
+    left: `calc($space$12 - 1px)`,
+  },
 
   variants: {
     toggled: {

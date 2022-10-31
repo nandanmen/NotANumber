@@ -66,7 +66,11 @@ export const FlipLast = () => {
               <YLine active={active} align="right" />
             </>
           )}
-          <Square ref={originalRef} outline css={{ left: "$12" }}>
+          <Square
+            ref={originalRef}
+            outline
+            css={{ left: "$8", "@md": { left: "$12" } }}
+          >
             <PositionText>x: {state.context.origin?.x.toFixed(1)}</PositionText>
             <PositionText>y: {state.context.origin?.y.toFixed(1)}</PositionText>
           </Square>
