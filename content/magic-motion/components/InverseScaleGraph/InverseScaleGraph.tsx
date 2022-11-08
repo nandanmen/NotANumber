@@ -130,7 +130,7 @@ const InverseScalePath = styled(motion.path, {
 });
 
 const GraphPoint = styled("circle", {
-  r: "0.05",
+  r: "0.05px",
   fill: "$blue8",
 
   variants: {
