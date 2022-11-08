@@ -18,7 +18,7 @@ export const HorizontalRuler = ({
         <RulerText
           x="0"
           textAnchor="middle"
-          alignmentBaseline="central"
+          dominantBaseline="middle"
           small={small}
         >
           {distance.toFixed(1)}
@@ -28,22 +28,32 @@ export const HorizontalRuler = ({
   );
 };
 
-const RulerTextBackground = styled("rect", {
+export const RulerTextBackground = ({ small = false, ...props }) => {
+  const smallProps = small
+    ? {
+        x: -25,
+        y: -12.5,
+      }
+    : {
+        x: -30,
+        y: -15,
+      };
+  return (
+    <RulerTextBackgroundRect rx="4" small={small} {...smallProps} {...props} />
+  );
+};
+
+const RulerTextBackgroundRect = styled("rect", {
   width: 60,
   fill: "$blue2",
   height: 30,
-  rx: 4,
   stroke: "$blue8",
-  x: -30,
-  y: -15,
 
   variants: {
     small: {
       true: {
         width: 50,
         height: 25,
-        x: -25,
-        y: -12.5,
       },
     },
   },
@@ -82,7 +92,7 @@ export const Line = styled(motion.line, {
 });
 
 export const LineEndpoint = styled(motion.circle, {
-  r: 6,
+  r: "6px",
   fill: "$blue2",
   stroke: "$blue8",
   animationName: `${fadeIn}`,
@@ -93,7 +103,7 @@ export const LineEndpoint = styled(motion.circle, {
   variants: {
     small: {
       true: {
-        r: 4,
+        r: "4px",
       },
     },
   },
