@@ -187,6 +187,7 @@ const Article = styled("article", {
     gridColumn: "1 / -1",
     marginTop: "$4",
     marginBottom: "$8",
+    width: "100%",
   },
 
   "> :where(:not(:last-child))": {
