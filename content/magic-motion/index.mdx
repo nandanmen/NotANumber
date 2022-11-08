@@ -41,6 +41,10 @@ import { InverseScaleGraph } from "./components/InverseScaleGraph";
 
 By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
 
+```tsx
+<motion.div layout />
+```
+
 <FullWidth>
   <TokenList type={["single-character"]} toggleable />
   <Caption>
@@ -59,19 +63,19 @@ Let's get started!
 
 ## Introducing FLIP
 
-FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in "slow" layout properties like `width` and even animate "un-animatable" CSS properties like `justify-content`. Here's how it works.
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in "slow" layout properties like `width` and even lets you animate "un-animatable" CSS properties like `justify-content`.
 
-In the following examples, we'll use FLIP to animate this change in `justify-content` from `flex-start` to `flex-end`:
+As its name suggests, FLIP is a four-step technique that works by inverting any layout changes done by the browser. Let's figure out how it works by animating this change in `justify-content` from `flex-start` to `flex-end`:
 
 <FlipExample />
 
 ### First
 
-**First**. Before we do the layout change, we record the initial position of the element in terms of `x` and `y` coordinates:
+In the **First** step, we measure the position of the element we're animating _before_ any layout changes has happened:
 
 <FlipFirst />
 
-We can do this in code by using a `ref` and the `getBoundingClientRect(){:js}` method:
+One way to do this is to use the `.getBoundingClientRect()` method of the HTML element::
 
 ```tsx {1,5}
 const Motion = (props) => {
@@ -87,7 +91,7 @@ const Motion = (props) => {
 
 ### Last
 
-**Last**. Then we trigger the layout change and record the position of the square again:
+In the **Last** step, we measure the position of the element _after_ the layout changes has happened:
 
 <FlipLast />
 
@@ -237,7 +241,7 @@ Let's try to figure this out.
 
 When we combine changes in position and size, we're performing two separate transformations in the inverse step — a translation and a scale. If we take a look at those transformations individually, we can see how the square ended up where it did:
 
-<SharedState initialState={170}>
+<SharedState initialState={160}>
 
 <CorrectedInverseAnimation
   from={(width, container) => ({
