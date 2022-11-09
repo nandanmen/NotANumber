@@ -39,7 +39,7 @@ import { InverseScaleFormulaSandbox } from "./components/InverseScaleFormula";
 import { InverseScaleSandbox } from "./components/InverseScaleSandbox";
 import { InverseScaleGraph } from "./components/InverseScaleGraph";
 
-By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
+My favourite part about Framer Motion by far is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transitions from one part of the page to the next:
 
 ```tsx
 <motion.div layout />
@@ -55,11 +55,49 @@ By far my favourite part about Framer Motion is its magical layout animations—
 
 In this post, I want to dive deep into the techniques that allow these layout animations to happen. Specifically, we'll go over concepts like:
 
-1. **FLIP**, the underlying technique that makes layout animations possible;
-2. **Animating size** using FLIP and its relationship with position;
-3. **Correcting distortions** by applying an inverse scale to all children of animating elements;
+1. **Layout changes**, what they are and when they occur;
+2. **CSS-based approaches** and why they don't always work;
+3. **FLIP**, the technique in use by Framer Motion;
 
 Let's get started!
+
+## Layout Changes
+
+A layout change happens when an element on the page changes position in a way that affects _other_ elements on the page. For example, changing the `width` or `height` of an element is a layout change because any neighbouring element has to move to make room for the element's new size:
+
+```
+visual here
+
+show that the text change in the tokenizer visual is a layout change?
+```
+
+Another example of a layout change is changing `justify-content` because it causes that element's _children_ to change positions:
+
+```
+justify content change
+```
+
+On the other hand, making the same change using something like `scale` is _not_ a layout change because transforms don't affect other elements on the page at all:
+
+```
+showing transform not doing anything
+```
+
+## Animating Layout Changes With CSS
+
+So how would we animate layout changes? One way is by animating the property directly using something like CSS transitions:
+
+```css
+.square {
+  transition: width 0.2s ease-out;
+}
+```
+
+Now when the square changes width, it'll seamlessly animate between its sizes:
+
+```
+animating width
+```
 
 ## Introducing FLIP
 
