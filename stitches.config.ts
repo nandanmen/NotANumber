@@ -59,7 +59,7 @@ export const baseTheme = {
   },
   fonts: {
     serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `Berkeley Mono, ui-monospace, monospace`,
+    mono: `Cartograph CF, ui-monospace, monospace`,
     sans: `Nunito, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {

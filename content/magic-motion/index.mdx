@@ -83,7 +83,7 @@ On the other hand, making the same change using something like `scale` is _not_ 
 showing transform not doing anything
 ```
 
-## Animating Layout Changes With CSS
+## Animating With CSS
 
 So how would we animate layout changes? One way is by animating the property directly using something like CSS transitions:
 
@@ -98,6 +98,39 @@ Now when the square changes width, it'll seamlessly animate between its sizes:
 ```
 animating width
 ```
+
+To be honest, in many cases, we can end the post here!
+
+But there are two main downsides with CSS animations that we should be aware of:
+
+1. **You can't animate everything**. For example, you can't animate a change in `justify-content` because `justify-content` is [not an animatable property](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties).
+2. **There _may_ be a performance trade-off**. CSS animations that involve layout changes are generally more expensive than transform-based animations, so you might find that your animations are not as smooth on lower-end devices.
+
+Let's talk about the performance problem for a second.
+
+### Performance
+
+> **Don't pre-optimize!** If you're not noticing any performance issues on lower-end devices and CSS transitions work for you, then don't worry about it! Only optimize when you need to.
+
+CSS animations that involve layout changes are generally more expensive than other CSS animations because it affects other elements around it. This is because the browser has to recalculate the layout of the page _in every frame of the animation_—for a 60 FPS animation, that means 60 times every second!
+
+This visualization might help clear things up. Notice that the grey boxes also look like they're animating, even though we only transition the blue box:
+
+```
+showing recalculation
+```
+
+This is made possible because the browser recalculates the position of the grey boxes every time the blue box changes size.
+
+On the other hand, the browser can animate CSS properties like `transform` much faster because they don't affect layout:
+
+```
+transform-based animation
+```
+
+---
+
+Hey wait a second. If `transform` is much cheaper to animate, can we somehow animate layout changes using `transform` instead?
 
 ## Introducing FLIP
 

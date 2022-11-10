@@ -238,6 +238,13 @@ const Article = styled("article", {
     fontStyle: "italic",
   },
 
+  hr: {
+    marginTop: "$6",
+    marginBottom: "$12",
+    width: "30%",
+    borderTop: "1px solid $gray8",
+  },
+
   "[data-rehype-pretty-code-fragment] > pre": {
     marginBottom: "$4",
   },
