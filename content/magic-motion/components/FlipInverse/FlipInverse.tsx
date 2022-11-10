@@ -3,10 +3,14 @@ import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { FaUndo } from "react-icons/fa";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  UndoButton,
+  ToggleButton,
+} from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
-
-import { ToggleButton, IconButton } from "../shared";
 
 const PADDING = 32;
 const SQUARE_RADIUS = 60;
@@ -108,9 +112,7 @@ export const FlipInverse = () => {
           <ToggleButton onClick={() => animate(x, -distance, { duration: 3 })}>
             Invert
           </ToggleButton>
-          <IconButton onClick={() => x.set(0)} secondary>
-            <FaUndo />
-          </IconButton>
+          <UndoButton onClick={() => x.set(0)} />
         </Controls>
       </Visualizer>
     </FullWidth>

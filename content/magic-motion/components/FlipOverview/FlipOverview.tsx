@@ -4,11 +4,15 @@ import { assign } from "xstate";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { FaArrowLeft, FaArrowRight, FaPause, FaPlay } from "react-icons/fa";
 
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  IconButton,
+} from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
-import { IconButton } from "../shared";
 import { machine, STATE_ORDER } from "./machine";
 
 const PADDING = 32;

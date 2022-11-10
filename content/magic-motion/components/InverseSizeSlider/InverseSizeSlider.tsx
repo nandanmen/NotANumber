@@ -3,10 +3,15 @@ import { FaUndo, FaPlay } from "react-icons/fa";
 import { animate, useMotionValue } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  PlayButton,
+  UndoButton,
+} from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-import { IconButton } from "../shared";
 import { Ruler, RulerWrapper, RulerText } from "../shared/Ruler";
 import { SizeDiagram } from "../shared/SizeDiagram";
 
@@ -37,15 +42,10 @@ export const InverseSizeSlider = () => {
           </RulerWrapper>
         </Content>
         <Controls>
-          <IconButton
-            secondary
+          <PlayButton
             onClick={() => animate(scale, 120 / width, { duration: 3 })}
-          >
-            <FaPlay />
-          </IconButton>
-          <IconButton secondary onClick={() => scale.set(1)}>
-            <FaUndo />
-          </IconButton>
+          />
+          <UndoButton onClick={() => scale.set(1)} />
         </Controls>
       </Visualizer>
     </FullWidth>

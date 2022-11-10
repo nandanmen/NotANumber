@@ -3,10 +3,14 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { FaPlay, FaUndo } from "react-icons/fa";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  PlayButton,
+  UndoButton,
+} from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
-
-import { IconButton } from "../shared";
 
 const PADDING = 32;
 const SQUARE_RADIUS = 60;
@@ -92,12 +96,8 @@ export const FlipPlay = () => {
           </svg>
         </ContentWrapper>
         <Controls>
-          <IconButton onClick={() => animate(x, 0, { duration: 3 })} secondary>
-            <FaPlay />
-          </IconButton>
-          <IconButton onClick={() => x.set(-1 * distance)} secondary>
-            <FaUndo />
-          </IconButton>
+          <PlayButton onClick={() => animate(x, 0, { duration: 3 })} />
+          <UndoButton onClick={() => x.set(-1 * distance)} />
         </Controls>
       </Visualizer>
     </FullWidth>

@@ -5,6 +5,7 @@ import { assign } from "xstate";
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { ToggleButton } from "~/components/Visualizer";
 
 import {
   Tooltip,
@@ -14,7 +15,6 @@ import {
   XLine,
   YLine,
   Controls,
-  ToggleButton,
   AlignmentText,
 } from "../shared";
 import { machine } from "./machine";

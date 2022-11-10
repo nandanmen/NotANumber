@@ -11,12 +11,18 @@ import { FaUndo, FaPlay } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { useSharedState } from "~/components/SharedState";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  PlayButton,
+  UndoButton,
+} from "~/components/Visualizer";
 
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
-import { Counter, IconButton } from "../shared";
+import { Counter } from "../shared";
 
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;
@@ -154,8 +160,7 @@ export const CorrectedInverseAnimation = ({
           </ContentWrapper>
         </Content>
         <Controls css={{ alignItems: "center", gap: "$4" }}>
-          <IconButton
-            secondary
+          <PlayButton
             onClick={() => {
               setShowScaleRulers(false);
               width.set(initialWidth);
@@ -192,9 +197,7 @@ export const CorrectedInverseAnimation = ({
                 },
               });
             }}
-          >
-            <FaPlay />
-          </IconButton>
+          />
           <Counter
             value={initialWidth}
             onChange={(newWidth) => {
@@ -204,8 +207,7 @@ export const CorrectedInverseAnimation = ({
             min={TARGET_WIDTH - MAX_HEIGHT_DELTA}
             step={20}
           />
-          <IconButton
-            secondary
+          <UndoButton
             onClick={() => {
               setShowScaleRulers(false);
               setInitialWidth(BASE_WIDTH);
@@ -213,9 +215,7 @@ export const CorrectedInverseAnimation = ({
               squareY.set(CONTENT_HEIGHT / 2 - BASE_WIDTH / 2);
               width.set(BASE_WIDTH);
             }}
-          >
-            <FaUndo />
-          </IconButton>
+          />
           {isPlaying && <DisabledOverlay />}
         </Controls>
       </Visualizer>

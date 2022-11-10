@@ -7,9 +7,10 @@ import {
   Visualizer,
   Content as VisualizerContent,
   Controls,
+  PlayButton,
+  UndoButton,
 } from "~/components/Visualizer";
 import { Checkbox } from "~/components/Checkbox";
-import { IconButton } from "../shared";
 import { FaPlay, FaUndo } from "react-icons/fa";
 import useInterval from "@use-it/interval";
 
@@ -142,23 +143,18 @@ export const InverseScaleFormulaSandbox = () => {
           <InverseScaleFormula corrected={corrected} scale={scale} />
         </VisualizerContent>
         <Controls>
-          <IconButton secondary onClick={() => setPlaying(true)}>
-            <FaPlay />
-          </IconButton>
+          <PlayButton onClick={() => setPlaying(true)} />
           <Checkbox
             checked={corrected}
             onCheckedChange={() => setCorrected(!corrected)}
             label="Corrected"
           />
-          <IconButton
-            secondary
+          <UndoButton
             onClick={() => {
               setPlaying(false);
               setScale(1);
             }}
-          >
-            <FaUndo />
-          </IconButton>
+          />
         </Controls>
       </Visualizer>
     </FullWidth>

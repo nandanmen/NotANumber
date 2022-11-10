@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { darkTheme, styled } from "~/stitches.config";
+import { IconButton } from "~/components/Visualizer";
 
 const SQUARE_WIDTH = 120;
 
@@ -158,72 +159,9 @@ export const Controls = styled("div", {
   marginBottom: "$3",
 });
 
-export const ToggleButton = styled(motion.button, {
-  border: "1px solid $gray8",
-  background: "$gray1",
-  padding: "$1 $2",
-  borderRadius: 4,
-  fontSize: "$sm",
-
-  "&:hover": {
-    borderColor: "$gray12",
-  },
-
-  "&:disabled": {
-    borderColor: "$gray7",
-    background: "$gray5",
-    color: "$gray11",
-    cursor: "not-allowed",
-  },
-
-  variants: {
-    secondary: {
-      true: {
-        background: "none",
-        border: "none",
-
-        "&:hover": {
-          background: "$gray7",
-        },
-
-        "&:disabled": {
-          color: "$gray8",
-          cursor: "not-allowed",
-          pointerEvents: "none",
-        },
-      },
-    },
-  },
-});
-
-export const IconButton = styled(ToggleButton, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
-  height: 22,
-});
-
 export const AlignmentText = styled("p", {
   fontFamily: "$mono",
   fontSize: "$sm",
-});
-
-export const DynamicIsland = styled(motion.div, {
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  zIndex: 10,
-  background: "$gray4",
-  boxShadow: "$sm",
-  padding: "$2",
-  borderRadius: "$base",
-  border: "1px solid hsla(0, 0%, 0%, 0.2)",
-  width: "fit-content",
-  margin: "0 auto",
-  marginTop: "-$4",
-  gap: "$1",
 });
 
 // --
