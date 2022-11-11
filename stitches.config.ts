@@ -81,6 +81,7 @@ export const baseTheme = {
   },
   radii: {
     base: "6px",
+    lg: "12px",
   },
 };
 

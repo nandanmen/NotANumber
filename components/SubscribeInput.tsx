@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
-enum FormEvent {
+export enum FormEvent {
   Change,
   Submit,
   Saved,
 }
 
-enum FormState {
+export enum FormState {
   Start,
   Loading,
   Done,
@@ -39,7 +39,7 @@ const submitButtonTypeMap = {
   [FormState.Done]: "success",
 };
 
-export function SubscribeInput() {
+export const useSubscribe = () => {
   const [state, dispatch] = React.useReducer(transition, FormState.Start);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (evt) => {
@@ -48,6 +48,11 @@ export function SubscribeInput() {
     dispatch(FormEvent.Saved);
   };
 
+  return [handleSubmit, { state, dispatch }] as const;
+};
+
+export function SubscribeInput() {
+  const [handleSubmit, { state, dispatch }] = useSubscribe();
   return (
     <form onSubmit={handleSubmit}>
       <InputGroup>
