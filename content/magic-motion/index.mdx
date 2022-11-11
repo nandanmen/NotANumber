@@ -489,14 +489,22 @@ I opted to not implement things this way because I didn't want to take away from
 
 ## Summary
 
-Framer motion's magical layout animations are powered by the FLIP technique — a clever way to implement performant layout animations. While implementing FLIP with position changes turned out to be pretty straightforward, the same can't be said for changes in size. When we put size into the picture, we have to worry about:
+If you made it all the way here, thank you! Let's recap what we've learned.
 
-1. How a change in size affects the distance the element travelled;
+Ultimately, we wanted to figure out **how to animate layout changes**, that is, changes in an element that affect the position of itself and all surrounding elements.
+
+We started off using CSS but then realized it fell short in a couple of ways:
+
+1. You can't use CSS to animate un-animatable properties like `justify-content`;
+2. Animating layout properties can be slow in lower-end devices;
+
+In the process, we found out that animations using `transform` are fast and easy on the browser, so we turned our attention to FLIP - a technique used by Framer Motion that exploits this property.
+
+While implementing FLIP with position changes was pretty straightforward, the same can't be said for changes in size. When we start considering changes in size, we find we have to start worrying about:
+
+1. How a change in size affects the distance the element traveled;
 2. Correcting distortions in child elements caused by transforms in the parent element;
 
-And a whole slew of edge cases that I didn't quite get into in this post, such as:
+Once we figured out both of these problems, we ended up with a pretty solid implementation of automatic layout animation!
 
-1. What if a child component is animating during a layout change?
-2. What if the element is inside a scrollable container?
-
-That's all for today, thanks for reading!
+That's all for today; thanks for reading!
