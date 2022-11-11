@@ -53,7 +53,7 @@ export default function PostPage({ content }: { content: Post }) {
   console.log(headings);
   return (
     <PageWrapper>
-      <MobileBottomBar />
+      <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
           <NextLink href="/">

@@ -1,10 +1,11 @@
+import type { Heading } from "~/lib/content.server";
 import { styled } from "~/stitches.config";
 import { MobileNavIsland } from "./MobileNavIsland";
 
-export const MobileBottomBar = () => {
+export const MobileBottomBar = ({ headings }: { headings: Heading[] }) => {
   return (
     <Wrapper>
-      <MobileNavIsland headings={[]} />
+      <MobileNavIsland headings={headings} />
     </Wrapper>
   );
 };
