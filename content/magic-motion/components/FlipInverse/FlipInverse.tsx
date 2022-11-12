@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef } from "react";
+import React from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";
@@ -11,8 +11,8 @@ import {
 } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-const PADDING = 32;
-const SQUARE_RADIUS = 60;
+import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
+
 const CONTENT_HEIGHT = 300;
 
 export const FlipInverse = () => {
@@ -53,14 +53,14 @@ export const FlipInverse = () => {
       <Visualizer>
         <ContentWrapper noOverflow ref={widthRef}>
           <svg width="100%" height="100%">
-            <Square x={PADDING} />
+            <Square x={PADDING} type="secondary" />
             <TranslateText
               x={PADDING}
               y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS - 15}
             >
               x: {PADDING}
             </TranslateText>
-            <Square x={finalBoxX} />
+            <Square x={finalBoxX} type="secondary" />
             <AnchorLine
               ref={lineRef}
               x1={width}
@@ -81,7 +81,7 @@ export const FlipInverse = () => {
                 <AnchorCircle cy="0" cx="0" style={{ rotate: x }} />
               </motion.g>
             )}
-            <Element
+            <Square
               x={width - PADDING}
               style={{ translateX: squareTranslateX }}
             />
@@ -111,13 +111,6 @@ export const FlipInverse = () => {
   );
 };
 
-const Square = React.forwardRef<
-  SVGRectElement,
-  ComponentPropsWithoutRef<typeof _Square>
->(function Square(props, ref) {
-  return <_Square ref={ref} rx="6" {...props} />;
-});
-
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
@@ -140,16 +133,7 @@ const AnchorLine = styled("line", {
   strokeWidth: 2,
 });
 
-const _Square = styled(motion.rect, {
-  width: 120,
-  height: 120,
-  fill: "$gray5",
-  stroke: "$gray8",
-  y: `${CONTENT_HEIGHT / 2 - SQUARE_RADIUS}px`,
-  filter: "drop-shadow(var(--shadows-sm))",
-});
-
-const Element = styled(Square, {
-  fill: "$blue6",
-  stroke: "$blue8",
+const Square = styled(SvgSquare, {
+  width: SQUARE_RADIUS * 2,
+  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
 });
