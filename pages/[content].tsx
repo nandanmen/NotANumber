@@ -229,8 +229,10 @@ const Article = styled("article", {
   pre: {
     marginTop: "$4",
     marginBottom: "$8",
+    whiteSpace: "normal",
 
     "> code": {
+      whiteSpace: "pre",
       border: "1px solid $gray8",
       padding: "$4",
       borderRadius: "$base",
