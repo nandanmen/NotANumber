@@ -50,7 +50,6 @@ export default function PostPage({ content }: { content: Post }) {
     [content.code]
   );
   const { frontmatter, headings } = content;
-  console.log(headings);
   return (
     <PageWrapper>
       <MobileBottomBar headings={headings} />
