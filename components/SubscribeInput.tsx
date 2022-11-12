@@ -39,15 +39,12 @@ const submitButtonTypeMap = {
   [FormState.Done]: "success",
 };
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const useSubscribe = () => {
   const [state, dispatch] = React.useReducer(transition, FormState.Start);
 
   const handleSubmit = async (email?: string) => {
     dispatch(FormEvent.Submit);
-    console.log(`submitting: ${email}`);
-    await sleep(1000);
+    await subscribe(email);
     dispatch(FormEvent.Saved);
   };
 

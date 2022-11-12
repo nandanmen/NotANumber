@@ -227,13 +227,16 @@ const Article = styled("article", {
   },
 
   pre: {
-    border: "1px solid $gray8",
-    padding: "$4",
-    borderRadius: "$base",
-    fontSize: "$sm",
     marginTop: "$4",
     marginBottom: "$8",
-    overflowX: "auto",
+
+    "> code": {
+      border: "1px solid $gray8",
+      padding: "$4",
+      borderRadius: "$base",
+      fontSize: "$sm",
+      overflowX: "auto",
+    },
   },
 
   blockquote: {
