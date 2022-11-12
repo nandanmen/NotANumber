@@ -18,18 +18,29 @@ export type PostProps = {
 };
 
 export function Post({ post, children }: PostProps) {
+  const isExternal = post.slug.startsWith("http");
+
   return (
     <PostWrapper>
       <PostContent>
         <PostTitle whileHover="hover">
-          <Link href={post.slug}>
-            <TitleAnchor>
+          {isExternal ? (
+            <TitleAnchor href={post.slug}>
               {titleCase(post.title)}
               <PostArrow variants={{ hover: { x: 8 } }}>
                 <BsArrowRight width="24" height="24" />
               </PostArrow>
             </TitleAnchor>
-          </Link>
+          ) : (
+            <Link href={post.slug}>
+              <TitleAnchor>
+                {titleCase(post.title)}
+                <PostArrow variants={{ hover: { x: 8 } }}>
+                  <BsArrowRight width="24" height="24" />
+                </PostArrow>
+              </TitleAnchor>
+            </Link>
+          )}
         </PostTitle>
         <PostUpdatedText>
           Last updated{" "}
@@ -41,12 +52,19 @@ export function Post({ post, children }: PostProps) {
         </PostUpdatedText>
         <PostDescription>{post.description}</PostDescription>
         <div>{children}</div>
-        <Link href={post.slug}>
-          <TitleAnchor small>
+        {isExternal ? (
+          <TitleAnchor small href={post.slug}>
             Read now
             <BsArrowRight width="12" height="12" />
           </TitleAnchor>
-        </Link>
+        ) : (
+          <Link href={post.slug}>
+            <TitleAnchor small>
+              Read now
+              <BsArrowRight width="12" height="12" />
+            </TitleAnchor>
+          </Link>
+        )}
       </PostContent>
     </PostWrapper>
   );

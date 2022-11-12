@@ -50,7 +50,7 @@ const posts = [
   },
   {
     post: {
-      slug: "how-arrays-work",
+      slug: "https://nan-archive.vercel.app/how-arrays-work",
       title: "How do Arrays Work?",
       description:
         "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
@@ -59,7 +59,7 @@ const posts = [
   },
   {
     post: {
-      slug: "debugger",
+      slug: "https://nan-archive.vercel.app/debugger",
       title: "Building a Debugger",
       description:
         "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
@@ -68,7 +68,7 @@ const posts = [
   },
   {
     post: {
-      slug: "sliding-window",
+      slug: "https://nan-archive.vercel.app/sliding-window",
       title: "The Sliding Window Pattern",
       description: "An interactive look at a classic array algorithm pattern.",
       editedAt: "2021-03-21",
