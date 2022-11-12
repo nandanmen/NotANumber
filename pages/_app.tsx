@@ -1,18 +1,23 @@
 import { ThemeProvider } from "next-themes";
+import { Analytics } from "@vercel/analytics/react";
+
 import { styled, darkTheme } from "~/stitches.config";
 import "../styles/fonts.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      value={{ dark: darkTheme.className, light: "light" }}
-    >
-      <Wrapper>
-        <Component {...pageProps} />
-      </Wrapper>
-    </ThemeProvider>
+    <>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        value={{ dark: darkTheme.className, light: "light" }}
+      >
+        <Wrapper>
+          <Component {...pageProps} />
+        </Wrapper>
+      </ThemeProvider>
+      <Analytics />
+    </>
   );
 }
 
