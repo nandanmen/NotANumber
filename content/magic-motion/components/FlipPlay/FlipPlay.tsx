@@ -1,101 +1,107 @@
 import React from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { FaPlay, FaUndo } from "react-icons/fa";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";
 import {
   Visualizer,
   Content,
   Controls,
-  PlayButton,
   UndoButton,
+  PlayButton,
 } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
-const PADDING = 32;
-const SQUARE_RADIUS = 60;
+import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
+
+const CONTENT_HEIGHT = 300;
 
 export const FlipPlay = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
   const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
 
-  /**
-   * Measure the initial and last positions
-   */
-  const initialRef = React.useRef<SVGRectElement>();
-  const finalRef = React.useRef<SVGRectElement>();
+  // -- width
 
-  const [initialBox, setInitialBox] = React.useState(null);
-  const [finalBox, setFinalBox] = React.useState(null);
+  const [width, setWidth] = React.useState(0);
+  const widthRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    setInitialBox(initialRef.current.getBoundingClientRect());
-    setFinalBox(finalRef.current.getBoundingClientRect());
+    setWidth(widthRef.current?.offsetWidth);
   }, []);
 
-  /**
-   * Move the element to the initial position
-   */
-  const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
-  React.useEffect(() => x.set(-1 * distance), [distance, x]);
+  // --
 
-  /**
-   * Updating the line and text with the motion value
-   */
+  const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
+  React.useEffect(() => x.set(-1 * distance), [x, distance]);
+
   const lineRef = React.useRef<SVGLineElement>();
   const textRef = React.useRef<SVGTextElement>();
   React.useEffect(() => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(
         "x1",
-        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`
       );
       textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
     });
   }, [x, distance]);
 
+  const finalBoxX = width - SQUARE_RADIUS * 2 - PADDING;
+  const textY = CONTENT_HEIGHT / 2 - SQUARE_RADIUS - 15;
+
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow>
+        <ContentWrapper noOverflow ref={widthRef}>
           <svg width="100%" height="100%">
-            <Square ref={initialRef} x={PADDING} />
-            <Square
-              ref={finalRef}
-              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-            />
+            <Square x={PADDING} type="secondary" />
+            <TranslateText
+              x={PADDING}
+              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS - 15}
+            >
+              x: {PADDING}
+            </TranslateText>
+            <Square x={finalBoxX} type="secondary" />
             <AnchorLine
               ref={lineRef}
-              x1={(SQUARE_RADIUS + PADDING) * 2}
-              x2="100%"
-              y1="50%"
-              y2="50%"
+              x1={PADDING + SQUARE_RADIUS * 2}
+              x2={width}
+              y1={CONTENT_HEIGHT / 2}
+              y2={CONTENT_HEIGHT / 2}
               style={{
                 transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
               }}
             />
-            <AnchorCircle
-              style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
-            />
-            <Element
-              x={`calc(100% - ${PADDING}px)`}
+            {width && (
+              <motion.g
+                style={{
+                  x: width - SQUARE_RADIUS - PADDING,
+                  y: CONTENT_HEIGHT / 2,
+                }}
+              >
+                <AnchorCircle cy="0" cx="0" style={{ rotate: x }} />
+              </motion.g>
+            )}
+            <Square
+              x={width - PADDING}
               style={{ translateX: squareTranslateX }}
             />
+            <TranslateText x={finalBoxX} y={textY}>
+              x: {finalBoxX}
+            </TranslateText>
             <TranslateText
               ref={textRef}
               style={{
-                translateY: SQUARE_RADIUS + 25,
                 translateX: textTranslateX,
               }}
-              x="100%"
-              y="50%"
+              x={width}
+              y={CONTENT_HEIGHT / 2 + SQUARE_RADIUS + 25}
             >
-              translateX(-{distance.toFixed(0)}px)
+              translateX({-distance}px)
             </TranslateText>
           </svg>
         </ContentWrapper>
-        <Controls>
+        <Controls css={{ alignItems: "center" }}>
           <PlayButton onClick={() => animate(x, 0, { duration: 3 })} />
           <UndoButton onClick={() => x.set(-1 * distance)} />
         </Controls>
@@ -110,12 +116,10 @@ const TranslateText = styled(motion.text, {
 });
 
 const ContentWrapper = styled(Content, {
-  height: 300,
+  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: "100%",
-  cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
   strokeWidth: 2,
@@ -128,17 +132,7 @@ const AnchorLine = styled("line", {
   strokeWidth: 2,
 });
 
-const Square = styled(motion.rect, {
-  width: 120,
-  height: 120,
-  fill: "$gray5",
-  stroke: "$gray8",
-  rx: "6px",
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
-  filter: "drop-shadow(var(--shadows-sm))",
-});
-
-const Element = styled(Square, {
-  fill: "$blue6",
-  stroke: "$blue8",
+const Square = styled(SvgSquare, {
+  width: SQUARE_RADIUS * 2,
+  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
 });
