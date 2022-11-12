@@ -21,7 +21,6 @@ export const LayoutChangeExample = () => {
             <Square />
             <Square active toggled={toggled} />
             <Square />
-            <Square />
           </Wrapper>
         </Content>
         <Controls>
@@ -46,7 +45,6 @@ export const JustifyContentExample = () => {
             <JustifyWrapper toggled={toggled}>
               <Square active layout transition={{ duration: 0.5 }} />
               <Square active layout transition={{ duration: 0.5 }} />
-              <Square active layout transition={{ duration: 0.5 }} />
             </JustifyWrapper>
           </Wrapper>
         </Content>
@@ -68,7 +66,6 @@ export const TransformExample = () => {
           <Wrapper>
             <Square />
             <TransformSquare active toggled={toggled} />
-            <Square />
             <Square />
           </Wrapper>
         </Content>
@@ -103,10 +100,11 @@ const BaseSquare = styled(motion.div, {
 
 const JustifyWrapper = styled(BaseSquare, {
   padding: "$4",
-  width: "80%",
+  width: "100%",
   display: "flex",
   justifyContent: "flex-start",
   gap: "$2",
+  maxWidth: 400,
 
   variants: {
     toggled: {
