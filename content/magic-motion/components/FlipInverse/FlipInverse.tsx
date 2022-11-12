@@ -29,22 +29,9 @@ export const FlipInverse = () => {
     setWidth(widthRef.current?.offsetWidth);
   }, []);
 
-  // -- measure initial and final positions --
-
-  const initialRef = React.useRef<SVGRectElement>();
-  const finalRef = React.useRef<SVGRectElement>();
-
-  const [initialBox, setInitialBox] = React.useState(null);
-  const [finalBox, setFinalBox] = React.useState(null);
-
-  React.useEffect(() => {
-    setInitialBox(initialRef.current.getBoundingClientRect());
-    setFinalBox(finalRef.current.getBoundingClientRect());
-  }, []);
-
   // --
 
-  const distance = (finalBox?.x ?? 0) - (initialBox?.x ?? 0);
+  const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
 
   const lineRef = React.useRef<SVGLineElement>();
   const textRef = React.useRef<SVGTextElement>();
@@ -52,63 +39,62 @@ export const FlipInverse = () => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(
         "x1",
-        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`
       );
       textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
     });
   }, [x, distance]);
+
+  const finalBoxX = width - SQUARE_RADIUS * 2 - PADDING;
+  const textY = CONTENT_HEIGHT / 2 - SQUARE_RADIUS - 15;
 
   return (
     <FullWidth>
       <Visualizer>
         <ContentWrapper noOverflow ref={widthRef}>
           <svg width="100%" height="100%">
-            <Square ref={initialRef} x={PADDING} />
+            <Square x={PADDING} />
             <TranslateText
-              style={{
-                translateY: -SQUARE_RADIUS - 15,
-              }}
               x={PADDING}
-              y="50%"
+              y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS - 15}
             >
-              x: {initialBox?.x.toFixed(0)}
+              x: {PADDING}
             </TranslateText>
-            <Square ref={finalRef} x={width - SQUARE_RADIUS * 2 - PADDING} />
+            <Square x={finalBoxX} />
             <AnchorLine
               ref={lineRef}
-              x1="100%"
-              x2="100%"
-              y1="50%"
-              y2="50%"
+              x1={width}
+              x2={width}
+              y1={CONTENT_HEIGHT / 2}
+              y2={CONTENT_HEIGHT / 2}
               style={{
                 transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
               }}
             />
-            <AnchorCircle
-              style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
-            />
+            {width && (
+              <motion.g
+                style={{
+                  x: width - SQUARE_RADIUS - PADDING,
+                  y: CONTENT_HEIGHT / 2,
+                }}
+              >
+                <AnchorCircle cy="0" cx="0" style={{ rotate: x }} />
+              </motion.g>
+            )}
             <Element
               x={width - PADDING}
               style={{ translateX: squareTranslateX }}
             />
-            <TranslateText
-              style={{
-                translateY: -SQUARE_RADIUS - 15,
-                translateX: -(SQUARE_RADIUS * 2 + PADDING),
-              }}
-              x="100%"
-              y="50%"
-            >
-              x: {finalBox?.x.toFixed(0)}
+            <TranslateText x={finalBoxX} y={textY}>
+              x: {finalBoxX}
             </TranslateText>
             <TranslateText
               ref={textRef}
               style={{
-                translateY: SQUARE_RADIUS + 25,
                 translateX: textTranslateX,
               }}
-              x="100%"
-              y="50%"
+              x={width}
+              y={CONTENT_HEIGHT / 2 + SQUARE_RADIUS + 25}
             >
               translateX(0px)
             </TranslateText>
@@ -142,8 +128,6 @@ const ContentWrapper = styled(Content, {
 });
 
 const AnchorCircle = styled(motion.circle, {
-  cx: "100%",
-  cy: "50%",
   fill: "$gray5",
   stroke: "$gray8",
   strokeWidth: 2,
