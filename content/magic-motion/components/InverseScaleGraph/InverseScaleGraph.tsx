@@ -3,11 +3,15 @@ import useInterval from "@use-it/interval";
 import { motion, useAnimation } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  ToggleButton,
+} from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
 import { InverseScaleFormula } from "../InverseScaleFormula";
-import { ToggleButton } from "../shared";
 
 const points = [
   {
@@ -130,7 +134,7 @@ const InverseScalePath = styled(motion.path, {
 });
 
 const GraphPoint = styled("circle", {
-  r: "0.05",
+  r: "0.05px",
   fill: "$blue8",
 
   variants: {

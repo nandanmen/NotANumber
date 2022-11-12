@@ -3,13 +3,9 @@ import React from "react";
 import { GridBackground } from "~/components/Grid";
 import { FullWidth } from "~/components/FullWidth";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { ToggleButton } from "~/components/Visualizer";
 
-import {
-  ContentWrapper,
-  Controls,
-  ToggleButton,
-  AlignmentText,
-} from "../shared";
+import { ContentWrapper, Controls, AlignmentText } from "../shared";
 import { SizeExample } from "../size";
 
 export const SizeLayoutExample = () => {

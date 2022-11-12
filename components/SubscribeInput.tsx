@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
-enum FormEvent {
+export enum FormEvent {
   Change,
   Submit,
   Saved,
 }
 
-enum FormState {
+export enum FormState {
   Start,
   Loading,
   Done,
@@ -29,7 +29,7 @@ const machine = {
   },
 };
 
-const transition = (state: FormState, event: FormEvent) => {
+const transition = (state: FormState, event: FormEvent): FormState => {
   return machine[state][event] ?? state;
 };
 
@@ -39,13 +39,25 @@ const submitButtonTypeMap = {
   [FormState.Done]: "success",
 };
 
-export function SubscribeInput() {
+export const useSubscribe = () => {
   const [state, dispatch] = React.useReducer(transition, FormState.Start);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (evt) => {
+  const handleSubmit = async (email?: string) => {
     dispatch(FormEvent.Submit);
-    await subscribe(evt);
+    await subscribe(email);
     dispatch(FormEvent.Saved);
+  };
+
+  return [handleSubmit, { state, dispatch }] as const;
+};
+
+export function SubscribeInput() {
+  const [subscribe, { state, dispatch }] = useSubscribe();
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const email = evt.target.email.value;
+    return subscribe(email);
   };
 
   return (
@@ -152,16 +164,10 @@ const Input = styled("input", {
   padding: "$4",
 });
 
-function subscribe(evt: React.FormEvent<HTMLFormElement>) {
-  evt.preventDefault();
-
-  const { email } = Object.fromEntries(
-    new FormData(evt.target as HTMLFormElement).entries()
-  );
+function subscribe(email?: string) {
   if (!email) {
     return;
   }
-
   const params = new URLSearchParams({ email } as Record<string, string>);
   return new Promise((resolve, reject) => {
     window.fetch(`/api/subscribe?${params}`).then((response) => {

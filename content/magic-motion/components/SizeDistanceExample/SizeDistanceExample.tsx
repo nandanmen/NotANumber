@@ -1,11 +1,15 @@
 import React from "react";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  ToggleButton,
+} from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
 import { Motion } from "../Motion";
-import { ToggleButton } from "../shared";
 
 export const SizeDistanceExample = ({ text = null, corrected = false }) => {
   const [toggled, setToggled] = React.useState(false);

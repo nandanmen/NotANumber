@@ -38,8 +38,14 @@ import { SizeDistanceInverseSnapshot } from "./components/SizeDistanceInverseSna
 import { InverseScaleFormulaSandbox } from "./components/InverseScaleFormula";
 import { InverseScaleSandbox } from "./components/InverseScaleSandbox";
 import { InverseScaleGraph } from "./components/InverseScaleGraph";
+import {
+  LayoutChangeExample,
+  JustifyContentExample,
+  TransformExample,
+} from "./components/LayoutChangeExample";
+import { WidthTransitionSandbox } from "./components/WidthTransitionSandbox";
 
-By far my favourite part about Framer Motion is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transition from one part of the page to the next:
+My favourite part about Framer Motion by far is its magical layout animations—slap on the `layout` prop to any motion component, and watch as that component seamlessly transitions from one part of the page to the next:
 
 ```tsx
 <motion.div layout />
@@ -55,15 +61,76 @@ By far my favourite part about Framer Motion is its magical layout animations—
 
 In this post, I want to dive deep into the techniques that allow these layout animations to happen. Specifically, we'll go over concepts like:
 
-1. **FLIP**, the underlying technique that makes layout animations possible;
-2. **Animating size** using FLIP and its relationship with position;
-3. **Correcting distortions** by applying an inverse scale to all children of animating elements;
+1. **Layout changes**, what they are and when they occur;
+2. **CSS-based approaches** and why they don't always work;
+3. **FLIP**, the technique in use by Framer Motion;
 
 Let's get started!
 
+## Layout Changes
+
+A layout change happens when an element on the page changes position in a way that affects _other_ elements on the page. For example, changing the `width` or `height` of an element is a layout change because any neighbouring element has to move to make room for the element's new size:
+
+<LayoutChangeExample />
+
+Similarly, changing the `justify-content` property of an element is also a layout change because it causes that element's _children_ to change positions:
+
+<JustifyContentExample />
+
+On the other hand, making the same change using something like `scale` is _not_ a layout change because transforms don't affect other elements on the page at all:
+
+<TransformExample />
+
+## Animating With CSS
+
+So how would we animate layout changes? One way is by animating the property directly using something like CSS transitions:
+
+```css
+.square {
+  transition: width 0.2s ease-out;
+}
+```
+
+Now when the square changes width, it'll seamlessly animate between its sizes:
+
+<WidthTransitionSandbox />
+
+To be honest, in many cases, we can end the post here!
+
+But there are two main downsides with CSS animations that we should be aware of:
+
+1. **You can't animate everything**. For example, you can't animate a change in `justify-content` because `justify-content` is [not an animatable property](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties).
+2. **There _may_ be a performance trade-off**. CSS animations that involve layout changes are generally more expensive than transform-based animations, so you might find that your animations are not as smooth on lower-end devices.
+
+Let's talk about the performance problem for a second.
+
+### Performance
+
+> **Don't pre-optimize!** If you're not noticing any performance issues on lower-end devices and CSS transitions work for you, then don't worry about it! Only optimize when you need to.
+
+CSS animations that involve layout changes are generally more expensive than other CSS animations because it affects other elements around it. This is because the browser has to recalculate the layout of the page _in every frame of the animation_—for a 60 FPS animation, that means 60 times every second!
+
+Recall the animation from the previous section. Notice that the grey boxes also look like they're animating, even though we only transition the blue box:
+
+<LayoutChangeExample />
+
+This happens because the browser recalculates the position of the grey boxes every time the blue box changes size.
+
+On the other hand, the browser can animate CSS properties like `transform` much faster because they don't affect layout:
+
+<TransformExample />
+
+Notice that as the blue box grows, the grey boxes stay put!
+
+---
+
+Hey, wait a second. If `transform` is much cheaper to animate, can we somehow animate layout changes using `transform` instead?
+
 ## Introducing FLIP
 
-FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is the underlying technique that powers Framer Motion's layout animations. It allows you to emulate changes in "slow" layout properties like `width` and even lets you animate "un-animatable" CSS properties like `justify-content`.
+Yes, you can!
+
+FLIP, which stands for **F**irst, **L**ast, **I**nverse, **P**lay, is a technique that lets you animate "slow" layout changes using "fast" CSS properties like `transform`. FLIP even lets you animate "un-animatable" properties like `justify-content` too! Framer Motion uses FLIP under the hood to implement its layout animations.
 
 As its name suggests, FLIP is a four-step technique that works by inverting any layout changes done by the browser. Let's figure out how it works by animating this change in `justify-content` from `flex-start` to `flex-end`:
 
@@ -422,14 +489,22 @@ I opted to not implement things this way because I didn't want to take away from
 
 ## Summary
 
-Framer motion's magical layout animations are powered by the FLIP technique — a clever way to implement performant layout animations. While implementing FLIP with position changes turned out to be pretty straightforward, the same can't be said for changes in size. When we put size into the picture, we have to worry about:
+If you made it all the way here, thank you! Let's recap what we've learned.
 
-1. How a change in size affects the distance the element travelled;
+Ultimately, we wanted to figure out **how to animate layout changes**, that is, changes in an element that affect the position of itself and all surrounding elements.
+
+We started off using CSS but then realized it fell short in a couple of ways:
+
+1. You can't use CSS to animate un-animatable properties like `justify-content`;
+2. Animating layout properties can be slow in lower-end devices;
+
+In the process, we found out that animations using `transform` are fast and easy on the browser, so we turned our attention to FLIP - a technique used by Framer Motion that exploits this property.
+
+While implementing FLIP with position changes was pretty straightforward, the same can't be said for changes in size. When we start considering changes in size, we find we have to start worrying about:
+
+1. How a change in size affects the distance the element traveled;
 2. Correcting distortions in child elements caused by transforms in the parent element;
 
-And a whole slew of edge cases that I didn't quite get into in this post, such as:
+Once we figured out both of these problems, we ended up with a pretty solid implementation of automatic layout animation!
 
-1. What if a child component is animating during a layout change?
-2. What if the element is inside a scrollable container?
-
-That's all for today, thanks for reading!
+That's all for today; thanks for reading!

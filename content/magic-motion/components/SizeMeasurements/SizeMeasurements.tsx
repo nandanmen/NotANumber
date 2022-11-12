@@ -2,11 +2,15 @@ import React from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 import { FullWidth } from "~/components/FullWidth";
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  IconButton,
+} from "~/components/Visualizer";
 import { styled, keyframes } from "~/stitches.config";
 import { useStepPlayer } from "~/lib/algorithm";
 
-import { IconButton } from "../shared";
 import { Ruler, RulerWrapper, RulerText } from "../shared/Ruler";
 import { SizeExample } from "../size";
 

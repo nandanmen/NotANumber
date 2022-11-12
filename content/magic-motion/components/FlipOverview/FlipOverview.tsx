@@ -4,20 +4,35 @@ import { assign } from "xstate";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { FaArrowLeft, FaArrowRight, FaPause, FaPlay } from "react-icons/fa";
 
-import { Visualizer, Content, Controls } from "~/components/Visualizer";
+import {
+  Visualizer,
+  Content,
+  Controls,
+  IconButton,
+} from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
-import { IconButton } from "../shared";
 import { machine, STATE_ORDER } from "./machine";
+import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
 
-const PADDING = 32;
-const SQUARE_RADIUS = 60;
+const CONTENT_HEIGHT = 300;
 
 export const FlipOverview = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
   const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
+
+  // --
+
+  const [width, setWidth] = React.useState(0);
+  const widthRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setWidth(widthRef.current?.offsetWidth);
+  }, []);
+
+  // --
 
   // Playing states
   const [playing, setPlaying] = React.useState(false);
@@ -80,7 +95,7 @@ export const FlipOverview = () => {
         (state.context.lastBox?.x ?? 0) - (state.context.firstBox?.x ?? 0);
       lineRef.current?.setAttribute(
         "x1",
-        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}px`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`
       );
       textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
     });
@@ -89,40 +104,35 @@ export const FlipOverview = () => {
   const showTransformVisuals = ["inverse", "play"].some(state.matches);
   const toggled = stateAfter("last");
 
+  const finalX = width - SQUARE_RADIUS * 2 - PADDING;
+  const midY = CONTENT_HEIGHT / 2;
+
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow>
+        <ContentWrapper noOverflow ref={widthRef}>
           <svg width="100%" height="100%">
-            <Square ref={initialRef} x={PADDING} />
-            <Square
-              ref={finalRef}
-              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-            />
+            <Square ref={initialRef} x={PADDING} type="secondary" />
+            <Square ref={finalRef} x={finalX} type="secondary" />
             <TranslateText
               x={PADDING}
-              y="50%"
-              style={{ translateY: -(SQUARE_RADIUS + 15) }}
+              y={midY - SQUARE_RADIUS - 15}
               visible={stateAfter("first")}
             >
               x: {state.context.firstBox?.x.toFixed(1)}
             </TranslateText>
             <TranslateText
-              x="100%"
-              y="50%"
-              style={{
-                translateY: -(SQUARE_RADIUS + 15),
-                translateX: -(SQUARE_RADIUS * 2 + PADDING),
-              }}
+              x={finalX}
+              y={midY - SQUARE_RADIUS - 15}
               visible={stateAfter("last")}
             >
               x: {state.context.lastBox?.x.toFixed(1)}
             </TranslateText>
             <AnchorLine
               ref={lineRef}
-              x2="100%"
-              y1="50%"
-              y2="50%"
+              x2={width}
+              y1={midY}
+              y2={midY}
               style={{
                 transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
                 display: showTransformVisuals ? "block" : "none",
@@ -135,17 +145,16 @@ export const FlipOverview = () => {
               }}
               hidden={!showTransformVisuals}
             />
-            <Element
+            <Square
               x={toggled ? `calc(100% - ${PADDING}px)` : PADDING}
               style={{ translateX: toggled ? squareTranslateX : 0 }}
             />
             <TranslateText
               ref={textRef}
-              x="100%"
-              y="50%"
+              x={width}
+              y={midY + SQUARE_RADIUS + 25}
               visible={showTransformVisuals}
               style={{
-                translateY: SQUARE_RADIUS + 25,
                 translateX: textTranslateX,
               }}
             />
@@ -222,7 +231,7 @@ const TranslateText = styled(motion.text, {
 });
 
 const ContentWrapper = styled(Content, {
-  height: 300,
+  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {
@@ -247,17 +256,7 @@ const AnchorLine = styled("line", {
   strokeWidth: 2,
 });
 
-const Square = styled(motion.rect, {
+const Square = styled(SvgSquare, {
   width: 120,
-  height: 120,
-  fill: "$gray5",
-  stroke: "$gray8",
-  rx: "6px",
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
-  filter: "drop-shadow(var(--shadows-sm))",
-});
-
-const Element = styled(Square, {
-  fill: "$blue6",
-  stroke: "$blue8",
+  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
 });

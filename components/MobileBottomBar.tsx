@@ -1,58 +1,25 @@
-import Link from "next/link";
-
+import type { Heading } from "~/lib/content.server";
 import { styled } from "~/stitches.config";
+import { MobileNavIsland } from "./MobileNavIsland";
 
-export const MobileBottomBar = () => {
+export const MobileBottomBar = ({ headings }: { headings: Heading[] }) => {
   return (
     <Wrapper>
-      <Item>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </Item>
-      <Item>
-        <a
-          href="https://github.com/narendrasss/NotANumber"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub
-        </a>
-      </Item>
-      <Item>
-        <a href="https://twitter.com/nandafyi" target="_blank" rel="noreferrer">
-          Twitter
-        </a>
-      </Item>
+      <MobileNavIsland headings={headings} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled("ul", {
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
+const Wrapper = styled("div", {
   position: "fixed",
-  borderTop: "1px solid $gray8",
-  width: "100vw",
-  background: "$gray4",
+  width: "min(800px, 100vw)",
   bottom: 0,
-  padding: "$2 0",
+  padding: "$4",
+  left: "50%",
+  transform: "translateX(-50%)",
   zIndex: 20,
-
-  a: {
-    color: "$gray11",
-  },
 
   "@media (min-width: 72rem)": {
     display: "none",
-  },
-});
-
-const Item = styled("li", {
-  listStyle: "none",
-  textAlign: "center",
-
-  "&:not(:last-child)": {
-    borderRight: "1px solid $gray8",
   },
 });

@@ -52,7 +52,7 @@ export default function PostPage({ content }: { content: Post }) {
   const { frontmatter, headings } = content;
   return (
     <PageWrapper>
-      <MobileBottomBar />
+      <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
           <NextLink href="/">
@@ -169,6 +169,11 @@ const Article = styled("article", {
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
   padding: "0 $4",
+  paddingBottom: "$12",
+
+  "@media (min-width: 72rem)": {
+    paddingBottom: "$4",
+  },
 
   "> *": {
     gridColumn: "1",
@@ -187,6 +192,7 @@ const Article = styled("article", {
     gridColumn: "1 / -1",
     marginTop: "$4",
     marginBottom: "$8",
+    width: "100%",
   },
 
   "> :where(:not(:last-child))": {
@@ -221,12 +227,13 @@ const Article = styled("article", {
   },
 
   pre: {
+    marginTop: "$4",
+    marginBottom: "$8",
+    whiteSpace: "pre-wrap",
     border: "1px solid $gray8",
     padding: "$4",
     borderRadius: "$base",
     fontSize: "$sm",
-    marginTop: "$4",
-    marginBottom: "$8",
     overflowX: "auto",
   },
 
@@ -235,6 +242,13 @@ const Article = styled("article", {
     borderLeft: "2px solid $gray8",
     color: "$gray11",
     fontStyle: "italic",
+  },
+
+  hr: {
+    marginTop: "$6",
+    marginBottom: "$12",
+    width: "30%",
+    borderTop: "1px solid $gray8",
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {
