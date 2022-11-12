@@ -18,6 +18,7 @@ export type Heading = {
 export type Post = {
   code: string;
   frontmatter: Record<string, any>;
+  slug: string;
   headings: Heading[];
 };
 
@@ -65,7 +66,7 @@ export const getPost = async (slug: string): Promise<Post> => {
       return options;
     },
   });
-  return { ...mdxOut, headings: getHeadings(mdxSource) };
+  return { ...mdxOut, slug, headings: getHeadings(mdxSource) };
 };
 
 const getHeadings = (content: string): Heading[] => {

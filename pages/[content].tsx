@@ -1,6 +1,7 @@
 import React from "react";
 import type { GetStaticPropsContext } from "next";
 import NextLink from "next/link";
+import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
@@ -44,14 +45,26 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
+const baseUrl = "https://not-a-number-git-remix-rewrite-narendras.vercel.app";
+
 export default function PostPage({ content }: { content: Post }) {
   const PostContent = React.useMemo(
     () => getMDXComponent(content.code),
     [content.code]
   );
-  const { frontmatter, headings } = content;
+  const { frontmatter, headings, slug } = content;
   return (
     <PageWrapper>
+      <Head>
+        <title>{frontmatter.title}</title>
+        <meta name="description" content={frontmatter.description} />
+        <meta name="author" content="Nanda Syahrasyad" />
+        <meta property="og:title" content={frontmatter.title} />
+        <meta property="og:description" content={frontmatter.description} />
+        <meta property="og:image" content={`${baseUrl}/og/${slug}.png`} />
+        <meta property="og:url" content={`${baseUrl}/${slug}`} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
       <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
