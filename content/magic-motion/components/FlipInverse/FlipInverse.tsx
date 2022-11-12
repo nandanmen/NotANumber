@@ -1,6 +1,5 @@
-import React from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
-import { FaUndo } from "react-icons/fa";
 
 import { FullWidth } from "~/components/FullWidth";
 import {
@@ -14,11 +13,21 @@ import { styled } from "~/stitches.config";
 
 const PADDING = 32;
 const SQUARE_RADIUS = 60;
+const CONTENT_HEIGHT = 300;
 
 export const FlipInverse = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
   const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
+
+  // -- width
+
+  const [width, setWidth] = React.useState(0);
+  const widthRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setWidth(widthRef.current?.offsetWidth);
+  }, []);
 
   // -- measure initial and final positions --
 
@@ -52,7 +61,7 @@ export const FlipInverse = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow>
+        <ContentWrapper noOverflow ref={widthRef}>
           <svg width="100%" height="100%">
             <Square ref={initialRef} x={PADDING} />
             <TranslateText
@@ -64,10 +73,7 @@ export const FlipInverse = () => {
             >
               x: {initialBox?.x.toFixed(0)}
             </TranslateText>
-            <Square
-              ref={finalRef}
-              x={`calc(100% - ${SQUARE_RADIUS * 2 + PADDING}px)`}
-            />
+            <Square ref={finalRef} x={width - SQUARE_RADIUS * 2 - PADDING} />
             <AnchorLine
               ref={lineRef}
               x1="100%"
@@ -82,7 +88,7 @@ export const FlipInverse = () => {
               style={{ rotate: x, translateX: -(SQUARE_RADIUS + PADDING) }}
             />
             <Element
-              x={`calc(100% - ${PADDING}px)`}
+              x={width - PADDING}
               style={{ translateX: squareTranslateX }}
             />
             <TranslateText
@@ -119,13 +125,20 @@ export const FlipInverse = () => {
   );
 };
 
+const Square = React.forwardRef<
+  SVGRectElement,
+  ComponentPropsWithoutRef<typeof _Square>
+>(function Square(props, ref) {
+  return <_Square ref={ref} rx="6" {...props} />;
+});
+
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
 });
 
 const ContentWrapper = styled(Content, {
-  height: 300,
+  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {
@@ -143,13 +156,12 @@ const AnchorLine = styled("line", {
   strokeWidth: 2,
 });
 
-const Square = styled(motion.rect, {
+const _Square = styled(motion.rect, {
   width: 120,
   height: 120,
   fill: "$gray5",
   stroke: "$gray8",
-  rx: "6px",
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
+  y: `${CONTENT_HEIGHT / 2 - SQUARE_RADIUS}px`,
   filter: "drop-shadow(var(--shadows-sm))",
 });
 
