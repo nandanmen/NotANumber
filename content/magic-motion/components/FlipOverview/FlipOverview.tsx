@@ -116,18 +116,14 @@ export const FlipOverview = () => {
             <Square ref={finalRef} x={finalX} type="secondary" />
             <TranslateText
               x={PADDING}
-              y={midY}
-              style={{ translateY: -(SQUARE_RADIUS + 15) }}
+              y={midY - SQUARE_RADIUS - 15}
               visible={stateAfter("first")}
             >
               x: {state.context.firstBox?.x.toFixed(1)}
             </TranslateText>
             <TranslateText
               x={finalX}
-              y={midY}
-              style={{
-                translateY: -(SQUARE_RADIUS + 15),
-              }}
+              y={midY - SQUARE_RADIUS - 15}
               visible={stateAfter("last")}
             >
               x: {state.context.lastBox?.x.toFixed(1)}
@@ -156,10 +152,9 @@ export const FlipOverview = () => {
             <TranslateText
               ref={textRef}
               x={width}
-              y={midY}
+              y={midY + SQUARE_RADIUS + 25}
               visible={showTransformVisuals}
               style={{
-                translateY: SQUARE_RADIUS + 25,
                 translateX: textTranslateX,
               }}
             />
