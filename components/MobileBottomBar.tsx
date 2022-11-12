@@ -18,7 +18,6 @@ const Wrapper = styled("div", {
   left: "50%",
   transform: "translateX(-50%)",
   zIndex: 20,
-  backdropFilter: "blur(2px)",
 
   "@media (min-width: 72rem)": {
     display: "none",
