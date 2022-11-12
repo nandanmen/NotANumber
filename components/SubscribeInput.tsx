@@ -29,7 +29,7 @@ const machine = {
   },
 };
 
-const transition = (state: FormState, event: FormEvent) => {
+const transition = (state: FormState, event: FormEvent): FormState => {
   return machine[state][event] ?? state;
 };
 
@@ -39,12 +39,15 @@ const submitButtonTypeMap = {
   [FormState.Done]: "success",
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const useSubscribe = () => {
   const [state, dispatch] = React.useReducer(transition, FormState.Start);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (evt) => {
+  const handleSubmit = async (email?: string) => {
     dispatch(FormEvent.Submit);
-    await subscribe(evt);
+    console.log(`submitting: ${email}`);
+    await sleep(1000);
     dispatch(FormEvent.Saved);
   };
 
@@ -52,7 +55,14 @@ export const useSubscribe = () => {
 };
 
 export function SubscribeInput() {
-  const [handleSubmit, { state, dispatch }] = useSubscribe();
+  const [subscribe, { state, dispatch }] = useSubscribe();
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const email = evt.target.email.value;
+    return subscribe(email);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <InputGroup>
@@ -157,16 +167,10 @@ const Input = styled("input", {
   padding: "$4",
 });
 
-function subscribe(evt: React.FormEvent<HTMLFormElement>) {
-  evt.preventDefault();
-
-  const { email } = Object.fromEntries(
-    new FormData(evt.target as HTMLFormElement).entries()
-  );
+function subscribe(email?: string) {
   if (!email) {
     return;
   }
-
   const params = new URLSearchParams({ email } as Record<string, string>);
   return new Promise((resolve, reject) => {
     window.fetch(`/api/subscribe?${params}`).then((response) => {
