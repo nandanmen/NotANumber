@@ -1,8 +1,10 @@
 import React from "react";
+import Head from "next/head";
 import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import { styled } from "~/stitches.config";
+import { BASE_URL } from "~/lib/config";
 import { Post } from "~/components/Post";
 import { SubscribeInput } from "~/components/SubscribeInput";
 
@@ -80,6 +82,22 @@ export default function HomePage() {
   const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
     <PageWrapper>
+      <Head>
+        <title>Not a Number</title>
+        <meta
+          name="description"
+          content="An interactive blog on computer science and web development, by Nanda Syahrasyad."
+        />
+        <meta name="author" content="Nanda Syahrasyad" />
+        <meta property="og:title" content="Not a Number" />
+        <meta
+          property="og:description"
+          content="An interactive blog on computer science and web development, by Nanda Syahrasyad."
+        />
+        <meta property="og:image" content={`${BASE_URL}/og/index.png`} />
+        <meta property="og:url" content={BASE_URL} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
       <ContentWrapper>
         <Header>
           <Title>Not a Number</Title>

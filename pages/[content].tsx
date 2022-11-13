@@ -5,6 +5,7 @@ import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
+import { BASE_URL } from "~/lib/config";
 import { darkTheme, styled } from "~/stitches.config";
 
 import { Heading, Subheading } from "~/components/Heading";
@@ -45,8 +46,6 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
-const baseUrl = "https://not-a-number-git-remix-rewrite-narendras.vercel.app";
-
 export default function PostPage({ content }: { content: Post }) {
   const PostContent = React.useMemo(
     () => getMDXComponent(content.code),
@@ -61,8 +60,8 @@ export default function PostPage({ content }: { content: Post }) {
         <meta name="author" content="Nanda Syahrasyad" />
         <meta property="og:title" content={frontmatter.title} />
         <meta property="og:description" content={frontmatter.description} />
-        <meta property="og:image" content={`${baseUrl}/og/${slug}.png`} />
-        <meta property="og:url" content={`${baseUrl}/${slug}`} />
+        <meta property="og:image" content={`${BASE_URL}/og/${slug}.png`} />
+        <meta property="og:url" content={`${BASE_URL}/${slug}`} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <MobileBottomBar headings={headings} />
