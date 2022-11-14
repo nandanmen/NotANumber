@@ -21,7 +21,6 @@ const CONTENT_HEIGHT = 300;
 export const FlipOverview = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
-  const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
 
   // --
 
@@ -82,6 +81,9 @@ export const FlipOverview = () => {
       STATE_ORDER.indexOf(compareState)
     );
   };
+
+  const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
+  const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
 
   /**
    * Updating the line and text with the motion value
@@ -149,15 +151,14 @@ export const FlipOverview = () => {
               x={toggled ? `calc(100% - ${PADDING}px)` : PADDING}
               style={{ translateX: toggled ? squareTranslateX : 0 }}
             />
-            <TranslateText
-              ref={textRef}
-              x={width}
-              y={midY + SQUARE_RADIUS + 25}
-              visible={showTransformVisuals}
+            <motion.g
               style={{
-                translateX: textTranslateX,
+                x: textTranslateX,
+                y: midY + SQUARE_RADIUS + 25,
               }}
-            />
+            >
+              <TranslateText ref={textRef} visible={showTransformVisuals} />
+            </motion.g>
           </svg>
         </ContentWrapper>
         <Controls css={{ alignItems: "center" }}>

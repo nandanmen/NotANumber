@@ -18,7 +18,6 @@ const CONTENT_HEIGHT = 300;
 export const FlipInverse = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
-  const textTranslateX = useTransform(squareTranslateX, (val) => val - PADDING);
 
   // -- width
 
@@ -32,6 +31,7 @@ export const FlipInverse = () => {
   // --
 
   const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
+  const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
 
   const lineRef = React.useRef<SVGLineElement>();
   const textRef = React.useRef<SVGTextElement>();
@@ -88,16 +88,14 @@ export const FlipInverse = () => {
             <TranslateText x={finalBoxX} y={textY}>
               x: {finalBoxX}
             </TranslateText>
-            <TranslateText
-              ref={textRef}
+            <motion.g
               style={{
-                translateX: textTranslateX,
+                x: textTranslateX,
+                y: CONTENT_HEIGHT / 2 + SQUARE_RADIUS + 25,
               }}
-              x={width}
-              y={CONTENT_HEIGHT / 2 + SQUARE_RADIUS + 25}
             >
-              translateX(0px)
-            </TranslateText>
+              <TranslateText ref={textRef}>translateX(0px)</TranslateText>
+            </motion.g>
           </svg>
         </ContentWrapper>
         <Controls css={{ alignItems: "center" }}>
