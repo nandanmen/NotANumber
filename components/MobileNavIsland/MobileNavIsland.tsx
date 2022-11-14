@@ -96,7 +96,7 @@ export const MobileNavIsland = ({ headings }: { headings: Heading[] }) => {
             css={{ margin: "0 auto" }}
           >
             <FaListUl />
-            <ActiveHeading>{activeHeading}</ActiveHeading>
+            <span>{activeHeading}</span>
           </HeadingButton>
           <SubscribeWrapper hidden={!subscribing} onSubmit={handleSubmit}>
             <label htmlFor={`${id}-subscribe-input`}>Email</label>
@@ -188,7 +188,6 @@ const EmailInput = styled("input", {
   background: "$gray4",
   borderRadius: 4,
   padding: 6,
-  width: 200,
   transform: "translateY(-1px)",
 
   "&:focus": {
@@ -236,10 +235,6 @@ const HeadingList = styled(TopNav, {
       background: "$gray6",
     },
   },
-});
-
-const ActiveHeading = styled("span", {
-  transform: "translateY(1px)",
 });
 
 const HeadingButton = styled("button", {
