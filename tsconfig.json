@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -11,6 +11,7 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -18,13 +19,16 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "downlevelIteration": true,
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/elements/*": ["elements/*"],
-      "@/lib/*": ["lib/*"],
-      "@/stitches": ["stitches.config.ts"],
-      "@/layouts/*": ["layouts/*"]
+      "~/stitches.config": [
+        "./stitches.config"
+      ],
+      "~/lib/*": [
+        "./lib/*"
+      ],
+      "~/components/*": [
+        "./components/*"
+      ]
     }
   },
   "include": [

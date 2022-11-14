@@ -1,4 +1,15 @@
 {
-  "presets": ["next/babel"],
-  "plugins": ["macros", ["styled-components", { "ssr": true }]]
+  "plugins": [
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "^~/(.+)": "./\\1"
+      }
+    }],
+    "@babel/plugin-syntax-jsx",
+    "macros"
+  ],
+  "presets": [
+    "@babel/preset-typescript"
+  ]
 }

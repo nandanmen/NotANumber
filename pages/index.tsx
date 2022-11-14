@@ -1,224 +1,244 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import { styled } from '@/stitches'
-import { HiArrowRight } from 'react-icons/hi'
-import { titleCase } from 'title-case'
-import { motion } from 'framer-motion'
+import React from "react";
+import Head from "next/head";
+import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
+import { motion } from "framer-motion";
 
-import { DebuggerIcon } from '@/components/debugger/DebuggerIcon'
-import { SlidingWindowIcon } from '@/components/sliding-window/SlidingWindowIcon'
-import { HowArraysWorkIcon } from '@/components/how-arrays-work/HowArraysWorkIcon'
-import { formatPath } from '@/lib/utils'
-import { Svg } from '@/components/Svg'
+import { styled } from "~/stitches.config";
+import { BASE_URL } from "~/lib/config";
+import { Post } from "~/components/Post";
+import { SubscribeInput } from "~/components/SubscribeInput";
 
-import { frontMatter as slidingWindow } from './sliding-window.mdx'
-import { frontMatter as debuggerPost } from './debugger.mdx'
-import { frontMatter as howArraysWork } from './how-arrays-work.mdx'
-import { frontMatter as tokenizer } from './tokenizer.mdx'
+import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
+import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
+
+const posts = [
+  {
+    post: {
+      slug: "magic-motion",
+      title: "Inside Framer's Magic Motion",
+      description:
+        "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
+      editedAt: "2022-11-15",
+    },
+    children: (
+      <CorrectedInverseAnimation
+        from={(width, container) => ({
+          x: container.width - width - container.padding,
+          y: container.height / 2 - width / 2,
+        })}
+        to={(width, container) => ({
+          x: container.padding,
+          y: container.height / 2 - width / 2,
+        })}
+        origin="topLeft"
+      />
+    ),
+  },
+  {
+    post: {
+      slug: "tokenizer",
+      title: "Rebuilding Babel: The Tokenizer",
+      description:
+        "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
+      editedAt: "2022-02-20",
+    },
+    children: (
+      <Tokenizer
+        name="singleCharacter"
+        input="{ console.log() }"
+        showKeywords={false}
+      />
+    ),
+  },
+  {
+    post: {
+      slug: "https://nan-archive.vercel.app/how-arrays-work",
+      title: "How do Arrays Work?",
+      description:
+        "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
+      editedAt: "2021-11-13",
+    },
+  },
+  {
+    post: {
+      slug: "https://nan-archive.vercel.app/debugger",
+      title: "Building a Debugger",
+      description:
+        "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
+      editedAt: "2021-05-15",
+    },
+  },
+  {
+    post: {
+      slug: "https://nan-archive.vercel.app/sliding-window",
+      title: "The Sliding Window Pattern",
+      description: "An interactive look at a classic array algorithm pattern.",
+      editedAt: "2021-03-21",
+    },
+  },
+];
 
 export default function HomePage() {
+  const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
-    <>
+    <PageWrapper>
       <Head>
         <title>Not a Number</title>
+        <meta
+          name="description"
+          content="An interactive blog on computer science and web development, by Nanda Syahrasyad."
+        />
+        <meta name="author" content="Nanda Syahrasyad" />
+        <meta property="og:title" content="Not a Number" />
+        <meta
+          property="og:description"
+          content="An interactive blog on computer science and web development, by Nanda Syahrasyad."
+        />
+        <meta property="og:image" content={`${BASE_URL}/og/index.png`} />
+        <meta property="og:url" content={BASE_URL} />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <Wrapper>
+      <ContentWrapper>
         <Header>
           <Title>Not a Number</Title>
           <Description>
             An interactive blog on computer science and web development, by
             Nanda Syahrasyad.
           </Description>
-          <p>
-            <Link href="letters">
-              <NewsletterLink whileHover="hover">
-                Read the newsletter{' '}
-                <motion.span variants={{ hover: { x: 5 } }}>
-                  <HiArrowRight />
-                </motion.span>
-              </NewsletterLink>
-            </Link>
-          </p>
+          <div>
+            <SubscribeButton onClick={toggle}>
+              Subscribe to the newsletter{" "}
+              {subscribing ? <FaTimes /> : <FaArrowRight />}
+            </SubscribeButton>
+            {subscribing && (
+              <SubscribeWrapper
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+              >
+                <SubscribeInput />
+              </SubscribeWrapper>
+            )}
+          </div>
+          <Links layout>
+            <li>
+              <a
+                href="https://github.com/narendrasss/NotANumber"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Github"
+              >
+                <FaGithub />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://twitter.com/nandafyi"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Twitter"
+              >
+                <FaTwitter />
+              </a>
+            </li>
+          </Links>
         </Header>
-        <Divider />
         <Posts>
-          <PostItem>
-            <Icon>
-              <Svg href="tokenizer/logo.svg" />
-            </Icon>
-            <Post post={tokenizer} />
-          </PostItem>
-          <PostItem>
-            <Icon>
-              <HowArraysWorkIcon />
-            </Icon>
-            <Post post={howArraysWork} />
-          </PostItem>
-          <PostItem>
-            <Icon>
-              <DebuggerIcon />
-            </Icon>
-            <Post post={debuggerPost} />
-          </PostItem>
-          <PostItem>
-            <Icon>
-              <SlidingWindowIcon />
-            </Icon>
-            <Post post={slidingWindow} />
-          </PostItem>
+          {posts.map((post) => (
+            <Post key={post.post.slug} {...post} />
+          ))}
         </Posts>
-      </Wrapper>
-    </>
-  )
+      </ContentWrapper>
+    </PageWrapper>
+  );
 }
 
-const NewsletterLink = styled(motion.a, {
-  fontFamily: '$mono',
-  display: 'flex',
-  alignItems: 'center',
-  cursor: 'pointer',
+const SubscribeButton = styled("button", {
+  color: "$gray11",
+  display: "flex",
+  alignItems: "center",
+  gap: "$1",
+  fontWeight: "bold",
+  cursor: "pointer",
 
-  '&:hover': {
-    textDecoration: 'underline',
+  "&:hover": {
+    color: "$blue9",
   },
+});
 
-  '> span': {
-    marginLeft: '$2',
+const SubscribeWrapper = styled(motion.div, {
+  marginTop: "$2",
+  maxWidth: 400,
+});
+
+const Links = styled(motion.ul, {
+  fontSize: "$xl",
+  gap: "$4",
+  display: "flex",
+  listStyle: "none",
+
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+
+    "&:hover": {
+      color: "$blue9",
+    },
   },
-})
+});
 
-const Icon = styled('div', {
-  display: 'none',
+const PageWrapper = styled("main", {
+  width: "fit-content",
+  margin: "0 auto",
+  padding: "$4",
+  maxWidth: "42rem",
 
-  '@post': {
-    display: 'revert',
+  "@media screen and (min-width: 75rem)": {
+    maxWidth: "initial",
   },
-})
+});
 
-const PostItem = styled('li', {
-  margin: '0 -2rem',
-  width: '100vw',
-
-  '@post': {
-    display: 'grid',
-    gridTemplateColumns: '8rem 1fr',
-    alignItems: 'center',
-    gap: '$8',
-    margin: 'revert',
-    width: '100%',
+const ContentWrapper = styled("div", {
+  "@media screen and (min-width: 75rem)": {
+    display: "grid",
+    gridTemplateColumns: "24rem 42rem",
+    gap: "$16",
   },
-})
+});
 
-const Wrapper = styled('div', {
-  padding: '$32 0',
-})
+const Title = styled("h1", {
+  fontFamily: "$serif",
+  fontSize: "3rem",
+  lineHeight: "$title",
+  fontWeight: 500,
+});
 
-const Title = styled('h1', {
-  fontFamily: '$serif',
-  fontSize: '5rem',
-  lineHeight: '0.9',
-  marginBottom: '$16',
+const Header = styled("header", {
+  display: "flex",
+  flexDirection: "column",
+  gap: "$8",
+  height: "fit-content",
+  paddingBottom: "$8",
+  borderBottom: "1px solid $gray8",
+  marginBottom: "$8",
 
-  '@md': {
-    fontSize: '6rem',
+  "@media screen and (min-width: 75rem)": {
+    paddingBottom: 0,
+    borderBottom: "none",
+    position: "fixed",
+    maxWidth: "24rem",
+    paddingRight: "$8",
+    borderRight: "1px solid $gray8",
   },
-})
+});
 
-const Header = styled('header', {
-  marginBottom: '$16',
-})
+const Description = styled("p", {
+  lineHeight: "$body",
+});
 
-const Description = styled('p', {
-  fontSize: '$lg',
-  maxWidth: '45ch',
-  marginBottom: '$8',
-})
+const Posts = styled(motion.ul, {
+  gridColumn: 2,
 
-const Posts = styled('ul', {
-  paddingTop: '$12',
-})
-
-const Divider = styled('div', {
-  width: 'min(30vw, $space$24)',
-  marginLeft: '-2rem',
-  height: '$px',
-  background: '$grey400',
-
-  '@media screen and (min-width: 60rem)': {
-    marginLeft: 0,
+  "> :not(:last-child)": {
+    marginBottom: "$12",
   },
-})
-
-// --
-
-function Post({ post }: { post: typeof slidingWindow }) {
-  return (
-    <PostWrapper>
-      <Link href={formatPath(post.__resourcePath)}>
-        <Anchor>
-          <PostContent>
-            <PostTitle>{titleCase(post.title)}</PostTitle>
-            <PostDescription>{post.description}</PostDescription>
-            <PostUpdatedText>
-              Last updated{' '}
-              {new Intl.DateTimeFormat('en-US', {
-                month: 'long',
-                year: 'numeric',
-                day: 'numeric',
-              }).format(new Date(post.editedAt))}
-            </PostUpdatedText>
-          </PostContent>
-          <PostArrow>
-            <HiArrowRight />
-          </PostArrow>
-        </Anchor>
-      </Link>
-    </PostWrapper>
-  )
-}
-
-const PostWrapper = styled('div', {
-  padding: '$8',
-
-  '&:hover': {
-    background: '$grey200',
-  },
-})
-
-const Anchor = styled('a', {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  cursor: 'pointer',
-
-  '> :not(:last-child)': {
-    marginRight: '$8',
-  },
-})
-
-const PostTitle = styled('h1', {
-  fontSize: '$2xl',
-  fontFamily: '$serif',
-  lineHeight: '1.1'
-})
-
-const PostDescription = styled('p', {
-  color: '$grey600',
-})
-
-const PostUpdatedText = styled('p', {
-  fontSize: '$sm',
-  color: '$grey600',
-  fontFamily: '$mono',
-})
-
-const PostArrow = styled('p', {
-  fontSize: '$xl',
-  color: '$grey600',
-})
-
-const PostContent = styled('div', {
-  '> :not(:last-child)': {
-    marginBottom: '$4',
-  },
-})
+});

@@ -1,7 +1,10 @@
-const withMdxEnhanced = require('next-mdx-enhanced')
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  experimental: {
+    forceSwcTransforms: true,
+  },
+};
 
-module.exports = withMdxEnhanced({
-  defaultLayout: true,
-})({
-  target: 'serverless',
-})
+module.exports = nextConfig;
