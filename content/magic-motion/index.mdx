@@ -138,23 +138,31 @@ As its name suggests, FLIP is a four-step technique that works by inverting any 
 
 ### First
 
-In the **First** step, we measure the position of the element we're animating _before_ any layout changes has happened:
+In the **First** step, we measure the position of the element we're animating _before_ any layout changes have happened:
 
 <FlipFirst />
 
-One way to do this is to use the `.getBoundingClientRect()` method of the HTML element::
+One way to do this is to use the `.getBoundingClientRect()` method of the HTML element:
 
 ```tsx {1,5}
 const Motion = (props) => {
   const ref = React.useRef();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const { x, y } = ref.current.getBoundingClientRect();
   }, []);
 
   return <div ref={ref} {...props} />;
 };
 ```
+
+<Callout label="Why useLayoutEffect?">
+
+We're using `useLayoutEffect` instead of `useEffect` because we want our code to run before the browser "re-renders" the screen. This way we don't get an awkward flash when we move the element around later on.
+
+You can read more about `useLayoutEffect` in the [React docs](https://reactjs.org/docs/hooks-reference.html#uselayouteffect).
+
+</Callout>
 
 ### Last
 

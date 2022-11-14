@@ -6,7 +6,7 @@ export default function Motion() {
   const squareRef = React.useRef();
   const initialPositionRef = React.useRef();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const box = squareRef.current?.getBoundingClientRect();
     if (box) {
       // final position

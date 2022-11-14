@@ -10,7 +10,7 @@ export default function Motion({ toggled, corrected, children }) {
 
   const initialPositionRef = React.useRef();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const box = squareRef.current?.getBoundingClientRect();
     if (changed(initialPositionRef.current, box)) {
       const transform = invert(squareRef.current, box, initialPositionRef.current)

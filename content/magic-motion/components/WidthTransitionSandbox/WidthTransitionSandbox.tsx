@@ -1,4 +1,3 @@
-import { FullWidth } from "~/components/FullWidth";
 import { Sandbox } from "~/components/Sandbox";
 
 const css = `
@@ -74,11 +73,11 @@ export const WidthTransitionSandbox = () => {
           code: code + defaultAppCode,
           hidden: true,
         },
-        "/Motion.js": {
-          code: motionCode,
+        "/Motion.js": motionCode,
+        "/styles.css": {
+          code: styles,
           active: true,
         },
-        "/styles.css": styles,
         "/main.css": {
           code: css,
           hidden: true,

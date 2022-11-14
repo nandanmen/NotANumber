@@ -8,7 +8,7 @@ export default function Motion() {
   const squareRef = React.useRef();
   const initialPositionRef = React.useRef();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const box = squareRef.current?.getBoundingClientRect();
     if (moved(initialPositionRef.current, box)) {
       // get the difference in position
