@@ -18,7 +18,7 @@ const posts = [
       title: "Inside Framer's Magic Motion",
       description:
         "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
-      editedAt: "2022-10-25",
+      editedAt: "2022-11-15",
     },
     children: (
       <CorrectedInverseAnimation
