@@ -1,3 +1,5 @@
-import { HardDrive } from './HardDrive'
+import { HardDrive } from "./HardDrive";
 
-export const Default = () => <HardDrive />
+export const Default = () => {
+  return <HardDrive />;
+};
