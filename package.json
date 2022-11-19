@@ -20,7 +20,7 @@
     "@radix-ui/react-slider": "^1.0.0",
     "@stitches/react": "^1.2.8",
     "@use-it/interval": "^1.0.0",
-    "@vercel/analytics": "^0.1.4",
+    "@vercel/analytics": "^0.1.5",
     "@xstate/react": "^3.0.1",
     "esbuild": "^0.14.51",
     "framer-motion": "^6.5.1",
