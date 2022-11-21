@@ -20,4 +20,8 @@ export const Link = ({ href, children }: LinkProps) => {
 const LinkWrapper = styled("a", {
   color: "$blue9",
   textDecoration: "none",
+
+  "&:hover": {
+    textDecoration: "wavy underline $colors$blue8",
+  },
 });
