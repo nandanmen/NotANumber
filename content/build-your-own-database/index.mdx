@@ -1,0 +1,67 @@
+---
+title: "Build Your Own Database"
+blurb: "How would you reinvent the database?"
+description: "How would you reinvent the database?"
+publishedAt: "2022-11-15"
+editedAt: "2022-11-22"
+---
+
+import { Callout } from "~/components/Callout";
+
+If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
+
+A key-value database works more or less like objects in JavaScript—you can store values using a key and retrieve them later using that same key:
+
+```sh
+$ db set 'hello' 'world'
+$ db get 'hello'
+world
+```
+
+Let's get started!
+
+## The Humble File
+
+Databases were made to solve a simple problem: how do you store data persistently?
+
+One way is by using a file. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+
+```
+add and search example
+```
+
+What about updates and deletes?
+
+For starters, we could go through the file, find the key, and either replace the value or delete the pair entirely. But it turns out we don't really want to do that—hard drives are (generally speaking) much better at _appending_ to a file than they are at _modifying_ a file.
+
+<Callout label="Why is appending to a file faster?">
+
+A disk in a hard drive is divided into _tracks_, with each track divided into _sectors_. Each sector is a fixed size, and the hard drive can only read or write data in whole sectors using a _disk head_.
+
+When the hard disk reads or writes data, it needs to move the disk head to the specific sector. Moving the disk head is much slower than simply reading or writing data, so we want to minimize the number of times the disk head is moved.
+
+When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
+
+</Callout>
+
+With this restriction, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
+
+```
+update example
+```
+
+But now we have another problem—there are duplicate keys in the file! To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
+
+```
+search with duplicates example
+```
+
+To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
+
+```
+delete example
+```
+
+And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
+
+## File Troubles

@@ -238,6 +238,11 @@ const Article = styled("article", {
     },
   },
 
+  details: {
+    marginTop: "$4",
+    marginBottom: "$8",
+  },
+
   pre: {
     marginTop: "$4",
     marginBottom: "$8",
@@ -247,6 +252,7 @@ const Article = styled("article", {
     borderRadius: "$base",
     fontSize: "$sm",
     overflowX: "auto",
+    background: "$gray3",
   },
 
   blockquote: {
