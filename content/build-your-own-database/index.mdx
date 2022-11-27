@@ -8,6 +8,8 @@ editedAt: "2022-11-22"
 
 import { Callout } from "~/components/Callout";
 
+import { AppendOnlyFile } from "./components/AppendOnlyFile";
+
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
 A key-value database works more or less like objects in JavaScript—you can store values using a key and retrieve them later using that same key:
@@ -22,13 +24,11 @@ Let's get started!
 
 ## The Humble File
 
-Databases were made to solve a simple problem: how do you store data persistently?
+Databases were made to solve a simple problem: how do you store data persistently and efficiently look it up later?
 
-One way is by using a file. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+Let's start by using a file. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
-```
-add and search example
-```
+<AppendOnlyFile />
 
 What about updates and deletes?
 

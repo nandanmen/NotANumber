@@ -8,7 +8,15 @@ export const Default = () => <${componentName} />
 `;
 
 const componentTemplate = (componentName) =>
-  `export const ${componentName} = () => { return null; }`;
+  `import { Visualizer, Content } from "~/components/Visualizer";
+
+export const ${componentName} = () => {
+  return (
+    <Visualizer>
+      <Content padding="md">Hello</Content>
+    </Visualizer>
+  );
+}`;
 
 const indexTemplate = (componentName) => `export * from './${componentName}'`;
 
