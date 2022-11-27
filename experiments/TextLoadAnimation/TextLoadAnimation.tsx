@@ -113,11 +113,12 @@ const getParts = (text: string, windowSize: number, windowStart: number) => {
   return [done, scrambled, todo];
 };
 
-const TextScrambleWindow = ({
+export const TextScrambleWindow = ({
   children,
   size = 10,
   speed = 1,
   debug = false,
+  mono = false,
 }) => {
   if (typeof children !== "string") {
     throw new Error("TextScrambleWindow only accepts strings as children");
@@ -129,27 +130,37 @@ const TextScrambleWindow = ({
   const [windowStart, increment] = React.useReducer((state) => state + 1, 0);
   const finished = windowStart > children.length;
 
-  useInterval(() => increment(), finished ? null : 30 * speed);
+  useInterval(() => increment(), finished ? null : 30 / speed);
 
   useInterval(
     () => {
       setScrambledText(getParts(children, size, windowStart));
     },
-    finished ? null : 30 * speed
+    finished ? null : 30 / speed
   );
 
   if (debug) {
     return (
-      <span>
+      <TextWrapper mono={mono}>
         {done}
         <Scrambled>{scrambled}</Scrambled>
         <Todo>{todo}</Todo>
-      </span>
+      </TextWrapper>
     );
   }
 
   return <span>{done + scrambled}</span>;
 };
+
+const TextWrapper = styled("span", {
+  variants: {
+    mono: {
+      true: {
+        fontFamily: "$mono",
+      },
+    },
+  },
+});
 
 const Todo = styled("span", {
   color: "$gray9",
@@ -169,7 +180,7 @@ const Scrambled = styled("span", {
   },
 });
 
-const ClientOnly = ({ children }) => {
+export const ClientOnly = ({ children }) => {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => setMounted(true), []);
