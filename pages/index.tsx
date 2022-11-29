@@ -100,25 +100,6 @@ export default function HomePage() {
       </Head>
       <ContentWrapper>
         <Header>
-          <Title>Not a Number</Title>
-          <Description>
-            An interactive blog on computer science and web development, by
-            Nanda Syahrasyad.
-          </Description>
-          <div>
-            <SubscribeButton onClick={toggle}>
-              Subscribe to the newsletter{" "}
-              {subscribing ? <FaTimes /> : <FaArrowRight />}
-            </SubscribeButton>
-            {subscribing && (
-              <SubscribeWrapper
-                animate={{ opacity: 1 }}
-                initial={{ opacity: 0 }}
-              >
-                <SubscribeInput />
-              </SubscribeWrapper>
-            )}
-          </div>
           <Links layout>
             <li>
               <a
@@ -141,10 +122,16 @@ export default function HomePage() {
               </a>
             </li>
           </Links>
+          <Title>Not a Number</Title>
+          <SubscribeButton onClick={toggle}>Subscribe</SubscribeButton>
         </Header>
         <Posts>
-          {posts.map((post) => (
-            <Post key={post.post.slug} {...post} />
+          {posts.map((post, index) => (
+            <Post
+              key={post.post.slug}
+              direction={index % 2 ? "right" : "left"}
+              {...post}
+            />
           ))}
         </Posts>
       </ContentWrapper>
@@ -153,16 +140,14 @@ export default function HomePage() {
 }
 
 const SubscribeButton = styled("button", {
-  color: "$gray11",
-  display: "flex",
-  alignItems: "center",
-  gap: "$1",
+  background: "$gray12",
+  padding: "$2 $4",
+  paddingTop: "calc($space$2 + 2px)",
+  borderRadius: "$base",
+  color: "$gray1",
   fontWeight: "bold",
   cursor: "pointer",
-
-  "&:hover": {
-    color: "$blue9",
-  },
+  fontFamily: "$serif",
 });
 
 const SubscribeWrapper = styled(motion.div, {
@@ -187,9 +172,11 @@ const Links = styled(motion.ul, {
 });
 
 const PageWrapper = styled("main", {
+  $$gap: "$space$24",
   width: "fit-content",
   margin: "0 auto",
-  padding: "$4",
+  padding: "0 $4",
+  paddingBottom: "calc($$gap + $space$32)",
   maxWidth: "42rem",
 
   "@media screen and (min-width: 75rem)": {
@@ -197,13 +184,7 @@ const PageWrapper = styled("main", {
   },
 });
 
-const ContentWrapper = styled("div", {
-  "@media screen and (min-width: 75rem)": {
-    display: "grid",
-    gridTemplateColumns: "24rem 42rem",
-    gap: "$16",
-  },
-});
+const ContentWrapper = styled("div", {});
 
 const Title = styled("h1", {
   fontFamily: "$serif",
@@ -214,21 +195,10 @@ const Title = styled("h1", {
 
 const Header = styled("header", {
   display: "flex",
-  flexDirection: "column",
-  gap: "$8",
-  height: "fit-content",
-  paddingBottom: "$8",
-  borderBottom: "1px solid $gray8",
-  marginBottom: "$8",
-
-  "@media screen and (min-width: 75rem)": {
-    paddingBottom: 0,
-    borderBottom: "none",
-    position: "fixed",
-    maxWidth: "24rem",
-    paddingRight: "$8",
-    borderRight: "1px solid $gray8",
-  },
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "$12 0",
+  marginBottom: "$$gap",
 });
 
 const Description = styled("p", {
@@ -239,6 +209,6 @@ const Posts = styled(motion.ul, {
   gridColumn: 2,
 
   "> :not(:last-child)": {
-    marginBottom: "$12",
+    marginBottom: "$$gap",
   },
 });

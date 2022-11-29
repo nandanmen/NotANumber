@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }) {
         value={{ dark: darkTheme.className, light: "light" }}
       >
         <Wrapper>
+          <Background />
           <Component {...pageProps} />
         </Wrapper>
       </ThemeProvider>
@@ -21,9 +22,16 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
+const Background = styled("div", {
+  backgroundImage: "url(/noise.png)",
+  position: "fixed",
+  inset: 0,
+  mixBlendMode: "hard-light",
+  pointerEvents: "none",
+});
+
 const Wrapper = styled("div", {
   color: "$gray12",
-  padding: "$16 0",
   minHeight: "100vh",
 
   [`.${darkTheme} &`]: {

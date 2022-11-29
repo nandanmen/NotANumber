@@ -15,60 +15,58 @@ export interface IPost {
 export type PostProps = {
   post: IPost;
   children?: React.ReactNode;
+  direction?: "left" | "right";
 };
 
-export function Post({ post, children }: PostProps) {
+export function Post({ post, children, direction = "left" }: PostProps) {
   const isExternal = post.slug.startsWith("http");
 
   return (
-    <PostWrapper>
+    <PostWrapper direction={direction}>
       <PostContent>
-        <PostTitle whileHover="hover">
-          {isExternal ? (
-            <TitleAnchor href={post.slug}>
-              {titleCase(post.title)}
-              <PostArrow variants={{ hover: { x: 8 } }}>
-                <BsArrowRight width="24" height="24" />
-              </PostArrow>
-            </TitleAnchor>
-          ) : (
-            <Link href={post.slug}>
-              <TitleAnchor>
-                {titleCase(post.title)}
-                <PostArrow variants={{ hover: { x: 8 } }}>
-                  <BsArrowRight width="24" height="24" />
-                </PostArrow>
-              </TitleAnchor>
-            </Link>
-          )}
-        </PostTitle>
         <PostUpdatedText>
-          Last updated{" "}
           {new Intl.DateTimeFormat("en-US", {
             month: "long",
             year: "numeric",
             day: "numeric",
           }).format(new Date(post.editedAt))}
         </PostUpdatedText>
+        <PostTitle whileHover="hover">
+          {isExternal ? (
+            <TitleAnchor href={post.slug} direction={direction}>
+              {titleCase(post.title)}
+            </TitleAnchor>
+          ) : (
+            <Link href={post.slug}>
+              <TitleAnchor direction={direction}>
+                {titleCase(post.title)}
+              </TitleAnchor>
+            </Link>
+          )}
+        </PostTitle>
         <PostDescription>{post.description}</PostDescription>
-        <div>{children}</div>
         {isExternal ? (
-          <TitleAnchor small href={post.slug}>
+          <TitleAnchor small href={post.slug} direction={direction}>
             Read now
             <BsArrowRight width="12" height="12" />
           </TitleAnchor>
         ) : (
           <Link href={post.slug}>
-            <TitleAnchor small>
+            <TitleAnchor small direction={direction}>
               Read now
               <BsArrowRight width="12" height="12" />
             </TitleAnchor>
           </Link>
         )}
       </PostContent>
+      <Figure>{children}</Figure>
     </PostWrapper>
   );
 }
+
+const Figure = styled("div", {
+  flex: 1,
+});
 
 const TitleAnchor = styled(motion.a, {
   color: "inherit",
@@ -90,24 +88,67 @@ const TitleAnchor = styled(motion.a, {
         fontWeight: "bold",
       },
     },
+    direction: {
+      right: {},
+      left: {
+        justifyContent: "flex-end",
+      },
+    },
   },
 });
 
 const PostWrapper = styled(motion.li, {
-  borderRadius: "$base",
+  $$spacing: "$space$16",
+
   listStyle: "none",
+  display: "flex",
+  alignItems: "center",
+  maxWidth: "72rem",
+
+  "> :first-child": {
+    paddingRight: "$$spacing",
+    textAlign: "right",
+    borderRight: "1px dashed $gray8",
+  },
+
+  "> :last-child": {
+    paddingLeft: "$$spacing",
+  },
 
   "&:not(:last-child)": {
-    paddingBottom: "$12",
+    paddingBottom: "$$gap",
     borderBottom: "1px dashed $gray8",
+  },
+
+  variants: {
+    direction: {
+      right: {
+        flexDirection: "row-reverse",
+
+        "> :first-child": {
+          paddingRight: 0,
+          paddingLeft: "$$spacing",
+          textAlign: "left",
+          borderLeft: "1px dashed $gray8",
+          borderRight: "none",
+        },
+
+        "> :last-child": {
+          paddingRight: "$$spacing",
+          paddingLeft: 0,
+        },
+      },
+      left: {},
+    },
   },
 });
 
 const PostTitle = styled(motion.h1, {
-  fontSize: "$2xl",
+  fontSize: "4rem",
   fontFamily: "$serif",
-  lineHeight: "$title",
+  lineHeight: 1.1,
   fontWeight: 500,
+  display: "flex",
 });
 
 const PostDescription = styled("p", {
@@ -126,7 +167,9 @@ const PostArrow = styled(motion.span, {
 });
 
 const PostContent = styled("div", {
+  flex: 1,
+
   "> :not(:last-child)": {
-    marginBottom: "$6",
+    marginBottom: "$10",
   },
 });
