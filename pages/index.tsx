@@ -10,6 +10,7 @@ import { SubscribeInput } from "~/components/SubscribeInput";
 
 import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
 import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
+import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 
 const posts = [
   {
@@ -20,19 +21,7 @@ const posts = [
         "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
       editedAt: "2022-11-15",
     },
-    children: (
-      <CorrectedInverseAnimation
-        from={(width, container) => ({
-          x: container.width - width - container.padding,
-          y: container.height / 2 - width / 2,
-        })}
-        to={(width, container) => ({
-          x: container.padding,
-          y: container.height / 2 - width / 2,
-        })}
-        origin="topLeft"
-      />
-    ),
+    children: <FramerMagicMotion />,
   },
   {
     post: {
@@ -198,7 +187,7 @@ const Header = styled("header", {
   justifyContent: "space-between",
   alignItems: "center",
   padding: "$12 0",
-  marginBottom: "$$gap",
+  marginBottom: "calc($$gap / 2)",
 });
 
 const Description = styled("p", {
