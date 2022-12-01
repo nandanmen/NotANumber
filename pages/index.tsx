@@ -11,6 +11,7 @@ import { SubscribeInput } from "~/components/SubscribeInput";
 import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
 import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
 import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
+import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 
 const posts = [
   {
@@ -31,13 +32,7 @@ const posts = [
         "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
       editedAt: "2022-02-20",
     },
-    children: (
-      <Tokenizer
-        name="singleCharacter"
-        input="{ console.log() }"
-        showKeywords={false}
-      />
-    ),
+    children: <TokenizerVisual />,
   },
   {
     post: {

@@ -98,27 +98,6 @@ export const FramerMagicMotion = () => {
   );
 };
 
-const Square = styled("div", {
-  $$gap: "10%",
-  width: "50%",
-  aspectRatio: 1,
-  position: "absolute",
-  background: "linear-gradient(-45deg, $blue6, $blue5)",
-  border: "1px solid $gray12",
-  borderRadius: 12,
-  boxShadow: "4px 4px 0 $colors$gray12",
-
-  variants: {
-    inactive: {
-      true: {
-        background: "$gray4",
-        border: "1px dashed $gray10",
-        boxShadow: "none",
-      },
-    },
-  },
-});
-
 const Background = styled(Content, {
   position: "absolute",
   inset: 0,
@@ -140,7 +119,8 @@ const Rect = styled("rect", {
   variants: {
     type: {
       secondary: {
-        fill: "none",
+        fill: "$gray5",
+        stroke: "$gray10",
         strokeDasharray: "2 1",
       },
       shadow: {
