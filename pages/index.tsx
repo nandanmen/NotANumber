@@ -8,8 +8,6 @@ import { BASE_URL } from "~/lib/config";
 import { Post } from "~/components/Post";
 import { SubscribeInput } from "~/components/SubscribeInput";
 
-import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
-import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
 import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 
@@ -159,9 +157,9 @@ const PageWrapper = styled("main", {
   $$gap: "$space$24",
   width: "fit-content",
   margin: "0 auto",
-  padding: "0 $4",
+  padding: "0 $16",
   paddingBottom: "calc($$gap + $space$32)",
-  maxWidth: "42rem",
+  maxWidth: "72rem",
 
   "@media screen and (min-width: 75rem)": {
     maxWidth: "initial",
