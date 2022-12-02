@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { BASE_URL } from "~/lib/config";
 import { Post } from "~/components/Post";
-import { SubscribeInput } from "~/components/SubscribeInput";
+import { SubscribeButton } from "~/components/SubscribeButton";
 
 import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 import { TokenizerVisual } from "~/components/home/TokenizerVisual";
@@ -124,17 +124,6 @@ export default function HomePage() {
     </PageWrapper>
   );
 }
-
-const SubscribeButton = styled("button", {
-  background: "$gray12",
-  padding: "$2 $4",
-  paddingTop: "calc($space$2 + 2px)",
-  borderRadius: "$base",
-  color: "$gray1",
-  fontWeight: "bold",
-  cursor: "pointer",
-  fontFamily: "$serif",
-});
 
 const Links = styled(motion.ul, {
   fontSize: "$xl",
