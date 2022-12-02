@@ -18,7 +18,7 @@ export const TokenizerVisual = () => {
           <Label x={4} y={17}>
             String Literal
           </Label>
-          <Path d="M 0 0 Q -12 16 4 22" />
+          <Path d="M 0 0 Q -12 22 4 22" />
           <Circle cx="0" cy="0" r="1.2" />
           <Circle cx="4" cy="22" r="1.2" />
         </motion.g>
@@ -36,8 +36,8 @@ export const TokenizerVisual = () => {
 };
 
 const Path = styled("path", {
-  strokeWidth: 0.5,
-  stroke: "$gray10",
+  strokeWidth: 0.3,
+  stroke: "$gray11",
   fill: "none",
   strokeDasharray: "2 1",
 });
