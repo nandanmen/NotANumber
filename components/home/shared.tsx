@@ -12,7 +12,7 @@ export const VisualWrapper = ({ children }) => {
 
 const Background = styled(Content, {
   position: "absolute",
-  inset: 0,
+  inset: "$4",
   borderRadius: 9999,
   border: "1px solid $gray8",
 });

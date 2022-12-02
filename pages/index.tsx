@@ -10,6 +10,7 @@ import { SubscribeInput } from "~/components/SubscribeInput";
 
 import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 import { TokenizerVisual } from "~/components/home/TokenizerVisual";
+import { HowArraysWork } from "~/components/home/HowArraysWork";
 
 const posts = [
   {
@@ -40,6 +41,7 @@ const posts = [
         "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
       editedAt: "2021-11-13",
     },
+    children: <HowArraysWork />,
   },
   {
     post: {
