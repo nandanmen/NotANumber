@@ -104,7 +104,9 @@ export default function HomePage() {
               </a>
             </li>
           </Links>
-          <Title>Not a Number</Title>
+          <Title>
+            Not a Number<span>By Nanda Syahrasyad</span>
+          </Title>
           <SubscribeButton onClick={toggle}>Subscribe</SubscribeButton>
         </Header>
         <Posts>
@@ -130,11 +132,6 @@ const SubscribeButton = styled("button", {
   fontWeight: "bold",
   cursor: "pointer",
   fontFamily: "$serif",
-});
-
-const SubscribeWrapper = styled(motion.div, {
-  marginTop: "$2",
-  maxWidth: 400,
 });
 
 const Links = styled(motion.ul, {
@@ -173,6 +170,15 @@ const Title = styled("h1", {
   fontSize: "3rem",
   lineHeight: "$title",
   fontWeight: 500,
+
+  span: {
+    display: "block",
+    fontSize: "$sm",
+    fontFamily: "$sans",
+    color: "$gray11",
+    textAlign: "center",
+    marginTop: "$2",
+  },
 });
 
 const Header = styled("header", {
@@ -180,11 +186,7 @@ const Header = styled("header", {
   justifyContent: "space-between",
   alignItems: "center",
   padding: "$12 0",
-  marginBottom: "calc($$gap / 2)",
-});
-
-const Description = styled("p", {
-  lineHeight: "$body",
+  marginBottom: "$$gap",
 });
 
 const Posts = styled(motion.ul, {
