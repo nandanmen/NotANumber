@@ -20,7 +20,7 @@ export const SubscribeButton = () => {
   const success = state === FormState.Done;
 
   return (
-    <Dialog.Root>
+    <Dialog.Root onOpenChange={() => dispatch(FormEvent.Change)}>
       <Dialog.Trigger asChild>
         <PrimaryButton>Subscribe</PrimaryButton>
       </Dialog.Trigger>
