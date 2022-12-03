@@ -109,7 +109,7 @@ export default function HomePage() {
           <Title>
             Not a Number<span>By Nanda Syahrasyad</span>
           </Title>
-          <SubscribeButton onClick={toggle}>Subscribe</SubscribeButton>
+          <SubscribeButton />
         </Header>
         <Posts>
           {posts.map((post, index) => (
