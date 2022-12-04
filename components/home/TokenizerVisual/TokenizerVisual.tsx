@@ -69,7 +69,7 @@ const Label = ({ x, y, children }) => {
   );
 };
 
-const Token = ({ x, y, text, color }) => {
+export const Token = ({ x = 0, y = 0, text, color = "blue" }) => {
   const id = React.useId();
   const len = text.length * TEXT_WIDTH;
   return (
