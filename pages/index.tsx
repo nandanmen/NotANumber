@@ -11,6 +11,7 @@ import { SubscribeButton } from "~/components/SubscribeButton";
 import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 import { HowArraysWork } from "~/components/home/HowArraysWork";
+import { Debugger } from "~/components/home/Debugger";
 
 const posts = [
   {
@@ -51,6 +52,7 @@ const posts = [
         "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
       editedAt: "2021-05-15",
     },
+    children: <Debugger />,
   },
   {
     post: {
