@@ -12,6 +12,7 @@ import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
 import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 import { HowArraysWork } from "~/components/home/HowArraysWork";
 import { Debugger } from "~/components/home/Debugger";
+import { SlidingWindow } from "~/components/home/SlidingWindow";
 
 const posts = [
   {
@@ -61,6 +62,7 @@ const posts = [
       description: "An interactive look at a classic array algorithm pattern.",
       editedAt: "2021-03-21",
     },
+    children: <SlidingWindow />,
   },
 ];
 
