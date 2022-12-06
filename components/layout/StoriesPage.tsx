@@ -93,7 +93,6 @@ const Main = styled("main", {
   gridTemplateColumns: "min-content 1fr",
   gap: "$8",
   minHeight: "100vh",
-  margin: "-$16 0",
 });
 
 const Sidebar = styled("aside", {
