@@ -109,13 +109,6 @@ export const SlidingWindow = () => {
   );
 };
 
-const Button = styled("circle", {
-  cursor: "pointer",
-  fill: "$gray3",
-  stroke: "$gray12",
-  strokeWidth: WINDOW_STROKE_WIDTH,
-});
-
 const Window = styled(motion.rect, {
   width: WINDOW_WIDTH,
   height: WINDOW_HEIGHT,

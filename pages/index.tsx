@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import { styled } from "~/stitches.config";
@@ -13,6 +13,7 @@ import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 import { HowArraysWork } from "~/components/home/HowArraysWork";
 import { Debugger } from "~/components/home/Debugger";
 import { SlidingWindow } from "~/components/home/SlidingWindow";
+import { DynamicIsland } from "~/components/MobileNavIsland";
 
 const posts = [
   {
@@ -67,7 +68,6 @@ const posts = [
 ];
 
 export default function HomePage() {
-  const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
     <PageWrapper>
       <Head>
@@ -88,32 +88,15 @@ export default function HomePage() {
       </Head>
       <ContentWrapper>
         <Header>
-          <Links layout>
-            <li>
-              <a
-                href="https://github.com/narendrasss/NotANumber"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Github"
-              >
-                <FaGithub />
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://twitter.com/nandafyi"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Twitter"
-              >
-                <FaTwitter />
-              </a>
-            </li>
+          <Links>
+            <SocialLinks />
           </Links>
           <Title>
             Not a Number<span>By Nanda Syahrasyad</span>
           </Title>
-          <SubscribeButton />
+          <SubscribeWrapper>
+            <SubscribeButton />
+          </SubscribeWrapper>
         </Header>
         <Posts>
           {posts.map((post, index) => (
@@ -125,15 +108,60 @@ export default function HomePage() {
           ))}
         </Posts>
       </ContentWrapper>
+      <IslandWrapper>
+        <DynamicIsland
+          css={{
+            borderRadius: "calc($radii$base + 4px)",
+            height: "auto",
+            display: "flex",
+            alignItems: "center",
+            color: "$gray12",
+          }}
+        >
+          <MobileSocialWrapper>
+            <SocialLinks />
+          </MobileSocialWrapper>
+          <SubscribeButton small />
+        </DynamicIsland>
+      </IslandWrapper>
     </PageWrapper>
   );
 }
 
-const Links = styled(motion.ul, {
-  fontSize: "$xl",
-  gap: "$4",
+const SocialLinks = () => {
+  return (
+    <>
+      <li>
+        <a
+          href="https://github.com/narendrasss/NotANumber"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Github"
+        >
+          <FaGithub />
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://twitter.com/nandafyi"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Twitter"
+        >
+          <FaTwitter />
+        </a>
+      </li>
+    </>
+  );
+};
+
+const MobileSocialWrapper = styled("ul", {
   display: "flex",
+  gap: "$2",
+  padding: "0 $2",
   listStyle: "none",
+  fontSize: "$xl",
+  transform: "translateY(3px)",
 
   a: {
     color: "inherit",
@@ -145,13 +173,59 @@ const Links = styled(motion.ul, {
   },
 });
 
+const IslandWrapper = styled("div", {
+  position: "fixed",
+  bottom: "$4",
+  left: "$4",
+  right: "$4",
+  height: "auto",
+
+  "@md": {
+    display: "none",
+  },
+});
+
+const SubscribeWrapper = styled("div", {
+  display: "none",
+
+  "@md": {
+    display: "block",
+  },
+});
+
+const Links = styled(motion.ul, {
+  fontSize: "$xl",
+  gap: "$4",
+  display: "none",
+  listStyle: "none",
+
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+
+    "&:hover": {
+      color: "$blue9",
+    },
+  },
+
+  "@md": {
+    display: "flex",
+  },
+});
+
 const PageWrapper = styled("main", {
-  $$gap: "$space$24",
+  $$gap: "$space$16",
   width: "fit-content",
   margin: "0 auto",
-  padding: "0 $16",
-  paddingBottom: "calc($$gap + $space$32)",
+  padding: "0 $8",
+  paddingBottom: "calc($$gap + $space$16)",
   maxWidth: "72rem",
+
+  "@lg": {
+    padding: "0 $16",
+    $$gap: "$space$24",
+    paddingBottom: "calc($$gap + $space$32)",
+  },
 
   "@media screen and (min-width: 75rem)": {
     maxWidth: "initial",
@@ -178,10 +252,15 @@ const Title = styled("h1", {
 
 const Header = styled("header", {
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent: "center",
   alignItems: "center",
   padding: "$12 0",
-  marginBottom: "$$gap",
+  marginBottom: "calc($$gap / 2)",
+
+  "@md": {
+    marginBottom: "$$gap",
+    justifyContent: "space-between",
+  },
 });
 
 const Posts = styled(motion.ul, {

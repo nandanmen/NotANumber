@@ -50,4 +50,14 @@ const _Button = styled(motion.button, {
   fontFamily: "$serif",
   transition: "all 0.2s ease-out",
   position: "relative",
+
+  variants: {
+    small: {
+      true: {
+        fontSize: "$sm",
+        padding: "$1 $2",
+        paddingTop: "calc($space$1 + 2px)",
+      },
+    },
+  },
 });

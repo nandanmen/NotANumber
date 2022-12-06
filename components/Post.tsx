@@ -99,43 +99,58 @@ const TitleAnchor = styled(motion.a, {
 
 const PostWrapper = styled(motion.li, {
   $$spacing: "$space$16",
-
   listStyle: "none",
+  padding: 0,
   display: "flex",
-  alignItems: "center",
-  maxWidth: "72rem",
-
-  "> :first-child": {
-    paddingRight: "$$spacing",
-    textAlign: "right",
-    borderRight: "1px dashed $gray8",
-  },
-
-  "> :last-child": {
-    paddingLeft: "$$spacing",
-  },
+  flexDirection: "column-reverse",
+  gap: "$$spacing",
+  maxWidth: 400,
 
   "&:not(:last-child)": {
     paddingBottom: "$$gap",
     borderBottom: "1px dashed $gray8",
   },
 
+  "@md": {
+    $$spacing: "$space$10",
+    flexDirection: "row",
+    gap: 0,
+    alignItems: "center",
+    maxWidth: "72rem",
+
+    "> :first-child": {
+      paddingRight: "$$spacing",
+      textAlign: "right",
+      borderRight: "1px dashed $gray8",
+    },
+
+    "> :last-child": {
+      paddingLeft: "$$spacing",
+    },
+  },
+
+  "@lg": {
+    $$spacing: "$space$16",
+  },
+
   variants: {
     direction: {
       right: {
-        flexDirection: "row-reverse",
+        "@md": {
+          flexDirection: "row-reverse",
 
-        "> :first-child": {
-          paddingRight: 0,
-          paddingLeft: "$$spacing",
-          textAlign: "left",
-          borderLeft: "1px dashed $gray8",
-          borderRight: "none",
-        },
+          "> :first-child": {
+            paddingRight: 0,
+            paddingLeft: "$$spacing",
+            textAlign: "left",
+            borderLeft: "1px dashed $gray8",
+            borderRight: "none",
+          },
 
-        "> :last-child": {
-          paddingRight: "$$spacing",
-          paddingLeft: 0,
+          "> :last-child": {
+            paddingRight: "$$spacing",
+            paddingLeft: 0,
+          },
         },
       },
       left: {},

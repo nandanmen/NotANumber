@@ -8,7 +8,7 @@ import { Row } from "../layout/Row";
 import { CgSpinner } from "react-icons/cg";
 import { motion } from "framer-motion";
 
-export const SubscribeButton = () => {
+export const SubscribeButton = ({ small = false }) => {
   const [subscribe, { state, dispatch }] = useSubscribe();
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (evt) => {
@@ -22,7 +22,7 @@ export const SubscribeButton = () => {
   return (
     <Dialog.Root onOpenChange={() => dispatch(FormEvent.Change)}>
       <Dialog.Trigger asChild>
-        <PrimaryButton>Subscribe</PrimaryButton>
+        <PrimaryButton small={small}>Subscribe</PrimaryButton>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Overlay />
@@ -111,8 +111,8 @@ const ConfirmText = styled(motion.p, {
   padding: "$4",
   borderRadius: "$base",
   border: "1px solid $gray12",
-  left: "$12",
-  right: "$12",
+  left: "$$padding",
+  right: "$$padding",
   marginTop: "$6",
 });
 
@@ -131,12 +131,18 @@ const CloseButton = styled("button", {
 });
 
 const ContentWrapper = styled(motion.article, {
+  $$padding: "$space$10",
+
   position: "relative",
   background: "linear-gradient(-45deg, $green6, $green4)",
   border: "1px solid $gray12",
   borderRadius: 12,
-  padding: "$12",
+  padding: "$$padding",
   boxShadow: "2px 2px 0 $colors$gray12",
+
+  "@md": {
+    $$padding: "$space$12",
+  },
 });
 
 const Form = styled("form", {
@@ -173,9 +179,13 @@ const Overlay = styled(Dialog.Overlay, {
 });
 
 const Content = styled(Dialog.Content, {
-  maxWidth: 420,
+  width: `min(420px, calc(100vw - 2 * $space$8))`,
   position: "fixed",
-  top: "20%",
+  top: "15%",
   left: "50%",
   transform: "translate(-50%, 0)",
+
+  "@md": {
+    top: "20%",
+  },
 });
