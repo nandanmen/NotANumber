@@ -223,8 +223,7 @@ const PageWrapper = styled("main", {
 
   "@lg": {
     padding: "0 $16",
-    $$gap: "$space$24",
-    paddingBottom: "calc($$gap + $space$32)",
+    paddingBottom: "calc($$gap + $space$24)",
   },
 
   "@media screen and (min-width: 75rem)": {

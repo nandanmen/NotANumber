@@ -116,7 +116,7 @@ const PostWrapper = styled(motion.li, {
     flexDirection: "row",
     gap: 0,
     alignItems: "center",
-    maxWidth: "72rem",
+    maxWidth: "60rem",
 
     "> :first-child": {
       paddingRight: "$$spacing",
@@ -159,7 +159,7 @@ const PostWrapper = styled(motion.li, {
 });
 
 const PostTitle = styled(motion.h1, {
-  fontSize: "4rem",
+  fontSize: "3.5rem",
   fontFamily: "$serif",
   lineHeight: 1.1,
   fontWeight: 500,
