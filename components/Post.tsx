@@ -37,7 +37,7 @@ export function Post({ post, children, direction = "left" }: PostProps) {
               {titleCase(post.title)}
             </TitleAnchor>
           ) : (
-            <Link href={post.slug}>
+            <Link href={post.slug} passHref>
               <TitleAnchor direction={direction}>
                 {titleCase(post.title)}
               </TitleAnchor>
@@ -51,7 +51,7 @@ export function Post({ post, children, direction = "left" }: PostProps) {
             <BsArrowRight width="12" height="12" />
           </TitleAnchor>
         ) : (
-          <Link href={post.slug}>
+          <Link href={post.slug} passHref>
             <TitleAnchor small direction={direction}>
               Read now
               <BsArrowRight width="12" height="12" />
