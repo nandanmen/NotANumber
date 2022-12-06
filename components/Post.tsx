@@ -91,7 +91,9 @@ const TitleAnchor = styled(motion.a, {
     direction: {
       right: {},
       left: {
-        justifyContent: "flex-end",
+        "@md": {
+          justifyContent: "flex-end",
+        },
       },
     },
   },
@@ -175,10 +177,6 @@ const PostUpdatedText = styled("p", {
   fontSize: "$sm",
   color: "$gray11",
   fontFamily: "$mono",
-});
-
-const PostArrow = styled(motion.span, {
-  fontSize: "$xl",
 });
 
 const PostContent = styled("div", {
