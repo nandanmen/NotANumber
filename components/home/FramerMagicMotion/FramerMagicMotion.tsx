@@ -1,11 +1,10 @@
 import React from "react";
-import { Content } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
+import { VisualWrapper } from "../shared";
 
 export const FramerMagicMotion = () => {
   return (
-    <Wrapper>
-      <Background />
+    <VisualWrapper>
       <svg viewBox="0 0 100 100" style={{ position: "relative" }}>
         <defs>
           <linearGradient id="my-gradient" gradientTransform="rotate(45)">
@@ -94,21 +93,9 @@ export const FramerMagicMotion = () => {
           strokeWidth="0.2"
         />
       </svg>
-    </Wrapper>
+    </VisualWrapper>
   );
 };
-
-const Background = styled(Content, {
-  position: "absolute",
-  inset: 0,
-  borderRadius: 9999,
-  border: "1px solid $gray8",
-});
-
-const Wrapper = styled("div", {
-  height: "100%",
-  position: "relative",
-});
 
 const Rect = styled("rect", {
   width: 50,

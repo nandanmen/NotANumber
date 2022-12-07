@@ -28,6 +28,10 @@ const Background = styled("div", {
   inset: 0,
   mixBlendMode: "hard-light",
   pointerEvents: "none",
+
+  [`.${darkTheme} &`]: {
+    display: "none",
+  },
 });
 
 const Wrapper = styled("div", {

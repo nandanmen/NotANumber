@@ -99,9 +99,6 @@ export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
 export const darkTheme = createTheme({
   colors: {
     ...grayDark,
-    ...blueDark,
-    ...greenDark,
-    ...redDark,
   },
 });
 
