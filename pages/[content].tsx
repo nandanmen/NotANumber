@@ -148,6 +148,7 @@ const Nav = styled("nav", {
 const PageWrapper = styled("main", {
   width: `min(80rem, 100%)`,
   margin: "0 auto",
+  padding: "$16 0",
 });
 
 const Title = styled("h1", {

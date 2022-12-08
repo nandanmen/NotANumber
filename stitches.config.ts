@@ -58,8 +58,8 @@ export const baseTheme = {
     ...yellow,
   },
   fonts: {
-    serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
+    serif: `PP Editorial New, ui-serif, Georgia, serif`,
+    mono: `JetBrains Mono, ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
     sans: `Nunito, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {

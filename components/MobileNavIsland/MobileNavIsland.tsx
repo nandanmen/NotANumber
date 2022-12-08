@@ -76,7 +76,7 @@ export const MobileNavIsland = ({ headings }: { headings: Heading[] }) => {
           Thanks! Check your inbox — we sent you a confirmation email.
         </SuccessText>
       )}
-      <NavWrapper>
+      <DynamicIsland>
         <Link href="/">
           <HomeLink>NaN</HomeLink>
         </Link>
@@ -156,7 +156,7 @@ export const MobileNavIsland = ({ headings }: { headings: Heading[] }) => {
             </>
           )}
         </SubscribeControlsWrapper>
-      </NavWrapper>
+      </DynamicIsland>
     </Wrapper>
   );
 };
@@ -259,7 +259,7 @@ const HeadingButton = styled("button", {
   },
 });
 
-const NavWrapper = styled("nav", {
+export const DynamicIsland = styled("nav", {
   position: "relative",
   background: "$gray3",
   border: "1px solid $gray8",
