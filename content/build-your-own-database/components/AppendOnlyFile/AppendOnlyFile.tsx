@@ -7,7 +7,9 @@ import {
   ToggleButton,
 } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
-import useInterval from "@use-it/interval";
+import { FullWidth } from "~/components/FullWidth";
+
+import { useFileDatabase, type DatabaseCommand } from "./database";
 
 const ipsum =
   "dolor sit amet, consectetur adipiscing elit. Vestibulum varius vel mauris iaculis pharetra.".split(
@@ -23,59 +25,74 @@ for (let i = 0; i < ipsum.length; i += 2) {
 const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+const commandArgs = (command: DatabaseCommand) => {
+  switch (command.type) {
+    case "set":
+      return `${command.key} "${command.value}"`;
+    case "get":
+      return `${command.key}`;
+  }
+};
+
+const randomUnique = (min: number, max: number, exclude: number[]) => {
+  let number = random(min, max);
+  while (exclude.includes(number)) {
+    number = random(min, max);
+  }
+  return number;
+};
+
 export const AppendOnlyFile = () => {
-  const [records, setRecords] = React.useState([
-    ["001", "Lorem ipsum"],
-    ["002", "dolor sit"],
+  const db = useFileDatabase([
+    [1, "Lorem ipsum"],
+    [18, "dolor sit"],
   ]);
-  const [searching, setSearching] = React.useState(false);
-  const [{ key, currentIndex }, setSearch] = React.useState({
-    key: null,
-    currentIndex: null,
-  });
+  const { key, currentIndex, found } = db.search;
+  const currentRecord = db.records[currentIndex];
 
   const addRecord = () => {
-    const key = records.length + 1;
-    const newRecord = [
-      `${key}`.padStart(3, "0"),
-      texts[(key - 1) % texts.length],
-    ];
-    setRecords([...records, newRecord]);
+    const key = db.records.length + 1;
+    db.set(
+      randomUnique(
+        0,
+        20,
+        db.records.map((record) => record[0])
+      ),
+      texts[(key - 1) % texts.length]
+    );
   };
 
-  const currentRecord = records[currentIndex];
-  const found = currentRecord && currentRecord[0] === key;
-
-  useInterval(
-    () => {
-      const currentRecord = records[currentIndex];
-      // Either we found the key or we're out of bounds
-      if (!currentRecord || found) {
-        setSearching(false);
-      } else {
-        setSearch({ key, currentIndex: currentIndex + 1 });
-      }
-    },
-    searching ? 500 : null
-  );
-
   return (
-    <figure>
-      <Visualizer>
-        <Controls css={{ justifyContent: "center", gap: "$2" }}>
-          <ToggleButton onClick={addRecord}>Add</ToggleButton>
-          <ToggleButton
-            onClick={() => {
-              setSearching(true);
-              setSearch({
-                key: `${random(1, 10)}`.padStart(3, "0"),
-                currentIndex: 0,
-              });
-            }}
-          >
-            Search
-          </ToggleButton>
-        </Controls>
+    <FullWidth>
+      <Visualizer row css={{ flexWrap: "wrap-reverse" }}>
+        <Aside>
+          <Commands>
+            {db.commands.map((command, index) => (
+              <motion.li
+                key={index}
+                animate={{ y: 0, opacity: 1 }}
+                initial={{ y: 20, opacity: 0 }}
+                transition={{ type: "spring", damping: 20 }}
+              >
+                {command.type === "result" ? (
+                  command.value
+                ) : (
+                  <>
+                    <span>{`$ db `}</span>
+                    <CommandType>{command.type}</CommandType>
+                    <span>{` ${commandArgs(command)}`}</span>
+                  </>
+                )}
+              </motion.li>
+            ))}
+          </Commands>
+          <Controls css={{ justifyContent: "center", gap: "$2" }}>
+            <ToggleButton onClick={addRecord}>Add</ToggleButton>
+            <ToggleButton onClick={() => db.get(random(0, 20))}>
+              Search
+            </ToggleButton>
+          </Controls>
+        </Aside>
         <Content
           padding="lg"
           css={{
@@ -84,10 +101,12 @@ export const AppendOnlyFile = () => {
             height: 400,
             overflow: "hidden",
             position: "relative",
+            flex: 3,
+            flexBasis: 375,
           }}
         >
           <Page>
-            {records.map(([dbKey, value], index) => (
+            {db.records.map(([dbKey, value], index) => (
               <Record
                 key={dbKey}
                 dbKey={dbKey}
@@ -117,9 +136,31 @@ export const AppendOnlyFile = () => {
           )}
         </Content>
       </Visualizer>
-    </figure>
+    </FullWidth>
   );
 };
+
+const Aside = styled("aside", {
+  display: "flex",
+  flexDirection: "column",
+  flex: 2,
+  flexBasis: 250,
+});
+
+const CommandType = styled("span", {
+  fontWeight: "bold",
+  color: "$blue10",
+});
+
+const Commands = styled("ul", {
+  height: "100%",
+  borderBottom: "1px solid $gray8",
+  fontFamily: "$mono",
+  fontSize: "$sm",
+  padding: "$6",
+  listStyle: "none",
+  lineHeight: 1.6,
+});
 
 const Caption = styled(motion.div, {
   position: "absolute",
@@ -143,10 +184,11 @@ const Page = styled("ul", {
   height: 400,
   minWidth: 300,
   fontFamily: "$mono",
+  lineHeight: 1.1,
 });
 
 type RecordProps = {
-  dbKey: string;
+  dbKey: number;
   value: string;
   search: {
     key: string | null;
@@ -197,7 +239,7 @@ const Record = ({ dbKey, value, search, index }: RecordProps) => {
         animate={active ? "active" : "base"}
         type={type}
       >
-        <RecordKey layout>{dbKey}:</RecordKey>
+        <RecordKey layout>{String(dbKey).padStart(3, "0")}:</RecordKey>
         <motion.span layout>{value}</motion.span>
       </RecordWrapper>
     </motion.div>

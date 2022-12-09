@@ -12,6 +12,19 @@ export const Visualizer = styled("div", {
   "> :not(:first-child)": {
     borderTop: "1px solid $gray8",
   },
+
+  variants: {
+    row: {
+      true: {
+        display: "flex",
+
+        "> :not(:first-child)": {
+          borderTop: "none",
+          borderLeft: "1px solid $gray8",
+        },
+      },
+    },
+  },
 });
 
 export const Controls = styled("div", {
