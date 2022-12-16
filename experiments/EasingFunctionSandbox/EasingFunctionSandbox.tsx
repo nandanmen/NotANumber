@@ -389,8 +389,8 @@ const _ControlLine = styled(motion.line, {
 });
 
 type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
-  cx: number;
-  cy: number;
+  cx?: number;
+  cy?: number;
   color: string;
 };
 
