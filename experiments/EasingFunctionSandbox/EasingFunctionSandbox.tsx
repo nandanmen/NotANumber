@@ -323,12 +323,12 @@ const transformPan = transform([-50, 50], [-0.1, 0.1], { clamp: false });
 
 type ButtonSliderProps = {
   onValueChange: (value: number) => void;
-  onHoverEnd: (panning: boolean) => void;
+  onHoverEnd?: (panning: boolean) => void;
   value: number;
   active?: boolean;
 } & Omit<React.ComponentPropsWithoutRef<typeof _ButtonSlider>, "onHoverEnd">;
 
-const ButtonSlider = ({
+export const ButtonSlider = ({
   onValueChange,
   value,
   active = false,
@@ -349,7 +349,7 @@ const ButtonSlider = ({
         setPanning(false);
         onPanEnd?.(...args);
       }}
-      onHoverEnd={() => onHoverEnd(panning)}
+      onHoverEnd={() => onHoverEnd?.(panning)}
       onPan={(_, info) => onValueChange(value + transformPan(info.delta.x))}
       {...props}
     >
@@ -359,16 +359,16 @@ const ButtonSlider = ({
 };
 
 const _ButtonSlider = styled(motion.button, {
-  color: "#0550AE",
+  color: "var(--text-color, #0550AE)",
 
   "&:hover": {
-    background: "$blue6",
+    background: "var(--active-color, $colors$blue6)",
   },
 
   variants: {
     active: {
       true: {
-        background: "$blue6",
+        background: "var(--active-color, $colors$blue6)",
       },
     },
   },

@@ -21,15 +21,18 @@ import {
 
 const BASE_DURATION = 1;
 
-export const BezierCurveQuiz = ({ exampleEasing = [0.62, 0, 0.18, 1] }) => {
+export const BezierCurveQuiz = ({
+  exampleEasing = [0.62, 0, 0.18, 1],
+  debug = false,
+}) => {
   const [speed, setSpeed] = React.useState(1);
   const container = React.useRef<HTMLDivElement>(null);
   const [easing, setEasing] = React.useState<CubicBezier>([0.25, 0.1, 0.25, 1]);
+  const [showLine, setShowLine] = React.useState(debug);
   const width = useWidth(container);
 
   const controls = useAnimationControls();
   const exampleControls = useAnimationControls();
-  const pathControls = useAnimationControls();
 
   const reset = async () => {
     await controls.start({ x: 0, transition: { type: false } });
@@ -56,6 +59,10 @@ export const BezierCurveQuiz = ({ exampleEasing = [0.62, 0, 0.18, 1] }) => {
   const debouncedPlay = useDebouncedCallback(() => play(speed), 500);
   const [x1, y1, x2, y2] = exampleEasing.map((n) => n * config.size);
 
+  React.useEffect(() => {
+    setShowLine(debug);
+  }, [debug]);
+
   return (
     <FullWidth>
       <Visualizer childBorders={false} css={{ display: "flex" }}>
@@ -69,14 +76,11 @@ export const BezierCurveQuiz = ({ exampleEasing = [0.62, 0, 0.18, 1] }) => {
           />
           <SvgCheckWrapper>
             <svg viewBox={viewbox}>
-              <motion.path
-                animate={pathControls}
+              <ExamplePath
                 d={`M 0 0 C ${x1} ${-y1} ${x2} ${-y2} ${config.size} -${
                   config.size
                 }`}
-                stroke="var(--colors-yellow8)"
-                strokeWidth="2"
-                fill="none"
+                animate={{ pathLength: showLine ? 1 : 0 }}
                 initial={{ pathLength: 0 }}
               />
             </svg>
@@ -109,22 +113,19 @@ export const BezierCurveQuiz = ({ exampleEasing = [0.62, 0, 0.18, 1] }) => {
                 </Button>
               ))}
             </Stack>
-            <ToggleButton
-              onClick={() =>
-                pathControls.start({
-                  pathLength: 1,
-                  transition: { type: "spring", duration: 2 },
-                })
-              }
-            >
-              Check
-            </ToggleButton>
+            <ToggleButton onClick={() => setShowLine(true)}>Check</ToggleButton>
           </Controls>
         </ContentWrapper>
       </Visualizer>
     </FullWidth>
   );
 };
+
+const ExamplePath = styled(motion.path, {
+  fill: "none",
+  strokeWidth: 3,
+  stroke: "$yellow8",
+});
 
 const SvgCheckWrapper = styled("div", {
   position: "absolute",
