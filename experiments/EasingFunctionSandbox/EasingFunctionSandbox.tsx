@@ -94,10 +94,11 @@ export const EasingFunctionSandbox = () => {
           <CodeBlock>
             {easing.map((value, index) => {
               const isFirstPoint = index === 0 || index === 1;
+              const name = isFirstPoint ? "first" : "second";
               return (
                 <React.Fragment key={index}>
                   <ButtonSlider
-                    active={panning === (isFirstPoint ? "first" : "second")}
+                    active={panning === name || activePoint === name}
                     onValueChange={handleEasingPan(index)}
                     onHoverStart={() => {
                       if (activePan !== null && activePan !== index) return;
@@ -263,7 +264,7 @@ type CircleProps = ComponentPropsWithoutRef<typeof motion.circle> & {
   active?: boolean;
 };
 
-const Circle = ({ color, active, ...props }: LineProps) => (
+const Circle = ({ color, active, ...props }: CircleProps) => (
   <motion.circle
     animate={{ r: active ? 7 : 2 }}
     fill={`var(--colors-${color}7)`}
@@ -388,6 +389,8 @@ const _ControlLine = styled(motion.line, {
 });
 
 type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
+  cx: number;
+  cy: number;
   color: string;
 };
 
