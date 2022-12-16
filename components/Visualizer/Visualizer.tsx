@@ -12,6 +12,16 @@ export const Visualizer = styled("div", {
   "> :not(:first-child)": {
     borderTop: "1px solid $gray8",
   },
+
+  variants: {
+    childBorders: {
+      false: {
+        "> :not(:first-child)": {
+          border: "initial",
+        },
+      },
+    },
+  },
 });
 
 export const Controls = styled("div", {
