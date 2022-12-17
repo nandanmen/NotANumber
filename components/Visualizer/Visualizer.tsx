@@ -24,6 +24,13 @@ export const Visualizer = styled("div", {
         },
       },
     },
+    childBorders: {
+      false: {
+        "> :not(:first-child)": {
+          border: "initial",
+        },
+      },
+    },
   },
 });
 
