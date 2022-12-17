@@ -47,7 +47,7 @@ export const useFileDatabase = (initialRecords: DatabaseRecord[] = []) => {
     }
   }, searchSpeed);
 
-  return {
+  const db = {
     records,
     commands,
     search: {
@@ -65,5 +65,11 @@ export const useFileDatabase = (initialRecords: DatabaseRecord[] = []) => {
       setSearch({ key, currentIndex: 0 });
       setSearchSpeed(500);
     },
+    delete(key: number) {
+      setCommands([...commands, { type: "delete", key }]);
+      setRecords([...records, [key, "null"]]);
+    },
   };
+
+  return db;
 };

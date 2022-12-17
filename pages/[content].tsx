@@ -245,6 +245,7 @@ const Article = styled("article", {
     fontSize: "$sm",
     overflowX: "auto",
     background: "$gray3",
+    position: "relative",
   },
 
   blockquote: {

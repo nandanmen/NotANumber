@@ -44,7 +44,7 @@ When we append to a file, we're always adding data to the end of the file, so we
 
 </Callout>
 
-With this restriction, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
+Since we're limiting ourselves to only appending to a file, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
 
 ```
 update example

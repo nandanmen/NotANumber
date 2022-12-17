@@ -30,6 +30,7 @@ const commandArgs = (command: DatabaseCommand) => {
     case "set":
       return `${command.key} "${command.value}"`;
     case "get":
+    case "delete":
       return `${command.key}`;
   }
 };
@@ -42,13 +43,42 @@ const randomUnique = (min: number, max: number, exclude: number[]) => {
   return number;
 };
 
-export const AppendOnlyFile = () => {
-  const db = useFileDatabase([
-    [1, "Lorem ipsum"],
-    [18, "dolor sit"],
-  ]);
+type Mode = "add" | "update" | "delete" | "search";
+
+type AppendOnlyFileProps = {
+  mode?: "all" | Mode[];
+  initialData?: Array<[number, string]>;
+};
+
+const defaultData = [
+  [1, "Lorem ipsum"],
+  [18, "dolor sit"],
+] as const;
+
+const pick = (array: any[], exclude: any[]) => {
+  const index = random(0, array.length - 1);
+  const item = array[index];
+  if (exclude.includes(item)) return pick(array, exclude);
+  return item;
+};
+
+export const AppendOnlyFile = ({
+  mode = "all",
+  initialData = defaultData,
+}: AppendOnlyFileProps) => {
+  const db = useFileDatabase(initialData);
   const { key, currentIndex, found } = db.search;
   const currentRecord = db.records[currentIndex];
+
+  const getRandomKey = () => {
+    const deleted = db.records
+      .map((record) => record[1] !== "null")
+      .map((record) => record[0]);
+    return pick(
+      db.records.map((record) => record[0]),
+      deleted
+    );
+  };
 
   const addRecord = () => {
     const key = db.records.length + 1;
@@ -60,6 +90,21 @@ export const AppendOnlyFile = () => {
       ),
       texts[(key - 1) % texts.length]
     );
+  };
+
+  const updateRecord = () => {
+    const value = texts[random(0, texts.length - 1)];
+    db.set(getRandomKey(), value);
+  };
+
+  const deleteRecord = () => {
+    db.delete(getRandomKey());
+  };
+
+  const showButton = (type: Mode) => {
+    if (mode === "all") return true;
+    if (Array.isArray(mode)) return mode.includes(type);
+    return false;
   };
 
   return (
@@ -87,10 +132,20 @@ export const AppendOnlyFile = () => {
             ))}
           </Commands>
           <Controls css={{ justifyContent: "center", gap: "$2" }}>
-            <ToggleButton onClick={addRecord}>Add</ToggleButton>
-            <ToggleButton onClick={() => db.get(random(0, 20))}>
-              Search
-            </ToggleButton>
+            {showButton("add") && (
+              <ToggleButton onClick={addRecord}>Add</ToggleButton>
+            )}
+            {showButton("update") && (
+              <ToggleButton onClick={updateRecord}>Update</ToggleButton>
+            )}
+            {showButton("delete") && (
+              <ToggleButton onClick={deleteRecord}>Delete</ToggleButton>
+            )}
+            {showButton("search") && (
+              <ToggleButton onClick={() => db.get(getRandomKey())}>
+                Search
+              </ToggleButton>
+            )}
           </Controls>
         </Aside>
         <Content

@@ -25,6 +25,7 @@ const Details = styled("details", {
   borderRadius: "$base",
   background: "$gray3",
   overflow: "hidden",
+  position: "relative",
 
   "> :not(summary)": {
     marginTop: "$2",
