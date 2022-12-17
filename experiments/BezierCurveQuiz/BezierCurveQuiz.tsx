@@ -1,6 +1,12 @@
 import React from "react";
-import { motion, useAnimationControls } from "framer-motion";
+import {
+  AnimationControls,
+  motion,
+  transform,
+  useAnimationControls,
+} from "framer-motion";
 import { useDebouncedCallback } from "use-debounce";
+import bezier from "bezier-easing";
 import {
   Visualizer,
   Content,
@@ -18,11 +24,12 @@ import {
   config,
   type CubicBezier,
 } from "../EasingCurveEditor";
+import { range, steppedRange } from "~/lib/utils";
 
 const BASE_DURATION = 1;
 
 export const BezierCurveQuiz = ({
-  exampleEasing = [0.62, 0, 0.18, 1],
+  exampleEasing = [0.62, 0, 0.18, 1] as CubicBezier,
   debug = false,
 }) => {
   const [speed, setSpeed] = React.useState(1);
@@ -42,9 +49,9 @@ export const BezierCurveQuiz = ({
     });
   };
 
+  const target = width - 180;
   const play = async (speed: number) => {
     await reset();
-    const target = width - 180;
     const duration = BASE_DURATION / speed;
     controls.start({
       x: target,
@@ -88,9 +95,14 @@ export const BezierCurveQuiz = ({
         </Aside>
         <ContentWrapper>
           <AnimationStack>
-            <Animation controls={exampleControls} example />
+            <Animation
+              easing={exampleEasing}
+              controls={exampleControls}
+              target={target}
+              example
+            />
             <Content ref={container} css={{ flex: 1 }}>
-              <Animation controls={controls} />
+              <Animation easing={easing} controls={controls} target={target} />
             </Content>
           </AnimationStack>
           <Controls css={{ borderTop: "1px solid $gray8 !important" }}>
@@ -176,9 +188,38 @@ const useWidth = (ref) => {
   return width;
 };
 
-const Animation = ({ controls, example = false }) => {
+const SAMPLE_FPS = 12;
+
+type AnimationProps = {
+  controls: AnimationControls;
+  easing: CubicBezier;
+  example?: boolean;
+  target: number;
+};
+
+const Animation = ({
+  controls,
+  easing,
+  example = false,
+  target,
+}: AnimationProps) => {
+  const easingCurve = bezier(...easing);
+  const steps = steppedRange(0, BASE_DURATION, BASE_DURATION / SAMPLE_FPS).map(
+    (current) => {
+      const progress = current / BASE_DURATION;
+      return easingCurve(progress) * target;
+    }
+  );
+  const getOpacity = transform([0, target], [0.2, 0.6]);
   return (
     <AnimationWrapper>
+      {steps.map((x) => (
+        <Shadow
+          key={x}
+          style={{ x, "--opacity": getOpacity(x) } as React.CSSProperties}
+          example={example}
+        />
+      ))}
       <Square animate={controls} example={example} />
     </AnimationWrapper>
   );
@@ -190,9 +231,27 @@ const AnimationWrapper = styled("div", {
   alignItems: "center",
   flex: 1,
   height: "100%",
+  position: "relative",
 
   "&:last-child": {
     borderTop: "1px solid $gray8",
+  },
+});
+
+const Shadow = styled(motion.div, {
+  position: "absolute",
+  width: 100,
+  aspectRatio: 1,
+  border: "4px dashed $blue7",
+  borderRadius: 12,
+  opacity: 0.5,
+
+  variants: {
+    example: {
+      true: {
+        borderColor: "$yellow7",
+      },
+    },
   },
 });
 
@@ -203,6 +262,7 @@ const Square = styled(motion.div, {
   border: "1px solid $gray12",
   borderRadius: 12,
   boxShadow: "3px 3px 0 $colors$gray12",
+  position: "relative",
 
   variants: {
     example: {
