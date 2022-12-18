@@ -28,7 +28,7 @@ Databases were made to solve a simple problem: how do you store data persistentl
 
 Let's start by using a file. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
-<AppendOnlyFile />
+<AppendOnlyFile mode={["add", "search"]} />
 
 What about updates and deletes?
 
@@ -46,9 +46,7 @@ When we append to a file, we're always adding data to the end of the file, so we
 
 Since we're limiting ourselves to only appending to a file, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
 
-```
-update example
-```
+<AppendOnlyFile mode={["add", "update"]} />
 
 But now we have another problem—there are duplicate keys in the file! To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
 
@@ -58,10 +56,17 @@ search with duplicates example
 
 To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
 
-```
-delete example
-```
+<AppendOnlyFile mode={["add", "delete"]} />
 
 And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
 
-## File Troubles
+### File Troubles
+
+This implementation is nowhere near perfect, however; there are two glaring problems I can think of:
+
+1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
+2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
+
+How can we fix these problems?
+
+## Keeping Files Small
