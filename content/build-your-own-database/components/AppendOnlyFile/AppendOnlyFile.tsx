@@ -9,7 +9,11 @@ import {
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 
-import { useFileDatabase, type DatabaseCommand } from "./database";
+import {
+  useFileDatabase,
+  type DatabaseCommand,
+  type SearchState,
+} from "./database";
 
 const ipsum =
   "dolor sit amet, consectetur adipiscing elit. Vestibulum varius vel mauris iaculis pharetra.".split(
@@ -50,15 +54,16 @@ type AppendOnlyFileProps = {
   initialData?: Array<[number, string]>;
 };
 
-const defaultData = [
+const defaultData: [number, string][] = [
   [1, "Lorem ipsum"],
   [18, "dolor sit"],
-] as const;
+];
 
-const pick = (array: any[], exclude: any[]) => {
-  const index = random(0, array.length - 1);
-  const item = array[index];
-  if (exclude.includes(item)) return pick(array, exclude);
+const pick = (array: any[], exclude: Set<unknown>) => {
+  let item = array[random(0, array.length - 1)];
+  while (exclude.has(item)) {
+    item = array[random(0, array.length - 1)];
+  }
   return item;
 };
 
@@ -71,9 +76,11 @@ export const AppendOnlyFile = ({
   const currentRecord = db.records[currentIndex];
 
   const getRandomKey = () => {
-    const deleted = db.records
-      .map((record) => record[1] !== "null")
-      .map((record) => record[0]);
+    const deleted = new Set(
+      db.records
+        .filter((record) => record[1] === "null")
+        .map((record) => record[0])
+    );
     return pick(
       db.records.map((record) => record[0]),
       deleted
@@ -136,13 +143,20 @@ export const AppendOnlyFile = ({
               <ToggleButton onClick={addRecord}>Add</ToggleButton>
             )}
             {showButton("update") && (
-              <ToggleButton onClick={updateRecord}>Update</ToggleButton>
+              <ToggleButton onClick={updateRecord} disabled={db.size() === 0}>
+                Update
+              </ToggleButton>
             )}
             {showButton("delete") && (
-              <ToggleButton onClick={deleteRecord}>Delete</ToggleButton>
+              <ToggleButton onClick={deleteRecord} disabled={db.size() === 0}>
+                Delete
+              </ToggleButton>
             )}
             {showButton("search") && (
-              <ToggleButton onClick={() => db.get(getRandomKey())}>
+              <ToggleButton
+                onClick={() => db.get(getRandomKey())}
+                disabled={db.size() === 0}
+              >
                 Search
               </ToggleButton>
             )}
@@ -245,10 +259,7 @@ const Page = styled("ul", {
 type RecordProps = {
   dbKey: number;
   value: string;
-  search: {
-    key: string | null;
-    currentIndex: number | null;
-  };
+  search: SearchState;
   index: number;
 };
 

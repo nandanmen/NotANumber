@@ -22,11 +22,16 @@ export type DatabaseCommand =
       value: string;
     };
 
+export type SearchState = {
+  key: number | null;
+  currentIndex: number | null;
+};
+
 export const useFileDatabase = (initialRecords: DatabaseRecord[] = []) => {
   const [commands, setCommands] = React.useState([]);
   const [records, setRecords] = React.useState(initialRecords);
   const [searchSpeed, setSearchSpeed] = React.useState(null);
-  const [{ key, currentIndex }, setSearch] = React.useState({
+  const [{ key, currentIndex }, setSearch] = React.useState<SearchState>({
     key: null,
     currentIndex: null,
   });
@@ -55,6 +60,17 @@ export const useFileDatabase = (initialRecords: DatabaseRecord[] = []) => {
       currentIndex,
       found,
       speed: searchSpeed,
+    },
+    size() {
+      const valuesUnique = {};
+      records.forEach((record) => {
+        valuesUnique[record[0]] = record[1];
+      });
+      return new Set(
+        Object.entries(valuesUnique)
+          .filter((record) => record[1] !== "null")
+          .map((record) => record[0])
+      ).size;
     },
     set(key: number, value: string) {
       setCommands([...commands, { type: "set", key, value }]);
