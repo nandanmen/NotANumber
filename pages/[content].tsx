@@ -137,7 +137,7 @@ const Nav = styled("nav", {
 });
 
 const PageWrapper = styled("main", {
-  width: `min(80rem, 100%)`,
+  width: `min(85rem, 100%)`,
   margin: "0 auto",
   padding: "$16 0",
 });
@@ -168,7 +168,7 @@ const Header = styled("header", {
 
 const Article = styled("article", {
   lineHeight: "$body",
-  maxWidth: 800,
+  maxWidth: 900,
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
@@ -176,7 +176,7 @@ const Article = styled("article", {
   paddingBottom: "$12",
 
   "@media (min-width: 72rem)": {
-    paddingBottom: "$4",
+    paddingBottom: 0,
   },
 
   "> *": {

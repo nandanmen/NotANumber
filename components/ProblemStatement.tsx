@@ -13,4 +13,6 @@ const Wrapper = styled("aside", {
   padding: "$4",
   border: "1px solid $gray8",
   borderRadius: "$base",
+  position: "relative",
+  background: "$gray4",
 });

@@ -9,10 +9,12 @@ import {
 import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 
+import { FileDatabase, FileDatabaseWrapper } from "../FileDatabase";
+
 import {
   useFileDatabase,
+  type DatabaseRecord,
   type DatabaseCommand,
-  type SearchState,
 } from "./database";
 
 const ipsum =
@@ -51,21 +53,21 @@ type Mode = "add" | "update" | "delete" | "search";
 
 type AppendOnlyFileProps = {
   mode?: "all" | Mode[];
-  initialData?: Array<[number, string]>;
+  initialData?: Array<DatabaseRecord>;
 };
 
-const defaultData: [number, string][] = [
+const defaultData: DatabaseRecord[] = [
   [1, "Lorem ipsum"],
   [18, "dolor sit"],
 ];
 
-const pick = (array: any[], exclude: Set<unknown>) => {
+function pick<DataType>(array: DataType[], exclude: Set<DataType>): DataType {
   let item = array[random(0, array.length - 1)];
   while (exclude.has(item)) {
     item = array[random(0, array.length - 1)];
   }
   return item;
-};
+}
 
 export const AppendOnlyFile = ({
   mode = "all",
@@ -162,29 +164,27 @@ export const AppendOnlyFile = ({
             )}
           </Controls>
         </Aside>
-        <Content
+        <FileDatabaseWrapper
+          as={Content}
+          noOverflow
           padding="lg"
           css={{
-            display: "flex",
-            justifyContent: "center",
-            height: 400,
-            overflow: "hidden",
-            position: "relative",
             flex: 3,
             flexBasis: 375,
           }}
         >
-          <Page>
-            {db.records.map(([dbKey, value], index) => (
-              <Record
-                key={dbKey}
-                dbKey={dbKey}
-                value={value}
-                search={{ key, currentIndex }}
-                index={index}
-              />
-            ))}
-          </Page>
+          <FileDatabase
+            records={db.records.map(([dbKey, value], index) => {
+              let type: "active" | "success" | "base" = "base";
+              if (currentIndex === index) {
+                type = key === dbKey ? "success" : "active";
+              }
+              return {
+                value: [dbKey, value],
+                type,
+              };
+            })}
+          />
           {key !== null && (
             <Caption
               initial={{ y: "100%" }}
@@ -203,7 +203,7 @@ export const AppendOnlyFile = ({
               )}
             </Caption>
           )}
-        </Content>
+        </FileDatabaseWrapper>
       </Visualizer>
     </FullWidth>
   );
@@ -242,109 +242,4 @@ const Caption = styled(motion.div, {
   fontSize: "0.75rem",
   textAlign: "center",
   color: "$gray11",
-});
-
-const Page = styled("ul", {
-  borderRadius: "$base",
-  border: "1px solid $gray8",
-  background: "$gray3",
-  padding: "$4 0",
-  boxShadow: "$sm",
-  height: 400,
-  minWidth: 300,
-  fontFamily: "$mono",
-  lineHeight: 1.1,
-});
-
-type RecordProps = {
-  dbKey: number;
-  value: string;
-  search: SearchState;
-  index: number;
-};
-
-const Record = ({ dbKey, value, search, index }: RecordProps) => {
-  const [active, setActive] = React.useState(true);
-
-  const { key, currentIndex } = search;
-  let type: "found" | "searching" | "base" = "base";
-  if (currentIndex === index && !active) {
-    type = key === dbKey ? "found" : "searching";
-  }
-
-  const mapTypeToColor = {
-    searching: "var(--colors-blue5)",
-    found: "var(--colors-green5)",
-    base: "var(--colors-gray3)",
-  };
-
-  return (
-    <motion.div
-      animate={{ y: 0 }}
-      initial={{ y: 300 }}
-      transition={{ type: "spring", damping: 20 }}
-      onAnimationComplete={() => setActive(false)}
-    >
-      <RecordWrapper
-        active={active}
-        layout
-        variants={{
-          active: {
-            boxShadow: `var(--shadows-sm)`,
-            backgroundColor: "var(--colors-gray2)",
-            borderRadius: "var(--radii-base)",
-            borderColor: "var(--colors-gray8)",
-          },
-          base: {
-            boxShadow: "var(--shadows-hidden)",
-            backgroundColor: mapTypeToColor[type ?? "base"],
-            borderRadius: 0,
-            borderColor: mapTypeToColor[type ?? "base"],
-          },
-        }}
-        animate={active ? "active" : "base"}
-        type={type}
-      >
-        <RecordKey layout>{String(dbKey).padStart(3, "0")}:</RecordKey>
-        <motion.span layout>{value}</motion.span>
-      </RecordWrapper>
-    </motion.div>
-  );
-};
-
-const RecordWrapper = styled(motion.li, {
-  padding: "$1 $6",
-  display: "flex",
-  gap: "$2",
-  border: "1px solid $gray3",
-
-  variants: {
-    active: {
-      true: {
-        background: "$gray2",
-        borderColor: "$gray8",
-        borderRadius: "$base",
-        padding: "$4 $8",
-        boxShadow: "$sm",
-        margin: "0 -$4",
-      },
-    },
-    type: {
-      searching: {
-        background: "$blue5",
-        color: "$blue11",
-        borderColor: "$blue5",
-      },
-      found: {
-        background: "$green5",
-        color: "$green11",
-        borderColor: "$green5",
-      },
-      base: {},
-    },
-  },
-});
-
-const RecordKey = styled(motion.span, {
-  fontWeight: "bold",
 });

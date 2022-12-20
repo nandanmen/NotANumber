@@ -7,8 +7,9 @@ editedAt: "2022-11-22"
 ---
 
 import { Callout } from "~/components/Callout";
-
+import { ProblemStatement } from "~/components/ProblemStatement";
 import { AppendOnlyFile } from "./components/AppendOnlyFile";
+import { FileDatabaseExample } from "./components/FileDatabaseExample";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -62,7 +63,7 @@ And there we have it! We have a key-value database that uses a file as its stora
 
 ### File Troubles
 
-This implementation is nowhere near perfect, however; there are two glaring problems I can think of:
+This implementation is nowhere near perfect, however; in fact, there are two major issues:
 
 1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
 2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
@@ -70,3 +71,43 @@ This implementation is nowhere near perfect, however; there are two glaring prob
 How can we fix these problems?
 
 ## Keeping Files Small
+
+Let's start with the first:
+
+<ProblemStatement>
+
+How do we make sure the file doesn't grow indefinitely?
+
+</ProblemStatement>
+
+Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
+
+Take a look at our database here after a few updates and deletes:
+
+<FileDatabaseExample
+  records={[
+    {
+      value: [1, "Lorem ipsum"],
+    },
+    {
+      value: [12, "adipiscing elit."],
+    },
+    {
+      value: [1, "null"],
+      type: "active",
+    },
+    {
+      value: [18, "dolor sit"],
+    },
+    {
+      value: [12, "Vestibulum varius"],
+      type: "success",
+    },
+    {
+      value: [18, "vel mauris"],
+      type: "success",
+    },
+  ]}
+/>
+
+Here, our database file contains six records, but only two are active—the rest are either deleted or contain stale data. This means if we can periodically trim outdated data, we can keep the file size small!
