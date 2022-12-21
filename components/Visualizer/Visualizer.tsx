@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ComponentPropsWithoutRef } from "react";
-import { FaPlay, FaUndo } from "react-icons/fa";
+import { FaPlay, FaUndo, FaPause } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 import { GridBackground } from "../Grid";
 
@@ -107,12 +107,13 @@ export const IconButton = styled(ToggleButton, {
   height: 22,
 });
 
-export const PlayButton = (
-  props: ComponentPropsWithoutRef<typeof IconButton>
-) => {
+export const PlayButton = ({
+  isPlaying = false,
+  ...props
+}: ComponentPropsWithoutRef<typeof IconButton> & { isPlaying?: boolean }) => {
   return (
     <IconButton secondary {...props}>
-      <FaPlay />
+      {isPlaying ? <FaPause /> : <FaPlay />}
     </IconButton>
   );
 };

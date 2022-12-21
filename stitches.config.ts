@@ -70,7 +70,10 @@ export const baseTheme = {
     "2xl": "1.875rem",
   },
   space: SPACING,
-  sizes: SPACING,
+  sizes: {
+    ...SPACING,
+    page: "900px",
+  },
   lineHeights: {
     body: 1.7,
     title: 1,

@@ -168,7 +168,7 @@ const Header = styled("header", {
 
 const Article = styled("article", {
   lineHeight: "$body",
-  maxWidth: 900,
+  maxWidth: "$page",
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
@@ -176,7 +176,7 @@ const Article = styled("article", {
   paddingBottom: "$12",
 
   "@media (min-width: 72rem)": {
-    paddingBottom: 0,
+    padding: 0,
   },
 
   "> *": {

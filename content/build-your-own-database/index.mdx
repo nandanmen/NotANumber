@@ -10,6 +10,7 @@ import { Callout } from "~/components/Callout";
 import { ProblemStatement } from "~/components/ProblemStatement";
 import { AppendOnlyFile } from "./components/AppendOnlyFile";
 import { FileDatabaseExample } from "./components/FileDatabaseExample";
+import { SingleFileCompaction } from "./components/SingleFileCompaction";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -114,9 +115,7 @@ Notice that our database file contains six records, but only two are active—th
 
 One thing we can do is to periodically copy over all the active records to a new file. We can do this in the background so the main file can still accept new updates:
 
-```
-compaction example
-```
+<SingleFileCompaction />
 
 What happens when we're done? We might be tempted to delete the old file, but we can't actually do that because it might contain new records that weren't copied over:
 

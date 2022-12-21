@@ -3,19 +3,28 @@ import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { type DatabaseRecord } from "../AppendOnlyFile/database";
 
+export type Record = {
+  value: DatabaseRecord;
+  type?: "success" | "active" | "base";
+};
+
 type FileDatabaseProps = {
-  records: Array<{
-    value: DatabaseRecord;
-    type?: "success" | "active" | "base";
-  }>;
+  records: Record[];
 };
 
 export const FileDatabase = ({ records }: FileDatabaseProps) => {
   return (
     <Page>
-      {records.map(({ value, type }) => {
+      {records.map(({ value, type }, index) => {
         const [dbKey, dbValue] = value;
-        return <Record key={dbKey} dbKey={dbKey} value={dbValue} type={type} />;
+        return (
+          <Record
+            key={`${index}-${dbKey}`}
+            dbKey={dbKey}
+            value={dbValue}
+            type={type}
+          />
+        );
       })}
     </Page>
   );
