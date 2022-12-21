@@ -172,7 +172,7 @@ const Article = styled("article", {
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
-  padding: "0 $4",
+  padding: "0 $8",
   paddingBottom: "$12",
 
   "@media (min-width: 72rem)": {

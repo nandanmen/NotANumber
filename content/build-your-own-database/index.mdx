@@ -76,11 +76,9 @@ Let's start with the first:
 
 <ProblemStatement>
 
-How do we make sure the file doesn't grow indefinitely?
+**How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
 
 </ProblemStatement>
-
-Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
 
 Take a look at our database here after a few updates and deletes:
 
@@ -110,4 +108,76 @@ Take a look at our database here after a few updates and deletes:
   ]}
 />
 
-Here, our database file contains six records, but only two are active—the rest are either deleted or contain stale data. This means if we can periodically trim outdated data, we can keep the file size small!
+Notice that our database file contains six records, but only two are active—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+
+### First Attempt at Compaction
+
+One thing we can do is to periodically copy over all the active records to a new file. We can do this in the background so the main file can still accept new updates:
+
+```
+compaction example
+```
+
+What happens when we're done? We might be tempted to delete the old file, but we can't actually do that because it might contain new records that weren't copied over:
+
+```
+compaction deletion problem
+```
+
+So, after all that, we somehow ended up using _more_ disk space!
+
+### Splitting to Segments
+
+Take a look at these two files—do you notice any similarities?
+
+```
+file comparison
+```
+
+Both of these files contain up-to-date values for keys 12 and 18, so what if we delete the values in one of the files?
+
+Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
+
+Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_:
+
+```
+segments intro
+```
+
+We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
+
+```
+segment compaction
+```
+
+"Old" is the keyword here—because we're not merging data from the current "active" segment, we don't have to worry about modifying that segment when we're done.
+
+Note that we won't modify the segments as we're compacting them. This immutability lets us continue reading from the old segments while the compaction process is happening.
+
+When the compaction is complete, we can redirect our reads to the compacted segments and safely delete the old segments:
+
+```
+redirect
+```
+
+## Speeding Up Searches
+
+- Introduce in-memory indices with hash tables
+- Main issues:
+  - Keys have to fit in memory
+  - Inefficient range queries
+
+## Sorted String Tables
+
+- SSTs are an improvement because they allow for sparse indices and better range query performance
+  - Though sparse, keys still have to fit in memory
+  - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
+
+## Persisting Trees on Disk
+
+- How might you take a BST and persist it on disk?
+  - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
+  - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
+- This requires a detour to how hard drives work imo
+
+### How do Hard Drives Work?
