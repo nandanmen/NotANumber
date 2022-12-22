@@ -127,6 +127,20 @@ export const SingleFileCompaction = () => {
     }
   }, [state, visible, controls]);
 
+  const visibleRecords = React.useMemo(() => {
+    if (algorithmState.i < 1) {
+      return [
+        ...exampleRecords,
+        { value: [14, "iaculis pharetra."] },
+        { value: [6, "amet, consectetur"] },
+      ];
+    }
+    if (algorithmState.i < 3) {
+      return [...exampleRecords, { value: [14, "iaculis pharetra."] }];
+    }
+    return exampleRecords;
+  }, [algorithmState.i]);
+
   return (
     <FullWidth>
       <Visualizer>
@@ -173,7 +187,7 @@ export const SingleFileCompaction = () => {
             </CompactedPage>
           </PageWrapper>
           <FileDatabase
-            records={exampleRecords}
+            records={visibleRecords}
             highlighted={showHighlight ? algorithmState.i : undefined}
             layout
             css={{

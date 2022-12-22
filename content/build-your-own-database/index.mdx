@@ -113,17 +113,15 @@ Notice that our database file contains six records, but only two are active—th
 
 ### First Attempt at Compaction
 
-One thing we can do is to periodically copy over all the active records to a new file. We can do this in the background so the main file can still accept new updates:
+One thing we can do is to periodically copy over all the "active" records to a new file:
 
 <SingleFileCompaction />
 
-What happens when we're done? We might be tempted to delete the old file, but we can't actually do that because it might contain new records that weren't copied over:
+Notice that because we're working on a new file, the existing file can still accept new records, like the keys `014` and `006` in the animation above.
 
-```
-compaction deletion problem
-```
+Something doesn't look right though. Those new keys we just added weren't copied over! What should we do? We could run the compaction process again, but what if new records come in during _that_ process?
 
-So, after all that, we somehow ended up using _more_ disk space!
+Hmm, let's take a step back. Maybe there's another way to organize the data?
 
 ### Splitting to Segments
 
