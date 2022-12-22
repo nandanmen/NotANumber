@@ -76,7 +76,7 @@ export const baseTheme = {
   },
   lineHeights: {
     body: 1.7,
-    title: 1,
+    title: 1.1,
   },
   shadows: {
     md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",

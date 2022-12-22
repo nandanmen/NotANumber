@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
 import { titleCase } from "title-case";
+import Balancer from "react-wrap-balancer";
 
 import { styled } from "~/stitches.config";
 
@@ -34,12 +35,12 @@ export function Post({ post, children, direction = "left" }: PostProps) {
         <PostTitle whileHover="hover">
           {isExternal ? (
             <TitleAnchor href={post.slug} direction={direction}>
-              {titleCase(post.title)}
+              <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
             </TitleAnchor>
           ) : (
             <Link href={post.slug} passHref>
               <TitleAnchor direction={direction}>
-                {titleCase(post.title)}
+                <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
               </TitleAnchor>
             </Link>
           )}
@@ -75,6 +76,7 @@ const TitleAnchor = styled(motion.a, {
   cursor: "pointer",
   alignItems: "center",
   gap: "$4",
+  width: "100%",
 
   "&:hover": {
     color: "$blue9",
