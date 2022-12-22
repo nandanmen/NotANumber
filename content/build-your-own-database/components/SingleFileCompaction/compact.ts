@@ -17,6 +17,5 @@ export const compact = snapshot((records) => {
     compactedRecords.unshift({ value: record });
   }
 
-  debugger;
   return compactedRecords;
 });

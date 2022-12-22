@@ -51,6 +51,43 @@ type CompactionState = {
   value: string;
 };
 
+const Message = ({ record, compactedRecords }) => {
+  if (!record) return null;
+
+  const [key, value] = record.value;
+  const duplicate = compactedRecords.findIndex(
+    (record) => record.value[0] === key
+  );
+  const _key = String(key).padStart(3, "0");
+  if (value === "null") {
+    return (
+      <>
+        <RecordKey>{_key}</RecordKey> is a tombstone, skipping...
+      </>
+    );
+  }
+  if (duplicate >= 0) {
+    const [_, duplicateValue] = compactedRecords[duplicate].value;
+    if (duplicateValue === "null") {
+      return (
+        <>
+          <RecordKey>{_key}</RecordKey> was deleted, skipping...
+        </>
+      );
+    }
+    return (
+      <>
+        <RecordKey>{_key}</RecordKey> is an old version, skipping...
+      </>
+    );
+  }
+  return (
+    <>
+      <RecordKey>{_key}</RecordKey> is a new key, adding to compacted list...
+    </>
+  );
+};
+
 export const SingleFileCompaction = () => {
   const [state, send] = useMachine(machine);
   const controls = useAnimationControls();
@@ -58,7 +95,7 @@ export const SingleFileCompaction = () => {
     compact,
     [exampleRecords],
     {
-      delay: 1000,
+      delay: 1500,
       onDone: () => {
         send("done");
       },
@@ -159,13 +196,26 @@ export const SingleFileCompaction = () => {
             <MovingArrow playing={playing} />
           </ArrowWrapper>
         </Content>
-        <Controls>
+        <Controls css={{ alignItems: "center" }}>
           <PlayButton
             isPlaying={playing}
             onClick={() => (playing ? send("pause") : send("play"))}
             onHoverStart={() => send("hover")}
             onHoverEnd={() => send("hoverEnd")}
           />
+          {state.matches("running") && (
+            <MessageText
+              key={exampleRecords[algorithmState.i]?.value.join("-")}
+              initial={{ y: 16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", damping: 20 }}
+            >
+              <Message
+                record={exampleRecords[algorithmState.i]}
+                compactedRecords={algorithmState.compactedRecords}
+              />
+            </MessageText>
+          )}
           <UndoButton
             onClick={() => {
               send("reset");
@@ -177,6 +227,11 @@ export const SingleFileCompaction = () => {
     </FullWidth>
   );
 };
+
+const MessageText = styled(motion.p, {
+  fontFamily: "$mono",
+  fontSize: "$sm",
+});
 
 const PageWrapper = styled(motion.div, {
   position: "relative",
