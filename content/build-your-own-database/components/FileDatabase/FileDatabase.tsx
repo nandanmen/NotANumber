@@ -10,11 +10,11 @@ export type Record = {
 
 type FileDatabaseProps = {
   records: Record[];
-};
+} & React.ComponentPropsWithoutRef<typeof Page>;
 
-export const FileDatabase = ({ records }: FileDatabaseProps) => {
+export const FileDatabase = ({ records, ...props }: FileDatabaseProps) => {
   return (
-    <Page>
+    <Page {...props}>
       {records.map(({ value, type }, index) => {
         const [dbKey, dbValue] = value;
         return (
@@ -38,7 +38,7 @@ export const FileDatabaseWrapper = styled("div", {
   position: "relative",
 });
 
-const Page = styled("ul", {
+export const Page = styled(motion.ul, {
   borderRadius: "$base",
   border: "1px solid $gray8",
   background: "$gray3",
