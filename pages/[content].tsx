@@ -3,6 +3,7 @@ import type { GetStaticPropsContext } from "next";
 import NextLink from "next/link";
 import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
+import Balancer from "react-wrap-balancer";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { BASE_URL } from "~/lib/config";
@@ -75,7 +76,9 @@ export default function PostPage({ content }: { content: Post }) {
           <LastUpdated>
             {formatter.format(new Date(frontmatter.editedAt))}
           </LastUpdated>
-          <Title>{frontmatter.title}</Title>
+          <Title>
+            <Balancer>{frontmatter.title}</Balancer>
+          </Title>
           <Blurb>{frontmatter.blurb}</Blurb>
         </Header>
         <PostContent
