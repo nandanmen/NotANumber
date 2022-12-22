@@ -1,6 +1,6 @@
 import React from "react";
 import { useMachine } from "@xstate/react";
-import { motion, useAnimationControls } from "framer-motion";
+import { motion } from "framer-motion";
 import { useAlgorithm } from "~/lib/algorithm";
 import { FullWidth } from "~/components/FullWidth";
 import {
@@ -90,12 +90,11 @@ const Message = ({ record, compactedRecords }) => {
 
 export const SingleFileCompaction = () => {
   const [state, send] = useMachine(machine);
-  const controls = useAnimationControls();
   const [algorithmState, ctx] = useAlgorithm<CompactionState>(
     compact,
     [exampleRecords],
     {
-      delay: 1500,
+      delay: 1000,
       onDone: () => {
         send("done");
       },
@@ -117,17 +116,7 @@ export const SingleFileCompaction = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
-  React.useEffect(() => {
-    if (state.matches("done")) {
-      controls.start({
-        height: 90,
-      });
-    } else {
-      controls.start({ height: visible ? 300 : 250 });
-    }
-  }, [state, visible, controls]);
-
-  const visibleRecords = React.useMemo(() => {
+  const visibleRecords: Record[] = React.useMemo(() => {
     if (algorithmState.i < 1) {
       return [
         ...exampleRecords,
@@ -140,6 +129,8 @@ export const SingleFileCompaction = () => {
     }
     return exampleRecords;
   }, [algorithmState.i]);
+
+  const height = state.matches("done") ? 90 : visible ? 300 : 250;
 
   return (
     <FullWidth>
@@ -163,7 +154,7 @@ export const SingleFileCompaction = () => {
           >
             {state.matches("done") && <Background />}
             <CompactedPage
-              animate={controls}
+              animate={{ height }}
               transition={{ type: "spring", damping: 20 }}
             >
               {algorithmState.compactedRecords
