@@ -18,14 +18,25 @@ export const machine = createMachine({
     },
     running: {
       on: {
-        stop: "ready",
-        reset: "idle",
+        pause: "paused",
+        reset: "ready",
+        done: "done",
       },
     },
     ready: {
       on: {
         play: "running",
-        reset: "idle",
+      },
+    },
+    paused: {
+      on: {
+        play: "running",
+      },
+    },
+    done: {
+      on: {
+        play: "running",
+        reset: "ready",
       },
     },
   },

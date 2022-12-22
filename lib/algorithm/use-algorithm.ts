@@ -9,9 +9,10 @@ import type {
   AlgorithmOptions,
 } from "./types";
 
-const DEFAULT_ALGORITHM_OPTIONS = {
+const DEFAULT_ALGORITHM_OPTIONS: AlgorithmOptions = {
   delay: 500,
   loop: false,
+  onDone: () => {},
 };
 
 export const useAlgorithm = <StateType, FnType extends Fn = Fn>(
@@ -43,6 +44,7 @@ export const useStepPlayer = <StateType = unknown>(
       if (activeStepIndex < steps.length - 1) {
         setActiveStepIndex((index) => index + 1);
       } else {
+        _options.onDone();
         setIsPlaying(false);
       }
     },
@@ -87,6 +89,13 @@ export const useStepPlayer = <StateType = unknown>(
       toggle,
       next,
       prev,
+      play: () => {
+        if (activeStepIndex === steps.length - 1) {
+          reset();
+        }
+        setIsPlaying(true);
+      },
+      pause: () => setIsPlaying(false),
       goTo: (step) => {
         if (isPlaying) {
           setIsPlaying(false);

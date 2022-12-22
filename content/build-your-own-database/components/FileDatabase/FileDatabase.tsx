@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { LayoutGroup, motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { type DatabaseRecord } from "../AppendOnlyFile/database";
 
@@ -10,23 +10,35 @@ export type Record = {
 
 type FileDatabaseProps = {
   records: Record[];
+  highlighted?: number;
 } & React.ComponentPropsWithoutRef<typeof Page>;
 
-export const FileDatabase = ({ records, ...props }: FileDatabaseProps) => {
+export const FileDatabase = ({
+  records,
+  highlighted,
+  ...props
+}: FileDatabaseProps) => {
+  const id = React.useId();
   return (
-    <Page {...props}>
-      {records.map(({ value, type }, index) => {
-        const [dbKey, dbValue] = value;
-        return (
-          <Record
-            key={`${index}-${dbKey}`}
-            dbKey={dbKey}
-            value={dbValue}
-            type={type}
-          />
-        );
-      })}
-    </Page>
+    <LayoutGroup id={id}>
+      <Page {...props}>
+        {records.map(({ value, type }, index) => {
+          const [dbKey, dbValue] = value;
+          return (
+            <Record
+              key={`${index}-${dbKey}`}
+              dbKey={dbKey}
+              value={dbValue}
+              type={type}
+              highlighted={highlighted === index}
+            />
+          );
+        })}
+        {highlighted === undefined && (
+          <HighlightDot layoutId="highlight" animate={{ opacity: 0 }} />
+        )}
+      </Page>
+    </LayoutGroup>
   );
 };
 
@@ -48,15 +60,22 @@ export const Page = styled(motion.ul, {
   minWidth: 300,
   fontFamily: "$mono",
   lineHeight: 1.1,
+  position: "relative",
 });
 
 type RecordProps = {
   dbKey: number;
   value: string;
   type?: "active" | "success" | "base";
+  highlighted?: boolean;
 };
 
-const Record = ({ dbKey, value, type = "base" }: RecordProps) => {
+const Record = ({
+  dbKey,
+  value,
+  type = "base",
+  highlighted = false,
+}: RecordProps) => {
   const [active, setActive] = React.useState(true);
 
   const _type = active ? "base" : type;
@@ -92,15 +111,29 @@ const Record = ({ dbKey, value, type = "base" }: RecordProps) => {
         }}
         animate={active ? "active" : "base"}
         type={type}
+        highlighted={highlighted}
       >
         <RecordKey layout>{String(dbKey).padStart(3, "0")}:</RecordKey>
         <motion.span layout>{value}</motion.span>
+        {highlighted && <HighlightDot layoutId="highlight" />}
       </RecordWrapper>
     </motion.div>
   );
 };
 
-const RecordWrapper = styled(motion.li, {
+const HighlightDot = styled(motion.span, {
+  $$size: "6px",
+
+  position: "absolute",
+  width: "$$size",
+  height: "$$size",
+  borderRadius: "50%",
+  background: "$blue9",
+  right: "$6",
+  top: "calc(50% - ($$size / 2))",
+});
+
+export const RecordWrapper = styled(motion.li, {
   padding: "$1 $6",
   display: "flex",
   gap: "$2",
@@ -115,6 +148,12 @@ const RecordWrapper = styled(motion.li, {
         padding: "$4 $8",
         boxShadow: "$sm",
         margin: "0 -$4",
+      },
+    },
+    highlighted: {
+      true: {
+        position: "relative",
+        color: "$blue10",
       },
     },
     type: {
@@ -133,6 +172,6 @@ const RecordWrapper = styled(motion.li, {
   },
 });
 
-const RecordKey = styled(motion.span, {
+export const RecordKey = styled(motion.span, {
   fontWeight: "bold",
 });

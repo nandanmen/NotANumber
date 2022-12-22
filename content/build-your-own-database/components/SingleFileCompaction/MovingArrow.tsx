@@ -4,7 +4,8 @@ import { styled } from "~/stitches.config";
 import { FaArrowRight } from "react-icons/fa";
 
 const ASPECT_RATIO = 4 / 3;
-const HEIGHT = 100 * (1 / ASPECT_RATIO) + 8;
+const PADDING = 6;
+const HEIGHT = 100 * (1 / ASPECT_RATIO) + PADDING * 2;
 const infiniteTransition = {
   type: "tween",
   duration: 5,
@@ -26,7 +27,11 @@ export const MovingArrow = ({ playing }) => {
 
   return (
     <ArrowWrapper>
-      <motion.svg width="100%" height="100%" viewBox={`-4 -4 108 ${HEIGHT}`}>
+      <motion.svg
+        width="100%"
+        height="100%"
+        viewBox={`-${PADDING} -${PADDING} ${100 + PADDING * 2} ${HEIGHT}`}
+      >
         <defs>
           <linearGradient id="arrow-circle" gradientTransform="rotate(45)">
             <stop offset="0%" stopColor={`var(--colors-blue4)`} />

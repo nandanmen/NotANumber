@@ -9,6 +9,7 @@ export type Fn = {
 export type AlgorithmOptions = {
   delay: number;
   loop: boolean;
+  onDone: () => void;
 };
 
 export type AlgorithmContext = {
@@ -19,6 +20,8 @@ export type AlgorithmContext = {
   prev(): void;
   reset(): void;
   toggle(): void;
+  play(): void;
+  pause(): void;
   goTo(step: number): void;
 };
 
