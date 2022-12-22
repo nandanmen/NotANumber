@@ -9,10 +9,11 @@ import {
 import { BezierCurveQuiz } from "~/experiments/BezierCurveQuiz";
 import { ButtonSlider } from "~/experiments/EasingFunctionSandbox";
 import { Row } from "~/components/layout/Row";
+import type { CubicBezier } from "~/experiments/EasingCurveEditor";
 
 export default function BezierCurvesPage() {
   const [key, setKey] = React.useState(0);
-  const [easing, setEasing] = React.useState([0.62, 0, 0.18, 1]);
+  const [easing, setEasing] = React.useState<CubicBezier>([0.62, 0, 0.18, 1]);
   const [debug, setDebug] = React.useState(false);
 
   const handleEasingPan = (index: number) => (value: number) => {
