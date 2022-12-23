@@ -26,16 +26,16 @@ const Track = styled(SliderPrimitive.Track, {
   flexGrow: 1,
   height: 4,
   borderRadius: 4,
+
+  [`.${darkTheme} &`]: {
+    background: "$gray4",
+  },
 });
 
 const Range = styled(SliderPrimitive.Range, {
   position: "absolute",
   backgroundColor: "$gray8",
   height: "100%",
-
-  [`.${darkTheme} &`]: {
-    background: "$blue8",
-  },
 });
 
 const Thumb = styled(SliderPrimitive.Thumb, {
@@ -55,10 +55,5 @@ const Thumb = styled(SliderPrimitive.Thumb, {
     background: "$blue9",
     borderColor: "$blue11",
     transform: "scale(0.9)",
-  },
-
-  [`.${darkTheme} &`]: {
-    background: "$blue8",
-    borderColor: "$blue8",
   },
 });

@@ -2,7 +2,7 @@ import React from "react";
 import { CgSpinner } from "react-icons/cg";
 import { FaPaperPlane } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
 export enum FormEvent {
@@ -145,6 +145,11 @@ const SubmitButton = styled(Row, {
   height: "$10",
   flexShrink: 0,
   borderRadius: 4,
+
+  [`.${darkTheme} &`]: {
+    background: "$blue9",
+    color: "$gray1",
+  },
 
   variants: {
     type: {

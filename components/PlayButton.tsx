@@ -44,8 +44,9 @@ const Wrapper = styled(Row, {
   },
 
   [`.${darkTheme} &`]: {
-    background: "$blue8",
-    borderColor: "$blue8",
+    background: "$blue9",
+    borderColor: "$blue9",
+    color: "$gray1",
 
     "&:hover": {
       color: "inherit",
