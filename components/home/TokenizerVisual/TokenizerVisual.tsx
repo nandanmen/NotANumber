@@ -3,14 +3,18 @@ import { motion } from "framer-motion";
 
 import { VisualWrapper } from "../shared";
 import { darkTheme, styled } from "~/stitches.config";
-import { useTheme } from "next-themes";
+import {
+  type Color,
+  SvgBackgroundGradient,
+  getFillFromId,
+} from "~/components/utils/SvgBackgroundGradient";
 
 export const TokenizerVisual = () => {
   return (
     <VisualWrapper>
       <svg viewBox="0 0 100 100" style={{ position: "relative" }}>
         <motion.g style={{ x: 21, y: 28 }}>
-          <Token text="print" x={0} y={0} color="blue" />
+          <Token text="print" x={0} y={0} />
           <Token text="(" x={26} y={0} color="yellow" />
           <Token text={`"hello, world!"`} x={10} y={16} color="green" />
           <Token text=")" x={0} y={32} color="yellow" />
@@ -99,27 +103,22 @@ const Label = ({ x, y, children }) => {
   );
 };
 
-export const Token = ({ x = 0, y = 0, text, color = "blue" }) => {
+type TokenProps = {
+  x?: number;
+  y?: number;
+  text: string;
+  color?: Color;
+};
+
+export const Token = ({ x = 0, y = 0, text, color }: TokenProps) => {
   const id = React.useId();
-  const { theme } = useTheme();
-
   const len = text.length * TEXT_WIDTH;
-  const gradientColors = {
-    start: `var(--colors-${color}${theme === "dark" ? "7" : "4"})`,
-    end: `var(--colors-${color}${theme === "dark" ? "9" : "6"})`,
-  };
-
   return (
     <>
-      <defs>
-        <linearGradient id={id} gradientTransform="rotate(45)">
-          <stop offset="0%" stopColor={gradientColors.start} />
-          <stop offset="100%" stopColor={gradientColors.end} />
-        </linearGradient>
-      </defs>
+      <SvgBackgroundGradient id={id} color={color} />
       <motion.g style={{ x, y }}>
         <Shadow rx="2" x="1" y="1" width={len + PADDING * 2} />
-        <Rect fill={`url('#${id}')`} rx="2" width={len + PADDING * 2} />
+        <Rect fill={getFillFromId(id)} rx="2" width={len + PADDING * 2} />
         <Text x={PADDING} y="8.3">
           {text}
         </Text>
