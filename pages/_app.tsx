@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <ThemeProvider
         attribute="class"
-        defaultTheme="light"
+        defaultTheme="system"
         value={{ dark: darkTheme.className, light: "light" }}
       >
         <Wrapper>
