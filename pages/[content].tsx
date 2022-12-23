@@ -3,6 +3,7 @@ import type { GetStaticPropsContext } from "next";
 import NextLink from "next/link";
 import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
+import Balancer from "react-wrap-balancer";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { BASE_URL } from "~/lib/config";
@@ -24,15 +25,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 export async function getStaticPaths() {
-  // When this is true (in preview environments) don't
-  // prerender any static pages
-  // (faster builds, but slower initial page load)
-  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
-    return {
-      paths: [],
-      fallback: "blocking",
-    };
-  }
   const posts = await getAllPosts();
   return {
     paths: posts.map((post) => ({ params: { content: post.slug } })),
@@ -84,7 +76,9 @@ export default function PostPage({ content }: { content: Post }) {
           <LastUpdated>
             {formatter.format(new Date(frontmatter.editedAt))}
           </LastUpdated>
-          <Title>{frontmatter.title}</Title>
+          <Title>
+            <Balancer>{frontmatter.title}</Balancer>
+          </Title>
           <Blurb>{frontmatter.blurb}</Blurb>
         </Header>
         <PostContent

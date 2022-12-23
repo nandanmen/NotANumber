@@ -1,7 +1,8 @@
+import type { ComponentPropsWithoutRef } from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { darkTheme, styled } from "~/stitches.config";
 
-export const Slider = (props) => {
+export const Slider = (props: ComponentPropsWithoutRef<typeof SliderRoot>) => {
   return (
     <SliderRoot {...props}>
       <Track>
@@ -24,11 +25,12 @@ const Track = styled(SliderPrimitive.Track, {
   background: "$gray7",
   flexGrow: 1,
   height: 4,
+  borderRadius: 4,
 });
 
 const Range = styled(SliderPrimitive.Range, {
   position: "absolute",
-  backgroundColor: "$blue6",
+  backgroundColor: "$gray8",
   height: "100%",
 
   [`.${darkTheme} &`]: {
@@ -38,9 +40,9 @@ const Range = styled(SliderPrimitive.Range, {
 
 const Thumb = styled(SliderPrimitive.Thumb, {
   display: "block",
-  background: "$blue6",
-  border: "1px solid black",
-  width: "$6",
+  background: "$gray3",
+  border: "1px solid $gray8",
+  width: "$4",
   height: "$6",
   borderRadius: 4,
   boxShadow: "$sm",
