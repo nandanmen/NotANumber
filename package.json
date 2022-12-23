@@ -13,8 +13,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^1.5.1",
-    "@codesandbox/sandpack-themes": "^1.5.0",
+    "@codesandbox/sandpack-react": "^1.18.4",
+    "@codesandbox/sandpack-themes": "^1.17.0",
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-dialog": "^1.0.2",

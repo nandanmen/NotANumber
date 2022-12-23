@@ -3,7 +3,7 @@ import { Sandbox } from "~/components/Sandbox";
 const css = `
 body {
   margin: 0;
-  padding: 0;
+  padding: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
