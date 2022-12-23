@@ -34,11 +34,6 @@ const Point = styled("circle", {
   stroke: "$gray11",
   fill: "$gray3",
   strokeWidth: 0.2,
-
-  [`.${darkTheme} &`]: {
-    fill: "$gray12",
-    stroke: "$gray1",
-  },
 });
 
 const Path = styled("path", {
@@ -67,6 +62,7 @@ const Rect = styled("rect", {
 
         [`.${darkTheme} &`]: {
           stroke: "$gray10",
+          fill: "$gray3",
         },
       },
       shadow: {

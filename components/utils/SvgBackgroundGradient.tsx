@@ -45,6 +45,12 @@ const StopStart = styled("stop", {
           stopColor: "$colors$yellow7",
         },
       },
+      red: {
+        stopColor: "$colors$red4",
+        [`.${darkTheme} &`]: {
+          stopColor: "$colors$red7",
+        },
+      },
     },
   },
 });
@@ -68,6 +74,12 @@ const StopEnd = styled("stop", {
         stopColor: "$colors$yellow6",
         [`.${darkTheme} &`]: {
           stopColor: "$colors$yellow9",
+        },
+      },
+      red: {
+        stopColor: "$colors$red6",
+        [`.${darkTheme} &`]: {
+          stopColor: "$colors$red9",
         },
       },
     },

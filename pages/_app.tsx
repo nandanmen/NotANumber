@@ -39,7 +39,7 @@ const Wrapper = styled("div", {
   minHeight: "100vh",
 
   [`.${darkTheme} &`]: {
-    background: "url(/bg-dark.svg)",
+    background: "$gray1",
   },
 });
 

@@ -1,9 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 import { Token } from "../TokenizerVisual";
 import { VisualWrapper } from "../shared";
+import {
+  getFillFromId,
+  SvgBackgroundGradient,
+} from "~/components/utils/SvgBackgroundGradient";
 
 const GAP = 8;
 
@@ -54,16 +58,9 @@ export const Debugger = () => {
   );
 };
 
-const Path = (props) => (
-  <_Path
-    stroke={`var(--colors-gray12)`}
-    shapeRendering="geometricPrecision"
-    {...props}
-  />
-);
-
-const _Path = styled("path", {
+const Path = styled("path", {
   strokeWidth: 0.6,
+  stroke: "$gray12",
   fill: "none",
 });
 
@@ -91,6 +88,10 @@ const Text = styled("text", {
     main: {
       true: {
         fill: "$gray12",
+
+        [`.${darkTheme} &`]: {
+          fill: "$gray1",
+        },
       },
     },
   },
@@ -105,22 +106,17 @@ const FocusCircle = ({
   x = 0,
   y = 0,
   size = "md",
-  color = "blue",
+  color = undefined,
   children,
 }) => {
   const id = React.useId();
   const radius = sizeMap[size];
   return (
     <>
-      <defs>
-        <linearGradient id={id} gradientTransform="rotate(45)">
-          <stop offset="0%" stopColor={`var(--colors-${color}4)`} />
-          <stop offset="100%" stopColor={`var(--colors-${color}6)`} />
-        </linearGradient>
-      </defs>
+      <SvgBackgroundGradient id={id} color={color} />
       <motion.g style={{ x, y }}>
         <Circle r={radius} shadow cx="0.5" cy="0.5" />
-        <Circle r={radius} fill={`url('#${id}')`} />
+        <Circle r={radius} fill={getFillFromId(id)} />
         <Text textAnchor="middle" dominantBaseline="middle" main>
           {children}
         </Text>
@@ -133,10 +129,18 @@ const Circle = styled("circle", {
   stroke: "$gray12",
   strokeWidth: 0.2,
 
+  [`.${darkTheme} &`]: {
+    stroke: "$gray1",
+  },
+
   variants: {
     shadow: {
       true: {
         fill: "$gray12",
+
+        [`.${darkTheme} &`]: {
+          fill: "$gray1",
+        },
       },
     },
   },

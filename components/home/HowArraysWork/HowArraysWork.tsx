@@ -1,7 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { VisualWrapper } from "../shared";
+import {
+  getFillFromId,
+  SvgBackgroundGradient,
+} from "~/components/utils/SvgBackgroundGradient";
 
 export const HowArraysWork = () => {
   return (
@@ -59,15 +63,10 @@ const GradientSquare = ({
   const id = React.useId();
   return (
     <>
-      <defs>
-        <linearGradient id={id} gradientTransform="rotate(45)">
-          <stop offset="0%" stopColor={`var(--colors-${color}4)`} />
-          <stop offset="100%" stopColor={`var(--colors-${color}6)`} />
-        </linearGradient>
-      </defs>
+      <SvgBackgroundGradient id={id} color={color} />
       <motion.g style={{ x, y }}>
-        <Square fill="var(--colors-gray12)" x="1" y="1" size={size} />
-        <Square fill={`url('#${id}')`} {...props} size={size} />
+        <Shadow x="1" y="1" size={size} />
+        <Square fill={getFillFromId(id)} {...props} size={size} />
       </motion.g>
     </>
   );
@@ -81,12 +80,20 @@ const Rect = styled("rect", {
   width: 30,
   height: 30,
 
+  [`.${darkTheme} &`]: {
+    stroke: "$gray1",
+  },
+
   variants: {
     disabled: {
       true: {
         stroke: "$gray10",
         fill: "$gray6",
         strokeDasharray: "2 1",
+
+        [`.${darkTheme} &`]: {
+          stroke: "$gray10",
+        },
       },
     },
     size: {
@@ -99,5 +106,13 @@ const Rect = styled("rect", {
         height: 20,
       },
     },
+  },
+});
+
+const Shadow = styled(Rect, {
+  fill: "$gray12",
+
+  [`.${darkTheme} &`]: {
+    fill: "$gray1",
   },
 });
