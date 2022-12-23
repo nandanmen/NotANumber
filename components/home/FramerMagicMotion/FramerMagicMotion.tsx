@@ -1,6 +1,6 @@
 import React from "react";
-import { styled } from "~/stitches.config";
 import { VisualWrapper } from "../shared";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const FramerMagicMotion = () => {
   return (
@@ -8,8 +8,8 @@ export const FramerMagicMotion = () => {
       <svg viewBox="0 0 100 100" style={{ position: "relative" }}>
         <defs>
           <linearGradient id="my-gradient" gradientTransform="rotate(45)">
-            <stop offset="0%" stopColor="var(--colors-blue5)" />
-            <stop offset="100%" stopColor="var(--colors-blue7)" />
+            <StopStart offset="0%" />
+            <StopEnd offset="100%" />
           </linearGradient>
         </defs>
         <Rect rx="2" x="40" y="10" type="secondary" />
@@ -97,6 +97,22 @@ export const FramerMagicMotion = () => {
   );
 };
 
+const StopStart = styled("stop", {
+  stopColor: "$colors$blue5",
+
+  [`.${darkTheme} &`]: {
+    stopColor: "$colors$blue7",
+  },
+});
+
+const StopEnd = styled("stop", {
+  stopColor: "$colors$blue7",
+
+  [`.${darkTheme} &`]: {
+    stopColor: "$colors$blue9",
+  },
+});
+
 const Rect = styled("rect", {
   width: 50,
   height: 50,
@@ -112,6 +128,10 @@ const Rect = styled("rect", {
       },
       shadow: {
         fill: "$gray12",
+
+        [`.${darkTheme} &`]: {
+          display: "none",
+        },
       },
     },
   },
