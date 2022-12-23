@@ -6,7 +6,7 @@ import {
   SandpackPreview,
   SandpackConsole,
 } from "@codesandbox/sandpack-react";
-import { nightOwl } from "@codesandbox/sandpack-themes";
+import { sandpackDark } from "@codesandbox/sandpack-themes";
 import { css, styled } from "~/stitches.config";
 
 type SandboxProps = {
@@ -29,7 +29,7 @@ export const Sandbox = ({ files }: SandboxProps) => {
     <div>
       <Wrapper
         template="react"
-        theme={nightOwl}
+        theme={sandpackDark}
         options={{
           autorun: true,
           classes: {

@@ -1,6 +1,10 @@
 import { Sandbox } from "~/components/Sandbox";
 
 const css = `
+html {
+  background: #151515;
+}
+
 body {
   margin: 0;
   padding: 16px;
@@ -8,8 +12,8 @@ body {
 }
 
 #motion {
-  border: 1px solid hsl(208, 77.5%, 76.9%);
-  background: hsl(209, 81.2%, 84.5%);
+  border: 1px solid hsl(208, 100%, 47.3%);
+  background: hsl(206, 100%, 50%);
   width: 120px;
   aspect-ratio: 1;
   border-radius: 8px;
