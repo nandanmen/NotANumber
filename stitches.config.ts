@@ -7,7 +7,7 @@ import {
   yellow,
   grayDark,
   blueDark,
-  greenDark,
+  yellowDark,
   redDark,
 } from "@radix-ui/colors";
 
@@ -109,6 +109,7 @@ export const darkTheme = createTheme({
   colors: {
     ...grayDark,
     ...rename("blue", "blueDark", blueDark),
+    ...rename("yellow", "yellowDark", yellowDark),
   },
 });
 

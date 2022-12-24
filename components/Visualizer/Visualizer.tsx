@@ -38,7 +38,7 @@ export const Controls = styled("div", {
   justifyContent: "space-between",
 
   [`.${darkTheme} &`]: {
-    background: "$gray3",
+    background: "$gray2",
   },
 });
 

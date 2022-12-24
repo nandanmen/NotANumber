@@ -118,8 +118,9 @@ export const Square = styled(motion.button, {
   boxShadow: "$sm",
 
   [`.${darkTheme} &`]: {
-    background: blueDark.blue8,
-    borderColor: blueDark.blue10,
+    background: "$blueDark8",
+    borderColor: "$blueDark10",
+    color: "$blueDark12",
   },
 
   "&:hover": {

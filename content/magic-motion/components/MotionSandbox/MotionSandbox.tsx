@@ -3,6 +3,7 @@ import { Sandbox } from "~/components/Sandbox";
 const css = `
 html {
   background: #151515;
+  color: white;
 }
 
 body {
@@ -13,7 +14,7 @@ body {
 
 #motion {
   border: 1px solid hsl(208, 100%, 47.3%);
-  background: hsl(206, 100%, 50%);
+  background: hsl(206, 100%, 30%);
   width: 120px;
   aspect-ratio: 1;
   border-radius: 8px;
