@@ -1,7 +1,7 @@
 import React, { type ComponentPropsWithoutRef } from "react";
 import { motion } from "framer-motion";
 
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 export const PADDING = 32;
 export const SQUARE_RADIUS = 60;
@@ -11,12 +11,22 @@ const _BaseSvgSquare = styled(motion.rect, {
   fill: "$blue6",
   stroke: "$blue8",
 
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark8",
+    stroke: "$blueDark10",
+  },
+
   variants: {
     type: {
       secondary: {
         fill: "$gray6",
         stroke: "$gray8",
         filter: "none",
+
+        [`.${darkTheme} &`]: {
+          fill: "$gray4",
+          stroke: "$gray6",
+        },
       },
     },
   },

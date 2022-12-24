@@ -9,7 +9,7 @@ import {
   UndoButton,
   ToggleButton,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
 
@@ -112,6 +112,10 @@ export const FlipInverse = () => {
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
+
+  [`.${darkTheme} &`]: {
+    fill: "$gray12",
+  },
 });
 
 const ContentWrapper = styled(Content, {

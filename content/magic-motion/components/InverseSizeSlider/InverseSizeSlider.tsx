@@ -1,5 +1,4 @@
 import React from "react";
-import { FaUndo, FaPlay } from "react-icons/fa";
 import { animate, useMotionValue } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";

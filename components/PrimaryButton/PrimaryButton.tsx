@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import type { ComponentPropsWithoutRef } from "react";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const PrimaryButton = (
   props: ComponentPropsWithoutRef<typeof _Button>
@@ -25,6 +25,13 @@ const Wrapper = styled("div", {
       background:
         "linear-gradient(-45deg, var(--gradient-end, $colors$blue6), var(--gradient-start, $colors$blue4))",
       color: "$gray12",
+
+      [`.${darkTheme} &`]: {
+        background:
+          "linear-gradient(-45deg, var(--gradient-end, $colors$blue9), var(--gradient-start, $colors$blue6))",
+        color: "$gray1",
+        borderColor: "$gray1",
+      },
     },
   },
 });
@@ -50,6 +57,11 @@ const _Button = styled(motion.button, {
   fontFamily: "$serif",
   transition: "all 0.2s ease-out",
   position: "relative",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray1",
+    color: "$gray12",
+  },
 
   variants: {
     small: {

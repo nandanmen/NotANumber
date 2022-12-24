@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 import { machine, STATE_ORDER } from "./machine";
 import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
@@ -221,6 +221,10 @@ const TranslateText = styled(motion.text, {
   fontSize: "$sm",
   opacity: 0,
   transition: "opacity 0.3s ease-out",
+
+  [`.${darkTheme} &`]: {
+    fill: "$gray12",
+  },
 
   variants: {
     visible: {

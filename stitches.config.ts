@@ -7,7 +7,7 @@ import {
   yellow,
   grayDark,
   blueDark,
-  greenDark,
+  yellowDark,
   redDark,
 } from "@radix-ui/colors";
 
@@ -48,6 +48,15 @@ const SPACING = {
   80: "20rem",
   96: "24rem",
 } as const;
+
+const rename = (from, to, obj) => {
+  const newObj = {};
+  for (const key in obj) {
+    const [, num] = key.split(from);
+    newObj[`${to}${num}`] = obj[key];
+  }
+  return newObj;
+};
 
 export const baseTheme = {
   colors: {
@@ -103,9 +112,8 @@ export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
 export const darkTheme = createTheme({
   colors: {
     ...grayDark,
-    ...blueDark,
-    ...greenDark,
-    ...redDark,
+    ...rename("blue", "blueDark", blueDark),
+    ...rename("yellow", "yellowDark", yellowDark),
   },
 });
 

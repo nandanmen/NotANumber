@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import {
   Visualizer,
@@ -11,7 +11,6 @@ import {
   UndoButton,
 } from "~/components/Visualizer";
 import { Checkbox } from "~/components/Checkbox";
-import { FaPlay, FaUndo } from "react-icons/fa";
 import useInterval from "@use-it/interval";
 
 type InverseScaleFormulaProps = {
@@ -63,21 +62,29 @@ const TooltipWrapper = styled("div", {
 });
 
 const ScaleTooltip = styled(motion.div, {
+  $$borderColor: "$colors$blue8",
+
   color: "$blue11",
   fontSize: "$sm",
   fontFamily: "$mono",
   background: "$blue1",
-  border: "1px solid $blue8",
+  border: "1px solid $$borderColor",
   padding: "$1",
   whiteSpace: "nowrap",
   marginLeft: "$4",
   lineHeight: 1,
 
+  [`.${darkTheme} &`]: {
+    background: "$blueDark3",
+    color: "$blueDark11",
+    $$borderColor: "$colors$blueDark10",
+  },
+
   "&:before": {
     content: '""',
     height: "1px",
     width: "$6",
-    background: "$blue8",
+    background: "$$borderColor",
     position: "absolute",
     left: "-$6",
     top: -1,
@@ -88,10 +95,12 @@ const ScaleTooltip = styled(motion.div, {
       true: {
         color: "$yellow11",
         background: "$yellow1",
-        border: "1px solid $yellow7",
+        $$borderColor: "$colors$yellow7",
 
-        "&:before": {
-          background: "$yellow7",
+        [`.${darkTheme} &`]: {
+          background: "$yellowDark3",
+          color: "$yellowDark11",
+          $$borderColor: "$colors$yellowDark10",
         },
       },
     },
@@ -103,6 +112,12 @@ const Text = styled("span", {
   border: "1px solid $yellow7",
   padding: "$2",
   position: "relative",
+
+  [`.${darkTheme} &`]: {
+    background: "$yellowDark8",
+    color: "$yellowDark12",
+    border: "1px solid $yellowDark10",
+  },
 });
 
 const Square = styled("div", {
@@ -116,6 +131,11 @@ const Square = styled("div", {
   alignItems: "center",
   justifyContent: "center",
   position: "relative",
+
+  [`.${darkTheme} &`]: {
+    background: "$blueDark8",
+    border: "1px solid $blueDark10",
+  },
 });
 
 // --

@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { FaPaperPlane, FaTimes } from "react-icons/fa";
 
 import { PrimaryButton } from "../PrimaryButton";
@@ -64,9 +64,14 @@ export const SubscribeButton = ({ small = false }) => {
                   width: 40,
                   height: "100%",
                   padding: 0,
+                  border: "none",
                   background: success
                     ? "linear-gradient(-45deg, $green8, $green6)"
                     : undefined,
+
+                  "&:hover": {
+                    border: "1px solid $gray12",
+                  },
                 }}
                 disabled={state === FormState.Loading}
               >
@@ -128,6 +133,12 @@ const CloseButton = styled("button", {
   background: "$gray3",
   border: "1px solid $gray12",
   borderRadius: "50%",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+    color: "$gray12",
+    borderColor: "$gray1",
+  },
 });
 
 const ContentWrapper = styled(motion.article, {
@@ -139,6 +150,13 @@ const ContentWrapper = styled(motion.article, {
   borderRadius: 12,
   padding: "$$padding",
   boxShadow: "2px 2px 0 $colors$gray12",
+
+  [`.${darkTheme} &`]: {
+    background: "linear-gradient(-45deg, $green9, $green6)",
+    color: "$gray1",
+    borderColor: "$gray1",
+    boxShadow: "2px 2px 0 $colors$gray1",
+  },
 
   "@md": {
     $$padding: "$space$12",
@@ -154,6 +172,14 @@ const Input = styled("input", {
   padding: "$2 0",
   borderBottom: "1px solid $gray12",
   width: "100%",
+
+  [`.${darkTheme} &`]: {
+    "&::placeholder": {
+      color: "$green11",
+    },
+    color: "$gray1",
+    borderColor: "$gray1",
+  },
 });
 
 const Text = styled("p", {

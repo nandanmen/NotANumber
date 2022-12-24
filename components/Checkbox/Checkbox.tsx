@@ -1,5 +1,5 @@
 import React from "react";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { violet, blackA } from "@radix-ui/colors";
 import { FaCheck } from "react-icons/fa";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
@@ -16,6 +16,10 @@ const StyledCheckbox = styled(CheckboxPrimitive.Root, {
   border: "1px solid $gray8",
   "&:hover": { backgroundColor: violet.violet3 },
   "&:focus": { borderColor: "$gray12" },
+
+  [`.${darkTheme} &`]: {
+    backgroundColor: "$gray2",
+  },
 });
 
 const StyledIndicator = styled(CheckboxPrimitive.Indicator, {

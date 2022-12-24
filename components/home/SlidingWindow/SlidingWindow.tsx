@@ -1,7 +1,11 @@
 import React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { VisualWrapper } from "../shared";
+import {
+  getFillFromId,
+  SvgBackgroundGradient,
+} from "~/components/utils/SvgBackgroundGradient";
 
 const range = (end: number, start = 0) => {
   const length = end - start;
@@ -115,21 +119,21 @@ const Window = styled(motion.rect, {
   stroke: "$gray12",
   fill: "rgba(255, 255, 255, 0.5)",
   strokeWidth: WINDOW_STROKE_WIDTH,
+
+  [`.${darkTheme} &`]: {
+    stroke: "$gray7",
+    fill: "rgba(0, 0, 0, 0.3)",
+  },
 });
 
 const ActiveRect = ({ color, x = 0, y = 0, ...props }) => {
   const id = React.useId();
   return (
     <>
-      <defs>
-        <linearGradient id={id} gradientTransform="rotate(45)">
-          <stop offset="0%" stopColor={`var(--colors-${color}4)`} />
-          <stop offset="100%" stopColor={`var(--colors-${color}6)`} />
-        </linearGradient>
-      </defs>
+      <SvgBackgroundGradient color={color} id={id} />
       <motion.g style={{ x, y }}>
         <Shadow rx="2" x="1" y="1" />
-        <_ActiveRect fill={`url('#${id}')`} rx="2" {...props} />
+        <_ActiveRect fill={getFillFromId(id)} rx="2" {...props} />
       </motion.g>
     </>
   );
@@ -139,6 +143,10 @@ const Shadow = styled("rect", {
   width: ACTIVE_SQUARE_SIZE,
   height: ACTIVE_SQUARE_SIZE,
   fill: "$gray12",
+
+  [`.${darkTheme} &`]: {
+    fill: "$gray1",
+  },
 });
 
 const _ActiveRect = styled("rect", {
@@ -146,6 +154,10 @@ const _ActiveRect = styled("rect", {
   height: ACTIVE_SQUARE_SIZE,
   stroke: "$gray12",
   strokeWidth: 0.2,
+
+  [`.${darkTheme} &`]: {
+    stroke: "$gray1",
+  },
 });
 
 const Text = styled("text", {
@@ -160,6 +172,10 @@ const Text = styled("text", {
       true: {
         fill: "$gray12",
         fontSize: 5 * 1.25,
+
+        [`.${darkTheme} &`]: {
+          fill: "$gray1",
+        },
       },
     },
   },
