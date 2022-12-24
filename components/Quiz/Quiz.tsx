@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const QuizContext = React.createContext(null);
 
@@ -78,6 +78,10 @@ const OptionWrapper = styled(motion.button, {
   '&[data-active="true"], &:hover': {
     background: "$blue6",
     borderColor: "$blue8",
+
+    [`.${darkTheme} &`]: {
+      color: "$gray1",
+    },
   },
 });
 
@@ -111,6 +115,10 @@ const TipWrapper = styled(motion.div, {
       true: {
         background: "$green4",
         borderColor: "$green7",
+        [`.${darkTheme} &`]: {
+          background: "$green7",
+          color: "$gray1",
+        },
       },
     },
   },
