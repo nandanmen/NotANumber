@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const ChangeIndicator = ({ value, children }) => {
   const [state, setState] = React.useState("idle");
@@ -16,19 +17,27 @@ export const ChangeIndicator = ({ value, children }) => {
   }, [value]);
 
   return (
-    <motion.span
+    <Wrapper
       animate={state}
       variants={{
         active: {
-          backgroundColor: "var(--colors-gray4)",
+          backgroundColor: "rgba(var(--base-color), 1)",
         },
         idle: {
-          backgroundColor: "transparent",
+          backgroundColor: "rgba(var(--base-color), 0)",
         },
       }}
       initial="idle"
     >
       {children}
-    </motion.span>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled(motion.span, {
+  "--base-color": "255, 255, 255",
+
+  [`.${darkTheme} &`]: {
+    "--base-color": "75, 75, 75",
+  },
+});

@@ -49,6 +49,15 @@ const SPACING = {
   96: "24rem",
 } as const;
 
+const rename = (from, to, obj) => {
+  const newObj = {};
+  for (const key in obj) {
+    const [, num] = key.split(from);
+    newObj[`${to}${num}`] = obj[key];
+  }
+  return newObj;
+};
+
 export const baseTheme = {
   colors: {
     ...gray,
@@ -99,6 +108,7 @@ export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
 export const darkTheme = createTheme({
   colors: {
     ...grayDark,
+    ...rename("blue", "blueDark", blueDark),
   },
 });
 

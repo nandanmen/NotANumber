@@ -1,6 +1,5 @@
 import React, { type ComponentPropsWithoutRef } from "react";
 import { motion } from "framer-motion";
-import { blueDark } from "@radix-ui/colors";
 
 import { styled, darkTheme } from "~/stitches.config";
 
@@ -13,8 +12,8 @@ const _BaseSvgSquare = styled(motion.rect, {
   stroke: "$blue8",
 
   [`.${darkTheme} &`]: {
-    fill: blueDark.blue8,
-    stroke: blueDark.blue10,
+    fill: "$blueDark8",
+    stroke: "$blueDark10",
   },
 
   variants: {

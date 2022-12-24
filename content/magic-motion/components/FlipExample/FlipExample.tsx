@@ -1,6 +1,5 @@
 import React from "react";
 
-import { GridBackground } from "~/components/Grid";
 import { Visualizer, Content, ToggleButton } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
