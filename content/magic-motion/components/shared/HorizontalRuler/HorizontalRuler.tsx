@@ -49,6 +49,11 @@ const RulerTextBackgroundRect = styled("rect", {
   height: 30,
   stroke: "$blue8",
 
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark2",
+    stroke: "$blueDark8",
+  },
+
   variants: {
     small: {
       true: {
@@ -63,6 +68,10 @@ const RulerText = styled("text", {
   fill: "$blue10",
   fontFamily: "$mono",
   fontSize: "$sm",
+
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark10",
+  },
 
   variants: {
     small: {
@@ -92,7 +101,7 @@ export const Line = styled(motion.line, {
   strokeWidth: 2,
 
   [`.${darkTheme} &`]: {
-    stroke: "$gray12",
+    stroke: "$blueDark10",
   },
 });
 
@@ -104,6 +113,11 @@ export const LineEndpoint = styled(motion.circle, {
   animationDuration: "500ms",
   animationFillMode: "forwards",
   animationTimingFunction: "ease-out",
+
+  [`.${darkTheme} &`]: {
+    stroke: "$blueDark8",
+    fill: "$blueDark4",
+  },
 
   variants: {
     small: {
