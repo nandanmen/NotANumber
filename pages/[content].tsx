@@ -233,7 +233,7 @@ const Article = styled("article", {
     },
   },
 
-  pre: {
+  "[data-rehype-pretty-code-fragment] pre": {
     marginTop: "$4",
     marginBottom: "$8",
     whiteSpace: "pre-wrap",

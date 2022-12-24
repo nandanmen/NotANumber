@@ -70,11 +70,21 @@ const CodeBottomTabs = () => {
           Console
         </TabButton>
       </PreviewTabs>
-      <SandpackPreview style={{ display: showConsole && "none" }} />
-      <SandpackConsole style={{ display: showConsole ? "block" : "none" }} />
+      <PreviewWrapper>
+        <SandpackPreview style={{ display: showConsole && "none" }} />
+        <SandpackConsole style={{ display: showConsole ? "block" : "none" }} />
+      </PreviewWrapper>
     </>
   );
 };
+
+const PreviewWrapper = styled("div", {
+  height: PREVIEW_HEIGHT,
+
+  ".sp-preview": {
+    height: "100%",
+  },
+});
 
 const PreviewTabs = styled("div", {
   padding: "0 var(--sp-space-2)",
