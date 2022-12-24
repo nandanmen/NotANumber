@@ -10,7 +10,7 @@ import {
   PlayButton,
   UndoButton,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import {
   FileDatabase,
   Page,
@@ -164,7 +164,15 @@ export const SingleFileCompaction = () => {
                   return (
                     <RecordWrapper
                       key={`compacted-${key}}`}
-                      css={{ borderColor: "$blue4", color: "$blue11" }}
+                      css={{
+                        borderColor: "$blue4",
+                        color: "$blue11",
+
+                        [`.${darkTheme} &`]: {
+                          borderColor: "$blueDark5",
+                          color: "$blueDark11",
+                        },
+                      }}
                       animate={{ x: 0, opacity: 1 }}
                       initial={{ x: -16, opacity: 0 }}
                       transition={{ type: "spring", damping: 20 }}
@@ -261,11 +269,19 @@ const PageWrapper = styled(motion.div, {
 });
 
 const Background = styled("div", {
+  $$color: "$colors$blue5",
+  $$borderColor: "$colors$blue6",
+
   position: "absolute",
-  background: `repeating-linear-gradient(-45deg, $colors$blue5, $colors$blue5 8px, transparent 8px, transparent 16px)`,
-  border: "1px solid $blue6",
+  background: `repeating-linear-gradient(-45deg, $$color, $$color 8px, transparent 8px, transparent 16px)`,
+  border: "1px solid $$borderColor",
   borderRadius: "$base",
   inset: 0,
+
+  [`.${darkTheme} &`]: {
+    $$color: "$colors$blueDark5",
+    $$borderColor: "$colors$blueDark6",
+  },
 });
 
 const CompactedPage = styled(Page, {
@@ -275,6 +291,11 @@ const CompactedPage = styled(Page, {
   overflow: "hidden",
   position: "relative",
   height: "100%",
+
+  [`.${darkTheme} &`]: {
+    background: "$blueDark5",
+    borderColor: "$blueDark8",
+  },
 });
 
 const ArrowWrapper = styled(motion.div, {

@@ -1,5 +1,5 @@
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
 export function Callout({ label, defaultOpen = false, children }) {
@@ -26,6 +26,10 @@ const Details = styled("details", {
   background: "$gray3",
   overflow: "hidden",
   position: "relative",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+  },
 
   "> :not(summary)": {
     marginTop: "$2",

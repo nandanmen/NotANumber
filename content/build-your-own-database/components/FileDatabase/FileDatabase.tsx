@@ -1,6 +1,6 @@
 import React from "react";
 import { LayoutGroup, motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { type DatabaseRecord } from "../AppendOnlyFile/database";
 
 export type Record = {
@@ -61,6 +61,10 @@ export const Page = styled(motion.ul, {
   fontFamily: "$mono",
   lineHeight: 1.1,
   position: "relative",
+
+  [`.${darkTheme} &`]: {
+    border: "1px solid $gray6",
+  },
 });
 
 type RecordProps = {
@@ -94,22 +98,8 @@ const Record = ({
     >
       <RecordWrapper
         active={active}
+        transition={{ type: "spring", damping: 20 }}
         layout
-        variants={{
-          active: {
-            boxShadow: `var(--shadows-sm)`,
-            backgroundColor: "var(--colors-gray2)",
-            borderRadius: "var(--radii-base)",
-            borderColor: "var(--colors-gray8)",
-          },
-          base: {
-            boxShadow: "var(--shadows-hidden)",
-            backgroundColor: mapTypeToColor[_type],
-            borderRadius: 0,
-            borderColor: mapTypeToColor[_type],
-          },
-        }}
-        animate={active ? "active" : "base"}
         type={type}
         highlighted={highlighted}
       >
@@ -138,6 +128,7 @@ export const RecordWrapper = styled(motion.li, {
   display: "flex",
   gap: "$2",
   border: "1px solid $gray3",
+  transition: "all 0.3s",
 
   variants: {
     active: {
@@ -161,11 +152,23 @@ export const RecordWrapper = styled(motion.li, {
         background: "$blue5",
         color: "$blue11",
         borderColor: "$blue5",
+
+        [`.${darkTheme} &`]: {
+          background: "$blueDark5",
+          color: "$blueDark11",
+          borderColor: "$blueDark5",
+        },
       },
       success: {
         background: "$green5",
         color: "$green11",
         borderColor: "$green5",
+
+        [`.${darkTheme} &`]: {
+          background: "$greenDark5",
+          color: "$greenDark11",
+          borderColor: "$greenDark5",
+        },
       },
       base: {},
     },

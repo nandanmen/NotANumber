@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { FaArrowRight } from "react-icons/fa";
 
 const ASPECT_RATIO = 4 / 3;
@@ -32,12 +32,6 @@ export const MovingArrow = ({ playing }) => {
         height="100%"
         viewBox={`-${PADDING} -${PADDING} ${100 + PADDING * 2} ${HEIGHT}`}
       >
-        <defs>
-          <linearGradient id="arrow-circle" gradientTransform="rotate(45)">
-            <stop offset="0%" stopColor={`var(--colors-blue4)`} />
-            <stop offset="100%" stopColor={`var(--colors-blue6)`} />
-          </linearGradient>
-        </defs>
         <Line
           ref={lineRef}
           x1={0}
@@ -104,11 +98,19 @@ export const MovingArrow = ({ playing }) => {
             },
           }}
         />
-        <FaArrowRight x={42} y={HEIGHT / 2 - 8} fill="var(--colors-blue10)" />
+        <Arrow x={42} y={HEIGHT / 2 - 8} />
       </motion.svg>
     </ArrowWrapper>
   );
 };
+
+const Arrow = styled(FaArrowRight, {
+  fill: "$blue10",
+
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark11",
+  },
+});
 
 const getCurrentValue = (ref: React.RefObject<SVGElement>, style: string) => {
   if (typeof window === "undefined") return 0;
@@ -128,6 +130,10 @@ const ArrowCircle = styled(motion.circle, {
   strokeWidth: 1,
   strokeDasharray: "5",
   fill: "$blue5",
+
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark5",
+  },
 });
 
 const Endpoint = styled("circle", {

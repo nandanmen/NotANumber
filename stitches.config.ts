@@ -9,6 +9,7 @@ import {
   blueDark,
   yellowDark,
   redDark,
+  greenDark,
 } from "@radix-ui/colors";
 
 const SPACING = {
@@ -114,6 +115,7 @@ export const darkTheme = createTheme({
     ...grayDark,
     ...rename("blue", "blueDark", blueDark),
     ...rename("yellow", "yellowDark", yellowDark),
+    ...rename("green", "greenDark", greenDark),
   },
 });
 

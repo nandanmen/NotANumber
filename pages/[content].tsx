@@ -14,7 +14,6 @@ import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
 import { Link } from "~/components/Link";
-// import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -249,6 +248,10 @@ const Article = styled("article", {
     overflowX: "auto",
     background: "$gray3",
     position: "relative",
+
+    [`.${darkTheme} &`]: {
+      background: "$gray2",
+    },
   },
 
   blockquote: {
@@ -263,6 +266,10 @@ const Article = styled("article", {
     marginBottom: "$12",
     width: "30%",
     borderTop: "1px solid $gray8",
+
+    [`.${darkTheme} &`]: {
+      borderTop: "1px solid $gray6",
+    },
   },
 
   "[data-rehype-pretty-code-fragment] > pre": {

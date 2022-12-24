@@ -1,4 +1,4 @@
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 export function ProblemStatement({ children }) {
   return (
@@ -14,7 +14,11 @@ const Wrapper = styled("aside", {
   border: "1px solid $gray8",
   borderRadius: "$base",
   position: "relative",
-  background: "$gray4",
+  background: "$gray3",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+  },
 });
 
 const Title = styled("h4", {
