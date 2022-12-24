@@ -354,7 +354,7 @@
     "@codemirror/state" "^0.19.0"
     "@codemirror/view" "^0.19.23"
 
-"@codemirror/highlight@^0.19.0", "@codemirror/highlight@^0.19.6", "@codemirror/highlight@^0.19.7":
+"@codemirror/highlight@^0.19.6", "@codemirror/highlight@^0.19.7":
   version "0.19.8"
   resolved "https://registry.yarnpkg.com/@codemirror/highlight/-/highlight-0.19.8.tgz#a95aee8ae4389b01f820aa79c48f7b4388087d92"
   integrity sha512-v/lzuHjrYR8MN2mEJcUD6fHSTXXli9C1XGYpr+ElV6fLBIUhMTNKR3qThp611xuWfXfwDxeL7ppcbkM/MzPV3A==
@@ -385,7 +385,7 @@
     "@codemirror/state" "^0.19.0"
     "@lezer/css" "^0.15.2"
 
-"@codemirror/lang-html@^0.19.0", "@codemirror/lang-html@^0.19.4":
+"@codemirror/lang-html@^0.19.4":
   version "0.19.4"
   resolved "https://registry.yarnpkg.com/@codemirror/lang-html/-/lang-html-0.19.4.tgz#e6eec28462f18842a0e108732a214a7416b5e333"
   integrity sha512-GpiEikNuCBeFnS+/TJSeanwqaOfNm8Kkp9WpVNEPZCLyW1mAMCuFJu/3xlWYeWc778Hc3vJqGn3bn+cLNubgCA==
@@ -411,19 +411,6 @@
     "@codemirror/state" "^0.19.0"
     "@codemirror/view" "^0.19.0"
     "@lezer/javascript" "^0.15.1"
-
-"@codemirror/lang-markdown@^0.19.3":
-  version "0.19.6"
-  resolved "https://registry.yarnpkg.com/@codemirror/lang-markdown/-/lang-markdown-0.19.6.tgz#761301d276fcfbdf88440f0333785efd71c2a4f5"
-  integrity sha512-ojoHeLgv1Rfu0GNGsU0bCtXAIp5dy4VKjndHScITQdlCkS/+SAIfuoeowEx+nMAQwTxI+/9fQZ3xdZVznGFYug==
-  dependencies:
-    "@codemirror/highlight" "^0.19.0"
-    "@codemirror/lang-html" "^0.19.0"
-    "@codemirror/language" "^0.19.0"
-    "@codemirror/state" "^0.19.3"
-    "@codemirror/view" "^0.19.0"
-    "@lezer/common" "^0.15.0"
-    "@lezer/markdown" "^0.15.0"
 
 "@codemirror/language@^0.19.0", "@codemirror/language@^0.19.7":
   version "0.19.10"
@@ -505,18 +492,18 @@
     style-mod "^4.0.0"
     w3c-keyname "^2.2.4"
 
-"@codesandbox/sandpack-client@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.4.0.tgz#8433e6dafd5e62750608eed12011e03435e5e57e"
-  integrity sha512-wQGQba6QeLcS/nD/i6lsJLYAaj0yTSYF2dcb6pqBPah2PlJhU13sR5aHBX8bsOqSNETougk84sdYiQMmmIvPcQ==
+"@codesandbox/sandpack-client@^1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.18.0.tgz#757da8189572a2bec27bfb59bfb524ae2419dc41"
+  integrity sha512-VChxkXtA1AipLnlmuzmI8uixtDk0VWkxu5q7ev+TlsTJsiS8sVLDBCBjAyj0zrjtEpfrW8TwjAQxuX7v9Ga8Pw==
   dependencies:
     codesandbox-import-utils "^1.2.3"
     lodash.isequal "^4.5.0"
 
-"@codesandbox/sandpack-react@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-1.5.1.tgz#463231882aa618e5335eb971cd19bf7db0cfca35"
-  integrity sha512-WuNPgRiR1fdaPkrVs+n/Kqx5bOqI5C4MS3XsQaRXng/Cph0TBdoKxGFVs+9/sZpgid5g16A6O3EZVREQE6Sc3g==
+"@codesandbox/sandpack-react@^1.18.4":
+  version "1.18.4"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-1.18.4.tgz#460d6d203605c43c3d5f455038219e538221ef75"
+  integrity sha512-h/SBKAl5ykHn/vL6hnRPuCJyYnjJ0Baln9Z94JL4cQbHR2jwHR6cg7mMEtiZzT7rCeqgCW3yVl46AeubV7Jlbw==
   dependencies:
     "@code-hike/classer" "^0.0.0-aa6efee"
     "@codemirror/closebrackets" "^0.19.0"
@@ -528,24 +515,24 @@
     "@codemirror/lang-css" "^0.19.3"
     "@codemirror/lang-html" "^0.19.4"
     "@codemirror/lang-javascript" "^0.19.3"
-    "@codemirror/lang-markdown" "^0.19.3"
     "@codemirror/language" "^0.19.7"
     "@codemirror/matchbrackets" "^0.19.3"
     "@codemirror/state" "^0.19.6"
     "@codemirror/view" "^0.19.32"
-    "@codesandbox/sandpack-client" "^1.4.0"
+    "@codesandbox/sandpack-client" "^1.18.0"
     "@react-hook/intersection-observer" "^3.1.1"
     "@stitches/core" "^1.2.6"
+    clean-set "^1.1.2"
     codesandbox-import-util-types "^2.2.3"
     lodash.isequal "^4.5.0"
     lz-string "^1.4.4"
     react-devtools-inline "4.4.0"
     react-is "^17.0.2"
 
-"@codesandbox/sandpack-themes@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-themes/-/sandpack-themes-1.5.0.tgz#37ba347099199c6a214bcacd94a0a6d4bcda89c3"
-  integrity sha512-O56OEigJcs0YB86if8GLF616qClU4RjSvOzEc/j7rGwz/+eKF12BR7SQIG4HmyNp767wX3RkCJ5YnPydCnHaEQ==
+"@codesandbox/sandpack-themes@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-themes/-/sandpack-themes-1.17.0.tgz#5d24eb62eee5c35da494e0f2ed1cefee918bbceb"
+  integrity sha512-Y/1c2Gzzsosj/K9akbKh2Z1xAhKby9p77fvs0lvldRVZ41cv3ryldMy0QKup7G+O2QDuruNzJ/B9MamEYbPxMw==
 
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
@@ -673,13 +660,6 @@
   version "0.15.8"
   resolved "https://registry.yarnpkg.com/@lezer/lr/-/lr-0.15.8.tgz#1564a911e62b0a0f75ca63794a6aa8c5dc63db21"
   integrity sha512-bM6oE6VQZ6hIFxDNKk8bKPa14hqFrV07J/vHGOeiAbJReIaQXmkVb6xQu4MR+JBTLa5arGRyAAjJe1qaQt3Uvg==
-  dependencies:
-    "@lezer/common" "^0.15.0"
-
-"@lezer/markdown@^0.15.0":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@lezer/markdown/-/markdown-0.15.6.tgz#2a826a507399b32176efdc35554397f05227d2aa"
-  integrity sha512-1XXLa4q0ZthryUEfO47ipvZHxNb+sCKoQIMM9dKs5vXZOBbgF2Vah/GL3g26BFIAEc2uCv4VQnI+lSrv58BT3g==
   dependencies:
     "@lezer/common" "^0.15.0"
 
@@ -1640,6 +1620,11 @@ chokidar@^3.4.0:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+clean-set@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/clean-set/-/clean-set-1.1.2.tgz#76d8bf238c3e27827bfa73073ecdfdc767187070"
+  integrity sha512-cA8uCj0qSoG9e0kevyOWXwPaELRPVg5Pxp6WskLMwerx257Zfnh8Nl0JBH59d7wQzij2CK7qEfJQK3RjuKKIug==
 
 cliui@^7.0.2:
   version "7.0.4"

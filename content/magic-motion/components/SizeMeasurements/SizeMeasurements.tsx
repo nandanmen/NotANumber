@@ -8,7 +8,7 @@ import {
   Controls,
   IconButton,
 } from "~/components/Visualizer";
-import { styled, keyframes } from "~/stitches.config";
+import { styled, keyframes, darkTheme } from "~/stitches.config";
 import { useStepPlayer } from "~/lib/algorithm";
 
 import { Ruler, RulerWrapper, RulerText } from "../shared/Ruler";
@@ -103,6 +103,11 @@ const OriginalSquare = styled("div", {
   animationDuration: "500ms",
   animationFillMode: "forwards",
   animationTimingFunction: "ease-out",
+
+  [`.${darkTheme} &`]: {
+    background: `repeating-linear-gradient( -45deg, $colors$blueDark9, $colors$blueDark9 5px, transparent 5px, transparent 10px )`,
+    border: "1px solid $blueDark9",
+  },
 });
 
 const StateControls = styled("div", {

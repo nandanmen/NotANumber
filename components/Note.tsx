@@ -40,5 +40,6 @@ const Aside = styled("aside", {
   "@md": {
     position: "absolute",
     fontSize: "$sm",
+    paddingLeft: "$4",
   },
 });
