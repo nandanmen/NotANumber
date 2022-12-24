@@ -20,10 +20,10 @@ export const ChangeIndicator = ({ value, children }) => {
       animate={state}
       variants={{
         active: {
-          backgroundColor: "rgba(255, 255, 255, 1)",
+          backgroundColor: "var(--colors-gray4)",
         },
         idle: {
-          backgroundColor: "rgba(255, 255, 255, 0)",
+          backgroundColor: "transparent",
         },
       }}
       initial="idle"

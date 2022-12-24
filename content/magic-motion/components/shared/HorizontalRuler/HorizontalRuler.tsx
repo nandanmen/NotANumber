@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { keyframes, styled } from "~/stitches.config";
+import { keyframes, styled, darkTheme } from "~/stitches.config";
 
 export const HorizontalRuler = ({
   from,
@@ -89,6 +89,11 @@ export const Line = styled(motion.line, {
   animationDuration: "500ms",
   animationFillMode: "forwards",
   animationTimingFunction: "ease-out",
+  strokeWidth: 2,
+
+  [`.${darkTheme} &`]: {
+    stroke: "$gray12",
+  },
 });
 
 export const LineEndpoint = styled(motion.circle, {

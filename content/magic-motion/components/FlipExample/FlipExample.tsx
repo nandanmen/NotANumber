@@ -1,12 +1,12 @@
 import React from "react";
 
 import { GridBackground } from "~/components/Grid";
-import { ToggleButton } from "~/components/Visualizer";
+import { Visualizer, Content, ToggleButton } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
 import { styled } from "~/stitches.config";
 
-import { Square, ContentWrapper, Controls, AlignmentText } from "../shared";
+import { Square, Controls, AlignmentText } from "../shared";
 
 export const FlipExample = () => {
   const [toggled, toggle] = React.useReducer((state) => !state, false);
@@ -24,11 +24,17 @@ export const FlipExample = () => {
           </ChangeIndicator>
         </AlignmentText>
       </Controls>
-      <GridBackground>
-        <ContentWrapper toggled={toggled}>
+      <Visualizer>
+        <Content
+          css={{
+            display: "flex",
+            justifyContent: toggled ? "flex-end" : "flex-start",
+          }}
+          padding="lg"
+        >
           <DisplayOnlySquare layout transition={{ duration: 1 }} />
-        </ContentWrapper>
-      </GridBackground>
+        </Content>
+      </Visualizer>
     </FullWidth>
   );
 };

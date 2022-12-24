@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { blueDark } from "@radix-ui/colors";
 import { darkTheme, styled } from "~/stitches.config";
 import { IconButton } from "~/components/Visualizer";
 
@@ -117,8 +118,8 @@ export const Square = styled(motion.button, {
   boxShadow: "$sm",
 
   [`.${darkTheme} &`]: {
-    background: "$blue8",
-    borderColor: "$blue9",
+    background: blueDark.blue8,
+    borderColor: blueDark.blue10,
   },
 
   "&:hover": {
