@@ -13,6 +13,13 @@ type FileDatabaseProps = {
   highlighted?: number;
 } & React.ComponentPropsWithoutRef<typeof Page>;
 
+const isStale = (record, records) => {
+  const recordsWithKey = records
+    .filter((_record) => _record.value[0] === record[0])
+    .map((_record) => _record.value);
+  return recordsWithKey.at(-1) !== record;
+};
+
 export const FileDatabase = ({
   records,
   highlighted,
@@ -31,6 +38,7 @@ export const FileDatabase = ({
               value={dbValue}
               type={type}
               highlighted={highlighted === index}
+              stale={isStale(value, records)}
             />
           );
         })}
@@ -79,6 +87,7 @@ const Record = ({
   value,
   type = "base",
   highlighted = false,
+  stale = false,
 }: RecordProps) => {
   const [active, setActive] = React.useState(true);
 
@@ -102,6 +111,7 @@ const Record = ({
         layout
         type={type}
         highlighted={highlighted}
+        stale={stale}
       >
         <RecordKey layout>{String(dbKey).padStart(3, "0")}:</RecordKey>
         <motion.span layout>{value}</motion.span>
@@ -145,6 +155,11 @@ export const RecordWrapper = styled(motion.li, {
       true: {
         position: "relative",
         color: "$blue10",
+      },
+    },
+    stale: {
+      true: {
+        color: "$gray9",
       },
     },
     type: {
