@@ -234,7 +234,7 @@ const Commands = styled("ul", {
 const Caption = styled(motion.div, {
   position: "absolute",
   background: "$gray4",
-  height: 46,
+  height: 50,
   width: "100%",
   bottom: 0,
   borderTop: "1px solid $gray8",
