@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 } from "uuid";
-import { motion } from "framer-motion";
+import { animate, motion, transform, useMotionValue } from "framer-motion";
 import { range } from "~/lib/utils";
 import { styled } from "~/stitches.config";
 import { Checkbox } from "~/components/Checkbox";
@@ -25,7 +25,6 @@ function mapReverse<V, T>(arr: V[], fn: (v: V, i: number) => T): T[] {
 const speeds = [0.25, 0.5, 1];
 
 export const Cards = () => {
-  const wrapperRef = React.useRef();
   const [showOverflow, setShowOverflow] = React.useState(false);
   const [speed, setSpeed] = React.useState(1);
   const [data, setData] = React.useState(() =>
@@ -57,34 +56,20 @@ export const Cards = () => {
         checked={showOverflow}
         onCheckedChange={() => setShowOverflow(!showOverflow)}
       />
-      <Wrapper css={{ overflow: !showOverflow && "hidden" }} ref={wrapperRef}>
+      <Wrapper css={{ overflow: !showOverflow && "hidden" }}>
         <Background />
         {mapReverse([...discarded, ...data], (item, index) => {
           const isDiscarded = discarded.includes(item);
-          if (isDiscarded) {
-            return (
-              <Card
-                speed={speed}
-                key={item.id}
-                value={item.value}
-                index={index}
-                discarded
-                lastIndex={index}
-              />
-            );
-          }
           const dataIndex = data.findIndex((_item) => _item.id === item.id);
-          const isFirst = dataIndex === 0;
           return (
             <Card
               speed={speed}
               key={item.id}
               value={item.value}
-              index={dataIndex}
+              index={isDiscarded ? index : dataIndex}
+              discarded={isDiscarded}
               lastIndex={index}
-              onClick={() => rotate(dataIndex)}
-              drag={isFirst}
-              dragConstraints={wrapperRef}
+              onClick={(requestedIndex) => rotate(requestedIndex || dataIndex)}
             />
           );
         })}
@@ -147,6 +132,8 @@ const Wrapper = styled("div", {
   justifyContent: "center",
 });
 
+const xTransform = transform([-100, 100], [-80, 80], { clamp: false });
+
 const Card = ({
   index,
   value,
@@ -155,38 +142,82 @@ const Card = ({
   speed,
   ...props
 }) => {
+  const transition = React.useMemo(() => {
+    return {
+      type: "spring",
+      damping: 70,
+      stiffness: 600 * speed,
+      delay: lastIndex * (0.05 / speed),
+    } as const;
+  }, [speed, lastIndex]);
+
+  const x = useMotionValue(500);
+  const rotateZ = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+
+  React.useEffect(() => {
+    if (discarded) {
+      animate(x, -600, transition);
+    } else {
+      animate(x, index * 20 + index * 30, transition);
+    }
+  }, [x, discarded, index, transition]);
+
+  React.useEffect(() => {
+    if (discarded) {
+      animate(rotateZ, -90, transition);
+      animate(rotateY, index * 5, transition);
+    } else {
+      animate(rotateZ, index * 5, transition);
+      animate(rotateY, index * 5, transition);
+    }
+  }, [discarded, index, transition, rotateZ, rotateY]);
+
   const background = `linear-gradient(-45deg, ${darken(
     colorEnd,
     index * 12
   )}, ${darken(colorStart, index * 12)})`;
+
+  const currentX = index * 20 + index * 30;
+  const currentRotateZ = index * 5;
+  const currentRotateY = index * 5;
+
   return (
     <_Card
       animate={discarded ? "discarded" : "active"}
       variants={{
         discarded: {
-          x: -600,
-          rotateZ: -90,
-          rotateY: index * 5,
           scale: 0.9,
           y: -30,
           background,
         },
         active: {
-          x: index * 20 + index * 30,
           y: index > 1 ? index * 5 : 0,
-          rotateZ: index * 5,
-          rotateY: index * 5,
           scale: 1 - index * 0.12,
           background,
         },
       }}
-      transition={{
-        type: "spring",
-        damping: 70,
-        stiffness: 600 * speed,
-        delay: lastIndex * (0.05 / speed),
+      onPan={(_, info) => {
+        if (index !== 0) return;
+        x.set(currentX + xTransform(info.offset.x));
+        rotateZ.set(currentRotateZ + info.offset.x * 0.05);
+        rotateY.set(currentRotateY + info.offset.x * 0.1);
       }}
-      initial={{ x: 500, y: 100, scale: 1 - index * 0.12 }}
+      onPanEnd={(_, info) => {
+        const minVelocity = Math.abs(info.velocity.x) > 80;
+        const minOffset = info.offset.x < -100;
+
+        if (minVelocity && minOffset) {
+          props.onClick(1);
+        } else {
+          animate(x, currentX, transition);
+          animate(rotateZ, currentRotateZ, transition);
+          animate(rotateY, currentRotateY, transition);
+        }
+      }}
+      transition={transition}
+      style={{ x, rotateZ, rotateY }}
+      initial={{ y: 100, scale: 1 - index * 0.12 }}
       {...props}
     >
       <span>{value}</span>
