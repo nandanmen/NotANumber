@@ -192,14 +192,14 @@ export const AppendOnlyFile = ({
               transition={{ type: "spring", damping: 20 }}
             >
               {found ? (
-                <>
+                <span>
                   Found key <strong>{key}</strong> with value "
                   <em>{currentRecord[1]}</em>"
-                </>
+                </span>
               ) : (
-                <>
+                <span>
                   Searching for key <strong>{key}</strong>...
-                </>
+                </span>
               )}
             </Caption>
           )}
@@ -234,12 +234,14 @@ const Commands = styled("ul", {
 const Caption = styled(motion.div, {
   position: "absolute",
   background: "$gray4",
-  padding: "$3",
+  height: 46,
   width: "100%",
   bottom: 0,
   borderTop: "1px solid $gray8",
   fontFamily: "$mono",
   fontSize: "0.75rem",
-  textAlign: "center",
   color: "$gray11",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });

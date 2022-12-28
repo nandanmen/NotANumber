@@ -80,6 +80,7 @@ type RecordProps = {
   value: string;
   type?: "active" | "success" | "base";
   highlighted?: boolean;
+  stale?: boolean;
 };
 
 const Record = ({

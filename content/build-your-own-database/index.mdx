@@ -117,9 +117,9 @@ One thing we can do is to periodically copy over all the "active" records to a n
 
 <SingleFileCompaction />
 
-Notice that because we're working on a new file, the existing file can still accept new records, like the keys `014` and `006` in the animation above.
+Notice that because we're working on a new file, the existing one can still accept new records, like the keys `014` and `006` in the above animation.
 
-Something doesn't look right though. Those new keys we just added weren't copied over! What should we do? We could run the compaction process again, but what if new records come in during _that_ process?
+Wait a second. Those new records were added to the old file but weren't copied to the new one! What should we do? We _could_ rerun the compaction process, but what if new records come in during _that_ process?
 
 Hmm, let's take a step back. **Maybe there's another way to organize the data?**
 
