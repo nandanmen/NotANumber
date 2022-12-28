@@ -125,15 +125,11 @@ Hmm, let's take a step back. **Maybe there's another way to organize the data?**
 
 ### Splitting to Segments
 
-Take a look at these two files—do you notice any similarities?
-
-```
-file comparison
-```
-
-Both of these files contain up-to-date values for keys 12 and 18, so what if we delete the values in one of the files?
+Both of these files contain up-to-date values for keys `12` and `18`, so what if we delete the values in one of the files?
 
 Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
+
+---
 
 Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_:
 
@@ -147,7 +143,11 @@ We'll then run our compaction process on the _old_ segments, potentially merging
 segment compaction
 ```
 
-"Old" is the keyword here—because we're not merging data from the current "active" segment, we don't have to worry about modifying that segment when we're done.
+"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records:
+
+```
+active segment new writes
+```
 
 Note that we won't modify the segments as we're compacting them. This immutability lets us continue reading from the old segments while the compaction process is happening.
 
@@ -157,12 +157,82 @@ When the compaction is complete, we can redirect our reads to the compacted segm
 redirect
 ```
 
-## Speeding Up Searches
+### Adapting to Segments
 
-- Introduce in-memory indices with hash tables
-- Main issues:
-  - Keys have to fit in memory
-  - Inefficient range queries
+Now that we're using segments, we need to change our search algorithm to start looking in the most **recent** segment first, working backward:
+
+```
+segment search example
+```
+
+## Your First Index
+
+That's one problem solved; on to the next:
+
+<ProblemStatement>
+
+**How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is slow!
+
+</ProblemStatement>
+
+What if we use _objects_? That's right, these little guys:
+
+```js
+const hashTable = {};
+```
+
+In other languages, JavaScript objects are called _hash tables_ or _dictionaries_ or _maps_. Hash tables are great because they're really good at storing key-value pairs and quickly looking them up later. That sounds exactly like what we need!
+
+Here's how it'll work. For every key that we have in our database, we'll store the record's **offset** in the index:
+
+```
+offset example
+```
+
+I purposely showed the file a little differently this time. Here, I've portrayed the file more like what the computer might see — a series of contiguous characters. This makes it easier to show each record's offsets.
+
+<Callout label="What are offsets?">
+
+A record's offset is **the number of bytes from the beginning of the file to the start of the record**. For example, the second record, `12: Vestibulum varius`, has an offset of 15 because:
+
+1. Each character is 1 byte large;
+2. The first record is 13 characters long (`1:Lorem ipsum`);
+3. The first record ends with a newline character, which is 1 byte long;
+
+This gives us an offset of `13 + 1 + 1 = 15`.
+
+</Callout>
+
+Notice that each segment has its own index because the offsets are relative to the start of each segment.
+
+### Searching With Indices
+
+Great! Now that we have our indices set up, our search algorithm now works a little differently:
+
+1. Starting at the most recent segment, look up the key in the index;
+2. If the key is found, read the record at the offset;
+3. If the key is not found, repeat with the second most recent segment, and so on.
+
+```
+searching with index
+```
+
+### Updating Indices
+
+Of course, we'll need to keep our indices up to date with the data — otherwise, they won't be useful! Specifically, whenever we update, delete, or insert a record, we have to change the index accordingly:
+
+```
+updating index
+```
+
+Notice what this implies — **writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
+
+### Tradeoffs
+
+An index is great because it lets us query our database much faster, but there are some problems with our specific hash table implementation:
+
+1. **Keys have to fit in memory**. Since we're using an in-memory hash table as our index, all of the keys in our database must fit in memory. This means there's a limit on the number of keys we can store!
+2. **Range queries are still inefficient**. Our data isn't sorted in any way, so we can't do range queries efficiently. For example, if we wanted to find all the records between the keys `12` and `18`, our index wouldn't help—we'd have to iterate through the entire database!
 
 ## Sorted String Tables
 

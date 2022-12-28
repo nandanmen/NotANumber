@@ -25,5 +25,4 @@ const Title = styled("h4", {
   paddingBottom: "$2",
   marginBottom: "$3",
   borderBottom: "1px dashed $gray8",
-  color: "$gray11",
 });

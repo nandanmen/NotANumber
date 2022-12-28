@@ -185,7 +185,7 @@ const Article = styled("article", {
     gridColumn: "1",
   },
 
-  "> figure": {
+  "> figure, > aside": {
     marginTop: "$4",
     marginBottom: "$8",
   },
@@ -209,8 +209,8 @@ const Article = styled("article", {
     fontFamily: "$serif",
   },
 
-  "> p": {
-    "> span > code, > code": {
+  "> *:not(pre, [data-rehype-pretty-code-fragment])": {
+    code: {
       background: "$gray7",
       padding: 2,
       fontSize: "$sm",
@@ -237,7 +237,7 @@ const Article = styled("article", {
     marginBottom: "$8",
   },
 
-  "[data-rehype-pretty-code-fragment] pre": {
+  "> pre, [data-rehype-pretty-code-fragment] pre": {
     marginTop: "$4",
     marginBottom: "$8",
     whiteSpace: "pre-wrap",
