@@ -7,29 +7,14 @@ import {
   ToggleButton,
 } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
-import { FullWidth } from "~/components/FullWidth";
 
 import { FileDatabase, FileDatabaseWrapper } from "../FileDatabase";
-
+import { random, randomUnique, texts, pick } from "../utils";
 import {
   useFileDatabase,
   type DatabaseRecord,
   type DatabaseCommand,
 } from "./database";
-
-const ipsum =
-  "dolor sit amet, consectetur adipiscing elit. Vestibulum varius vel mauris iaculis pharetra.".split(
-    " "
-  );
-
-const texts = [];
-for (let i = 0; i < ipsum.length; i += 2) {
-  texts.push(`${ipsum[i]} ${ipsum[i + 1]}`);
-}
-
-// get a random number within bounds
-const random = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
 
 const commandArgs = (command: DatabaseCommand) => {
   switch (command.type) {
@@ -39,14 +24,6 @@ const commandArgs = (command: DatabaseCommand) => {
     case "delete":
       return `${command.key}`;
   }
-};
-
-const randomUnique = (min: number, max: number, exclude: number[]) => {
-  let number = random(min, max);
-  while (exclude.includes(number)) {
-    number = random(min, max);
-  }
-  return number;
 };
 
 type Mode = "add" | "update" | "delete" | "search";
@@ -60,14 +37,6 @@ const defaultData: DatabaseRecord[] = [
   [1, "Lorem ipsum"],
   [18, "dolor sit"],
 ];
-
-function pick<DataType>(array: DataType[], exclude: Set<DataType>): DataType {
-  let item = array[random(0, array.length - 1)];
-  while (exclude.has(item)) {
-    item = array[random(0, array.length - 1)];
-  }
-  return item;
-}
 
 export const AppendOnlyFile = ({
   mode = "all",
@@ -117,95 +86,93 @@ export const AppendOnlyFile = ({
   };
 
   return (
-    <FullWidth>
-      <Visualizer row css={{ flexWrap: "wrap-reverse" }}>
-        <Aside>
-          <Commands>
-            {db.commands.map((command, index) => (
-              <motion.li
-                key={index}
-                animate={{ y: 0, opacity: 1 }}
-                initial={{ y: 20, opacity: 0 }}
-                transition={{ type: "spring", damping: 20 }}
-              >
-                {command.type === "result" ? (
-                  command.value
-                ) : (
-                  <>
-                    <span>{`$ db `}</span>
-                    <CommandType>{command.type}</CommandType>
-                    <span>{` ${commandArgs(command)}`}</span>
-                  </>
-                )}
-              </motion.li>
-            ))}
-          </Commands>
-          <Controls css={{ justifyContent: "center", gap: "$2" }}>
-            {showButton("add") && (
-              <ToggleButton onClick={addRecord}>Add</ToggleButton>
-            )}
-            {showButton("update") && (
-              <ToggleButton onClick={updateRecord} disabled={db.size() === 0}>
-                Update
-              </ToggleButton>
-            )}
-            {showButton("delete") && (
-              <ToggleButton onClick={deleteRecord} disabled={db.size() === 0}>
-                Delete
-              </ToggleButton>
-            )}
-            {showButton("search") && (
-              <ToggleButton
-                onClick={() => db.get(getRandomKey())}
-                disabled={db.size() === 0}
-              >
-                Search
-              </ToggleButton>
-            )}
-          </Controls>
-        </Aside>
-        <FileDatabaseWrapper
-          as={Content}
-          noOverflow
-          padding="lg"
-          css={{
-            flex: 3,
-            flexBasis: 375,
-          }}
-        >
-          <FileDatabase
-            records={db.records.map(([dbKey, value], index) => {
-              let type: "active" | "success" | "base" = "base";
-              if (currentIndex === index) {
-                type = key === dbKey ? "success" : "active";
-              }
-              return {
-                value: [dbKey, value],
-                type,
-              };
-            })}
-          />
-          {key !== null && (
-            <Caption
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
+    <Visualizer row css={{ flexWrap: "wrap-reverse" }} fullWidth>
+      <Aside>
+        <Commands>
+          {db.commands.map((command, index) => (
+            <motion.li
+              key={index}
+              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 20 }}
             >
-              {found ? (
-                <span>
-                  Found key <strong>{key}</strong> with value "
-                  <em>{currentRecord[1]}</em>"
-                </span>
+              {command.type === "result" ? (
+                command.value
               ) : (
-                <span>
-                  Searching for key <strong>{key}</strong>...
-                </span>
+                <>
+                  <span>{`$ db `}</span>
+                  <CommandType>{command.type}</CommandType>
+                  <span>{` ${commandArgs(command)}`}</span>
+                </>
               )}
-            </Caption>
+            </motion.li>
+          ))}
+        </Commands>
+        <Controls css={{ justifyContent: "center", gap: "$2" }}>
+          {showButton("add") && (
+            <ToggleButton onClick={addRecord}>Add</ToggleButton>
           )}
-        </FileDatabaseWrapper>
-      </Visualizer>
-    </FullWidth>
+          {showButton("update") && (
+            <ToggleButton onClick={updateRecord} disabled={db.size() === 0}>
+              Update
+            </ToggleButton>
+          )}
+          {showButton("delete") && (
+            <ToggleButton onClick={deleteRecord} disabled={db.size() === 0}>
+              Delete
+            </ToggleButton>
+          )}
+          {showButton("search") && (
+            <ToggleButton
+              onClick={() => db.get(getRandomKey())}
+              disabled={db.size() === 0}
+            >
+              Search
+            </ToggleButton>
+          )}
+        </Controls>
+      </Aside>
+      <FileDatabaseWrapper
+        as={Content}
+        noOverflow
+        padding="lg"
+        css={{
+          flex: 3,
+          flexBasis: 375,
+        }}
+      >
+        <FileDatabase
+          records={db.records.map(([dbKey, value], index) => {
+            let type: "active" | "success" | "base" = "base";
+            if (currentIndex === index) {
+              type = key === dbKey ? "success" : "active";
+            }
+            return {
+              value: [dbKey, value],
+              type,
+            };
+          })}
+        />
+        {key !== null && (
+          <Caption
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", damping: 20 }}
+          >
+            {found ? (
+              <span>
+                Found key <strong>{key}</strong> with value "
+                <em>{currentRecord[1]}</em>"
+              </span>
+            ) : (
+              <span>
+                Searching for key <strong>{key}</strong>...
+              </span>
+            )}
+          </Caption>
+        )}
+      </FileDatabaseWrapper>
+    </Visualizer>
   );
 };
 

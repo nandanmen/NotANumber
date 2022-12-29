@@ -1,1 +1,2 @@
-export * from './AppendOnlyFile'
+export * from "./AppendOnlyFile";
+export * from "./database";

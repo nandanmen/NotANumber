@@ -1,10 +1,20 @@
 import { motion } from "framer-motion";
 import { ComponentPropsWithoutRef } from "react";
 import { FaPlay, FaUndo, FaPause } from "react-icons/fa";
+import { FullWidth } from "../FullWidth";
 import { styled, darkTheme } from "~/stitches.config";
 import { GridBackground } from "../Grid";
 
-export const Visualizer = styled("div", {
+export const Visualizer = ({ fullWidth = false, ...props }) => {
+  const Wrapper = fullWidth ? FullWidth : "figure";
+  return (
+    <Wrapper>
+      <_Visualizer {...props} />
+    </Wrapper>
+  );
+};
+
+export const _Visualizer = styled("div", {
   $$border: "1px solid $colors$gray8",
 
   border: "$$border",

@@ -4,6 +4,7 @@ import { styled, darkTheme } from "~/stitches.config";
 import { type DatabaseRecord } from "../AppendOnlyFile/database";
 
 export type Record = {
+  id?: string;
   value: DatabaseRecord;
   type?: "success" | "active" | "base";
 };
@@ -13,7 +14,7 @@ type FileDatabaseProps = {
   highlighted?: number;
 } & React.ComponentPropsWithoutRef<typeof Page>;
 
-const isStale = (record, records) => {
+const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   const recordsWithKey = records
     .filter((_record) => _record.value[0] === record[0])
     .map((_record) => _record.value);
@@ -23,17 +24,18 @@ const isStale = (record, records) => {
 export const FileDatabase = ({
   records,
   highlighted,
+  children,
   ...props
 }: FileDatabaseProps) => {
   const id = React.useId();
   return (
     <LayoutGroup id={id}>
       <Page {...props}>
-        {records.map(({ value, type }, index) => {
+        {records.map(({ id, value, type }, index) => {
           const [dbKey, dbValue] = value;
           return (
             <Record
-              key={`${index}-${dbKey}`}
+              key={id ?? `${index}-${dbKey}`}
               dbKey={dbKey}
               value={dbValue}
               type={type}
@@ -45,6 +47,7 @@ export const FileDatabase = ({
         {highlighted === undefined && (
           <HighlightDot layoutId="highlight" animate={{ opacity: 0 }} />
         )}
+        {children}
       </Page>
     </LayoutGroup>
   );

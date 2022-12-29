@@ -2,7 +2,6 @@ import React from "react";
 import { useMachine } from "@xstate/react";
 import { motion } from "framer-motion";
 import { useAlgorithm } from "~/lib/algorithm";
-import { FullWidth } from "~/components/FullWidth";
 import {
   Visualizer,
   Content,
@@ -133,111 +132,109 @@ export const SingleFileCompaction = () => {
   const height = state.matches("done") ? 90 : visible ? 300 : 250;
 
   return (
-    <FullWidth>
-      <Visualizer>
-        <Content
-          css={{
-            $$gap: "$space$32",
-            display: "flex",
-            flexDirection: "row-reverse",
-            gap: "$$gap",
-            justifyContent: "center",
-            padding: "$12",
-            position: "relative",
-          }}
-          noOverflow
+    <Visualizer fullWidth>
+      <Content
+        css={{
+          $$gap: "$space$32",
+          display: "flex",
+          flexDirection: "row-reverse",
+          gap: "$$gap",
+          justifyContent: "center",
+          padding: "$12",
+          position: "relative",
+        }}
+        noOverflow
+      >
+        <PageWrapper
+          hidden={!visible}
+          peek={state.matches("peek")}
+          layout="position"
         >
-          <PageWrapper
-            hidden={!visible}
-            peek={state.matches("peek")}
-            layout="position"
+          {state.matches("done") && <Background />}
+          <CompactedPage
+            animate={{ height }}
+            transition={{ type: "spring", damping: 20 }}
           >
-            {state.matches("done") && <Background />}
-            <CompactedPage
-              animate={{ height }}
-              transition={{ type: "spring", damping: 20 }}
-            >
-              {algorithmState.compactedRecords
-                .filter((record) => record.value[1] !== "null")
-                .map(({ value: record }) => {
-                  const [key, value] = record;
-                  return (
-                    <RecordWrapper
-                      key={`compacted-${key}}`}
-                      css={{
-                        borderColor: "$blue4",
-                        color: "$blue11",
+            {algorithmState.compactedRecords
+              .filter((record) => record.value[1] !== "null")
+              .map(({ value: record }) => {
+                const [key, value] = record;
+                return (
+                  <RecordWrapper
+                    key={`compacted-${key}}`}
+                    css={{
+                      borderColor: "$blue4",
+                      color: "$blue11",
 
-                        [`.${darkTheme} &`]: {
-                          borderColor: "$blueDark5",
-                          color: "$blueDark11",
-                        },
-                      }}
-                      animate={{ x: 0, opacity: 1 }}
-                      initial={{ x: -16, opacity: 0 }}
-                      transition={{ type: "spring", damping: 20 }}
-                      layout
-                    >
-                      <RecordKey layout>{key}</RecordKey>
-                      <motion.span layout>{value}</motion.span>
-                    </RecordWrapper>
-                  );
-                })}
-            </CompactedPage>
-          </PageWrapper>
-          <FileDatabase
-            records={visibleRecords}
-            highlighted={showHighlight ? algorithmState.i : undefined}
-            layout
-            css={{
-              position: "relative",
-              marginRight: state.matches("peek") ? "$6" : 0,
-              height: 300,
-            }}
-          />
-          <ArrowWrapper
-            variants={{
-              hidden: { x: -8, opacity: 0, transition: { type: false } },
-              shown: {
-                x: 0,
-                opacity: 1,
-                transition: { delay: 0.2, type: "spring", damping: 20 },
-              },
-            }}
-            animate={visible ? "shown" : "hidden"}
+                      [`.${darkTheme} &`]: {
+                        borderColor: "$blueDark5",
+                        color: "$blueDark11",
+                      },
+                    }}
+                    animate={{ x: 0, opacity: 1 }}
+                    initial={{ x: -16, opacity: 0 }}
+                    transition={{ type: "spring", damping: 20 }}
+                    layout
+                  >
+                    <RecordKey layout>{key}</RecordKey>
+                    <motion.span layout>{value}</motion.span>
+                  </RecordWrapper>
+                );
+              })}
+          </CompactedPage>
+        </PageWrapper>
+        <FileDatabase
+          records={visibleRecords}
+          highlighted={showHighlight ? algorithmState.i : undefined}
+          layout
+          css={{
+            position: "relative",
+            marginRight: state.matches("peek") ? "$6" : 0,
+            height: 300,
+          }}
+        />
+        <ArrowWrapper
+          variants={{
+            hidden: { x: -8, opacity: 0, transition: { type: false } },
+            shown: {
+              x: 0,
+              opacity: 1,
+              transition: { delay: 0.2, type: "spring", damping: 20 },
+            },
+          }}
+          animate={visible ? "shown" : "hidden"}
+        >
+          <MovingArrow playing={playing} />
+        </ArrowWrapper>
+      </Content>
+      <Controls css={{ alignItems: "center" }}>
+        <PlayButton
+          isPlaying={playing}
+          onClick={() => (playing ? send("pause") : send("play"))}
+          onHoverStart={() => send("hover")}
+          onHoverEnd={() => send("hoverEnd")}
+        />
+        {state.matches("running") && (
+          <MessageText
+            key={exampleRecords[algorithmState.i]?.value.join("-")}
+            initial={{ y: 16, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", damping: 20 }}
           >
-            <MovingArrow playing={playing} />
-          </ArrowWrapper>
-        </Content>
-        <Controls css={{ alignItems: "center" }}>
-          <PlayButton
-            isPlaying={playing}
-            onClick={() => (playing ? send("pause") : send("play"))}
-            onHoverStart={() => send("hover")}
-            onHoverEnd={() => send("hoverEnd")}
-          />
-          {state.matches("running") && (
-            <MessageText
-              key={exampleRecords[algorithmState.i]?.value.join("-")}
-              initial={{ y: 16, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ type: "spring", damping: 20 }}
-            >
-              <Message
-                record={exampleRecords[algorithmState.i]}
-                compactedRecords={algorithmState.compactedRecords}
-              />
-            </MessageText>
-          )}
-          <UndoButton
-            onClick={() => {
-              send("reset");
-              ctx.reset();
-            }}
-          />
-        </Controls>
-      </Visualizer>
-    </FullWidth>
+            <Message
+              record={exampleRecords[algorithmState.i]}
+              compactedRecords={algorithmState.compactedRecords}
+            />
+          </MessageText>
+        )}
+        <UndoButton
+          onClick={() => {
+            send("reset");
+            ctx.reset();
+          }}
+        />
+      </Controls>
+    </Visualizer>
   );
 };
 

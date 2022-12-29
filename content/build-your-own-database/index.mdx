@@ -11,6 +11,7 @@ import { ProblemStatement } from "~/components/ProblemStatement";
 import { AppendOnlyFile } from "./components/AppendOnlyFile";
 import { FileDatabaseExample } from "./components/FileDatabaseExample";
 import { SingleFileCompaction } from "./components/SingleFileCompaction";
+import { Segments } from "./components/Segments";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -129,13 +130,9 @@ Both of these files contain up-to-date values for keys `12` and `18`, so what if
 
 Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
 
----
-
 Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_:
 
-```
-segments intro
-```
+<Segments />
 
 We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
 
