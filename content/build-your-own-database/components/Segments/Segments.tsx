@@ -11,7 +11,7 @@ import { FileDatabase, type Record } from "../FileDatabase";
 import { createRandomFileRecord } from "../utils";
 
 const MAX_RECORDS = 4;
-const INITIAL_RECORDS = [
+const INITIAL_RECORDS: Record[] = [
   { value: [813, "amet, consectetur"] },
   { value: [301, "vel mauris"] },
   { value: [525, "dolor sit"] },
