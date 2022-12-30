@@ -6,7 +6,7 @@ import {
   SandpackPreview,
   SandpackConsole,
 } from "@codesandbox/sandpack-react";
-import { sandpackDark } from "@codesandbox/sandpack-themes";
+import { amethyst } from "@codesandbox/sandpack-themes";
 import { css, styled } from "~/stitches.config";
 
 type SandboxProps = {
@@ -29,7 +29,7 @@ export const Sandbox = ({ files }: SandboxProps) => {
     <div>
       <Wrapper
         template="react"
-        theme={sandpackDark}
+        theme={amethyst}
         options={{
           autorun: true,
           classes: {
@@ -120,4 +120,9 @@ const Wrapper = styled(SandpackProvider, {
   "--sp-border-radius": "$radii$base",
   "--sp-layout-height": `${PREVIEW_HEIGHT}px`,
   "--sp-space-2": "$space$2",
+  "--sp-colors-surface1": "$colors$gray2",
+  "--sp-colors-surface2": "$colors$gray5",
+  "--sp-colors-surface3": "$colors$gray4",
+  "--sp-font-size": "14px",
+  "--sp-font-lineHeight": 1.5,
 });

@@ -2,7 +2,7 @@ import { Sandbox } from "~/components/Sandbox";
 
 const css = `
 html {
-  background: #151515;
+  background: hsl(0, 0%, 11%);
 }
 
 body {

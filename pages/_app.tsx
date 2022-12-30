@@ -57,7 +57,7 @@ const Wrapper = styled("div", {
   minHeight: "100vh",
 
   [`.${darkTheme} &`]: {
-    background: "$gray1",
+    background: "$gray2",
   },
 });
 
