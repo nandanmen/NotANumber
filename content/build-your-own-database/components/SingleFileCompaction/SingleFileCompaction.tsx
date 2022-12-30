@@ -154,6 +154,7 @@ export const SingleFileCompaction = () => {
           <CompactedPage
             animate={{ height }}
             transition={{ type: "spring", damping: 20 }}
+            css={{ minHeight: "auto" }}
           >
             {algorithmState.compactedRecords
               .filter((record) => record.value[1] !== "null")
@@ -191,6 +192,7 @@ export const SingleFileCompaction = () => {
             position: "relative",
             marginRight: state.matches("peek") ? "$6" : 0,
             height: 300,
+            minHeight: "auto",
           }}
         />
         <ArrowWrapper

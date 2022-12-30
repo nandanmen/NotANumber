@@ -46,6 +46,8 @@ export const AppendOnlyFile = ({
   const { key, currentIndex, found } = db.search;
   const currentRecord = db.records[currentIndex];
 
+  console.log(db.records);
+
   const getRandomKey = () => {
     const deleted = new Set(
       db.records

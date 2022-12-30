@@ -7,6 +7,7 @@ export type Record = {
   id?: string;
   value: DatabaseRecord;
   type?: "success" | "active" | "base";
+  stale?: boolean;
 };
 
 type FileDatabaseProps = {
@@ -31,7 +32,7 @@ export const FileDatabase = ({
   return (
     <LayoutGroup id={id}>
       <Page {...props}>
-        {records.map(({ id, value, type }, index) => {
+        {records.map(({ id, value, type, stale }, index) => {
           const [dbKey, dbValue] = value;
           return (
             <Record
@@ -40,7 +41,7 @@ export const FileDatabase = ({
               value={dbValue}
               type={type}
               highlighted={highlighted === index}
-              stale={isStale(value, records)}
+              stale={stale ?? isStale(value, records)}
             />
           );
         })}
@@ -56,7 +57,7 @@ export const FileDatabase = ({
 export const FileDatabaseWrapper = styled("div", {
   display: "flex",
   justifyContent: "center",
-  height: 400,
+  minHeight: 400,
   overflow: "hidden",
   position: "relative",
 });
@@ -67,7 +68,7 @@ export const Page = styled(motion.ul, {
   background: "$gray3",
   padding: "$4 0",
   boxShadow: "$sm",
-  height: 400,
+  minHeight: 400,
   minWidth: 300,
   fontFamily: "$mono",
   lineHeight: 1.1,
@@ -75,6 +76,7 @@ export const Page = styled(motion.ul, {
 
   [`.${darkTheme} &`]: {
     border: "1px solid $gray6",
+    background: "linear-gradient(-20deg, $gray1, $gray4)",
   },
 });
 
@@ -111,7 +113,6 @@ const Record = ({
     >
       <RecordWrapper
         active={active}
-        transition={{ type: "spring", damping: 20 }}
         layout
         type={type}
         highlighted={highlighted}
@@ -141,7 +142,7 @@ export const RecordWrapper = styled(motion.li, {
   padding: "$1 $6",
   display: "flex",
   gap: "$2",
-  border: "1px solid $gray3",
+  border: "1px solid transparent",
   transition: "all 0.3s",
 
   variants: {
