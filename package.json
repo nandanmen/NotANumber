@@ -12,6 +12,9 @@
     "stories": "node bin/stories.js",
     "lint": "next lint"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@codesandbox/sandpack-react": "^1.18.4",
     "@codesandbox/sandpack-themes": "^1.17.0",

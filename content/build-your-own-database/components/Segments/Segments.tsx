@@ -35,7 +35,7 @@ export const Segments = () => {
         }}
         noOverflow
       >
-        <Segment layout records={records} />
+        <Segment layout records={records} disabled={showSecondSegment} />
         <Segment
           layout
           records={segmentRecords}
@@ -78,7 +78,7 @@ export const Segment = styled(FileDatabase, {
   minHeight: "auto",
   width: 300,
   opacity: 1,
-  transition: "opacity 0.2s",
+  transition: "opacity 0.2s, background 0.2s",
 
   variants: {
     hidden: {
@@ -88,6 +88,11 @@ export const Segment = styled(FileDatabase, {
         height: 120,
         position: "absolute",
         opacity: 0,
+      },
+    },
+    disabled: {
+      true: {
+        background: "$gray5",
       },
     },
   },

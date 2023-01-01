@@ -12,6 +12,7 @@ import { AppendOnlyFile } from "./components/AppendOnlyFile";
 import { FileDatabaseExample } from "./components/FileDatabaseExample";
 import { SingleFileCompaction } from "./components/SingleFileCompaction";
 import { Segments } from "./components/Segments";
+import { SegmentCompaction } from "./components/SegmentCompaction";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -136,19 +137,11 @@ Here's what we'll do. When our file exceeds a specific size, we'll **create a ne
 
 We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
 
-```
-segment compaction
-```
+<SegmentCompaction />
 
-"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records:
+"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records (as shown in the bottom-most segment above).
 
-```
-active segment new writes
-```
-
-Note that we won't modify the segments as we're compacting them. This immutability lets us continue reading from the old segments while the compaction process is happening.
-
-When the compaction is complete, we can redirect our reads to the compacted segments and safely delete the old segments:
+Once the compaction is complete, we can safely delete the old segments:
 
 ```
 redirect

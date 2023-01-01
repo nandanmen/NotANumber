@@ -13,9 +13,10 @@ export type Record = {
 type FileDatabaseProps = {
   records: Record[];
   highlighted?: number;
+  recordAnimation?: boolean;
 } & React.ComponentPropsWithoutRef<typeof Page>;
 
-const isStale = (record: DatabaseRecord, records: Record[] = []) => {
+export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   const recordsWithKey = records
     .filter((_record) => _record.value[0] === record[0])
     .map((_record) => _record.value);
@@ -26,6 +27,7 @@ export const FileDatabase = ({
   records,
   highlighted,
   children,
+  recordAnimation = true,
   ...props
 }: FileDatabaseProps) => {
   const id = React.useId();
@@ -42,6 +44,7 @@ export const FileDatabase = ({
               type={type}
               highlighted={highlighted === index}
               stale={stale ?? isStale(value, records)}
+              animate={recordAnimation}
             />
           );
         })}
@@ -86,6 +89,7 @@ type RecordProps = {
   type?: "active" | "success" | "base";
   highlighted?: boolean;
   stale?: boolean;
+  animate?: boolean;
 };
 
 const Record = ({
@@ -94,35 +98,51 @@ const Record = ({
   type = "base",
   highlighted = false,
   stale = false,
+  animate = true,
 }: RecordProps) => {
-  const [active, setActive] = React.useState(true);
-
-  const _type = active ? "base" : type;
-  const mapTypeToColor = {
-    active: "var(--colors-blue5)",
-    success: "var(--colors-green5)",
-    base: "var(--colors-gray3)",
-  };
-
+  const [active, setActive] = React.useState(animate);
   return (
     <motion.div
-      animate={{ y: 0 }}
-      initial={{ y: 300 }}
+      animate={animate && { y: 0 }}
+      initial={animate && { y: 300 }}
       transition={{ type: "spring", damping: 20 }}
       onAnimationComplete={() => setActive(false)}
     >
-      <RecordWrapper
+      <RecordText
         active={active}
         layout
         type={type}
         highlighted={highlighted}
         stale={stale}
+        dbKey={dbKey}
+        dbValue={value}
       >
-        <RecordKey layout>{String(dbKey).padStart(3, "0")}:</RecordKey>
-        <motion.span layout>{value}</motion.span>
         {highlighted && <HighlightDot layoutId="highlight" />}
-      </RecordWrapper>
+      </RecordText>
     </motion.div>
+  );
+};
+
+type RecordTextProps = {
+  dbKey: number;
+  dbValue: string;
+  layout?: boolean | "size" | "position";
+  children?: React.ReactNode;
+} & React.ComponentPropsWithoutRef<typeof RecordWrapper>;
+
+export const RecordText = ({
+  children,
+  dbKey,
+  dbValue,
+  layout = false,
+  ...props
+}: RecordTextProps) => {
+  return (
+    <RecordWrapper layout={layout} {...props}>
+      <RecordKey layout={layout}>{String(dbKey).padStart(3, "0")}:</RecordKey>
+      <motion.span layout={layout}>{dbValue}</motion.span>
+      {children}
+    </RecordWrapper>
   );
 };
 
