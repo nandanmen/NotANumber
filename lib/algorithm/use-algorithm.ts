@@ -15,6 +15,10 @@ const DEFAULT_ALGORITHM_OPTIONS: AlgorithmOptions = {
   onDone: () => {},
 };
 
+type BaseState = {
+  __done?: boolean;
+};
+
 export const useAlgorithm = <StateType, FnType extends Fn = Fn>(
   snapshottedAlgorithm: SnapshottedAlgorithm<FnType>,
   inputs: Parameters<FnType>,
@@ -22,7 +26,7 @@ export const useAlgorithm = <StateType, FnType extends Fn = Fn>(
 ): [StateType, AlgorithmContext] => {
   const steps = React.useMemo(
     () =>
-      exec<StateType, Parameters<FnType>, ReturnType<FnType>>(
+      exec<StateType & BaseState, Parameters<FnType>, ReturnType<FnType>>(
         snapshottedAlgorithm.entryPoint,
         inputs
       ),

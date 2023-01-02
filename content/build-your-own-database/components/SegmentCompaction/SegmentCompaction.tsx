@@ -7,8 +7,7 @@ import { useAlgorithm } from "~/lib/algorithm";
 import {
   Visualizer,
   Content,
-  Controls,
-  PlayButton,
+  AlgorithmControls,
 } from "~/components/Visualizer";
 import { Page, isStale, type Record } from "../FileDatabase";
 import { Segment } from "../Segments";
@@ -26,18 +25,11 @@ const records = [
 ].map((value) => ({ value })) as Record[];
 
 export const SegmentCompaction = () => {
-  const [done, setDone] = React.useState(false);
-  const [state, ctx] = useAlgorithm<CompactState>(
-    compact,
-    [
-      range(records.length / 4).map((index) =>
-        records.slice(index * 4, index * 4 + 4)
-      ),
-    ],
-    {
-      onDone: () => setDone(true),
-    }
-  );
+  const [state, ctx] = useAlgorithm<CompactState>(compact, [
+    range(records.length / 4).map((index) =>
+      records.slice(index * 4, index * 4 + 4)
+    ),
+  ]);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [box, setBox] = React.useState<DOMRect | null>(null);
 
@@ -73,12 +65,10 @@ export const SegmentCompaction = () => {
             return (
               <_Segment
                 key={index}
-                records={records
-                  .slice(start, start + 4)
-                  .map((record) => ({
-                    ...record,
-                    stale: isStale(record.value, records),
-                  }))}
+                records={records.slice(start, start + 4).map((record) => ({
+                  ...record,
+                  stale: isStale(record.value, records),
+                }))}
                 highlighted={
                   state.segmentIndex === index ? state.offset : undefined
                 }
@@ -94,7 +84,10 @@ export const SegmentCompaction = () => {
           </ActiveSegment>
           <CompactedPageWrapper>
             <Background />
-            <CompactedPage done={done} records={state.compactedRecords} />
+            <CompactedPage
+              done={state.__done}
+              records={state.compactedRecords}
+            />
           </CompactedPageWrapper>
           <ArrowWrapper>
             <ArrowContentWrapper ref={wrapperRef}>
@@ -114,17 +107,7 @@ export const SegmentCompaction = () => {
           </ArrowWrapper>
         </ContentWrapper>
       </Content>
-      <Controls>
-        <PlayButton
-          isPlaying={ctx.isPlaying}
-          onClick={() => {
-            if (ctx.currentStep === ctx.totalSteps - 1) {
-              setDone(false);
-            }
-            ctx.toggle();
-          }}
-        />
-      </Controls>
+      <AlgorithmControls context={ctx} />
     </Visualizer>
   );
 };
@@ -159,8 +142,9 @@ const ContentWrapper = styled("div", {
 const CompactedPage = ({ done, records }) => {
   return (
     <_CompactedPage
-      animate={{ height: done ? 136 : 306 }}
+      done={done}
       transition={{ type: "spring", damping: 20 }}
+      layout
     >
       {records
         .filter((record) => record.value[1] !== "null")
@@ -172,7 +156,7 @@ const CompactedPage = ({ done, records }) => {
               layout="position"
               animate={{ x: 0, opacity: 1 }}
               initial={{ x: -16, opacity: 0 }}
-              transition={{ x: { type: "spring", damping: 20 } }}
+              transition={{ type: "spring", damping: 20 }}
             >
               <span>{String(dbKey).padStart(3, "0")}:</span> {dbValue}
             </CompactedRecord>
@@ -181,6 +165,29 @@ const CompactedPage = ({ done, records }) => {
     </_CompactedPage>
   );
 };
+
+const _CompactedPage = styled(Page, {
+  background: "$blue4",
+  borderColor: "$blue9",
+  borderStyle: "solid",
+  overflow: "hidden",
+  position: "relative",
+  height: "100%",
+  minHeight: "auto",
+
+  [`.${darkTheme} &`]: {
+    background: "linear-gradient(-20deg, $blueDark4, $blueDark8)",
+    borderColor: "$blueDark8",
+  },
+
+  variants: {
+    done: {
+      true: {
+        height: "fit-content",
+      },
+    },
+  },
+});
 
 const Background = styled("div", {
   $$color: "$colors$blue5",
@@ -302,18 +309,4 @@ const CompactedPageWrapper = styled("div", {
   display: "flex",
   alignItems: "center",
   position: "relative",
-});
-
-const _CompactedPage = styled(Page, {
-  background: "$blue4",
-  borderColor: "$blue9",
-  borderStyle: "solid",
-  overflow: "hidden",
-  position: "relative",
-  minHeight: "auto",
-
-  [`.${darkTheme} &`]: {
-    background: "linear-gradient(-20deg, $blueDark4, $blueDark8)",
-    borderColor: "$blueDark8",
-  },
 });

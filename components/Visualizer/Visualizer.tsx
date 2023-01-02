@@ -1,7 +1,15 @@
 import { motion } from "framer-motion";
-import { ComponentPropsWithoutRef } from "react";
-import { FaPlay, FaUndo, FaPause } from "react-icons/fa";
+import type { ComponentPropsWithoutRef } from "react";
+import {
+  FaPlay,
+  FaUndo,
+  FaPause,
+  FaArrowRight,
+  FaArrowLeft,
+} from "react-icons/fa";
+import type { AlgorithmContext } from "~/lib/algorithm/types";
 import { FullWidth } from "../FullWidth";
+import { Slider } from "../Slider";
 import { styled, darkTheme } from "~/stitches.config";
 import { GridBackground } from "../Grid";
 
@@ -50,6 +58,45 @@ export const _Visualizer = styled("div", {
   },
 });
 
+type AlgorithmControlsProps = {
+  context: AlgorithmContext;
+} & ComponentPropsWithoutRef<typeof AlgorithmControlsWrapper>;
+
+export const AlgorithmControls = ({
+  context,
+  ...props
+}: AlgorithmControlsProps) => {
+  return (
+    <AlgorithmControlsWrapper {...props}>
+      <PlayButton onClick={context.toggle} isPlaying={context.isPlaying} />
+      <Slider
+        min={0}
+        max={context.totalSteps - 1}
+        value={[context.currentStep]}
+        onValueChange={([step]) => context.goTo(step)}
+      />
+      <IconButton secondary onClick={context.prev}>
+        <FaArrowLeft />
+      </IconButton>
+      <StepCounter>
+        <span>{context.currentStep + 1}</span>
+        <span>/</span>
+        <span>{context.totalSteps}</span>
+      </StepCounter>
+      <IconButton secondary onClick={context.next}>
+        <FaArrowRight />
+      </IconButton>
+    </AlgorithmControlsWrapper>
+  );
+};
+
+const StepCounter = styled("p", {
+  fontFamily: "$mono",
+  display: "flex",
+  gap: "$1",
+  fontSize: "$sm",
+});
+
 export const Controls = styled("div", {
   background: "$gray5",
   position: "relative",
@@ -60,6 +107,13 @@ export const Controls = styled("div", {
   [`.${darkTheme} &`]: {
     background: "$gray2",
   },
+});
+
+const AlgorithmControlsWrapper = styled(Controls, {
+  display: "flex",
+  alignItems: "center",
+  padding: "$2",
+  gap: "$2",
 });
 
 export const Content = styled(GridBackground, {
