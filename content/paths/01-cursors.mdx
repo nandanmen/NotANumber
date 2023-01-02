@@ -1,12 +1,24 @@
+import { PageSection } from "./components/PageSection";
+
 # Cursors
 
+<PageSection index={0}>
+
 All SVG paths revolve around the **cursor**. As commands are executed, the cursor moves around the canvas, drawing a path behind it.
+
+</PageSection>
+
+<PageSection index={1}>
 
 The cursor always starts at the origin `(0, 0)`, the top left corner. The `M`, or **move**, command lets you move the cursor to a new position without drawing a path:
 
 ```
 M 10 20
 ```
+
+</PageSection>
+
+<PageSection index={2}>
 
 The lowercase `m` command does something similar, except it uses **relative** coordinates instead:
 
@@ -15,8 +27,14 @@ M 10 20
 m 5 5
 ```
 
+</PageSection>
+
+<PageSection index={3}>
+
 ---
 
 ## Practice
 
-**Move the cursor to the points shown on the canvas**.
+Using the `M` and/or `m` commands, **move the cursor to the points shown on the canvas**.
+
+</PageSection>
