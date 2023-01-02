@@ -8,7 +8,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { getId } from "./utils";
 
 const CONTENT_FOLDER = `${process.cwd()}/_dist-content`;
-const POST_FILENAME = "index.mdx";
+const POST_FILENAME = "index";
 
 export type Heading = {
   id: string;
@@ -39,10 +39,13 @@ const theme = {
 /**
  * Gets the post from `dist/content` and bundles it using MDX bundler
  */
-export const getPost = async (slug: string): Promise<Post> => {
+export const getPost = async (
+  slug: string,
+  filename = POST_FILENAME
+): Promise<Post> => {
   const postFolder = path.join(CONTENT_FOLDER, slug);
   const mdxSource = (
-    await fs.promises.readFile(path.join(postFolder, POST_FILENAME))
+    await fs.promises.readFile(path.join(postFolder, filename + ".mdx"))
   ).toString();
   const mdxOut = await bundleMDX({
     source: mdxSource,
@@ -92,7 +95,10 @@ export const getAllPosts = async (): Promise<PostMetadata[]> => {
       );
       const { data: frontmatter } = matter(file.toString());
       return {
-        slug: postPath.replace("content/", "").replace("/index.mdx", ""),
+        slug: postPath
+          .replace("content/", "")
+          .replace("/index.mdx", "")
+          .replace(".mdx", ""),
         frontmatter,
       };
     })
@@ -101,7 +107,7 @@ export const getAllPosts = async (): Promise<PostMetadata[]> => {
 
 const getAllPostPaths = () => {
   return new Promise<string[]>((resolve, reject) => {
-    glob("content/**/index.mdx", (err, matches) => {
+    glob("content/**/*.mdx", (err, matches) => {
       if (err) {
         reject(err);
       } else {
