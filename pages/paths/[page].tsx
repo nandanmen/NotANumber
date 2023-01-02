@@ -17,11 +17,11 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts();
+  const posts = (await getAllPosts())
+    .filter((post) => post.slug.startsWith("paths/"))
+    .map((post) => ({ params: { page: post.slug.replace("paths/", "") } }));
   return {
-    paths: posts
-      .filter((post) => post.slug.startsWith("paths/"))
-      .map((post) => ({ params: { page: post.slug.replace("paths/", "") } })),
+    paths: posts,
     fallback: false,
   };
 }

@@ -27,7 +27,9 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 export async function getStaticPaths() {
   const posts = await getAllPosts();
   return {
-    paths: posts.map((post) => ({ params: { content: post.slug } })),
+    paths: posts
+      .filter((post) => !post.slug.startsWith("paths/"))
+      .map((post) => ({ params: { content: post.slug } })),
     fallback: false,
   };
 }
