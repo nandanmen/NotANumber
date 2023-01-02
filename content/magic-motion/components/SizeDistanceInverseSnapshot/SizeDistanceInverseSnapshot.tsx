@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import { FullWidth } from "~/components/FullWidth";
 import { Visualizer, Content } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 export const SizeDistanceInverseSnapshot = () => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -72,6 +72,11 @@ const Square = styled(motion.div, {
   borderRadius: "$base",
   boxShadow: "$sm",
 
+  [`.${darkTheme} &`]: {
+    "--background": "$colors$blueDark8",
+    border: "1px solid $blueDark10",
+  },
+
   variants: {
     large: {
       true: {
@@ -83,6 +88,11 @@ const Square = styled(motion.div, {
         "--background": "$colors$gray6",
         border: "1px solid $gray7",
         boxShadow: "none",
+
+        [`.${darkTheme} &`]: {
+          "--background": "$colors$gray4",
+          border: "1px solid $gray6",
+        },
       },
     },
     striped: {

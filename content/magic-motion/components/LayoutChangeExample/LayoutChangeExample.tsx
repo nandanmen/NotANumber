@@ -8,7 +8,7 @@ import {
   ToggleButton,
 } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 export const LayoutChangeExample = () => {
   const [toggled, toggle] = React.useReducer((state) => !state, false);
@@ -87,12 +87,22 @@ const BaseSquare = styled(motion.div, {
   border: "1px solid $gray8",
   borderRadius: "$base",
 
+  [`.${darkTheme} &`]: {
+    background: "$gray3",
+    border: "1px solid $gray6",
+  },
+
   variants: {
     active: {
       true: {
         background: "$blue6",
         border: "1px solid $blue8",
         boxShadow: "$md",
+
+        [`.${darkTheme} &`]: {
+          background: "$blueDark8",
+          border: "1px solid $blueDark10",
+        },
       },
     },
   },
