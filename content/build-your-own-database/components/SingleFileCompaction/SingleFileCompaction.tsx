@@ -174,6 +174,7 @@ export const SingleFileCompaction = () => {
                     }}
                     animate={{ x: 0, opacity: 1 }}
                     initial={{ x: -16, opacity: 0 }}
+                    transition={{ type: "spring", damping: 20 }}
                     layout="position"
                   >
                     <RecordKey layout>{String(key).padStart(3, "0")}</RecordKey>

@@ -110,7 +110,6 @@ const Record = ({
     >
       <RecordText
         active={active}
-        layout
         type={type}
         highlighted={highlighted}
         stale={stale}
@@ -134,13 +133,12 @@ export const RecordText = ({
   children,
   dbKey,
   dbValue,
-  layout = false,
   ...props
 }: RecordTextProps) => {
   return (
-    <RecordWrapper layout={layout} {...props}>
-      <RecordKey layout={layout}>{String(dbKey).padStart(3, "0")}:</RecordKey>
-      <motion.span layout={layout}>{dbValue}</motion.span>
+    <RecordWrapper {...props}>
+      <RecordKey layout="position">{String(dbKey).padStart(3, "0")}:</RecordKey>
+      <motion.span>{dbValue}</motion.span>
       {children}
     </RecordWrapper>
   );
@@ -163,7 +161,7 @@ export const RecordWrapper = styled(motion.li, {
   display: "flex",
   gap: "$2",
   border: "1px solid transparent",
-  transition: "all 0.3s",
+  transition: "all 0.3s, transform 0s, opacity 0s",
 
   variants: {
     active: {
