@@ -70,8 +70,13 @@ const Arcs = () => {
             const { cx, cy } = svgArcToCenterParam(
               lastCursor.x,
               lastCursor.y,
-              // @ts-expect-error
-              ...Object.values(args)
+              command.rx,
+              command.ry,
+              command.xAxisRotation,
+              command.largeArc,
+              command.sweep,
+              relative ? lastCursor.x + command.x : command.x,
+              relative ? lastCursor.y + command.y : command.y
             );
             return (
               <Ellipse

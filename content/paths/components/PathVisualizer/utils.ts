@@ -125,9 +125,22 @@ export const getCursorAtIndex = (commands: Command[], index: number) => {
       }
       case "a":
       case "m":
-      case "c": {
+      case "c":
+      case "l": {
         cursor.x += command.x;
         cursor.y += command.y;
+        break;
+      }
+      case "H": {
+        cursor.x = command.x;
+        break;
+      }
+      case "h": {
+        cursor.x += command.x;
+        break;
+      }
+      case "V": {
+        cursor.y = command.y;
         break;
       }
       case "v": {
