@@ -16,23 +16,9 @@ export function radian(ux: number, uy: number, vx: number, vy: number) {
 //conversion_from_endpoint_to_center_parameterization
 //sample :  svgArcToCenterParam(200,200,50,50,0,1,1,300,200)
 // x1 y1 rx ry φ fA fS x2 y2
-export function svgArcToCenterParam(
-  x1: number,
-  y1: number,
-  rx: number,
-  ry: number,
-  phi: number,
-  fA: boolean,
-  fS: boolean,
-  x2: number,
-  y2: number
-) {
-  let cx: number,
-    cy: number,
-    startAngle: number,
-    deltaAngle: number,
-    endAngle: number;
-  let PIx2 = Math.PI * 2.0;
+export function svgArcToCenterParam(x1, y1, rx, ry, phi, fA, fS, x2, y2) {
+  var cx, cy, startAngle, deltaAngle, endAngle;
+  var PIx2 = Math.PI * 2.0;
 
   if (rx < 0) {
     rx = -rx;
@@ -45,49 +31,49 @@ export function svgArcToCenterParam(
     throw Error("rx and ry can not be 0");
   }
 
-  let s_phi = Math.sin(phi);
-  let c_phi = Math.cos(phi);
-  let hd_x = (x1 - x2) / 2.0; // half diff of x
-  let hd_y = (y1 - y2) / 2.0; // half diff of y
-  let hs_x = (x1 + x2) / 2.0; // half sum of x
-  let hs_y = (y1 + y2) / 2.0; // half sum of y
+  var s_phi = Math.sin(phi);
+  var c_phi = Math.cos(phi);
+  var hd_x = (x1 - x2) / 2.0; // half diff of x
+  var hd_y = (y1 - y2) / 2.0; // half diff of y
+  var hs_x = (x1 + x2) / 2.0; // half sum of x
+  var hs_y = (y1 + y2) / 2.0; // half sum of y
 
   // F6.5.1
-  let x1_ = c_phi * hd_x + s_phi * hd_y;
-  let y1_ = c_phi * hd_y - s_phi * hd_x;
+  var x1_ = c_phi * hd_x + s_phi * hd_y;
+  var y1_ = c_phi * hd_y - s_phi * hd_x;
 
   // F.6.6 Correction of out-of-range radii
   //   Step 3: Ensure radii are large enough
-  let lambda = (x1_ * x1_) / (rx * rx) + (y1_ * y1_) / (ry * ry);
+  var lambda = (x1_ * x1_) / (rx * rx) + (y1_ * y1_) / (ry * ry);
   if (lambda > 1) {
     rx = rx * Math.sqrt(lambda);
     ry = ry * Math.sqrt(lambda);
   }
 
-  let rxry = rx * ry;
-  let rxy1_ = rx * y1_;
-  let ryx1_ = ry * x1_;
-  let sum_of_sq = rxy1_ * rxy1_ + ryx1_ * ryx1_; // sum of square
+  var rxry = rx * ry;
+  var rxy1_ = rx * y1_;
+  var ryx1_ = ry * x1_;
+  var sum_of_sq = rxy1_ * rxy1_ + ryx1_ * ryx1_; // sum of square
   if (!sum_of_sq) {
     throw Error("start point can not be same as end point");
   }
-  let coe = Math.sqrt(Math.abs((rxry * rxry - sum_of_sq) / sum_of_sq));
+  var coe = Math.sqrt(Math.abs((rxry * rxry - sum_of_sq) / sum_of_sq));
   if (fA == fS) {
     coe = -coe;
   }
 
   // F6.5.2
-  let cx_ = (coe * rxy1_) / ry;
-  let cy_ = (-coe * ryx1_) / rx;
+  var cx_ = (coe * rxy1_) / ry;
+  var cy_ = (-coe * ryx1_) / rx;
 
   // F6.5.3
   cx = c_phi * cx_ - s_phi * cy_ + hs_x;
   cy = s_phi * cx_ + c_phi * cy_ + hs_y;
 
-  let xcr1 = (x1_ - cx_) / rx;
-  let xcr2 = (x1_ + cx_) / rx;
-  let ycr1 = (y1_ - cy_) / ry;
-  let ycr2 = (y1_ + cy_) / ry;
+  var xcr1 = (x1_ - cx_) / rx;
+  var xcr2 = (x1_ + cx_) / rx;
+  var ycr1 = (y1_ - cy_) / ry;
+  var ycr2 = (y1_ + cy_) / ry;
 
   // F6.5.5
   startAngle = radian(1.0, 0.0, xcr1, ycr1);
@@ -100,7 +86,7 @@ export function svgArcToCenterParam(
   while (deltaAngle < 0.0) {
     deltaAngle += PIx2;
   }
-  if (!fS) {
+  if (fS == true || fS == 0) {
     deltaAngle -= PIx2;
   }
   endAngle = startAngle + deltaAngle;
@@ -111,13 +97,13 @@ export function svgArcToCenterParam(
     endAngle += PIx2;
   }
 
-  let outputObj = {
+  var outputObj = {
     /* cx, cy, startAngle, deltaAngle */ cx: cx,
     cy: cy,
     startAngle: startAngle,
     deltaAngle: deltaAngle,
     endAngle: endAngle,
-    clockwise: fS,
+    clockwise: fS == true || fS == 1,
   };
 
   return outputObj;
@@ -128,6 +114,7 @@ export const getCursorAtIndex = (commands: Command[], index: number) => {
 
   for (const command of commands.slice(0, index + 1)) {
     switch (command.code) {
+      case "A":
       case "M":
       case "Q":
       case "L":
@@ -136,6 +123,7 @@ export const getCursorAtIndex = (commands: Command[], index: number) => {
         cursor.y = command.y;
         break;
       }
+      case "a":
       case "m":
       case "c": {
         cursor.x += command.x;
