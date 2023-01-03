@@ -1,14 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
-
-const ASPECT_RATIO = 1;
-
-const SVG_PADDING = 6;
-const SVG_HEIGHT = 100;
-const SVG_WIDTH = ASPECT_RATIO * SVG_HEIGHT;
-
-const SVG_GRID_GAP = 10;
+import { PathVisualizer, parse } from "~/components/PathVisualizer";
 
 const range = (start: number, end: number, skip = 1) => {
   const nums = [];
@@ -18,48 +11,83 @@ const range = (start: number, end: number, skip = 1) => {
   return nums;
 };
 
-const SVG_COLUMNS = range(0, SVG_WIDTH, SVG_GRID_GAP);
-const SVG_ROWS = range(0, SVG_HEIGHT, SVG_GRID_GAP);
+const SVG_GRID_GAP = 5;
 
-export function PathPlayground({ commands = `M 10 20\nL 30 40` }) {
-  const [activeCommand] = commands.split("\n");
-  const [, rawX, rawY] = activeCommand.split(" ");
+const TEXT_SIZE_FACTOR = 2 / 100;
+const STROKE_WIDTH_FACTOR = 0.2 / 100;
+const STROKE_DASH_FACTOR = 1 / 100;
+const PADDING_FACTOR = 6 / 100;
 
-  const x = Number(rawX);
-  const y = Number(rawY);
+export function PathPlayground({ commands = `M 10 20\nL 30 40`, size = 25 }) {
+  const columns = range(0, size, SVG_GRID_GAP);
+  const rows = range(0, size, SVG_GRID_GAP);
+  const padding = size * PADDING_FACTOR;
 
-  const viewBox = `${-SVG_PADDING} ${-SVG_PADDING} ${
-    SVG_WIDTH + SVG_PADDING * 2
-  } ${SVG_HEIGHT + SVG_PADDING * 2}`;
+  const viewBox = `${-padding} ${-padding} ${size + padding * 2} ${
+    size + padding * 2
+  }`;
+  const fontSize = size * TEXT_SIZE_FACTOR;
 
   return (
     <SvgWrapper>
       <svg width="100%" height="100%" viewBox={viewBox}>
-        <Background />
-        <Path d={commands} />
-        <ActiveLine
-          animate={{ x2: x, y2: y }}
-          x1="0"
-          y1="0"
-          x2={x}
-          y2={y}
-          strokeDasharray="1"
-        />
-        <OriginPoint />
-        <ActivePoint animate={{ cx: x, cy: y }} cx={x} cy={y} r="1.25" />
+        {columns.map((x) => (
+          <GridLine
+            key={`column-${x}`}
+            x1={x}
+            x2={x}
+            y1={-padding}
+            y2={size + padding}
+            strokeWidth={size * STROKE_WIDTH_FACTOR}
+            strokeDasharray={size * STROKE_DASH_FACTOR}
+          />
+        ))}
+        {rows.map((y) => (
+          <GridLine
+            key={`row-${y}`}
+            x1={-padding}
+            x2={size + padding}
+            strokeWidth={size * STROKE_WIDTH_FACTOR}
+            strokeDasharray={size * STROKE_DASH_FACTOR}
+            y1={y}
+            y2={y}
+          />
+        ))}
+        <PathVisualizer commands={parse(commands)} size={size} />
+        <OriginPoint r={size / 68} strokeWidth={size / 68 / 3} />
+        <g style={{ transform: `translate(-${fontSize}px, -${fontSize}px)` }}>
+          {rows.map((y) => (
+            <LabelText
+              fontSize={fontSize}
+              key={`row-label-${y}`}
+              x="0"
+              y={y}
+              textAnchor="end"
+            >
+              {y}
+            </LabelText>
+          ))}
+        </g>
+        <g style={{ transform: `translate(-${fontSize}px, -${fontSize}px)` }}>
+          {columns.map((x) => (
+            <LabelText
+              fontSize={fontSize}
+              key={`col-label-${x}`}
+              x={x}
+              y="0"
+              textAnchor="end"
+            >
+              {x}
+            </LabelText>
+          ))}
+        </g>
       </svg>
     </SvgWrapper>
   );
 }
 
-const Path = styled("path", {
-  strokeWidth: 1,
-  stroke: "$gray12",
-  fill: "none",
-});
-
 const Point = (props) => {
-  return <motion.circle r="1" strokeWidth="0.3" {...props} />;
+  return <motion.circle {...props} />;
 };
 
 const OriginPoint = styled(Point, {
@@ -67,57 +95,7 @@ const OriginPoint = styled(Point, {
   fill: "$gray3",
 });
 
-const ActivePoint = styled(Point, {
-  stroke: "$blue8",
-  fill: "$blue6",
-});
-
-const ActiveLine = styled(motion.line, {
-  stroke: "$blue8",
-  strokeWidth: "0.5",
-});
-
-const Background = () => {
-  return (
-    <g>
-      {SVG_COLUMNS.map((x) => (
-        <GridLine
-          key={`column-${x}`}
-          x1={x}
-          x2={x}
-          y1={-SVG_PADDING}
-          y2={SVG_HEIGHT + SVG_PADDING}
-        />
-      ))}
-      {SVG_ROWS.map((y) => (
-        <GridLine
-          key={`row-${y}`}
-          x1={-SVG_PADDING}
-          x2={SVG_WIDTH + SVG_PADDING}
-          y1={y}
-          y2={y}
-        />
-      ))}
-      <g style={{ transform: `translate(-2px, -2px)` }}>
-        {SVG_ROWS.map((y) => (
-          <LabelText key={`row-label-${y}`} x="0" y={y} textAnchor="end">
-            {y}
-          </LabelText>
-        ))}
-      </g>
-      <g style={{ transform: `translate(-2px, -2px)` }}>
-        {SVG_COLUMNS.map((x) => (
-          <LabelText key={`col-label-${x}`} x={x} y="0" textAnchor="end">
-            {x}
-          </LabelText>
-        ))}
-      </g>
-    </g>
-  );
-};
-
 const LabelText = styled("text", {
-  fontSize: 2,
   fontFamily: "$mono",
   fill: "$gray9",
   fontWeight: "bold",
@@ -125,12 +103,10 @@ const LabelText = styled("text", {
 
 const GridLine = styled("line", {
   stroke: "$gray8",
-  strokeWidth: "0.2",
-  strokeDasharray: "1",
 });
 
 const SvgWrapper = styled("main", {
-  aspectRatio: ASPECT_RATIO,
+  aspectRatio: 1,
   height: "100%",
   width: "fit-content",
 

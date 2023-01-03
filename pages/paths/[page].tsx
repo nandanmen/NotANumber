@@ -83,7 +83,7 @@ export default function PathsPage({ content }: { content: Post }) {
           </Article>
         </aside>
         <Main>
-          <PathPlayground commands={heart} />
+          <PathPlayground commands={heart} size={25} />
         </Main>
       </ContentWrapper>
     </Wrapper>

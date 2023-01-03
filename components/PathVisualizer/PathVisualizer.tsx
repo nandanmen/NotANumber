@@ -428,7 +428,25 @@ const Group = styled("g", {
   },
 });
 
-const _Endpoint = styled(Group, {
+const _Endpoint = styled(motion.circle, {
+  $$color: "$colors$gray8",
   stroke: "$gray12",
-  fill: "currentColor",
+  fill: "$$color",
+
+  variants: {
+    color: {
+      red: {
+        $$color: "$colors$red8",
+      },
+      blue: {
+        $$color: "$colors$blue8",
+      },
+      yellow: {
+        $$color: "$colors$yellow8",
+      },
+      green: {
+        $$color: "$colors$green8",
+      },
+    },
+  },
 });
