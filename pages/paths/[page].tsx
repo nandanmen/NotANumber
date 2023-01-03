@@ -1,6 +1,7 @@
 import React from "react";
 import type { GetStaticPropsContext } from "next";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { motion } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { PathPlayground } from "~/components/PathPlayground";
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
@@ -26,6 +27,15 @@ export async function getStaticPaths() {
   };
 }
 
+const heart = `M11.995 7.23319
+C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
+C4.4959 8.14609 4.2403 10.6312 5.66654 12.3892
+L11.995 18.25
+L18.3235 12.3892
+C19.7498 10.6312 19.5253 8.13046 17.6779 6.65972
+C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
+Z`;
+
 export default function PathsPage({ content }: { content: Post }) {
   const router = useRouter();
   const Content = React.useMemo(
@@ -38,7 +48,7 @@ export default function PathsPage({ content }: { content: Post }) {
         <aside>
           <Article>
             <Content />
-            <Footer>
+            <Footer layout="position">
               <IconButton
                 onClick={() => {
                   const currentUrl = new URL(window.location.href);
@@ -73,23 +83,19 @@ export default function PathsPage({ content }: { content: Post }) {
           </Article>
         </aside>
         <Main>
-          <PathPlayground />
+          <PathPlayground commands={heart} />
         </Main>
       </ContentWrapper>
     </Wrapper>
   );
 }
 
-const Footer = styled("footer", {
-  position: "absolute",
-  bottom: "$8",
-  left: 0,
-  right: 0,
-  padding: "0 $8",
+const Footer = styled(motion.footer, {
   display: "flex",
   justifyContent: "flex-end",
   gap: "$1",
-  margin: 0,
+  marginTop: "$8",
+  marginBottom: 0,
 });
 
 const Wrapper = styled("div", {
@@ -102,7 +108,7 @@ const Wrapper = styled("div", {
 
 const ContentWrapper = styled("div", {
   display: "grid",
-  gridTemplateColumns: "50ch 1fr",
+  gridTemplateColumns: "50ch calc(100vh - $$padding * 2)",
   height: "100%",
   minHeight: "calc(100vh - $$padding * 2)",
   gap: "$12",
@@ -110,6 +116,9 @@ const ContentWrapper = styled("div", {
 
 const Main = styled("main", {
   overflowX: "auto",
+  height: "calc(100vh - $$padding * 2)",
+  position: "fixed",
+  transform: "translateX(calc(50ch + $space$12))",
 });
 
 const Article = styled("article", {
@@ -137,12 +146,23 @@ const Article = styled("article", {
     borderColor: "$gray8",
   },
 
-  pre: {
+  "pre, textarea": {
     marginLeft: "-$8",
     marginRight: "-$8",
     background: "$gray4",
     padding: "$4 $8",
     lineHeight: 1.4,
+  },
+
+  textarea: {
+    display: "block",
+    width: "calc(100% + $space$8 * 2)",
+    resize: "none",
+    border: "none",
+    padding: "$8",
+    minHeight: 300,
+    fontFamily: "$mono",
+    fontSize: "inherit",
   },
 
   "code:not(pre code)": {

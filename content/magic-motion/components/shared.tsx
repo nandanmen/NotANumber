@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { blueDark } from "@radix-ui/colors";
 import { darkTheme, styled } from "~/stitches.config";
-import { IconButton } from "~/components/Visualizer";
 
 const SQUARE_WIDTH = 120;
 
@@ -164,51 +162,4 @@ export const Controls = styled("div", {
 export const AlignmentText = styled("p", {
   fontFamily: "$mono",
   fontSize: "$sm",
-});
-
-// --
-
-type CounterProps = {
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-};
-
-export const Counter = ({
-  value,
-  onChange,
-  min = Number.NEGATIVE_INFINITY,
-  max = Number.POSITIVE_INFINITY,
-  step = 1,
-}: CounterProps) => {
-  return (
-    <CounterWrapper>
-      <IconButton
-        secondary
-        onClick={() => onChange(Math.max(min, value - step))}
-      >
-        <FaMinus />
-      </IconButton>
-      <Value>{value}px</Value>
-      <IconButton
-        secondary
-        onClick={() => onChange(Math.min(max, value + step))}
-      >
-        <FaPlus />
-      </IconButton>
-    </CounterWrapper>
-  );
-};
-
-const CounterWrapper = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  gap: "$2",
-});
-
-const Value = styled("div", {
-  fontFamily: "$mono",
-  color: "$gray11",
 });

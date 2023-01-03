@@ -1,0 +1,39 @@
+# Path Commands
+
+SVG paths are constructed of a series of commands:
+
+```
+M 20 20
+v 20
+m 30 0
+v -20
+M 10 50
+Q 40 70 65 50
+```
+
+Each command starts with an **identifier** that specifies the type of the command, followed by a **sequence of numbers**, which represents the arguments passed to the command.
+
+Commands are split into three different types:
+
+1. **Cursor commands**
+
+```
+M 20 20
+m 30 0
+M 10 50
+```
+
+2. **Line commands**
+
+```
+v 20
+v -20
+```
+
+3. **Curve commands**
+
+```
+Q 40 70 65 50
+```
+
+There are many more commands than the ones you see here. Let's take a look at them, shall we?

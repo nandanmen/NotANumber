@@ -36,7 +36,7 @@ export function PathPlayground({ commands = `M 10 20\nL 30 40` }) {
     <SvgWrapper>
       <svg width="100%" height="100%" viewBox={viewBox}>
         <Background />
-        <path d={commands} stroke="black" strokeWidth="1" fill="none" />
+        <Path d={commands} />
         <ActiveLine
           animate={{ x2: x, y2: y }}
           x1="0"
@@ -51,6 +51,12 @@ export function PathPlayground({ commands = `M 10 20\nL 30 40` }) {
     </SvgWrapper>
   );
 }
+
+const Path = styled("path", {
+  strokeWidth: 1,
+  stroke: "$gray12",
+  fill: "none",
+});
 
 const Point = (props) => {
   return <motion.circle r="1" strokeWidth="0.3" {...props} />;

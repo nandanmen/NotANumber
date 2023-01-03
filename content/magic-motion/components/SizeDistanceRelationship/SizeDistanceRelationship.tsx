@@ -4,7 +4,7 @@ import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { Content, Visualizer, Controls } from "~/components/Visualizer";
 
-import { Counter } from "../shared";
+import { Counter } from "~/components/Counter";
 import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
 import { HorizontalRuler } from "../shared/HorizontalRuler";
 

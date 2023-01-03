@@ -21,7 +21,7 @@ import {
 import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
 import { Line, LineEndpoint } from "../shared/HorizontalRuler";
-import { Counter } from "../shared";
+import { Counter } from "~/components/Counter";
 
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;

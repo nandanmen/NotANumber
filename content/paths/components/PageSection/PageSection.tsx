@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "~/stitches.config";
 
 const getCurrentIndex = () => {
-  if (typeof window === "undefined") return 0;
+  if (typeof window === "undefined") return Number.POSITIVE_INFINITY;
   const url = new URL(window.location.href).searchParams.get("index");
   return Number(url);
 };
