@@ -11,22 +11,27 @@ const range = (start: number, end: number, skip = 1) => {
   return nums;
 };
 
-const SVG_GRID_GAP = 5;
-
 const TEXT_SIZE_FACTOR = 2 / 100;
+const TEXT_GAP_FACTOR = 1.5 / 100;
 const STROKE_WIDTH_FACTOR = 0.2 / 100;
 const STROKE_DASH_FACTOR = 1 / 100;
 const PADDING_FACTOR = 6 / 100;
 
-export function PathPlayground({ commands = `M 10 20\nL 30 40`, size = 25 }) {
-  const columns = range(0, size, SVG_GRID_GAP);
-  const rows = range(0, size, SVG_GRID_GAP);
+export function PathPlayground({
+  commands = parse(`M 10 20\nL 30 40`),
+  size = 25,
+  step = 5,
+  activeIndex = undefined,
+}) {
+  const columns = range(0, size, step);
+  const rows = range(0, size, step);
   const padding = size * PADDING_FACTOR;
 
   const viewBox = `${-padding} ${-padding} ${size + padding * 2} ${
     size + padding * 2
   }`;
   const fontSize = size * TEXT_SIZE_FACTOR;
+  const labelOffset = size * TEXT_GAP_FACTOR;
 
   return (
     <SvgWrapper>
@@ -53,9 +58,17 @@ export function PathPlayground({ commands = `M 10 20\nL 30 40`, size = 25 }) {
             y2={y}
           />
         ))}
-        <PathVisualizer commands={parse(commands)} size={size} />
+        <PathVisualizer
+          commands={commands}
+          size={size}
+          activeIndex={activeIndex}
+        />
         <OriginPoint r={size / 68} strokeWidth={size / 68 / 3} />
-        <g style={{ transform: `translate(-${fontSize}px, -${fontSize}px)` }}>
+        <g
+          style={{
+            transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
+          }}
+        >
           {rows.map((y) => (
             <LabelText
               fontSize={fontSize}
@@ -68,7 +81,11 @@ export function PathPlayground({ commands = `M 10 20\nL 30 40`, size = 25 }) {
             </LabelText>
           ))}
         </g>
-        <g style={{ transform: `translate(-${fontSize}px, -${fontSize}px)` }}>
+        <g
+          style={{
+            transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
+          }}
+        >
           {columns.map((x) => (
             <LabelText
               fontSize={fontSize}
