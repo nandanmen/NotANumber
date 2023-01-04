@@ -8,36 +8,7 @@ import {
   type Command,
 } from "./utils";
 import { styled } from "~/stitches.config";
-
-const code = `M 20 20
-v 20
-m 30 0
-v -20
-M 10 50
-Q 40 70 65 50`;
-
-const print = `M12 11
-c0 3.517-1.099 6.799-2.753 9.571
-m-3.44-2.041.054-.09
-A13.916 13.916 0 008 11
-a4 4 0 118 0
-c0 1.017-.07 2.019-.203 3
-m-2.118 6.844
-A21.88 21.88 0 0015.171 17
-m3.839 1.132
-c.645-2.266.99-4.659.99-7.132
-A8 8 0 008 4.07
-M3 15.364
-c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4`;
-
-const heart = `M11.995 7.23319
-C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
-C4.4959 8.14609 4.2403 10.6312 5.66654 12.3892
-L11.995 18.25
-L18.3235 12.3892
-C19.7498 10.6312 19.5253 8.13046 17.6779 6.65972
-C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
-Z`;
+import { heart } from "../paths/templates";
 
 const ENDPOINT_SCALE_FACTOR = 68;
 
@@ -55,7 +26,7 @@ const PathVisualizerContext = React.createContext<{
   config: Config;
 }>(null);
 
-const Arcs = () => {
+export const Arcs = () => {
   const { activeCommands, commands, config } = React.useContext(
     PathVisualizerContext
   );
@@ -99,7 +70,7 @@ const Ellipse = styled("ellipse", {
   fill: "none",
 });
 
-const PathSections = () => {
+export const PathSections = () => {
   const { activeCommands, commands, config } = React.useContext(
     PathVisualizerContext
   );
@@ -129,7 +100,7 @@ const Path = styled(motion.path, {
   fill: "none",
 });
 
-const Lines = () => {
+export const Lines = () => {
   const { activeCommands } = React.useContext(PathVisualizerContext);
   return (
     <g>
@@ -206,7 +177,7 @@ const Lines = () => {
   );
 };
 
-const Endpoints = () => {
+export const Endpoints = () => {
   const { activeCommands } = React.useContext(PathVisualizerContext);
   return (
     <g>
@@ -299,10 +270,11 @@ const Endpoints = () => {
   );
 };
 
-export function PathVisualizer({
-  size = 30,
-  commands = defaultCommands,
+export function PathProvider({
+  size,
+  commands,
   activeIndex = commands.length - 1,
+  children,
 }) {
   const activeCommands = commands.slice(0, activeIndex + 1);
   const endpointSize = size / ENDPOINT_SCALE_FACTOR;
@@ -314,13 +286,32 @@ export function PathVisualizer({
         activeCommands,
       }}
     >
+      {children}
+    </PathVisualizerContext.Provider>
+  );
+}
+
+export function usePathContext() {
+  const ctx = React.useContext(PathVisualizerContext);
+  if (!ctx)
+    throw new Error("usePathContext must be used within a PathProvider");
+  return ctx;
+}
+
+export function PathVisualizer({
+  size = 30,
+  commands = defaultCommands,
+  activeIndex = commands.length - 1,
+}) {
+  return (
+    <PathProvider size={size} commands={commands} activeIndex={activeIndex}>
       <g>
         <Arcs />
         <PathSections />
         <Lines />
         <Endpoints />
       </g>
-    </PathVisualizerContext.Provider>
+    </PathProvider>
   );
 }
 
@@ -356,7 +347,9 @@ const Move = ({
   );
 };
 
-const AnimatableLine = (props: React.ComponentPropsWithoutRef<_Line>) => {
+export const AnimatableLine = (
+  props: React.ComponentPropsWithoutRef<_Line>
+) => {
   return (
     <Line
       animate={{ pathLength: 1 }}
@@ -367,7 +360,7 @@ const AnimatableLine = (props: React.ComponentPropsWithoutRef<_Line>) => {
   );
 };
 
-const Line = (props: React.ComponentPropsWithoutRef<_Line>) => {
+export const Line = (props: React.ComponentPropsWithoutRef<_Line>) => {
   const { config } = React.useContext(PathVisualizerContext);
   return <_Line strokeWidth={config.endpointSize / 2} {...props} />;
 };
@@ -394,7 +387,9 @@ const MoveEndpoint = (
   return <Endpoint color="red" {...props} />;
 };
 
-const Endpoint = (props: React.ComponentPropsWithoutRef<typeof _Endpoint>) => {
+export const Endpoint = (
+  props: React.ComponentPropsWithoutRef<typeof _Endpoint>
+) => {
   const { config } = React.useContext(PathVisualizerContext);
   return (
     <_Endpoint

@@ -17,97 +17,128 @@ const STROKE_WIDTH_FACTOR = 0.2 / 100;
 const STROKE_DASH_FACTOR = 1 / 100;
 const PADDING_FACTOR = 6 / 100;
 
+type SvgConfig = {
+  size: number;
+  columns: number[];
+  rows: number[];
+};
+
+export function PathAxes({ size, columns, rows }: SvgConfig) {
+  const padding = size * PADDING_FACTOR;
+  return (
+    <>
+      {columns.map((x) => (
+        <GridLine
+          key={`column-${x}`}
+          x1={x}
+          x2={x}
+          y1={-padding}
+          y2={size + padding}
+          strokeWidth={size * STROKE_WIDTH_FACTOR}
+          strokeDasharray={size * STROKE_DASH_FACTOR}
+        />
+      ))}
+      {rows.map((y) => (
+        <GridLine
+          key={`row-${y}`}
+          x1={-padding}
+          x2={size + padding}
+          strokeWidth={size * STROKE_WIDTH_FACTOR}
+          strokeDasharray={size * STROKE_DASH_FACTOR}
+          y1={y}
+          y2={y}
+        />
+      ))}
+    </>
+  );
+}
+
+export function AxesLabels({ size, columns, rows }: SvgConfig) {
+  const fontSize = size * TEXT_SIZE_FACTOR;
+  const labelOffset = size * TEXT_GAP_FACTOR;
+  return (
+    <>
+      <g
+        style={{
+          transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
+        }}
+      >
+        {rows.map((y) => (
+          <LabelText
+            fontSize={fontSize}
+            key={`row-label-${y}`}
+            x="0"
+            y={y}
+            textAnchor="end"
+          >
+            {y}
+          </LabelText>
+        ))}
+      </g>
+      <g
+        style={{
+          transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
+        }}
+      >
+        {columns.map((x) => (
+          <LabelText
+            fontSize={fontSize}
+            key={`col-label-${x}`}
+            x={x}
+            y="0"
+            textAnchor="end"
+          >
+            {x}
+          </LabelText>
+        ))}
+      </g>
+    </>
+  );
+}
+
+type PathBackgroundProps = {
+  size: number;
+  step: number;
+  children?: React.ReactNode;
+};
+
+export function PathBackground({ size, step, children }: PathBackgroundProps) {
+  const columns = range(0, size, step);
+  const rows = range(0, size, step);
+  const padding = size * PADDING_FACTOR;
+  const viewBox = `${-padding} ${-padding} ${size + padding * 2} ${
+    size + padding * 2
+  }`;
+  return (
+    <SvgWrapper>
+      <svg width="100%" height="100%" viewBox={viewBox}>
+        <PathAxes size={size} columns={columns} rows={rows} />
+        {children}
+        <AxesLabels size={size} columns={columns} rows={rows} />
+      </svg>
+    </SvgWrapper>
+  );
+}
+
 export function PathPlayground({
   commands = parse(`M 10 20\nL 30 40`),
   size = 25,
   step = 5,
   activeIndex = undefined,
 }) {
-  const columns = range(0, size, step);
-  const rows = range(0, size, step);
-  const padding = size * PADDING_FACTOR;
-
-  const viewBox = `${-padding} ${-padding} ${size + padding * 2} ${
-    size + padding * 2
-  }`;
-  const fontSize = size * TEXT_SIZE_FACTOR;
-  const labelOffset = size * TEXT_GAP_FACTOR;
-
   return (
-    <SvgWrapper>
-      <svg width="100%" height="100%" viewBox={viewBox}>
-        {columns.map((x) => (
-          <GridLine
-            key={`column-${x}`}
-            x1={x}
-            x2={x}
-            y1={-padding}
-            y2={size + padding}
-            strokeWidth={size * STROKE_WIDTH_FACTOR}
-            strokeDasharray={size * STROKE_DASH_FACTOR}
-          />
-        ))}
-        {rows.map((y) => (
-          <GridLine
-            key={`row-${y}`}
-            x1={-padding}
-            x2={size + padding}
-            strokeWidth={size * STROKE_WIDTH_FACTOR}
-            strokeDasharray={size * STROKE_DASH_FACTOR}
-            y1={y}
-            y2={y}
-          />
-        ))}
-        <PathVisualizer
-          commands={commands}
-          size={size}
-          activeIndex={activeIndex}
-        />
-        <OriginPoint r={size / 68} strokeWidth={size / 68 / 3} />
-        <g
-          style={{
-            transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
-          }}
-        >
-          {rows.map((y) => (
-            <LabelText
-              fontSize={fontSize}
-              key={`row-label-${y}`}
-              x="0"
-              y={y}
-              textAnchor="end"
-            >
-              {y}
-            </LabelText>
-          ))}
-        </g>
-        <g
-          style={{
-            transform: `translate(-${labelOffset}px, -${labelOffset}px)`,
-          }}
-        >
-          {columns.map((x) => (
-            <LabelText
-              fontSize={fontSize}
-              key={`col-label-${x}`}
-              x={x}
-              y="0"
-              textAnchor="end"
-            >
-              {x}
-            </LabelText>
-          ))}
-        </g>
-      </svg>
-    </SvgWrapper>
+    <PathBackground size={size} step={step}>
+      <PathVisualizer
+        commands={commands}
+        size={size}
+        activeIndex={activeIndex}
+      />
+      <OriginPoint r={size / 68} strokeWidth={size / 68 / 3} />
+    </PathBackground>
   );
 }
 
-const Point = (props) => {
-  return <motion.circle {...props} />;
-};
-
-const OriginPoint = styled(Point, {
+const OriginPoint = styled(motion.circle, {
   stroke: "$gray8",
   fill: "$gray3",
 });

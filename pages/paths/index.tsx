@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "~/stitches.config";
 import { PathPlayground } from "~/components/PathPlayground";
+import { parse } from "~/components/PathVisualizer";
 
 export default function PathsPage() {
   const [commands, setCommands] = React.useState(`M 10 20\nL 30 40`);
@@ -14,7 +15,7 @@ export default function PathsPage() {
           />
         </aside>
         <Main>
-          <PathPlayground commands={commands} />
+          <PathPlayground commands={parse(commands)} />
         </Main>
       </ContentWrapper>
     </Wrapper>
