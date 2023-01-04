@@ -348,7 +348,7 @@ const Move = ({
 };
 
 export const AnimatableLine = (
-  props: React.ComponentPropsWithoutRef<_Line>
+  props: React.ComponentPropsWithoutRef<typeof _Line>
 ) => {
   return (
     <Line
@@ -360,7 +360,7 @@ export const AnimatableLine = (
   );
 };
 
-export const Line = (props: React.ComponentPropsWithoutRef<_Line>) => {
+export const Line = (props: React.ComponentPropsWithoutRef<typeof _Line>) => {
   const { config } = React.useContext(PathVisualizerContext);
   return <_Line strokeWidth={config.endpointSize / 2} {...props} />;
 };

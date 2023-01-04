@@ -1,3 +1,3 @@
-import { InteractivePathPlayground } from './InteractivePathPlayground'
+import { InteractivePathPlayground } from "./InteractivePathPlayground";
 
-export const Default = () => <InteractivePathPlayground />
+export const Default = () => <InteractivePathPlayground commands={[]} />;
