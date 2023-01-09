@@ -226,6 +226,22 @@ An index is great because it lets us query our database much faster, but there a
 
 ## Sorted String Tables
 
+Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we'll be able to solve both our problems at once. Let me explain.
+
+### Faster Range Queries
+
+If you have an unsorted array and you want to find all the elements between two specific values, you don't have much choice but to iterate through the whole array:
+
+```
+[5,3,2,4,1]
+```
+
+If your array is sorted, however, you'll only need to look for the first element and then iterate until you have all the elements you need:
+
+```
+[1,2,3,4,5]
+```
+
 - SSTs are an improvement because they allow for sparse indices and better range query performance
   - Though sparse, keys still have to fit in memory
   - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
