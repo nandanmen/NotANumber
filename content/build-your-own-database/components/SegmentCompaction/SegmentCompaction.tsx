@@ -56,55 +56,71 @@ export const SegmentCompaction = () => {
     return [{ value: [14, "iaculis pharetra."] }];
   }, [ctx.currentStep]);
 
+  const done = "__done" in state;
+
   return (
     <Visualizer fullWidth>
       <Content padding="lg" noOverflow>
-        <ContentWrapper>
-          {range(records.length / 4).map((index) => {
-            const start = index * 4;
-            return (
-              <_Segment
-                key={index}
-                records={records.slice(start, start + 4).map((record) => ({
-                  ...record,
-                  stale: isStale(record.value, records),
-                }))}
-                highlighted={
-                  state.segmentIndex === index ? state.offset : undefined
-                }
-                disabled
-              />
-            );
-          })}
-          <ActiveSegment>
-            <Separator viewBox="0 0 100 2">
-              <SeparatorLine x1="0" x2="100" y1="1" y2="1" />
-            </Separator>
-            <Segment records={visibleRecords} />
-          </ActiveSegment>
+        <ContentWrapper done={done}>
+          {!done && (
+            <>
+              {range(records.length / 4).map((index) => {
+                const start = index * 4;
+                return (
+                  <_Segment
+                    key={index}
+                    records={records.slice(start, start + 4).map((record) => ({
+                      ...record,
+                      stale: isStale(record.value, records),
+                    }))}
+                    highlighted={
+                      state.segmentIndex === index ? state.offset : undefined
+                    }
+                    disabled
+                    recordAnimation={false}
+                  />
+                );
+              })}
+            </>
+          )}
           <CompactedPageWrapper>
-            <Background />
+            {!done && <Background />}
             <CompactedPage
-              done={state.__done}
+              compact={ctx.currentStep > ctx.totalSteps - 3}
               records={state.compactedRecords}
             />
           </CompactedPageWrapper>
-          <ArrowWrapper>
-            <ArrowContentWrapper ref={wrapperRef}>
-              {box && (
-                <>
-                  <ArrowAnimation aspectRatio={aspectRatio} />
-                  <PointWrapper>
-                    <Point />
-                    <Point />
-                  </PointWrapper>
-                  <PointWrapper css={{ justifyContent: "center" }}>
-                    <Point />
-                  </PointWrapper>
-                </>
-              )}
-            </ArrowContentWrapper>
-          </ArrowWrapper>
+          <ActiveSegment done={done}>
+            {!done && (
+              <Separator viewBox="0 0 100 2">
+                <SeparatorLine x1="0" x2="100" y1="1" y2="1" />
+              </Separator>
+            )}
+            <motion.div
+              layout="position"
+              transition={{ type: "spring", damping: 20, restDelta: 0.01 }}
+            >
+              <Segment records={visibleRecords} />
+            </motion.div>
+          </ActiveSegment>
+          {!done && (
+            <ArrowWrapper>
+              <ArrowContentWrapper ref={wrapperRef}>
+                {box && (
+                  <>
+                    <ArrowAnimation aspectRatio={aspectRatio} />
+                    <PointWrapper>
+                      <Point />
+                      <Point />
+                    </PointWrapper>
+                    <PointWrapper css={{ justifyContent: "center" }}>
+                      <Point />
+                    </PointWrapper>
+                  </>
+                )}
+              </ArrowContentWrapper>
+            </ArrowWrapper>
+          )}
         </ContentWrapper>
       </Content>
       <AlgorithmControls context={ctx} />
@@ -117,6 +133,14 @@ const ActiveSegment = styled("div", {
   paddingTop: "$8",
   position: "relative",
   gridColumn: "1 / -1",
+  variants: {
+    done: {
+      true: {
+        marginTop: 0,
+        paddingTop: 0,
+      },
+    },
+  },
 });
 
 const Separator = styled("svg", {
@@ -137,12 +161,23 @@ const ContentWrapper = styled("div", {
   gridTemplateColumns: "300px 150px 300px",
   justifyContent: "center",
   rowGap: "$4",
+  height: 515,
+
+  variants: {
+    done: {
+      true: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      },
+    },
+  },
 });
 
-const CompactedPage = ({ done, records }) => {
+const CompactedPage = ({ compact, records }) => {
   return (
     <_CompactedPage
-      done={done}
+      compact={compact}
       transition={{ type: "spring", damping: 20 }}
       layout
     >
@@ -181,7 +216,7 @@ const _CompactedPage = styled(Page, {
   },
 
   variants: {
-    done: {
+    compact: {
       true: {
         height: "fit-content",
       },

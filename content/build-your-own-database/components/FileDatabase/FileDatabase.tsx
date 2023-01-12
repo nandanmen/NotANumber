@@ -109,6 +109,7 @@ const Record = ({
       onAnimationComplete={() => setActive(false)}
     >
       <RecordText
+        animate={animate}
         active={active}
         type={type}
         highlighted={highlighted}
@@ -125,7 +126,7 @@ const Record = ({
 type RecordTextProps = {
   dbKey: number;
   dbValue: string;
-  layout?: boolean | "size" | "position";
+  animate: boolean;
   children?: React.ReactNode;
 } & React.ComponentPropsWithoutRef<typeof RecordWrapper>;
 
@@ -133,11 +134,14 @@ export const RecordText = ({
   children,
   dbKey,
   dbValue,
+  animate,
   ...props
 }: RecordTextProps) => {
   return (
     <RecordWrapper {...props}>
-      <RecordKey layout="position">{String(dbKey).padStart(3, "0")}:</RecordKey>
+      <RecordKey layout={animate && "position"}>
+        {String(dbKey).padStart(3, "0")}:
+      </RecordKey>
       <motion.span>{dbValue}</motion.span>
       {children}
     </RecordWrapper>

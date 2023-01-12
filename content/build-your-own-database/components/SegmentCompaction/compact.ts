@@ -35,5 +35,6 @@ export const compact = snapshot((records: Record[][]) => {
   }
 
   debugger;
+  debugger;
   return compactedRecords;
 });

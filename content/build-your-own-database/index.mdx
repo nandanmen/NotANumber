@@ -131,7 +131,9 @@ Both of these files contain up-to-date values for keys `12` and `18`, so what if
 
 Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
 
-Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_:
+Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_.
+
+Try clicking on "Add" twice to add two new records, and notice what happens:
 
 <Segments />
 
@@ -230,7 +232,7 @@ Here's an idea: what if we **ensure our database is always sorted by key?** By s
 
 ### Faster Range Queries
 
-If you have an unsorted array and you want to find all the elements between two specific values, you don't have much choice but to iterate through the whole array:
+If you have an unsorted array and you want to find all the elements between two specific values, your only option really is to iterate through the whole array:
 
 ```
 [5,3,2,4,1]
