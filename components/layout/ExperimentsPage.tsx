@@ -10,6 +10,7 @@ const experiments = [
   "bezier-curves",
   "cards",
   "path-animation",
+  "heavy-square",
 ];
 
 export function ExperimentsPage({ children, page }) {
