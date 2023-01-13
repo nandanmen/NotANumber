@@ -35,6 +35,7 @@ export const compact = snapshot((records: Record[][]) => {
   }
 
   debugger;
-  debugger;
+  debugger; // pause to delay deletion
+  debugger; // delete old records
   return compactedRecords;
 });

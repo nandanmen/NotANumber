@@ -143,15 +143,11 @@ We'll then run our compaction process on the _old_ segments, potentially merging
 
 "Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records (as shown in the bottom-most segment above).
 
-Once the compaction is complete, we can safely delete the old segments:
-
-```
-redirect
-```
+Once the compaction is complete, we can safely delete the old segments.
 
 ### Adapting to Segments
 
-Now that we're using segments, we need to change our search algorithm to start looking in the most **recent** segment first, working backward:
+We'll need to change our search algorithm a bit to account for segments. Instead of searching through a file, we'll need to search through segments, starting with the newest segment first:
 
 ```
 segment search example
@@ -173,7 +169,15 @@ What if we use _objects_? That's right, these little guys:
 const hashTable = {};
 ```
 
-In other languages, JavaScript objects are called _hash tables_ or _dictionaries_ or _maps_. Hash tables are great because they're really good at storing key-value pairs and quickly looking them up later. That sounds exactly like what we need!
+In other languages, JavaScript objects are called _hash tables_ or _dictionaries_ (or _maps_). Hash tables are great because they're really good at storing key-value pairs and quickly looking them up later. The catch is they must live _in memory_.
+
+<Callout label="What does 'in memory' mean?">
+
+Generally speaking, there are two different ways for your computer to remember things — **in memory** and **on disk**. In memory means that the computer stores the data in its RAM (random access memory), while on disk means that the computer stores the data on its hard drive.
+
+Storing data in memory is much faster than storing it on disk because the computer can access RAM much more quickly than it can access the hard drive. However, RAM is also **volatile**, which means that if the computer loses power or the program is killed, all the data in memory will be lost. This is why we need to store data on disk as well.
+
+</Callout>
 
 Here's how it'll work. For every key that we have in our database, we'll store the record's **offset** in the index:
 
@@ -181,9 +185,9 @@ Here's how it'll work. For every key that we have in our database, we'll store t
 offset example
 ```
 
-I purposely showed the file a little differently this time. Here, I've portrayed the file more like what the computer might see — a series of contiguous characters. This makes it easier to show each record's offsets.
+I purposely showed the file a little differently this time. Here, I've portrayed the file more like what the computer might see — a series of contiguous characters. This makes it easier to show each record's byte offsets.
 
-<Callout label="What are offsets?">
+<Callout label="What are byte offsets?">
 
 A record's offset is **the number of bytes from the beginning of the file to the start of the record**. For example, the second record, `12: Vestibulum varius`, has an offset of 15 because:
 
@@ -248,11 +252,41 @@ If your array is sorted, however, you'll only need to look for the first element
   - Though sparse, keys still have to fit in memory
   - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
 
+## Fast Sorts With Balanced Trees
+
+## How Hard Drives Work
+
+Let's talk a bit about how hard drives work and how they differ from RAM.
+
+### Hard drives are not byte addressable
+
+If you read my [how arrays work]() post or know a bit about RAM, you'll know that RAM works a lot like an array — you can access individual bytes of data using their address:
+
+```
+RAM visual
+```
+
+Hard drives are different because they're not **byte-addressable** — you can't access individual bytes of data. Instead, you have to read and write entire **blocks** of data at a time:
+
+```
+RAM visual but blocks
+```
+
+These blocks are, comparatively speaking, quite large — most modern hard drives have blocks that are 4KB (4 kilobytes, or 4096 bytes) in size.
+
+### Hard drives are much slower than RAM
+
+- Fast RAM can do ~20GB/s
+- Fast SSDs can do ~3GB/s
+- Fast hard drives can do ~200MB/s
+
+### Your access patterns matter
+
+Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
+
 ## Persisting Trees on Disk
 
 - How might you take a BST and persist it on disk?
   - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
   - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
 - This requires a detour to how hard drives work imo
-
-### How do Hard Drives Work?
