@@ -1,0 +1,54 @@
+---
+title: "A Heavy Rectangle Animation"
+blurb: "A guide on recreating framer's magical layout animations."
+description: "A guide on recreating framer's magical layout animations."
+publishedAt: "2023-1-20"
+editedAt: "2023-1-20"
+---
+
+import { HeavyRectangleVisualizer } from "./components/HeavyRectangleVisualizer";
+
+I recently made this heavy rectangle animation inspired by [this landing page design](https://twitter.com/_justlilian/status/1613549087692824584) I saw on Twitter:
+
+<HeavyRectangleVisualizer />
+
+What was fun about this animation is I had to [do some trignonometry](https://twitter.com/nandafyi/status/1613944455639486466) to make it work the way I wanted to — something I haven't touched since high school!
+
+In this post, let's try to recreate this animation together.
+
+## SVG Paths
+
+Let's start by focusing on the rectangle curve first, ignoring the corners.
+
+The only way that I knew to make this animation work was to use SVG paths, so the first thing I did was to recreate the rectangle using paths:
+
+```
+rectangle with paths
+```
+
+### On Path Commands
+
+Quick aside here if you're not familiar with SVG paths. `path` elements take a `d` attribute that looks like a string of gibberish but is really a series of **commands**.
+
+Every command relies on a **hidden cursor** to determine where to start drawing. The cursor starts at the origin `(0, 0)` but moves around as commands are executed.
+
+In our case, we're using four different commands to draw our rectangle:
+
+1. `M`, which **moves** the cursor to a specific point
+2. `L`, which **draws a line** from the cursor to a specific point
+3. `Q`, which **draws a quadratic curve** from the cursor to a specific point, with a control point in between
+4. `Z`, which draws a line **from the cursor to the starting point**, closing the path
+
+That's all you need to know for now; you can read more about SVG paths [over on MDN](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths).
+
+---
+
+Notice that the horizontal edges are _curves_ instead of straight lines. This way, we can get the "heavy" effect by moving the control points down:
+
+```
+M 10 20
+Q 50 20 90 20
+L 90 60
+Q 50 60 10 60
+Z
+```
