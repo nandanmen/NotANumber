@@ -171,7 +171,7 @@ const Header = styled("header", {
 
 const Article = styled("article", {
   lineHeight: "$body",
-  maxWidth: 800,
+  maxWidth: 900,
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
