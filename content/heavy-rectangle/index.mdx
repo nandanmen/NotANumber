@@ -6,7 +6,12 @@ publishedAt: "2023-1-20"
 editedAt: "2023-1-20"
 ---
 
+import { ProblemStatement } from "~/components/ProblemStatement";
 import { HeavyRectangleVisualizer } from "./components/HeavyRectangleVisualizer";
+import { HorizontalCurve } from "./components/HorizontalCurve";
+import { EdgeRotationVisualizer } from "./components/EdgeRotationVisualizer";
+import { EdgeRotationProblem } from "./components/EdgeRotationProblem";
+import { TrigonometryFunctions } from "./components/TrigonometryFunctions";
 
 I recently made this heavy rectangle animation inspired by [this landing page design](https://twitter.com/_justlilian/status/1613549087692824584) I saw on Twitter:
 
@@ -45,10 +50,34 @@ That's all you need to know for now; you can read more about SVG paths [over on 
 
 Notice that the horizontal edges are _curves_ instead of straight lines. This way, we can get the "heavy" effect by moving the control points down:
 
-```
-M 10 20
-Q 50 20 90 20
-L 90 60
-Q 50 60 10 60
-Z
-```
+<HorizontalCurve />
+
+Now we _could_ stop here, but it doesn't look quite right — the vertical edges shouldn't stay upright when the rectangle is bending down like that. Instead, the sides should rotate so that they're always perpendicular to the horizontal edges.
+
+## Rotating the Corners
+
+Let's focus on the right edge first. When we bend the rectangle down, we want the right edge to rotate such that the angle stays at 90 degrees:
+
+<EdgeRotationVisualizer />
+
+This is harder than it looks — there's no path command to rotate a particular point or line, so we have to calculate the new coordinates of the point ourselves.
+
+<ProblemStatement>
+
+Given the `y` offset of the control point, **what are the coordinates of the end point of the right edge?**
+
+</ProblemStatement>
+
+Or visually:
+
+<EdgeRotationProblem />
+
+### Trigonometry Crash Course
+
+> If you're already familiar with trigonometry, feel free to skip ahead to the next section.
+
+We can solve this problem using the rules of _trigonometry_. If you're unfamiliar, trigonometry describes the relationship between the sides and angles of a triangle.
+
+In particular, it defines the **sine**, **cosine**, and **tangent** functions, which gives us the ratio of any two sides of a right-angle triangle:
+
+<TrigonometryFunctions />
