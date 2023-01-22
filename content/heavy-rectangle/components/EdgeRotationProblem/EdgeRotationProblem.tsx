@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Slider } from "~/components/Slider";
 import { Visualizer, Content, Controls } from "~/components/Visualizer";
-import { FullWidth } from "~/components/FullWidth";
 import { styled } from "~/stitches.config";
 
 const HEIGHT = 40;
@@ -24,7 +23,7 @@ export const EdgeRotationProblem = () => {
 Q 50 ${20 + weight} 90 20
 l ${endpoint.x} ${endpoint.y}`;
   return (
-    <FullWidth>
+    <figure>
       <Visualizer>
         <Content css={{ display: "flex" }}>
           <svg viewBox="40 15 80 50">
@@ -87,7 +86,7 @@ l ${endpoint.x} ${endpoint.y}`;
           </svg>
         </Content>
       </Visualizer>
-    </FullWidth>
+    </figure>
   );
 };
 
@@ -98,7 +97,6 @@ const ArrowGroup = styled(motion.g, {
 const Text = styled("text", {
   fill: "$gray12",
   fontSize: 1.8,
-  fontWeight: "bold",
   fontFamily: "$mono",
 });
 

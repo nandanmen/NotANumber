@@ -4,6 +4,8 @@ import { Slider } from "~/components/Slider";
 import { Visualizer, Content } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
+const functions = ["sin", "cos", "tan"] as const;
+
 export const TrigonometryFunctions = () => {
   const [angle, setAngle] = React.useState(30);
   const angleInRadians = (angle * Math.PI) / 180;
@@ -18,37 +20,22 @@ export const TrigonometryFunctions = () => {
         />
       </Controls>
       <Wrapper>
-        <div>
-          <Visualizer>
-            <Content>
-              <Triangle angle={angle} type="sin" />
-            </Content>
-          </Visualizer>
-          <TextWrapper>
-            sin {angle}° = {Math.sin(angleInRadians).toFixed(3)}
-          </TextWrapper>
-        </div>
-        <div>
-          <Visualizer>
-            <Content>
-              <Triangle angle={angle} type="cos" />
-            </Content>
-          </Visualizer>
-          <TextWrapper>
-            cos {angle}° = {Math.cos(angleInRadians).toFixed(3)}
-          </TextWrapper>
-        </div>
-        <div>
-          <Visualizer>
-            <Content>
-              <Triangle angle={angle} type="tan" />
-            </Content>
-          </Visualizer>
-          <TextWrapper>
-            tan {angle}° ={" "}
-            {angle === 90 ? "Infinity" : Math.tan(angleInRadians).toFixed(3)}
-          </TextWrapper>
-        </div>
+        {functions.map((type) => {
+          return (
+            <div key={type}>
+              <Visualizer>
+                <Content>
+                  <svg viewBox="0 0 100 150">
+                    <Triangle angle={angle} type={type} />
+                  </svg>
+                </Content>
+              </Visualizer>
+              <TextWrapper>
+                {type} {angle}° = {Math[type](angleInRadians).toFixed(3)}
+              </TextWrapper>
+            </div>
+          );
+        })}
       </Wrapper>
     </FullWidth>
   );
@@ -65,27 +52,41 @@ const Controls = styled("div", {
   marginBottom: "$6",
 });
 
-const config = {
+const DEFAULT_CONFIG = {
   x: 20,
   y: 30,
   size: 100,
 };
 
-const Triangle = ({
+export const Triangle = ({
   angle,
   type,
+  config = DEFAULT_CONFIG,
+  initial = true,
 }: {
   angle: number;
   type: "sin" | "cos" | "tan";
+  config?: Partial<typeof DEFAULT_CONFIG>;
+  initial?: boolean;
 }) => {
   const angleInRadians = (angle * Math.PI) / 180;
-  const { x, y, size } = config;
+  const { x, y, size } = { ...DEFAULT_CONFIG, ...config };
   const height = Math.cos(angleInRadians) * size;
   const width = Math.sin(angleInRadians) * size;
   return (
-    <svg viewBox="0 0 100 150">
-      <line x1={x} y1={y} x2={x} y2={y + size} stroke="var(--colors-gray8)" />
-      <circle cx={x} cy={y + size} fill="var(--colors-gray8)" r="2" />
+    <g>
+      {initial && (
+        <>
+          <line
+            x1={x}
+            y1={y}
+            x2={x}
+            y2={y + size}
+            stroke="var(--colors-gray8)"
+          />
+          <circle cx={x} cy={y + size} fill="var(--colors-gray8)" r="2" />
+        </>
+      )}
       <Arc cx={x} cy={y} r={30} angle={angle} />
       <Line
         data-line-type="hypotenuse"
@@ -144,7 +145,7 @@ const Triangle = ({
         cy={y + height}
         type={type === "cos" ? undefined : "numerator"}
       />
-    </svg>
+    </g>
   );
 };
 
