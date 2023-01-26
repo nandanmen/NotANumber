@@ -210,12 +210,10 @@ const Article = styled("article", {
     fontFamily: "$serif",
   },
 
-  "> p": {
-    "> span > code, > code": {
-      background: "$gray7",
-      padding: 2,
-      fontSize: "$sm",
-    },
+  "code:not([data-rehype-pretty-code-fragment] code, pre code)": {
+    background: "$gray7",
+    padding: 2,
+    fontSize: "$sm",
   },
 
   "*": {
@@ -233,7 +231,7 @@ const Article = styled("article", {
     },
   },
 
-  "[data-rehype-pretty-code-fragment] pre": {
+  "[data-rehype-pretty-code-fragment] pre, > pre": {
     marginTop: "$4",
     marginBottom: "$8",
     whiteSpace: "pre-wrap",

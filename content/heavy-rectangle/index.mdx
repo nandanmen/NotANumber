@@ -13,19 +13,21 @@ import { EdgeRotationVisualizer } from "./components/EdgeRotationVisualizer";
 import { EdgeRotationProblem } from "./components/EdgeRotationProblem";
 import { TrigonometryFunctions } from "./components/TrigonometryFunctions";
 
-I recently made this heavy rectangle animation inspired by [this landing page design](https://twitter.com/_justlilian/status/1613549087692824584) I saw on Twitter:
+I recently made this heavy rectangle animation inspired by [a cool landing page design](https://twitter.com/_justlilian/status/1613549087692824584) I saw on Twitter:
 
 <HeavyRectangleVisualizer />
 
-What was fun about this animation is I had to [do some trignonometry](https://twitter.com/nandafyi/status/1613944455639486466) to make it work the way I wanted to — something I haven't touched since high school!
+Under the hood, the rectangle is actually an SVG path that's animated using Framer Motion's motion values. In this post, I'll go over how I made it over three parts:
 
-In this post, let's try to recreate this animation together.
+1. Given a "weight", how do we bend the rectangle down?
+2. How do we make the rounded corners?
+3. How do we animate the rectangle?
+
+Let's get started!
 
 ## SVG Paths
 
-Let's start by focusing on the rectangle curve first, ignoring the corners.
-
-The only way that I knew to make this animation work was to use SVG paths, so the first thing I did was to recreate the rectangle using paths:
+I started off by using SVG paths to create a rectangle:
 
 ```
 rectangle with paths
@@ -82,17 +84,47 @@ In particular, it defines the **sine**, **cosine**, and **tangent** functions, w
 
 <TrigonometryFunctions />
 
-Assuming the length of the **hypotenuse** (the blue line in the first two figures above) is 1, then:
-
-1. `sin(angle)` gives us the length of the edge **opposite** to the angle;
-2. `cos(angle)` gives us the length of the edge **adjacent** to the angle;
-3. `tan(angle)` gives us **how much longer** the opposite edge is compared to the adjacent edge, with `1` meaning the two edges are the same length.
+1. `sin(angle)` gives us the ratio between the **opposite** edge and the hypotenuse, i.e. `sin(angle) = length(opposite) / length(hypotenuse)`.
+2. `cos(angle)` gives us the ratio between the **adjacent** edge and the hypotenuse, i.e. `cos(angle) = length(adjacent) / length(hypotenuse)`.
+3. `tan(angle)` gives us the ratio between the **opposite** edge and the **adjacent** edge, i.e. `tan(angle) = length(opposite) / length(adjacent)`.
 
 The really cool thing is that no matter how large the triangle gets, the `sin`, `cos`, and `tan` functions will **always return the same value for the same angle**. This means that:
 
-1. If you know the length of any two sides, you can calculate the corresponding angle using the _inverse_ trigonometry functions: `asin`, `acos`, and `atan`;
-2. If you know the angle and the length of one side, you can calculate the length of any of the other sides.
+1. If you know the length of any two sides, you can calculate the corresponding angle using the _inverse_ trigonometry functions `asin`, `acos`, and `atan`, e.g. `asin(0.5) = 30°`;
+2. If you know the angle and the length of one side, you can calculate the length of any of the other sides, e.g. `length(opposite) = length(hypotenuse) * sin(angle)`.
+
+```
+some quiz component here?
+```
 
 ### Calculating the New Coordinates
 
-If we squint a bit, we can see that the rotated right edge is actually a right-angle triangle:
+So how do we apply trigonometry here? Well if we squint a bit, we can see that the rotated right edge is actually a right-angle triangle:
+
+---
+
+So if we know the angle of the rotation, we could use the rules of trigonometry to determine the coordinates of the endpoint:
+
+```ts
+const getNewCoordinates = (angle: number, height: number) => {
+  const x = Math.cos(angle) * height;
+  const y = Math.sin(angle) * height;
+  return { x, y };
+};
+```
+
+### Calculating the Angle of Rotation
+
+But how do we know the angle of the rotation? Well, we know that the angle of the right edge is always 90 degrees, so the angle will be the same as this angle:
+
+```
+horizontal angle
+```
+
+Hey that's another right-angle triangle!
+
+Back in the trigonometry section, we saw that we could calculate the angle of a right-angle triangle if we knew the length of any two sides. In this case, we know the `y` offset and the length of the horizontal edge, so we can calculate the angle using inverse `tan`, `atan`:
+
+```js
+const angle = Math.atan(y / height);
+```
