@@ -65,7 +65,7 @@ const GradientSquare = ({
     <>
       <SvgBackgroundGradient id={id} color={color} />
       <motion.g style={{ x, y }}>
-        <Shadow x="1" y="1" size={size} />
+        <Shadow x="1" y="1" size={size} rx="2" />
         <Square fill={getFillFromId(id)} {...props} size={size} />
       </motion.g>
     </>

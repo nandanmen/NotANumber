@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import React from "react";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
 import { titleCase } from "title-case";
@@ -15,59 +16,68 @@ export interface IPost {
 
 export type PostProps = {
   post: IPost;
-  children?: React.ReactNode;
-  direction?: "left" | "right";
+  children: React.ReactNode;
+  onInViewEnter: (slug: string) => void;
+  onInViewLeave: (slug: string) => void;
 };
 
-export function Post({ post, children, direction = "left" }: PostProps) {
+export function Post({
+  post,
+  children,
+  onInViewEnter,
+  onInViewLeave,
+}: PostProps) {
+  const ref = React.useRef(null);
   const isExternal = post.slug.startsWith("http");
 
+  const inView = useInView(ref, { amount: "all" });
+  React.useEffect(() => {
+    if (inView) {
+      onInViewEnter(post.slug);
+    } else {
+      onInViewLeave(post.slug);
+    }
+  }, [inView, onInViewEnter, onInViewLeave, post.slug]);
+
   return (
-    <PostWrapper direction={direction}>
-      <PostContent>
-        <PostUpdatedText>
-          {new Intl.DateTimeFormat("en-US", {
-            month: "long",
-            year: "numeric",
-            day: "numeric",
-          }).format(new Date(post.editedAt))}
-        </PostUpdatedText>
-        <PostTitle whileHover="hover">
-          {isExternal ? (
-            <TitleAnchor href={post.slug} direction={direction}>
-              <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
-            </TitleAnchor>
-          ) : (
-            <Link href={post.slug} passHref>
-              <TitleAnchor direction={direction}>
-                <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
-              </TitleAnchor>
-            </Link>
-          )}
-        </PostTitle>
-        <PostDescription>{post.description}</PostDescription>
+    <PostContent ref={ref}>
+      <PostUpdatedText>
+        {new Intl.DateTimeFormat("en-US", {
+          month: "long",
+          year: "numeric",
+          day: "numeric",
+        }).format(new Date(post.editedAt))}
+      </PostUpdatedText>
+      <PostTitle whileHover="hover">
         {isExternal ? (
-          <TitleAnchor small href={post.slug} direction={direction}>
-            Read now
-            <BsArrowRight width="12" height="12" />
+          <TitleAnchor href={post.slug}>
+            <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
           </TitleAnchor>
         ) : (
           <Link href={post.slug} passHref>
-            <TitleAnchor small direction={direction}>
-              Read now
-              <BsArrowRight width="12" height="12" />
+            <TitleAnchor>
+              <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
             </TitleAnchor>
           </Link>
         )}
-      </PostContent>
-      <Figure>{children}</Figure>
-    </PostWrapper>
+      </PostTitle>
+      <PostDescription>{post.description}</PostDescription>
+      {isExternal ? (
+        <TitleAnchor small href={post.slug}>
+          Read now
+          <BsArrowRight width="12" height="12" />
+        </TitleAnchor>
+      ) : (
+        <Link href={post.slug} passHref>
+          <TitleAnchor small>
+            Read now
+            <BsArrowRight width="12" height="12" />
+          </TitleAnchor>
+        </Link>
+      )}
+    </PostContent>
   );
 }
-
-const Figure = styled("div", {
-  flex: 1,
-});
 
 const TitleAnchor = styled(motion.a, {
   color: "inherit",
@@ -90,75 +100,6 @@ const TitleAnchor = styled(motion.a, {
         fontWeight: "bold",
       },
     },
-    direction: {
-      right: {},
-      left: {
-        "@md": {
-          justifyContent: "flex-end",
-        },
-      },
-    },
-  },
-});
-
-const PostWrapper = styled(motion.li, {
-  $$spacing: "$space$16",
-  listStyle: "none",
-  padding: 0,
-  display: "flex",
-  flexDirection: "column-reverse",
-  gap: "$$spacing",
-  maxWidth: 400,
-
-  "&:not(:last-child)": {
-    paddingBottom: "$$gap",
-    borderBottom: "1px dashed $gray8",
-  },
-
-  "@md": {
-    $$spacing: "$space$10",
-    flexDirection: "row",
-    gap: 0,
-    alignItems: "center",
-    maxWidth: "60rem",
-
-    "> :first-child": {
-      paddingRight: "$$spacing",
-      textAlign: "right",
-      borderRight: "1px dashed $gray8",
-    },
-
-    "> :last-child": {
-      paddingLeft: "$$spacing",
-    },
-  },
-
-  "@lg": {
-    $$spacing: "$space$16",
-  },
-
-  variants: {
-    direction: {
-      right: {
-        "@md": {
-          flexDirection: "row-reverse",
-
-          "> :first-child": {
-            paddingRight: 0,
-            paddingLeft: "$$spacing",
-            textAlign: "left",
-            borderLeft: "1px dashed $gray8",
-            borderRight: "none",
-          },
-
-          "> :last-child": {
-            paddingRight: "$$spacing",
-            paddingLeft: 0,
-          },
-        },
-      },
-      left: {},
-    },
   },
 });
 
@@ -168,11 +109,17 @@ const PostTitle = styled(motion.h1, {
   lineHeight: 1.1,
   fontWeight: 500,
   display: "flex",
+
+  "@md": {
+    fontSize: "4.5rem",
+    lineHeight: 1,
+  },
 });
 
 const PostDescription = styled("p", {
   color: "$gray11",
   lineHeight: "$body",
+  fontSize: "1.1rem",
 });
 
 const PostUpdatedText = styled("p", {
@@ -182,7 +129,8 @@ const PostUpdatedText = styled("p", {
 });
 
 const PostContent = styled("div", {
-  flex: 1,
+  paddingBottom: "$32",
+  borderBottom: "1px dashed $gray8",
 
   "> :not(:last-child)": {
     marginBottom: "$10",

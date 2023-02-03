@@ -15,9 +15,14 @@ const Background = styled(Content, {
   inset: "$6",
   borderRadius: 9999,
   border: "1px solid $gray8",
+
+  "@lg": {
+    display: "none",
+  },
 });
 
 const Wrapper = styled("div", {
-  height: "100%",
+  width: "100%",
   position: "relative",
+  maxWidth: 600,
 });

@@ -1,9 +1,9 @@
 import React from "react";
 import Head from "next/head";
 import { FaGithub, FaTwitter } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { BASE_URL } from "~/lib/config";
 import { Post } from "~/components/Post";
 import { SubscribeButton } from "~/components/SubscribeButton";
@@ -68,6 +68,26 @@ const posts = [
 ];
 
 export default function HomePage() {
+  const [inView, setInView] = React.useState(["magic-motion"]);
+  const [inViewPost, setInViewPost] = React.useState(posts[0]);
+
+  React.useEffect(() => {
+    const inViewComponent = posts.find(
+      (post) => post.post.slug === inView.at(-1)
+    );
+    if (inViewComponent) {
+      setInViewPost(inViewComponent);
+    }
+  }, [inView]);
+
+  const handlePostEnter = React.useCallback((slug: string) => {
+    setInView((prev) => [...prev, slug]);
+  }, []);
+
+  const handlePostLeave = React.useCallback((slug: string) => {
+    setInView((prev) => prev.filter((s) => s !== slug));
+  }, []);
+
   return (
     <PageWrapper>
       <Head>
@@ -88,9 +108,6 @@ export default function HomePage() {
       </Head>
       <ContentWrapper>
         <Header>
-          <Links>
-            <SocialLinks />
-          </Links>
           <Title>
             Not a Number<span>By Nanda Syahrasyad</span>
           </Title>
@@ -99,15 +116,35 @@ export default function HomePage() {
           </SubscribeWrapper>
         </Header>
         <Posts>
-          {posts.map((post, index) => (
-            <Post
-              key={post.post.slug}
-              direction={index % 2 ? "right" : "left"}
-              {...post}
-            />
-          ))}
+          {posts.map(({ post, children }) => {
+            return (
+              <Post
+                key={post.slug}
+                post={post}
+                onInViewEnter={handlePostEnter}
+                onInViewLeave={handlePostLeave}
+              >
+                {children}
+              </Post>
+            );
+          })}
         </Posts>
+        <Footer>
+          <ul>
+            <li>© 2023 Nanda Syahrasyad</li>
+            <SocialLinks />
+          </ul>
+        </Footer>
       </ContentWrapper>
+      <Background>
+        <BackgroundFigureWrapper>
+          <AnimatePresence>
+            <BackgroundFigure key={inViewPost.post.slug}>
+              {inViewPost.children}
+            </BackgroundFigure>
+          </AnimatePresence>
+        </BackgroundFigureWrapper>
+      </Background>
       <IslandWrapper>
         <DynamicIsland
           css={{
@@ -128,10 +165,57 @@ export default function HomePage() {
   );
 }
 
+const Footer = styled("footer", {
+  fontFamily: "$mono",
+  color: "$gray11",
+  fontSize: "$sm",
+
+  ul: {
+    display: "flex",
+    alignItems: "center",
+    listStyle: "none",
+    gap: "$4",
+
+    "> :nth-child(2)": {
+      marginLeft: "auto",
+    },
+  },
+});
+
+const Background = styled("div", {
+  gridColumn: "2",
+  backgroundImage: "url(/grid.svg)",
+  backgroundSize: "40px 40px",
+  width: "50vw",
+  minHeight: "100vh",
+  borderLeft: "1px solid $gray6",
+
+  [`.${darkTheme} &`]: {
+    backgroundImage: "url(/grid-dark.svg)",
+    borderLeft: "1px solid $gray4",
+  },
+});
+
+const BackgroundFigure = styled("figure", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "$8",
+  height: "100%",
+});
+
+const BackgroundFigureWrapper = styled("div", {
+  position: "fixed",
+  width: "50vw",
+  top: 0,
+  bottom: 0,
+  right: 0,
+});
+
 const SocialLinks = () => {
   return (
     <>
-      <li>
+      <SocialLink>
         <a
           href="https://github.com/narendrasss/NotANumber"
           target="_blank"
@@ -140,8 +224,8 @@ const SocialLinks = () => {
         >
           <FaGithub />
         </a>
-      </li>
-      <li>
+      </SocialLink>
+      <SocialLink>
         <a
           href="https://twitter.com/nandafyi"
           target="_blank"
@@ -150,10 +234,22 @@ const SocialLinks = () => {
         >
           <FaTwitter />
         </a>
-      </li>
+      </SocialLink>
     </>
   );
 };
+
+const SocialLink = styled("li", {
+  fontSize: "$xl",
+  a: {
+    textDecoration: "none",
+    color: "inherit",
+
+    "&:hover": {
+      color: "$blue9",
+    },
+  },
+});
 
 const MobileSocialWrapper = styled("ul", {
   display: "flex",
@@ -193,45 +289,22 @@ const SubscribeWrapper = styled("div", {
   },
 });
 
-const Links = styled(motion.ul, {
-  fontSize: "$xl",
-  gap: "$4",
-  display: "none",
-  listStyle: "none",
-
-  a: {
-    color: "inherit",
-    textDecoration: "none",
-
-    "&:hover": {
-      color: "$blue9",
-    },
-  },
-
-  "@md": {
-    display: "flex",
-  },
-});
-
 const PageWrapper = styled("main", {
   $$gap: "$space$16",
-  width: "fit-content",
-  margin: "0 auto",
-  padding: "0 $8",
-  paddingBottom: "calc($$gap + $space$16)",
-  maxWidth: "72rem",
-
-  "@lg": {
-    padding: "0 $16",
-    paddingBottom: "calc($$gap + $space$24)",
-  },
-
-  "@media screen and (min-width: 75rem)": {
-    maxWidth: "initial",
-  },
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
 });
 
-const ContentWrapper = styled("div", {});
+const ContentWrapper = styled("div", {
+  maxWidth: "60ch",
+  width: "100vw",
+  marginLeft: "auto",
+  padding: "$8",
+
+  "@xl": {
+    marginRight: "$16",
+  },
+});
 
 const Title = styled("h1", {
   fontFamily: "$serif",
@@ -244,7 +317,6 @@ const Title = styled("h1", {
     fontSize: "$sm",
     fontFamily: "$sans",
     color: "$gray11",
-    textAlign: "center",
     marginTop: "$2",
   },
 });
@@ -253,19 +325,17 @@ const Header = styled("header", {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  padding: "$12 0",
+  padding: "$4 0",
   marginBottom: "calc($$gap / 2)",
 
   "@md": {
-    marginBottom: "$$gap",
+    marginBottom: "$32",
     justifyContent: "space-between",
   },
 });
 
-const Posts = styled(motion.ul, {
-  gridColumn: 2,
-
-  "> :not(:last-child)": {
-    marginBottom: "$$gap",
+const Posts = styled("ul", {
+  "> *": {
+    marginBottom: "$32",
   },
 });
