@@ -30,7 +30,7 @@ export function Post({
   const ref = React.useRef(null);
   const isExternal = post.slug.startsWith("http");
 
-  const inView = useInView(ref, { amount: "all" });
+  const inView = useInView(ref, { amount: 0.75 });
   React.useEffect(() => {
     if (inView) {
       onInViewEnter(post.slug);
