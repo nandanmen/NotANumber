@@ -6,6 +6,9 @@ export type Color = "yellow" | "green";
 export type SvgBackgroundGradientProps = {
   id: string;
   color?: Color;
+  startColor?: string;
+  stopColor?: string;
+  rotate?: number;
 };
 
 export const getFillFromId = (id: string) => `url('#${id}')`;
@@ -13,26 +16,30 @@ export const getFillFromId = (id: string) => `url('#${id}')`;
 export function SvgBackgroundGradient({
   id,
   color,
+  startColor,
+  stopColor,
+  rotate = 45,
 }: SvgBackgroundGradientProps) {
+  const _color = startColor ? undefined : color ? color : "blue";
   return (
     <defs>
-      <linearGradient id={id} gradientTransform="rotate(45)">
-        <StopStart offset="0%" color={color} />
-        <StopEnd offset="100%" color={color} />
+      <linearGradient id={id} gradientTransform={`rotate(${rotate})`}>
+        <StopStart offset="0%" stopColor={startColor} color={_color} />
+        <StopEnd offset="100%" stopColor={stopColor} color={_color} />
       </linearGradient>
     </defs>
   );
 }
 
 const StopStart = styled("stop", {
-  stopColor: "$colors$blue4",
-
-  [`.${darkTheme} &`]: {
-    stopColor: "$colors$blue7",
-  },
-
   variants: {
     color: {
+      blue: {
+        stopColor: "$colors$blue4",
+        [`.${darkTheme} &`]: {
+          stopColor: "$colors$blue7",
+        },
+      },
       green: {
         stopColor: "$colors$green4",
         [`.${darkTheme} &`]: {
@@ -56,14 +63,14 @@ const StopStart = styled("stop", {
 });
 
 const StopEnd = styled("stop", {
-  stopColor: "$colors$blue6",
-
-  [`.${darkTheme} &`]: {
-    stopColor: "$colors$blue9",
-  },
-
   variants: {
     color: {
+      blue: {
+        stopColor: "$colors$blue6",
+        [`.${darkTheme} &`]: {
+          stopColor: "$colors$blue9",
+        },
+      },
       green: {
         stopColor: "$colors$green6",
         [`.${darkTheme} &`]: {
