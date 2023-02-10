@@ -3,6 +3,7 @@ import {
   useAnimationControls,
   useMotionValue,
   useTransform,
+  animate,
 } from "framer-motion";
 import React from "react";
 import { FullWidth } from "~/components/FullWidth";
@@ -24,9 +25,21 @@ const getRadius = (i: number) => 20 + ((i + 1) * (70 - 20)) / numSectors;
 export const DiskDrive = () => {
   const [rotation, setRotation] = React.useState(20);
   const rotationAnimation = useAnimationControls();
+  const arcGroupControls = useAnimationControls();
   const rotate = useMotionValue(0);
   const id = React.useId();
   const highlightId = React.useId();
+  const [reading, setReading] = React.useState(false);
+
+  React.useEffect(() => {
+    rotate.onChange((r) => {
+      if (r >= 95 && r <= 220) {
+        setReading(true);
+      } else {
+        setReading(false);
+      }
+    });
+  }, [rotate]);
 
   return (
     <FullWidth>
@@ -67,7 +80,7 @@ export const DiskDrive = () => {
               <motion.g
                 animate="visible"
                 initial="hidden"
-                stroke="var(--colors-gray8)"
+                stroke="var(--colors-gray7)"
                 transition={{ staggerChildren: 0.1 }}
               >
                 {range(numSectors).map((i) => {
@@ -84,8 +97,9 @@ export const DiskDrive = () => {
                         transition={{ type: "spring", damping: 20 }}
                         onAnimationComplete={() => {
                           if (i === numSectors - 1) {
+                            arcGroupControls.start("shown");
                             rotationAnimation.start({
-                              rotate: -1 * rotation,
+                              rotate: -41,
                               transition: {
                                 type: "spring",
                                 damping: 20,
@@ -135,7 +149,19 @@ export const DiskDrive = () => {
                 stroke="var(--colors-blue8)"
                 strokeWidth="0.3"
               >
-                <ArcGroup startAngle={0} sectorNumber={1} length={5} />
+                <ArcGroup
+                  startAngle={0}
+                  sectorNumber={1}
+                  length={4}
+                  animate={arcGroupControls}
+                  onAnimationComplete={() => {
+                    animate(rotate, 360, {
+                      type: "tween",
+                      // ease: "linear",
+                      duration: 8,
+                    });
+                  }}
+                />
               </g>
             </Box>
             <motion.g style={{ x: 30, y: 30 }}>
@@ -146,26 +172,33 @@ export const DiskDrive = () => {
                   originY: "9px",
                 }}
                 animate={rotationAnimation}
-                onAnimationComplete={() => {
-                  /* animate(rotate, 360, {
-                    type: "tween",
-                    ease: "linear",
-                    duration: 8,
-                    repeat: Infinity,
-                  }); */
-                }}
                 fill={getFillFromId(id)}
-                css={{
-                  filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
-                }}
               >
                 <motion.g style={{ x: 6.5, y: 90 }}>
-                  <path
+                  <motion.circle
+                    animate={{ r: reading ? 2 : 0 }}
+                    transition={{ type: "spring", damping: 20 }}
+                    stroke="none"
+                    cx="2.5"
+                    cy="8"
+                    fill="var(--colors-blue7)"
+                  />
+                  <Box
+                    as="path"
                     d="M 0 0 l 2.5 8 l 2.5 -8 z"
                     fill="var(--colors-gray3)"
+                    css={{
+                      filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                    }}
                   />
                 </motion.g>
-                <path d="M 0 9 l 5 80 l 1 2 h 6 l 1 -2 l 5 -80 A 9 9 0 0 0 0 9" />
+                <Box
+                  as="path"
+                  d="M 0 9 l 5 80 l 1 2 h 6 l 1 -2 l 5 -80 A 9 9 0 0 0 0 9"
+                  css={{
+                    filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                  }}
+                />
                 <Box
                   as="circle"
                   css={{
@@ -185,15 +218,15 @@ export const DiskDrive = () => {
   );
 };
 
-const ArcGroup = ({ startAngle, sectorNumber, length = 1 }) => {
+const ArcGroup = ({ startAngle, sectorNumber, length = 1, ...props }) => {
   const radius = getRadius(sectorNumber);
   const arcAngle = 360 / Math.floor((2 * Math.PI * radius) / ARC_LENGTH);
   return (
     <Box
       as={motion.g}
-      animate="shown"
       initial="hidden"
       transition={{ staggerChildren: 0.1 }}
+      {...props}
     >
       {range(length).map((i) => {
         return (
