@@ -56,7 +56,7 @@ Notice that the horizontal edges are _curves_ instead of straight lines. This wa
 
 Now we _could_ stop here, but it doesn't look quite right — the vertical edges shouldn't stay upright when the rectangle is bending down like that. Instead, the sides should rotate so that they're always perpendicular to the horizontal edges.
 
-## Rotating the Corners
+## Rotating the Right Corner
 
 Let's focus on the right edge first. When we bend the rectangle down, we want the right edge to rotate such that the angle stays at 90 degrees:
 
@@ -103,7 +103,7 @@ So how do we apply trigonometry here? Well if we squint a bit, we can see that t
 
 ---
 
-So if we know the angle of the rotation, we could use the rules of trigonometry to determine the coordinates of the endpoint:
+So **if we know the angle of the rotation**, we could use the rules of trigonometry to determine the coordinates of the endpoint:
 
 ```ts
 const getNewCoordinates = (angle: number, height: number) => {
@@ -126,5 +126,40 @@ Hey that's another right-angle triangle!
 Back in the trigonometry section, we saw that we could calculate the angle of a right-angle triangle if we knew the length of any two sides. In this case, we know the `y` offset and the length of the horizontal edge, so we can calculate the angle using inverse `tan`, `atan`:
 
 ```js
-const angle = Math.atan(y / height);
+const angle = Math.atan(y / (width / 2));
 ```
+
+In other words, we can calculate the final coordinates using the following function:
+
+```js
+const getNewCoordinates = (y: number, width: number, height: number) => {
+  const angle = Math.atan(y / (width / 2));
+  const x = Math.cos(angle) * height;
+  const y = Math.sin(angle) * height;
+  return { x, y };
+};
+```
+
+In this case, `width` and `height` are the width and height of the rectangle, and `y` is how "bent" the rectangle is.
+
+### Constructing the Path
+
+Now that we have this function, we can use it to construct one-half of the rectangle:
+
+```js
+const getRectanglePath = (y: number) => {
+  // Our rectangle has a width of 80 and a height of 40
+  const { x, y } = getNewCoordinates(y, 80, 40);
+  return `
+    M 0 0
+    Q 40 ${y} 40 0
+    l ${x} ${y}
+  `;
+};
+```
+
+## Rotating the Left Corner
+
+## Rounding the Corners
+
+## Animating the Rectangle
