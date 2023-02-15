@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
 import Balancer from "react-wrap-balancer";
+import Image from "next/image";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { BASE_URL } from "~/lib/config";
@@ -210,12 +211,10 @@ const Article = styled("article", {
     fontFamily: "$serif",
   },
 
-  "> p": {
-    "> span > code, > code": {
-      background: "$gray7",
-      padding: 2,
-      fontSize: "$sm",
-    },
+  "code:not([data-rehype-pretty-code-fragment] code, pre code)": {
+    background: "$gray7",
+    padding: 2,
+    fontSize: "$sm",
   },
 
   "*": {
@@ -233,7 +232,7 @@ const Article = styled("article", {
     },
   },
 
-  "[data-rehype-pretty-code-fragment] pre": {
+  "[data-rehype-pretty-code-fragment] pre, > pre": {
     marginTop: "$4",
     marginBottom: "$8",
     whiteSpace: "pre-wrap",
@@ -242,6 +241,10 @@ const Article = styled("article", {
     borderRadius: "$base",
     fontSize: "$sm",
     overflowX: "auto",
+
+    "& .highlighted": {
+      background: "$gray3",
+    },
   },
 
   blockquote: {

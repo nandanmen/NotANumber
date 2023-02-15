@@ -5,6 +5,9 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  images: {
+    domains: ["tdzetyetdwbxwkrrdmvi.supabase.co"],
+  },
   async redirects() {
     return [
       {

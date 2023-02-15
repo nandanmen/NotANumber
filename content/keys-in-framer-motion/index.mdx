@@ -1,0 +1,162 @@
+---
+title: "The Power of Keys in Framer Motion"
+blurb: "A guide on recreating framer's magical layout animations."
+description: "A guide on recreating framer's magical layout animations."
+publishedAt: "2023-02-15"
+editedAt: "2023-02-15"
+---
+
+import { CodeQuiz } from "./components/CodeQuiz";
+
+The `key` prop is a pretty special prop in React that you've probably only ever used when writing loops:
+
+```jsx
+const MyComponent = ({ items }) => {
+  return (
+    <div>
+      {items.map((item) => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+    </div>
+  );
+};
+```
+
+For me, though, my favorite use of keys isn't to satisfy some React warning but instead as an **animation tool** in Framer Motion. Seems a little unrelated, doesn't it?
+
+In fact, I used it a ton when making interactions for my Japanese learning app, [Wakaranai](https://wakaranai.app):
+
+![](https://tdzetyetdwbxwkrrdmvi.supabase.co/storage/v1/object/public/images/CleanShot%202023-02-12%20at%2016.44.58.gif)
+
+In this post, I want to go over a few different scenarios where you would want to use keys in your Framer Motion animations.
+
+## A Primer on Keys
+
+The purpose of the `key` prop is to **uniquely identify a React component**. If React sees that a component has the same key between renders, it will reuse that component's last instance.
+
+> For the purposes of this post, I'm using the term "React component" to refer to both custom components (like `const MyComponent = (props) => { ... }`) and JSX tags (like `<div />`).
+
+To put it another way, if the key of a component changes, then React will _always_ unmount the existing component and mount a new instance. The implication of this is we can use keys to tell React to "re-mount" a component. That's super cool!
+
+### An Example
+
+Take a look at the following component and see if you can answer the question:
+
+<CodeQuiz caption={`When MyComponent mounts for the first time, its effect will run, printing "mounted" to the console. When we click on "Change Key", MyComponent will rerender, but since the effect has no dependencies, it won't run again!`}>
+
+```jsx
+const MyComponent = () => {
+  React.useEffect(() => {
+    console.log("mounted");
+    return () => console.log("unmounted");
+  }, []); // <-- no dependencies!
+
+  return <p>Hello World</p>;
+};
+
+const App = () => {
+  const [key, setKey] = React.useState(0);
+  return (
+    <>
+      <button onClick={() => setKey(key + 1)}>Change Key</button>
+      <MyComponent />
+    </>
+  );
+};
+```
+
+</CodeQuiz>
+
+Now let's change the key of the component when we click on "Change Key":
+
+<CodeQuiz caption={`This time, clicking on "Change Key" causes MyComponent to remount because we change its key. This causes the effect to log "unmounted" when it unmounts, then "mounted" when it mounts again.`} useKey>
+
+```jsx {15}
+const MyComponent = () => {
+  React.useEffect(() => {
+    console.log("mounted");
+    return () => console.log("unmounted");
+  }, []); // <-- no dependencies!
+
+  return <p>Hello World</p>;
+};
+
+const App = () => {
+  const [key, setKey] = React.useState(0);
+  return (
+    <>
+      <button onClick={() => setKey(key + 1)}>Change Key</button>
+      <MyComponent key={key} />
+    </>
+  );
+};
+```
+
+</CodeQuiz>
+
+Anyways, all this is to say that changing the key of a component causes React to unmount the old instance and mount a new one.
+
+---
+
+so how is this useful?
+
+in framer motion, we can make mount animations by using the `animate` prop, and unmount animations by using `AnimatePresence`. since changing keys lets us re-mount components, we can essentially use keys to trigger animations!
+
+let’s take a look at a few examples.
+
+## Refresh Component
+
+i like to test my mount animations using a custom refresh component:
+
+```jsx
+const Refresh = ({ children }) => {
+  const [key, setKey] = React.useState(0);
+  return (
+    <>
+      <button onClick={() => setKey(key + 1)}>Refresh</button>
+      <div key={key}>{children}</div>
+    </>
+  );
+};
+```
+
+when the refresh button is clicked, everything in the div gets remounted, causing the mount animation to trigger again!
+
+again, this works because we change the key of the div element. react sees the keys are different between renders, throws away the old div, and mounts a new div in its place.
+
+## Infinite Carousel
+
+I used keys and animate presence to implement this carousel animation in my app, wakaranai:
+
+Now you dont technically need keys to implement this. If you know the number of items in your carousel, you could technically line them all up and slide them across:
+
+But if we use keys and animate presence, we can make our carousel loop infinitely and make our code much simpler:
+
+How does this work?
+
+1. When we click on next, we cause React to rerender, updating the key in the process
+2. React sees that the keys are different, unmounting the current instance of the component and mounting a new instance in its place
+3. AnimatePresence “latches on” to the unmounting instance, and performs its exit animation
+4. At the same time, the new instance performs its mount animation (because mode is “popLayout”, the animations happen simultaneously without affecting layout)
+
+## Animating Text Changes
+
+For the login modal of wakaranai, I wanted the text to animate when we finish sending the user the magic link. can you think of how to implement this?
+
+---
+
+(you guessed it) — we use keys! in fact, it’s essentially a one line change:
+
+```jsx
+<motion.span key={finished ? "done" : "ready"}>...</motion.span>
+```
+
+when the state changes to finished, the key changes to “done”, causing React to remount the `motion.span` component, subsequently causing the mount animation to happen again.
+
+this is effectively the same logic as in the infinite carousel, except we don’t have an exit animation.
+
+## Summary
+
+to summarize, the key prop is super useful when implementing framer motion animations because it lets you explicitly cause components to mount and unmount, triggering their respective animations.
+
+that’s all for today — this post is shorter than my usual ones, but i hope you’ve enjoyed it nonetheless!
