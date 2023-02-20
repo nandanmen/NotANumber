@@ -15,6 +15,7 @@ import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
 import { Link } from "~/components/Link";
+import { Content } from "~/components/Content";
 // import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
@@ -72,7 +73,7 @@ export default function PostPage({ content }: { content: Post }) {
           ))}
         </ul>
       </Nav>
-      <Article>
+      <Article as="article">
         <Header>
           <LastUpdated>
             {formatter.format(new Date(frontmatter.editedAt))}
@@ -170,7 +171,7 @@ const Header = styled("header", {
   },
 });
 
-const Article = styled("article", {
+const Article = styled(Content, {
   lineHeight: "$body",
   maxWidth: 800,
   display: "grid",
@@ -181,87 +182,5 @@ const Article = styled("article", {
 
   "@media (min-width: 72rem)": {
     paddingBottom: "$4",
-  },
-
-  "> *": {
-    gridColumn: "1",
-  },
-
-  "> figure": {
-    marginTop: "$4",
-    marginBottom: "$8",
-  },
-
-  "> .note": {
-    gridColumn: "1 / -1",
-  },
-
-  "> .full-width": {
-    gridColumn: "1 / -1",
-    marginTop: "$4",
-    marginBottom: "$8",
-    width: "100%",
-  },
-
-  "> :where(:not(:last-child))": {
-    marginBottom: "$4",
-  },
-
-  h2: {
-    fontFamily: "$serif",
-  },
-
-  "code:not([data-rehype-pretty-code-fragment] code, pre code)": {
-    background: "$gray7",
-    padding: 2,
-    fontSize: "$sm",
-  },
-
-  "*": {
-    "&[data-theme='dark']": {
-      display: "none",
-    },
-
-    [`.${darkTheme} &`]: {
-      "&[data-theme='light']": {
-        display: "none",
-      },
-      "&[data-theme='dark']": {
-        display: "revert",
-      },
-    },
-  },
-
-  "[data-rehype-pretty-code-fragment] pre, > pre": {
-    marginTop: "$4",
-    marginBottom: "$8",
-    whiteSpace: "pre-wrap",
-    border: "1px solid $gray8",
-    padding: "$4",
-    borderRadius: "$base",
-    fontSize: "$sm",
-    overflowX: "auto",
-
-    "& .highlighted": {
-      background: "$gray3",
-    },
-  },
-
-  blockquote: {
-    paddingLeft: "$4",
-    borderLeft: "2px solid $gray8",
-    color: "$gray11",
-    fontStyle: "italic",
-  },
-
-  hr: {
-    marginTop: "$6",
-    marginBottom: "$12",
-    width: "30%",
-    borderTop: "1px solid $gray8",
-  },
-
-  "[data-rehype-pretty-code-fragment] > pre": {
-    marginBottom: "$4",
   },
 });

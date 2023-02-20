@@ -6,7 +6,13 @@ publishedAt: "2023-02-15"
 editedAt: "2023-02-15"
 ---
 
+import { FullWidth } from "~/components/FullWidth";
+import { Spoiler } from "~/components/Spoiler";
 import { CodeQuiz } from "./components/CodeQuiz";
+import { Counter } from "./components/Counter";
+import { RefreshComponent } from "./components/RefreshComponent";
+import { NextButton, NextButtonSandbox } from "./components/NextButton";
+import { KanjiCarousel } from "./components/KanjiCarousel";
 
 The `key` prop is a pretty special prop in React that you've probably only ever used when writing loops:
 
@@ -26,21 +32,94 @@ For me, though, my favorite use of keys isn't to satisfy some React warning but 
 
 In fact, I used it a ton when making interactions for my Japanese learning app, [Wakaranai](https://wakaranai.app):
 
-![](https://tdzetyetdwbxwkrrdmvi.supabase.co/storage/v1/object/public/images/CleanShot%202023-02-12%20at%2016.44.58.gif)
+---
 
 In this post, I want to go over a few different scenarios where you would want to use keys in your Framer Motion animations.
 
 ## A Primer on Keys
 
-The purpose of the `key` prop is to **uniquely identify a React component**. If React sees that a component has the same key between renders, it will reuse that component's last instance.
+The purpose of the `key` prop is to **uniquely identify a React component**. If React sees that a component's key has changed between renders, it will unmount that component and mount a new one in its place.
 
 > For the purposes of this post, I'm using the term "React component" to refer to both custom components (like `const MyComponent = (props) => { ... }`) and JSX tags (like `<div />`).
 
-To put it another way, if the key of a component changes, then React will _always_ unmount the existing component and mount a new instance. The implication of this is we can use keys to tell React to "re-mount" a component. That's super cool!
+**The implication of this is we can use keys to explicitly tell React to "re-mount" a component**.
 
-### An Example
+### A Counter Component
 
-Take a look at the following component and see if you can answer the question:
+Consider this little counter component:
+
+```jsx
+const Counter = ({ name }) => {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>{name}</p>
+      <h1>{count}</h1>
+      <button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      >
+        Increment
+      </button>
+    </div>
+  );
+};
+```
+
+Here, we render the component with the name "John". Try incrementing the counter a couple of times and then click on the "Change Name" button:
+
+<Counter>
+
+```jsx
+const [name, setName] = useState("John");
+return (
+  <div>
+    <Counter name={name} />
+    <button
+      onClick={() => {
+        setName(name === "Jane" ? "John" : "Jane");
+      }}
+    >
+      Change Name
+    </button>
+  </div>
+);
+```
+
+</Counter>
+
+Notice that **changing the name maintains the counter's value**. Most of the time, this is what you want — imagine if the component's state resets every time one of its props changes!
+
+What if you _do_ want to reset the state, though? That's where keys come in. This time, we'll add a key prop to `<Counter />` and set it to `name`. Now try clicking on "Increment" then "Change Name":
+
+<Counter withKey>
+
+```jsx
+const [name, setName] = useState("John");
+return (
+  <div>
+    <Counter name={name} key={name} />
+    <button
+      onClick={() => {
+        setName(name === "Jane" ? "John" : "Jane");
+      }}
+    >
+      Change Name
+    </button>
+  </div>
+);
+```
+
+</Counter>
+
+This time, clicking on "Change Name" resets the counter to 0!
+
+This state reset is just a byproduct, however; under the hood, React is unmounting the old instance of `<Counter />` and mounting a new one in its place.
+
+### Short Quiz
+
+Let's take a short quiz. Take a look at the following code and try to answer the question:
 
 <CodeQuiz caption={`When MyComponent mounts for the first time, its effect will run, printing "mounted" to the console. When we click on "Change Key", MyComponent will rerender, but since the effect has no dependencies, it won't run again!`}>
 
@@ -69,7 +148,7 @@ const App = () => {
 
 Now let's change the key of the component when we click on "Change Key":
 
-<CodeQuiz caption={`This time, clicking on "Change Key" causes MyComponent to remount because we change its key. This causes the effect to log "unmounted" when it unmounts, then "mounted" when it mounts again.`} useKey>
+<CodeQuiz caption={`This time, clicking on "Change Key" causes MyComponent to remount, printing "unmounted" when it unmounts then "mounted" when it mounts one more time. This happens because we changed the key.`} useKey>
 
 ```jsx {15}
 const MyComponent = () => {
@@ -94,39 +173,79 @@ const App = () => {
 
 </CodeQuiz>
 
-Anyways, all this is to say that changing the key of a component causes React to unmount the old instance and mount a new one.
-
 ---
 
-so how is this useful?
+**But how is this useful to Framer Motion?**
 
-in framer motion, we can make mount animations by using the `animate` prop, and unmount animations by using `AnimatePresence`. since changing keys lets us re-mount components, we can essentially use keys to trigger animations!
+In Framer Motion, we can make mount animations using the `animate` prop and unmount animations using `AnimatePresence`. Since changing keys lets us re-mount components, we can essentially **use keys to trigger animations**!
 
-let’s take a look at a few examples.
+Let's take a look at a few examples.
 
 ## Refresh Component
 
-i like to test my mount animations using a custom refresh component:
+One utility component I use _all the time_ is this refresh component:
+
+<FullWidth>
+  <RefreshComponent />
+</FullWidth>
+
+When the refresh button is clicked, the component remounts, causing the mount animation to play again. I've found this to be super handy when working on a component's mount animation!
+
+Again, this works because we change the key of the `<div />` element, thereby telling React to unmount the existing component and mount a new instance.
+
+## Animating Text Changes
+
+Of course, this technique is useful outside of development as well.
+
+In the Japanese app I'm working on, I have this button that changes its text content when the user submits an answer:
+
+<NextButton />
+
+Using what we know about keys, how do you think we should implement this?
+
+<FullWidth>
+  <NextButtonSandbox />
+</FullWidth>
+
+<Spoiler>
+
+By adding a key to the `<motion.span />` element!
 
 ```jsx
-const Refresh = ({ children }) => {
-  const [key, setKey] = React.useState(0);
-  return (
-    <>
-      <button onClick={() => setKey(key + 1)}>Refresh</button>
-      <div key={key}>{children}</div>
-    </>
-  );
-};
+<motion.span key={toggled ? "done" : "ready"}>...</motion.span>
 ```
 
-when the refresh button is clicked, everything in the div gets remounted, causing the mount animation to trigger again!
+When we toggle the state, we simultaneously change the key of the `<motion.span />` element, causing it to replay its mount animation.
 
-again, this works because we change the key of the div element. react sees the keys are different between renders, throws away the old div, and mounts a new div in its place.
+</Spoiler>
 
 ## Infinite Carousel
 
-I used keys and animate presence to implement this carousel animation in my app, wakaranai:
+Here's another animation I'm especially fond of that uses keys in conjunction with `AnimatePresence`:
+
+<KanjiCarousel />
+
+What's really cool about this animation is how little code you need to implement it. Here it is in its entirety:
+
+```jsx
+<div style={{ position: "relative", overflow: "hidden" }}>
+  <AnimatePresence mode="popLayout">
+    <motion.div
+      key={word}
+      initial={{ x: -300 }}
+      animate={{ x: 0 }}
+      exit={{ x: 300 }}
+    >
+      {word}
+    </motion.div>
+  </AnimatePresence>
+</div>
+```
+
+The `key` in this case is serving a double purpose:
+
+1. First, it tells React to remount the component when the word changes;
+2. Second, it tells `AnimatePresence` that the child has changed, triggering the exit animation of the old word and the mount animation of the new word.
 
 Now you dont technically need keys to implement this. If you know the number of items in your carousel, you could technically line them all up and slide them across:
 
@@ -138,22 +257,6 @@ How does this work?
 2. React sees that the keys are different, unmounting the current instance of the component and mounting a new instance in its place
 3. AnimatePresence “latches on” to the unmounting instance, and performs its exit animation
 4. At the same time, the new instance performs its mount animation (because mode is “popLayout”, the animations happen simultaneously without affecting layout)
-
-## Animating Text Changes
-
-For the login modal of wakaranai, I wanted the text to animate when we finish sending the user the magic link. can you think of how to implement this?
-
----
-
-(you guessed it) — we use keys! in fact, it’s essentially a one line change:
-
-```jsx
-<motion.span key={finished ? "done" : "ready"}>...</motion.span>
-```
-
-when the state changes to finished, the key changes to “done”, causing React to remount the `motion.span` component, subsequently causing the mount animation to happen again.
-
-this is effectively the same logic as in the infinite carousel, except we don’t have an exit animation.
 
 ## Summary
 

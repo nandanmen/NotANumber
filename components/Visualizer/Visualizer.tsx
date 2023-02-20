@@ -72,6 +72,10 @@ export const ToggleButton = styled(motion.button, {
     borderColor: "$gray12",
   },
 
+  "&:focus-visible": {
+    outline: "2px solid $gray8",
+  },
+
   "&:disabled": {
     borderColor: "$gray7",
     background: "$gray5",

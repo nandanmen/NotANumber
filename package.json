@@ -25,7 +25,7 @@
     "@xstate/react": "^3.0.1",
     "bezier-easing": "^2.1.0",
     "esbuild": "^0.14.51",
-    "framer-motion": "^6.5.1",
+    "framer-motion": "^9.0.4",
     "glob": "^8.0.3",
     "gray-matter": "^4.0.3",
     "immer": "^9.0.16",

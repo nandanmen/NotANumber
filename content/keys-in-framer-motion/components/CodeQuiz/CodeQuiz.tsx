@@ -44,13 +44,13 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
                   viewBox="0 0 15 15"
                   width="26"
                   height="26"
-                  style={{ x: 3, y: -3 }}
+                  style={{ x: 2, y: -3 }}
                 >
                   {showAnswer && !useKey && (
                     <motion.path
                       d="M 4 8 L 7 10.8 L 12 4"
                       fill="none"
-                      stroke="white"
+                      stroke="var(--colors-gray12)"
                       strokeLinecap="round"
                       strokeWidth="1.5"
                       animate={{ pathLength: 1 }}
@@ -73,13 +73,13 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
                   viewBox="0 0 15 15"
                   width="26"
                   height="26"
-                  style={{ x: 3, y: -3 }}
+                  style={{ x: 2, y: -3 }}
                 >
                   {showAnswer && useKey && (
                     <motion.path
                       d="M 4 8 L 7 10.8 L 12 4"
                       fill="none"
-                      stroke="white"
+                      stroke="var(--colors-gray12)"
                       strokeLinecap="round"
                       strokeWidth="1.5"
                       animate={{ pathLength: 1 }}
@@ -112,10 +112,15 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
 
 const Caption = styled(motion.figcaption, {
   padding: "$8",
-  background: "$gray1",
+  background: "$gray5",
   borderRadius: "$base",
-  border: "1px solid $gray6",
+  border: "1px solid $gray8",
   display: "block",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray1",
+    borderColor: "$gray6",
+  },
 });
 
 const AnswerButton = styled("button", {
