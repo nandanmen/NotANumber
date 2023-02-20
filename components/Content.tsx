@@ -63,7 +63,7 @@ export const Content = styled("div", {
     borderRadius: "$base",
     fontSize: "$sm",
     overflowX: "auto",
-    background: "$gray3",
+    background: "$gray4",
     position: "relative",
 
     [`.${darkTheme} &`]: {

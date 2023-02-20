@@ -12,7 +12,7 @@ import { CodeQuiz } from "./components/CodeQuiz";
 import { Counter } from "./components/Counter";
 import { RefreshComponent } from "./components/RefreshComponent";
 import { NextButton, NextButtonSandbox } from "./components/NextButton";
-import { KanjiCarousel } from "./components/KanjiCarousel";
+import { KanjiCarousel, KanjiCarouselSlide } from "./components/KanjiCarousel";
 
 The `key` prop is a pretty special prop in React that you've probably only ever used when writing loops:
 
@@ -247,19 +247,31 @@ The `key` in this case is serving a double purpose:
 1. First, it tells React to remount the component when the word changes;
 2. Second, it tells `AnimatePresence` that the child has changed, triggering the exit animation of the old word and the mount animation of the new word.
 
-Now you dont technically need keys to implement this. If you know the number of items in your carousel, you could technically line them all up and slide them across:
+### Another Solution
 
-But if we use keys and animate presence, we can make our carousel loop infinitely and make our code much simpler:
+Now you don't _technically_ need keys to implement this. If you know the number of items in your carousel ahead of time and you don't want your items to loop, you could technically line them all up and slide them across:
 
-How does this work?
+<KanjiCarouselSlide />
 
-1. When we click on next, we cause React to rerender, updating the key in the process
-2. React sees that the keys are different, unmounting the current instance of the component and mounting a new instance in its place
-3. AnimatePresence “latches on” to the unmounting instance, and performs its exit animation
-4. At the same time, the new instance performs its mount animation (because mode is “popLayout”, the animations happen simultaneously without affecting layout)
+```jsx
+<motion.div
+  animate={{ x: -600 + currentIndex * 300 }}
+  style={{ display: "flex" }}
+>
+  {KANJI.map((char) => (
+    <p key={char} style={{ width: 300, flexShrink: 0 }}>
+      {char}
+    </p>
+  ))}
+</Box>
+```
+
+As with everything in computer science, there are multiple ways to solve a problem! Use the one that fits your use case the best.
 
 ## Summary
 
-to summarize, the key prop is super useful when implementing framer motion animations because it lets you explicitly cause components to mount and unmount, triggering their respective animations.
+To summarize, the `key` prop is a special prop in React that lets you uniquely identify components. When a component's key changes, React will treat that component as a different component, unmounting the existing component.
 
-that’s all for today — this post is shorter than my usual ones, but i hope you’ve enjoyed it nonetheless!
+In Framer Motion, we can exploit this behavior to trigger animations. For example, we can use keys to trigger mount animations by changing the key of the component we want to animate.
+
+That's all for today; thanks for reading!

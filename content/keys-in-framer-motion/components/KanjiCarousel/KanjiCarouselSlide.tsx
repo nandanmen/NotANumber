@@ -12,10 +12,10 @@ import { FaArrowRight } from "react-icons/fa";
 
 const KANJI = ["中", "学", "校"];
 
-export const KanjiCarousel = () => {
-  const [hasOverflow, toggle] = React.useReducer((state) => !state, false);
+export const KanjiCarouselSlide = () => {
+  const [hasOverflow, toggle] = React.useReducer((state) => !state, true);
   const [currentIndex, next] = React.useReducer((index) => {
-    return index === KANJI.length - 1 ? 0 : index + 1;
+    return Math.min(index + 1, KANJI.length - 1);
   }, 0);
 
   return (
@@ -36,7 +36,7 @@ export const KanjiCarousel = () => {
                 border: "1px solid $gray8",
                 fontSize: "10rem",
                 fontWeight: "bold",
-                padding: "$6 $12",
+                padding: "$6 0",
                 borderRadius: "$base",
                 position: "relative",
                 overflow: hasOverflow ? undefined : "hidden",
@@ -49,17 +49,18 @@ export const KanjiCarousel = () => {
                 },
               }}
             >
-              <AnimatePresence mode="popLayout">
-                <motion.p
-                  key={currentIndex}
-                  animate={{ x: 0 }}
-                  initial={{ x: -300 }}
-                  exit={{ x: 300 }}
-                  transition={{ type: "spring", damping: 20 }}
-                >
-                  {KANJI[currentIndex]}
-                </motion.p>
-              </AnimatePresence>
+              <Box
+                as={motion.div}
+                animate={{ x: -600 + currentIndex * 300 }}
+                transition={{ type: "spring", damping: 20 }}
+                css={{ display: "flex" }}
+              >
+                {KANJI.map((char) => (
+                  <Box key={char} as="p" css={{ width: 300, flexShrink: 0 }}>
+                    {char}
+                  </Box>
+                ))}
+              </Box>
             </Box>
             <Box
               as="button"
