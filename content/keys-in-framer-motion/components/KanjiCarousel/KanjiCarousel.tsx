@@ -26,7 +26,7 @@ export const KanjiCarousel = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            padding: "$16",
+            padding: "$16 0",
           }}
         >
           <Box css={{ display: "flex", alignItems: "center" }}>
@@ -34,13 +34,13 @@ export const KanjiCarousel = () => {
               css={{
                 background: "$gray4",
                 border: "1px solid $gray8",
-                fontSize: "10rem",
+                fontSize: "8rem",
                 fontWeight: "bold",
-                padding: "$6 $12",
+                padding: "$4 0",
                 borderRadius: "$base",
                 position: "relative",
                 overflow: hasOverflow ? undefined : "hidden",
-                width: 300,
+                width: 200,
                 textAlign: "center",
 
                 [`.${darkTheme} &`]: {
@@ -53,8 +53,8 @@ export const KanjiCarousel = () => {
                 <motion.p
                   key={currentIndex}
                   animate={{ x: 0 }}
-                  initial={{ x: -300 }}
-                  exit={{ x: 300 }}
+                  initial={{ x: -200 }}
+                  exit={{ x: 200 }}
                   transition={{ type: "spring", damping: 20 }}
                 >
                   {KANJI[currentIndex]}

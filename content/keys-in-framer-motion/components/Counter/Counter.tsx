@@ -23,6 +23,7 @@ export const Counter = ({ withKey = false, children }) => {
         <Box
           css={{
             display: "flex",
+            flexWrap: "wrap",
           }}
         >
           <BlockWrapper>{children}</BlockWrapper>
@@ -41,9 +42,9 @@ export const Counter = ({ withKey = false, children }) => {
             <Box
               css={{
                 padding: "$2",
-                borderTop: "1px solid var(--border-color)",
                 display: "flex",
                 justifyContent: "center",
+                borderTop: "1px solid var(--border-color)",
               }}
             >
               <ToggleButton
@@ -124,10 +125,15 @@ const _Counter = ({ name }) => {
 };
 
 const BlockWrapper = styled("div", {
-  flex: 1,
+  flex: `1 1 300px`,
 
   "&:first-child": {
-    borderRight: "1px solid var(--border-color)",
+    borderBottom: "1px solid var(--border-color)",
+
+    "@md": {
+      borderBottom: "none",
+      borderRight: "1px solid var(--border-color)",
+    },
   },
 
   pre: {

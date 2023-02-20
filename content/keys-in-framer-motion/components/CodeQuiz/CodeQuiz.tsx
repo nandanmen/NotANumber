@@ -12,13 +12,13 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
       <Wrapper css={{ position: "relative", zIndex: 10 }}>
         <Box
           css={{
-            width: 300,
+            flexGrow: 1,
             padding: "$8",
-            borderRight: "1px solid",
-            borderColor: "inherit",
             display: "flex",
             flexDirection: "column",
             gap: "$6",
+            borderTop: "1px solid",
+            borderColor: "inherit",
           }}
         >
           <Box as="p" css={{ fontFamily: "$sans", fontWeight: "bold" }}>
@@ -155,6 +155,7 @@ const AnswerButton = styled("button", {
 
 const Wrapper = styled("div", {
   display: "flex",
+  flexWrap: "wrap-reverse",
   border: "1px solid $gray8",
   borderRadius: "$base",
   position: "relative",

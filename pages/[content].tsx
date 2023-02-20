@@ -181,6 +181,6 @@ const Article = styled(Content, {
   paddingBottom: "$12",
 
   "@media (min-width: 72rem)": {
-    paddingBottom: "$4",
+    paddingBottom: "0",
   },
 });
