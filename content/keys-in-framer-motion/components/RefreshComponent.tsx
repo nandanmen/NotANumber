@@ -38,7 +38,7 @@ export function Motion() {
     return () => console.log('<Motion /> unmounted')
   }, [])
 
-  return <motion.div animate={{ x: 300 }} id="motion" />
+  return <motion.div animate={{ x: 200 }} id="motion" />
 }`;
 
 const code = `import React from 'react'

@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { FullWidth } from "~/components/FullWidth";
 import { Content, ToggleButton, Visualizer } from "~/components/Visualizer";
 import { darkTheme, styled } from "~/stitches.config";
@@ -87,7 +88,15 @@ const _Counter = ({ name }) => {
           textAlign: "center",
         }}
       >
-        {name}
+        <motion.span
+          key={name}
+          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 16 }}
+          transition={{ type: "spring", damping: 20 }}
+          style={{ display: "block" }}
+        >
+          {name}
+        </motion.span>
       </Box>
       <Box
         as="h1"

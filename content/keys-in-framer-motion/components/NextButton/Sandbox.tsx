@@ -63,19 +63,6 @@ export default function App() {
 }
 `;
 
-const refresh = `import React from 'react'
-
-export const Refresh = ({ children }) => {
-  const [key, setKey] = React.useState(0);
-  return (
-    <>
-      <button onClick={() => setKey(key + 1)}>Refresh</button>
-      <div key={key}>{children}</div>
-    </>
-  );
-}
-`;
-
 export const NextButtonSandbox = () => {
   return (
     <Sandbox

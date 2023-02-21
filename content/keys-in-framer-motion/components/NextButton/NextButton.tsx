@@ -52,7 +52,7 @@ export const NextButton = () => {
             padding: "$10",
           }}
         >
-          <Button toggled={toggle} onClick={toggle} />
+          <Button toggled={toggled} onClick={toggle} />
         </Content>
       </Visualizer>
     </FullWidth>

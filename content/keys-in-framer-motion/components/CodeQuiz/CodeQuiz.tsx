@@ -12,10 +12,10 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
         <Box
           css={{
             flexGrow: 1,
-            padding: "$8",
+            padding: "$4",
             display: "flex",
             flexDirection: "column",
-            gap: "$6",
+            gap: "$4",
             borderTop: "1px solid",
             borderColor: "inherit",
           }}
@@ -110,7 +110,7 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
 };
 
 const Caption = styled(motion.figcaption, {
-  padding: "$8",
+  padding: "$4",
   background: "$gray5",
   borderRadius: "$base",
   border: "1px solid $gray8",
@@ -167,7 +167,7 @@ const Wrapper = styled("div", {
 
   pre: {
     margin: "0 !important",
-    padding: "$8 !important",
+    padding: "$4 !important",
     border: "none !important",
   },
 });
