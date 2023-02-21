@@ -40,7 +40,7 @@ const Wrapper = styled("figure", {
   marginLeft: "-$4",
   marginRight: "-$4",
   padding: "0 $4",
-  overflowX: "scroll",
+  overflowX: "auto",
   width: "calc(100% + 2 * $space$4) !important",
   display: "flex",
 
