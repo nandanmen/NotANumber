@@ -81,7 +81,9 @@ export default function PostPage({ content }: { content: Post }) {
           <Title>
             <Balancer>{frontmatter.title}</Balancer>
           </Title>
-          <Blurb>{frontmatter.blurb}</Blurb>
+          <Blurb>
+            <Balancer>{frontmatter.blurb}</Balancer>
+          </Blurb>
         </Header>
         <PostContent
           components={{
