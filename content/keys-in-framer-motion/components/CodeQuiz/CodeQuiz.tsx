@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FullWidth } from "~/components/FullWidth";
 import { darkTheme, styled } from "~/stitches.config";
 
 const _caption = `When MyComponent mounts for the first time, its effect will run, printing "mounted" to the console. When we click on "Change Key", MyComponent will rerender, but since the effect has no dependencies, it won't run again!`;
@@ -8,7 +7,7 @@ const _caption = `When MyComponent mounts for the first time, its effect will ru
 export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
   const [showAnswer, setShowAnswer] = React.useState(false);
   return (
-    <FullWidth>
+    <figure>
       <Wrapper css={{ position: "relative", zIndex: 10 }}>
         <Box
           css={{
@@ -106,7 +105,7 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
           {caption}
         </Caption>
       )}
-    </FullWidth>
+    </figure>
   );
 };
 

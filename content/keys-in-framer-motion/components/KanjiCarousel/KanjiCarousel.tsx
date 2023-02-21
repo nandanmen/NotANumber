@@ -12,6 +12,42 @@ import { FaArrowRight } from "react-icons/fa";
 
 const KANJI = ["中", "学", "校"];
 
+export const KanjiViewer = ({ showOverflow, index }) => {
+  return (
+    <Box
+      css={{
+        background: "$gray4",
+        border: "1px solid $gray8",
+        fontSize: "8rem",
+        fontWeight: "bold",
+        padding: "$4 0",
+        borderRadius: "$base",
+        position: "relative",
+        overflow: showOverflow ? undefined : "hidden",
+        width: 200,
+        textAlign: "center",
+
+        [`.${darkTheme} &`]: {
+          background: "$gray1",
+          borderColor: "$gray6",
+        },
+      }}
+    >
+      <AnimatePresence mode="popLayout">
+        <motion.p
+          key={index}
+          animate={{ x: 0 }}
+          initial={{ x: -200 }}
+          exit={{ x: 200 }}
+          transition={{ type: "spring", damping: 20 }}
+        >
+          {KANJI[index]}
+        </motion.p>
+      </AnimatePresence>
+    </Box>
+  );
+};
+
 export const KanjiCarousel = () => {
   const [hasOverflow, toggle] = React.useReducer((state) => !state, false);
   const [currentIndex, next] = React.useReducer((index) => {
@@ -30,37 +66,7 @@ export const KanjiCarousel = () => {
           }}
         >
           <Box css={{ display: "flex", alignItems: "center" }}>
-            <Box
-              css={{
-                background: "$gray4",
-                border: "1px solid $gray8",
-                fontSize: "8rem",
-                fontWeight: "bold",
-                padding: "$4 0",
-                borderRadius: "$base",
-                position: "relative",
-                overflow: hasOverflow ? undefined : "hidden",
-                width: 200,
-                textAlign: "center",
-
-                [`.${darkTheme} &`]: {
-                  background: "$gray1",
-                  borderColor: "$gray6",
-                },
-              }}
-            >
-              <AnimatePresence mode="popLayout">
-                <motion.p
-                  key={currentIndex}
-                  animate={{ x: 0 }}
-                  initial={{ x: -200 }}
-                  exit={{ x: 200 }}
-                  transition={{ type: "spring", damping: 20 }}
-                >
-                  {KANJI[currentIndex]}
-                </motion.p>
-              </AnimatePresence>
-            </Box>
+            <KanjiViewer showOverflow={hasOverflow} index={currentIndex} />
             <Box
               as="button"
               onClick={next}

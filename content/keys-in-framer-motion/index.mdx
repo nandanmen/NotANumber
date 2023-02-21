@@ -11,30 +11,21 @@ import { Spoiler } from "~/components/Spoiler";
 import { CodeQuiz } from "./components/CodeQuiz";
 import { Counter } from "./components/Counter";
 import { RefreshComponent } from "./components/RefreshComponent";
+import { AnimationShowcase } from "./components/AnimationShowcase";
 import { NextButton, NextButtonSandbox } from "./components/NextButton";
 import { KanjiCarousel, KanjiCarouselSlide } from "./components/KanjiCarousel";
 
-The `key` prop is a pretty special prop in React that you've probably only ever used when writing loops:
+What do these animations have in common?
+
+<AnimationShowcase />
+
+Well, they're both written in Framer Motion, but more importantly, they all **take advantage of the React `key` prop**. That's right — the same `key` prop that you use to suppress the React warning when writing loops:
 
 ```jsx
-const MyComponent = ({ items }) => {
-  return (
-    <div>
-      {items.map((item) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
-    </div>
-  );
-};
+["a", "b", "c"].map((item) => <div key={item}>{item}</div>);
 ```
 
-For me, though, my favorite use of keys isn't to satisfy some React warning but instead as an **animation tool** in Framer Motion. Seems a little unrelated, doesn't it?
-
-In fact, I used it a ton when making interactions for my Japanese learning app, [Wakaranai](https://wakaranai.app):
-
----
-
-In this post, I want to go over a few different scenarios where you would want to use keys in your Framer Motion animations.
+You see, the `key` prop is a lot more powerful than it seems, and in this post, we'll explore exactly what it is and how you can use it to create some pretty cool animations.
 
 ## A Primer on Keys
 
