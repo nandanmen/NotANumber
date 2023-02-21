@@ -1,44 +1,52 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { darkTheme, styled } from "~/stitches.config";
 import { VisualWrapper } from "../shared";
 import {
   getFillFromId,
   SvgBackgroundGradient,
 } from "~/components/utils/SvgBackgroundGradient";
+import { useRelativeMouse } from "../SlidingWindow";
 
-export const HowArraysWork = () => {
+export const FramerMotionKeys = () => {
+  const ref = React.useRef();
+  const mouseX = useRelativeMouse(ref);
+
+  const x = useTransform(mouseX, [-100, 500], [-5, 5]);
+  const maskX = useTransform(x, (x) => x * -1);
+
   return (
     <VisualWrapper>
-      <svg viewBox="-1 -1 102 102" style={{ position: "relative" }}>
+      <svg viewBox="-1 -1 102 102" style={{ position: "relative" }} ref={ref}>
+        <mask id="framer-motion-keys-mask">
+          <rect x="0" y="0" width="100" height="100" fill="black" />
+          <motion.g style={{ x: maskX }}>
+            <Square fill="white" />
+          </motion.g>
+        </mask>
         <motion.g style={{ y: 50, x: 50 }}>
-          <motion.g style={{ y: 8 }}>
-            <Square disabled size="xs" x={-32} />
-            <Square disabled size="xs" x={-10} />
-            <Square disabled size="xs" x={12} />
+          <motion.g style={{ x }}>
+            <BackgroundText x="-30" y="3.5">
+              中
+            </BackgroundText>
+            <BackgroundText x="30" y="3.5">
+              校
+            </BackgroundText>
           </motion.g>
-          <motion.g style={{ y: -28 }}>
-            <Square disabled size="xs" x={-32} />
-            <Square disabled size="xs" x={-10} />
-            <Square disabled size="xs" x={12} />
-          </motion.g>
-          <motion.g style={{ x: -42, y: -12.5 }}>
-            <GradientSquare color="yellow" size="sm" />
-            <Text x="12.5" y="12.5">
-              0x12
-            </Text>
-          </motion.g>
-          <motion.g style={{ x: -15, y: -15 }}>
+          <Shadow rx="2" x="-24" y="-31.5" />
+          <motion.g style={{ x: -25, y: -32.5 }}>
             <GradientSquare color="blue" />
-            <Text x="15" y="15">
-              Hello!
-            </Text>
-          </motion.g>
-          <motion.g style={{ x: 17, y: -12.5 }}>
-            <GradientSquare color="green" size="sm" />
-            <Text x="12.5" y="12.5">
-              true
-            </Text>
+            <motion.g style={{ x }} mask="url('#framer-motion-keys-mask')">
+              <Text x="-5" y="36">
+                中
+              </Text>
+              <Text x="25" y="36">
+                学
+              </Text>
+              <Text x="55" y="36">
+                校
+              </Text>
+            </motion.g>
           </motion.g>
         </motion.g>
       </svg>
@@ -47,10 +55,17 @@ export const HowArraysWork = () => {
 };
 
 const Text = styled("text", {
-  fontFamily: "$mono",
   dominantBaseline: "middle",
   textAnchor: "middle",
-  fontSize: 5,
+  fontSize: 30,
+  lineHeight: 1,
+  fontWeight: "bold",
+});
+
+const BackgroundText = styled(Text, {
+  stroke: "$gray8",
+  strokeWidth: 0.5,
+  fill: "none",
 });
 
 const GradientSquare = ({
@@ -65,7 +80,6 @@ const GradientSquare = ({
     <>
       <SvgBackgroundGradient id={id} color={color} />
       <motion.g style={{ x, y }}>
-        <Shadow rx="2" x="1" y="1" size={size} />
         <Square fill={getFillFromId(id)} {...props} size={size} />
       </motion.g>
     </>
@@ -77,8 +91,8 @@ const Square = (props) => <Rect rx="2" {...props} />;
 const Rect = styled("rect", {
   strokeWidth: 0.2,
   stroke: "$gray12",
-  width: 30,
-  height: 30,
+  width: 50,
+  height: 65,
 
   [`.${darkTheme} &`]: {
     stroke: "$gray1",

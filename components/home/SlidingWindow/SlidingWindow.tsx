@@ -23,21 +23,27 @@ const WINDOW_WIDTH = 44;
 const WINDOW_HEIGHT = 50;
 const WINDOW_Y_OFFSET = 4;
 
-export const SlidingWindow = () => {
+export const useRelativeMouse = (ref) => {
   const mouseX = useMotionValue(0);
-  const boxRef = React.useRef(null);
-
-  const windowX = useTransform(mouseX, [-100, 500], [-11, 89 - WINDOW_WIDTH]);
-  const maskX = useTransform(windowX, (x) => x + WINDOW_STROKE_WIDTH / 2);
 
   React.useEffect(() => {
     const handleMouse = (evt) => {
-      const rect = boxRef.current?.getBoundingClientRect();
+      const rect = ref.current?.getBoundingClientRect();
       mouseX.set(evt.clientX - rect.left);
     };
     document.addEventListener("mousemove", handleMouse);
     return () => document.removeEventListener("mousemove", handleMouse);
-  }, [mouseX]);
+  }, [mouseX, ref]);
+
+  return mouseX;
+};
+
+export const SlidingWindow = () => {
+  const boxRef = React.useRef(null);
+  const mouseX = useRelativeMouse(boxRef);
+
+  const windowX = useTransform(mouseX, [-100, 500], [-11, 89 - WINDOW_WIDTH]);
+  const maskX = useTransform(windowX, (x) => x + WINDOW_STROKE_WIDTH / 2);
 
   return (
     <VisualWrapper>

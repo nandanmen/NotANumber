@@ -7,10 +7,11 @@ import {
   SandpackConsole,
 } from "@codesandbox/sandpack-react";
 import { sandpackDark } from "@codesandbox/sandpack-themes";
-import { css, styled } from "~/stitches.config";
+import { css, darkTheme, styled } from "~/stitches.config";
 
 type SandboxProps = {
   files?: any;
+  dependencies?: Record<string, string>;
 };
 
 const previewContainer = css({
@@ -18,13 +19,13 @@ const previewContainer = css({
   padding: "$4",
   borderTop: "1px solid var(--sp-colors-surface2)",
   iframe: {
-    borderRadius: 8,
+    borderRadius: 4,
   },
 });
 
 const PREVIEW_HEIGHT = 400;
 
-export const Sandbox = ({ files }: SandboxProps) => {
+export const Sandbox = ({ files, dependencies }: SandboxProps) => {
   return (
     <div>
       <Wrapper
@@ -40,6 +41,7 @@ export const Sandbox = ({ files }: SandboxProps) => {
         customSetup={{
           dependencies: {
             popmotion: "11.0.5",
+            ...dependencies,
           },
         }}
       >
@@ -120,4 +122,8 @@ const Wrapper = styled(SandpackProvider, {
   "--sp-border-radius": "$radii$base",
   "--sp-layout-height": `${PREVIEW_HEIGHT}px`,
   "--sp-space-2": "$space$2",
+
+  [`.${darkTheme} &`]: {
+    "--sp-colors-surface1": "$colors$gray2",
+  },
 });
