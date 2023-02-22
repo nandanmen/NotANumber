@@ -15,11 +15,7 @@ export const PageSection = ({ index, children }) => {
     setVisible(activeIndex >= index);
   }, [index, activeIndex]);
 
-  return (
-    <Section inactive={activeIndex !== index} hidden={!visible}>
-      {children}
-    </Section>
-  );
+  return <Section hidden={!visible}>{children}</Section>;
 };
 
 const Section = styled("section", {
@@ -35,22 +31,22 @@ const Section = styled("section", {
   },
 
   hr: {
-    margin: "$8 -$8",
+    margin: "$8 -$12",
     marginTop: "$10",
     borderStyle: "dashed",
-    borderColor: "$gray8",
+    borderColor: "$gray6",
   },
 
   pre: {
-    marginLeft: "-$8",
-    marginRight: "-$8",
-    background: "$gray4",
-    padding: "$4 $8",
+    background: "$gray2",
+    borderRadius: "$base",
+    border: "1px solid $gray6",
+    padding: "$4",
     lineHeight: 1.4,
   },
 
   "code:not(pre code)": {
-    background: "$gray6",
+    background: "$gray3",
     padding: "0 $1",
     borderRadius: 4,
   },

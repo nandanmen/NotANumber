@@ -153,10 +153,9 @@ const GridLine = styled("line", {
   stroke: "$gray8",
 });
 
-const SvgWrapper = styled("main", {
+const SvgWrapper = styled("div", {
   aspectRatio: 1,
   height: "100%",
-  width: "fit-content",
 
   svg: {
     display: "block",

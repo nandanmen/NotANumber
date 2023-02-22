@@ -88,7 +88,9 @@ export default function PathsPage({
           </Article>
         </aside>
         <Main>
-          <ActiveComponent page={page} />
+          <VisualWrapper>
+            <ActiveComponent page={page} />
+          </VisualWrapper>
         </Main>
       </ContentWrapper>
     </Wrapper>
@@ -119,35 +121,33 @@ const Footer = styled(motion.footer, {
 });
 
 const Wrapper = styled("div", {
-  $$padding: "$space$12",
-  width: "fit-content",
   minHeight: "100vh",
-  margin: "0 auto",
-  padding: "$$padding",
 });
 
 const ContentWrapper = styled("div", {
   display: "grid",
-  gridTemplateColumns: "50ch calc(100vh - $$padding * 2)",
+  gridTemplateColumns: "60ch 1fr",
   height: "100%",
-  minHeight: "calc(100vh - $$padding * 2)",
-  gap: "$12",
+});
+
+const VisualWrapper = styled("figure", {
+  width: "calc(100vh - $space$10 * 2)",
+  margin: "0 auto",
+  padding: "$10 0",
 });
 
 const Main = styled("main", {
   overflowX: "auto",
-  height: "calc(100vh - $$padding * 2)",
-  position: "fixed",
-  transform: "translateX(calc(50ch + $space$12))",
+  height: "100vh",
+  position: "sticky",
+  top: 0,
 });
 
 const Article = styled("article", {
   position: "relative",
-  borderRadius: "$base",
-  background: "$gray2",
   height: "100%",
-  padding: "$8",
-  border: "1px solid $gray8",
+  padding: "$12",
+  border: "1px solid $gray6",
   lineHeight: "$body",
 
   "> *": {
@@ -155,31 +155,30 @@ const Article = styled("article", {
   },
 
   h1: {
-    fontSize: "$xl",
+    fontSize: "$2xl",
     fontWeight: 800,
   },
 
   hr: {
-    margin: "$8 -$8",
+    margin: "$8 -$12",
     marginTop: "$10",
     borderStyle: "dashed",
-    borderColor: "$gray8",
+    borderColor: "$gray6",
   },
 
   "pre, textarea": {
-    marginLeft: "-$8",
-    marginRight: "-$8",
-    background: "$gray4",
+    background: "$gray2",
     padding: "$4 $8",
     lineHeight: 1.4,
   },
 
   textarea: {
     display: "block",
-    width: "calc(100% + $space$8 * 2)",
+    width: "100%",
     resize: "none",
-    border: "none",
-    padding: "$8",
+    border: "1px solid $gray6",
+    borderRadius: "$base",
+    padding: "$4",
     minHeight: 300,
     fontFamily: "$mono",
     fontSize: "inherit",
