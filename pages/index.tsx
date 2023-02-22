@@ -13,9 +13,20 @@ import { TokenizerVisual } from "~/components/home/TokenizerVisual";
 import { HowArraysWork } from "~/components/home/HowArraysWork";
 import { Debugger } from "~/components/home/Debugger";
 import { SlidingWindow } from "~/components/home/SlidingWindow";
+import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { DynamicIsland } from "~/components/MobileNavIsland";
 
 const posts = [
+  {
+    post: {
+      slug: "keys-in-framer-motion",
+      title: "The Power of Keys in Framer Motion",
+      description:
+        "The React key prop is often only used to suppress React warnings, but it's actually a super powerful tool when used together with Framer Motion. In this post, we'll explore how to use it to make some pretty cool animations.",
+      editedAt: "2023-02-22",
+    },
+    children: <FramerMotionKeys />,
+  },
   {
     post: {
       slug: "magic-motion",

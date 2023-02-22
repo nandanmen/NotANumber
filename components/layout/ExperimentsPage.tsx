@@ -5,7 +5,13 @@ import { Content, ToggleButton, UndoButton } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 import { Row } from "./Row";
 
-const experiments = ["scrambled-text", "bezier-curves", "cards"];
+const experiments = [
+  "scrambled-text",
+  "bezier-curves",
+  "cards",
+  "path-animation",
+  "heavy-square",
+];
 
 export function ExperimentsPage({ children, page }) {
   return (

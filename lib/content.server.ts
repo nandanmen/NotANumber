@@ -53,7 +53,16 @@ export const getPost = async (
     mdxOptions(options) {
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
-        [rehypePrettyCode, { theme }],
+        [
+          rehypePrettyCode,
+          {
+            theme,
+            onVisitHighlightedLine(node) {
+              // Each line node by default has `class="line"`.
+              node.properties.className.push("highlighted");
+            },
+          },
+        ],
       ];
       return options;
     },
