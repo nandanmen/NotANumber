@@ -11,6 +11,7 @@ const experiments = [
   "cards",
   "path-animation",
   "heavy-square",
+  "family-input",
 ];
 
 export function ExperimentsPage({ children, page }) {
