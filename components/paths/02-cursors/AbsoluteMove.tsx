@@ -6,16 +6,19 @@ import {
   parse,
   PathProvider,
   PathSections,
+  Lines,
+  Line,
   Endpoint,
+  Endpoints,
   getCursorAtIndex,
 } from "~/components/PathVisualizer";
 import { UndoButton } from "~/components/Visualizer";
 import { heart } from "../../templates";
 
-export const CursorPath = () => {
+export const AbsoluteMove = () => {
   const [playing, setPlaying] = React.useState(true);
   const [index, setIndex] = React.useState(0);
-  const commands = parse(heart);
+  const commands = parse("M 10 20");
 
   useInterval(
     () => {
@@ -34,25 +37,15 @@ export const CursorPath = () => {
   const currentPosition = cursorPositions[index];
   return (
     <Wrapper>
-      <PathBackground size={24} step={4}>
-        <PathProvider commands={commands} size={24} activeIndex={index}>
-          <PathSections />
-          {cursorPositions.map((position, i) => {
-            if (i >= index) return null;
-            return (
-              <Endpoint
-                key={`cursor-${i}`}
-                cx={position.x}
-                cy={position.y}
-                css={{ fill: "$gray4" }}
-              />
-            );
-          })}
-          <Endpoint
-            color="blue"
-            animate={{ x: currentPosition.x, y: currentPosition.y }}
-            initial={{ cx: 0, cy: 0 }}
-          />
+      <PathBackground size={25} step={5}>
+        <PathProvider commands={commands} size={25} activeIndex={index}>
+          <Lines />
+          <Line x1="0" y1="20" x2="10" y2="20" css={{ stroke: "$gray8" }} />
+          <Line x1="10" y1="0" x2="10" y2="20" css={{ stroke: "$gray8" }} />
+          <Endpoints />
+          <Endpoint />
+          <Endpoint small cx="10" css={{ stroke: "none" }} />
+          <Endpoint small cy="20" css={{ stroke: "none" }} />
         </PathProvider>
       </PathBackground>
       <Controls>

@@ -281,7 +281,7 @@ export function PathProvider({
   return (
     <PathVisualizerContext.Provider
       value={{
-        config: { size, endpointSize, strokeWidth: endpointSize / 3 },
+        config: { size, endpointSize, strokeWidth: endpointSize / 4 },
         commands,
         activeCommands,
       }}
@@ -330,7 +330,7 @@ const Move = ({
         y1={y1}
         x2={x2}
         y2={y2}
-        strokeDasharray={config.endpointSize}
+        strokeDasharray={config.endpointSize / 1.2}
         {...props}
       />
       <AnimatableLine
@@ -360,9 +360,24 @@ export const AnimatableLine = (
   );
 };
 
-export const Line = (props: React.ComponentPropsWithoutRef<typeof _Line>) => {
+export const Line = (
+  props: React.ComponentPropsWithoutRef<typeof _Line> & {
+    small?: boolean;
+    dashed?: boolean;
+  }
+) => {
   const { config } = React.useContext(PathVisualizerContext);
-  return <_Line strokeWidth={config.endpointSize / 2} {...props} />;
+  return (
+    <_Line
+      strokeWidth={config.endpointSize / (props.small ? 3 : 2)}
+      strokeDasharray={
+        props.dashed
+          ? `${config.endpointSize} ${config.endpointSize / 1.5}`
+          : undefined
+      }
+      {...props}
+    />
+  );
 };
 
 const _Line = styled(motion.line, {
@@ -388,14 +403,14 @@ const MoveEndpoint = (
 };
 
 export const Endpoint = (
-  props: React.ComponentPropsWithoutRef<typeof _Endpoint>
+  props: React.ComponentPropsWithoutRef<typeof _Endpoint> & { small?: boolean }
 ) => {
   const { config } = React.useContext(PathVisualizerContext);
   return (
     <_Endpoint
       as={motion.circle}
       strokeWidth={config.strokeWidth}
-      r={config.endpointSize}
+      r={props.small ? config.endpointSize * 0.75 : config.endpointSize}
       transition={{ duration: 1 }}
       {...props}
     />

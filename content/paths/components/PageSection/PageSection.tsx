@@ -38,9 +38,9 @@ const Section = styled("section", {
   },
 
   pre: {
-    background: "$gray2",
+    background: "$gray3",
     borderRadius: "$base",
-    border: "1px solid $gray6",
+    border: "1px solid $gray8",
     padding: "$4",
     lineHeight: 1.4,
   },

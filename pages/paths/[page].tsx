@@ -131,9 +131,9 @@ const ContentWrapper = styled("div", {
 });
 
 const VisualWrapper = styled("figure", {
-  width: "calc(100vh - $space$10 * 2)",
+  width: "100vh",
+  height: "100%",
   margin: "0 auto",
-  padding: "$10 0",
 });
 
 const Main = styled("main", {
@@ -147,7 +147,7 @@ const Article = styled("article", {
   position: "relative",
   height: "100%",
   padding: "$12",
-  border: "1px solid $gray6",
+  borderRight: "1px solid $gray8",
   lineHeight: "$body",
 
   "> *": {
