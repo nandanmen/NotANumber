@@ -1,13 +1,24 @@
+import { motion } from "framer-motion";
 import React from "react";
 import { styled } from "~/stitches.config";
 import { usePageContext } from "../PageProvider";
 
 export const PageSection = ({ index, children }) => {
   const { activeIndex } = usePageContext();
-  return <Section hidden={activeIndex < index}>{children}</Section>;
+  const hidden = activeIndex < index;
+  if (hidden) return null;
+  return (
+    <Section
+      animate={{ y: 0, opacity: 1 }}
+      initial={{ y: 16, opacity: 0 }}
+      transition={{ type: "spring", damping: 25, stiffness: 200 }}
+    >
+      {children}
+    </Section>
+  );
 };
 
-const Section = styled("section", {
+const Section = styled(motion.section, {
   lineHeight: "$body",
 
   "> *": {
@@ -38,18 +49,5 @@ const Section = styled("section", {
     background: "$gray3",
     padding: "0 $1",
     borderRadius: 4,
-  },
-
-  variants: {
-    inactive: {
-      true: {
-        color: "$gray10",
-      },
-    },
-    hidden: {
-      true: {
-        display: "none",
-      },
-    },
   },
 });

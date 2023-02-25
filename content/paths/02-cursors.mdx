@@ -7,6 +7,7 @@ import {
   ArticleWrapper,
   GraphWrapper,
 } from "./components/PageWrapper";
+import { CursorVisual } from "./components/cursors";
 
 <PageWrapper>
 
@@ -32,7 +33,7 @@ M 10 20
 
 <PageSection index={2}>
 
-The lowercase `m` command does something similar, except it uses **relative** coordinates instead:
+The lowercase `m` command also moves the cursor, except it moves the cursor relative to its _current_ position:
 
 ```
 M 10 20
@@ -57,6 +58,8 @@ Using the `M` and/or `m` commands, **move the cursor to the points shown on the 
 
 </ArticleWrapper>
 
-<GraphWrapper page="02-cursors" />
+<GraphWrapper>
+  <CursorVisual />
+</GraphWrapper>
 
 </PageWrapper>

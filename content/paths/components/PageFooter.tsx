@@ -24,4 +24,7 @@ const Footer = styled(motion.footer, {
   gap: "$1",
   marginTop: "$8",
   marginBottom: 0,
+  position: "absolute",
+  bottom: "$8",
+  right: "$8",
 });

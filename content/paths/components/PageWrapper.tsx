@@ -1,9 +1,6 @@
 import React from "react";
 import { styled } from "~/stitches.config";
-import { PageProvider, usePageContext } from "./PageProvider";
-import { componentOrder as secondOrder } from "~/components/paths/02-cursors";
-import { InteractivePathPlayground } from "~/components/InteractivePathPlayground";
-import { phone } from "~/components/paths/templates";
+import { PageProvider } from "./PageProvider";
 
 export const PageWrapper = ({ children }) => {
   return (
@@ -33,7 +30,6 @@ export const ArticleWrapper = styled("article", {
   padding: "$12",
   borderRight: "1px solid $gray8",
   lineHeight: "$body",
-  background: "$gray4",
 
   "> *": {
     marginBottom: "1em",
@@ -78,39 +74,19 @@ export const ArticleWrapper = styled("article", {
 
 // --
 
-const pageComponentOrders = {
-  "02-cursors": secondOrder,
-};
-
-export const GraphWrapper = ({ page }) => {
+export const GraphWrapper = ({ children }) => {
   return (
     <Main>
-      <VisualWrapper>
-        <ActiveComponent page={page} />
-      </VisualWrapper>
+      <VisualWrapper>{children}</VisualWrapper>
     </Main>
   );
-};
-
-const ActiveComponent = ({ page }) => {
-  const [mounted, setMounted] = React.useState(false);
-  const { activeIndex } = usePageContext();
-
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
-  const order = pageComponentOrders[page] || [];
-  const component = order[activeIndex];
-
-  if (!component) return <InteractivePathPlayground commands={phone} />;
-  return component;
 };
 
 const VisualWrapper = styled("figure", {
   width: "100vh",
   height: "100%",
   margin: "0 auto",
+  padding: "$10",
 });
 
 const Main = styled("main", {

@@ -10,14 +10,26 @@ export const usePageContext = () => React.useContext(PageContext);
 
 export const PageProvider = ({ children }) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const next = React.useCallback(() => setActiveIndex((i) => i + 1), []);
+  const prev = React.useCallback(
+    () => setActiveIndex((i) => Math.max(0, i - 1)),
+    []
+  );
+
+  React.useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handleKeydown);
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, [next, prev]);
+
   return (
-    <PageContext.Provider
-      value={{
-        activeIndex,
-        next: () => setActiveIndex(activeIndex + 1),
-        prev: () => setActiveIndex(Math.max(0, activeIndex - 1)),
-      }}
-    >
+    <PageContext.Provider value={{ activeIndex, next, prev }}>
       {children}
     </PageContext.Provider>
   );
