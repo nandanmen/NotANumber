@@ -13,7 +13,6 @@ import {
   getCursorAtIndex,
 } from "~/components/PathVisualizer";
 import { UndoButton } from "~/components/Visualizer";
-import { heart } from "../../templates";
 
 export const AbsoluteMove = () => {
   const [playing, setPlaying] = React.useState(true);

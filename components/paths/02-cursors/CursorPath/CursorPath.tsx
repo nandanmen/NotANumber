@@ -34,8 +34,8 @@ export const CursorPath = () => {
   const currentPosition = cursorPositions[index];
   return (
     <Wrapper>
-      <PathBackground size={24} step={4}>
-        <PathProvider commands={commands} size={24} activeIndex={index}>
+      <PathBackground size={25} step={5}>
+        <PathProvider commands={commands} size={25} activeIndex={index}>
           <PathSections />
           {cursorPositions.map((position, i) => {
             if (i >= index) return null;

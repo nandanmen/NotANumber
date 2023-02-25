@@ -1,21 +1,10 @@
 import React from "react";
 import { styled } from "~/stitches.config";
-
-const getCurrentIndex = () => {
-  if (typeof window === "undefined") return Number.POSITIVE_INFINITY;
-  const url = new URL(window.location.href).searchParams.get("index");
-  return Number(url);
-};
+import { usePageContext } from "../PageProvider";
 
 export const PageSection = ({ index, children }) => {
-  const [visible, setVisible] = React.useState(false);
-  const activeIndex = getCurrentIndex();
-
-  React.useEffect(() => {
-    setVisible(activeIndex >= index);
-  }, [index, activeIndex]);
-
-  return <Section hidden={!visible}>{children}</Section>;
+  const { activeIndex } = usePageContext();
+  return <Section hidden={activeIndex < index}>{children}</Section>;
 };
 
 const Section = styled("section", {
@@ -34,7 +23,7 @@ const Section = styled("section", {
     margin: "$8 -$12",
     marginTop: "$10",
     borderStyle: "dashed",
-    borderColor: "$gray6",
+    borderColor: "$gray8",
   },
 
   pre: {

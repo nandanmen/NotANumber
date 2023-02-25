@@ -1,5 +1,16 @@
 import { PageSection } from "./components/PageSection";
 import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+
+<PageWrapper>
+
+<ArticleWrapper>
 
 # Cursors
 
@@ -41,3 +52,11 @@ Using the `M` and/or `m` commands, **move the cursor to the points shown on the 
 <PathEditor />
 
 </PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper page="02-cursors" />
+
+</PageWrapper>
