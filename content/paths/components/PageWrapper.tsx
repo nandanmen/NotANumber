@@ -30,6 +30,7 @@ export const ArticleWrapper = styled("article", {
   padding: "$12",
   borderRight: "1px solid $gray8",
   lineHeight: "$body",
+  fontSize: 18,
 
   "> *": {
     marginBottom: "1em",

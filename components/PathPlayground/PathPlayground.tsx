@@ -102,6 +102,17 @@ type PathBackgroundProps = {
   children?: React.ReactNode;
 };
 
+const BackgroundContext = React.createContext<{
+  size: number;
+  endpointSize: number;
+  strokeWidth: number;
+  padding: number;
+}>(null);
+
+const ENDPOINT_SCALE_FACTOR = 68;
+
+export const useBackgroundContext = () => React.useContext(BackgroundContext);
+
 export function PathBackground({ size, step, children }: PathBackgroundProps) {
   const columns = range(0, size, step);
   const rows = range(0, size, step);
@@ -109,12 +120,17 @@ export function PathBackground({ size, step, children }: PathBackgroundProps) {
   const viewBox = `${-padding} ${-padding} ${size + padding * 2} ${
     size + padding * 2
   }`;
+  const endpointSize = size / ENDPOINT_SCALE_FACTOR;
   return (
     <SvgWrapper>
       <svg width="100%" height="100%" viewBox={viewBox}>
-        <PathAxes size={size} columns={columns} rows={rows} />
-        {children}
-        <AxesLabels size={size} columns={columns} rows={rows} />
+        <BackgroundContext.Provider
+          value={{ size, endpointSize, strokeWidth: endpointSize / 4, padding }}
+        >
+          <PathAxes size={size} columns={columns} rows={rows} />
+          <AxesLabels size={size} columns={columns} rows={rows} />
+          {children}
+        </BackgroundContext.Provider>
       </svg>
     </SvgWrapper>
   );
