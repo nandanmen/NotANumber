@@ -72,23 +72,45 @@ const Ellipse = styled("ellipse", {
   fill: "none",
 });
 
+const mapTypeToCommands = {
+  M: "move",
+  L: "line",
+  H: "line",
+  V: "line",
+  C: "curve",
+  S: "curve",
+  Q: "curve",
+  T: "curve",
+  A: "arc",
+  Z: "line",
+};
+
+const getIsHidden = (code: string, highlight: string[]) => {
+  if (highlight.includes("move")) return false;
+  if (!highlight.length) return false;
+  const type = mapTypeToCommands[code.toUpperCase()];
+  return !highlight.includes(type);
+};
+
 export const PathSections = () => {
-  const { activeCommands, commands, config } = React.useContext(
+  const { activeCommands, commands, config, highlight } = React.useContext(
     PathVisualizerContext
   );
+  const hasHighlight = highlight.length > 0;
   return (
     <g>
       {activeCommands.map((command, index) => {
         const lastCursor = getCursorAtIndex(commands, index - 1);
+        const isHidden = getIsHidden(command.code, highlight);
         const path = toPath(command);
         return (
           <Path
             key={path + index}
             d={`M ${lastCursor.x} ${lastCursor.y} ${path}`}
             strokeWidth={config.size / 100}
-            animate={{ pathLength: 1 }}
+            animate={{ pathLength: 1, opacity: isHidden ? 0 : 1 }}
             initial={{ pathLength: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ pathLength: { duration: 1 } }}
           />
         );
       })}
@@ -182,7 +204,7 @@ const BezierCurveLines = ({ pointA, pointB }) => {
   const { highlight } = React.useContext(PathVisualizerContext);
   const isHidden = highlight.length > 0 && !highlight.includes("curve");
   return (
-    <Group color="blue" animate={{ opacity: isHidden ? 0.5 : 1 }}>
+    <Group color="blue" animate={{ opacity: isHidden ? 0 : 1 }}>
       <AnimatableLine {...pointA} />
       <AnimatableLine {...pointB} />
     </Group>
@@ -288,18 +310,17 @@ export const Endpoints = () => {
 };
 
 export function PathProvider({
-  size,
   commands,
   activeIndex = commands.length - 1,
   highlight = [],
   children,
 }) {
+  const config = useBackgroundContext();
   const activeCommands = commands.slice(0, activeIndex + 1);
-  const endpointSize = size / ENDPOINT_SCALE_FACTOR;
   return (
     <PathVisualizerContext.Provider
       value={{
-        config: { size, endpointSize, strokeWidth: endpointSize / 4 },
+        config,
         commands,
         activeCommands,
         highlight,
@@ -344,7 +365,7 @@ const Move = ({
   const { config, highlight } = React.useContext(PathVisualizerContext);
   const isHidden = highlight.length > 0 && !highlight.includes("move");
   return (
-    <Group color="red" animate={{ opacity: isHidden ? 0.5 : 1 }}>
+    <Group color="red" animate={{ opacity: isHidden ? 0 : 1 }}>
       <Line
         x1={x1}
         y1={y1}
@@ -532,7 +553,7 @@ const _Endpoint = styled(motion.circle, {
   variants: {
     hidden: {
       true: {
-        opacity: 0.5,
+        opacity: 0,
       },
     },
   },

@@ -20,9 +20,9 @@ export const PageSection = ({ index, children }) => {
   return (
     <Section
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", damping: 20 }}
+      transition={{ type: "tween", duration: 0.15 }}
     >
       {children}
     </Section>

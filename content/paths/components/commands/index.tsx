@@ -12,12 +12,12 @@ import {
 import { PathBackground } from "~/components/PathPlayground";
 import { usePageContext } from "../PageProvider";
 
-const path = `M 20 20
+const path = `M 20 10
 v 20
 m 30 0
 v -20
-M 10 50
-Q 40 70 65 50`;
+M 10 40
+Q 35 60 60 40`;
 
 export const CommandsVisual = () => {
   const { activeIndex } = usePageContext();
@@ -43,10 +43,9 @@ export const CommandsVisual = () => {
   };
 
   return (
-    <PathBackground size={80} step={10}>
+    <PathBackground size={70} step={10}>
       <PathProvider
         commands={commands}
-        size={80}
         activeIndex={index}
         highlight={highlightMap[activeIndex] ? [highlightMap[activeIndex]] : []}
       >

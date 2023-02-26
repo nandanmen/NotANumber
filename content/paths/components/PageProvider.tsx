@@ -2,16 +2,30 @@ import React from "react";
 
 const PageContext = React.createContext<{
   activeIndex: number;
+  page: string;
+  numSections: number;
   next: () => void;
   prev: () => void;
 }>(null);
 
 export const usePageContext = () => React.useContext(PageContext);
 
-export const PageProvider = ({ children }) => {
+const order = ["01-commands", "02-cursors"];
+
+export const PageProvider = ({ page, numSections, children }) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
 
-  const next = React.useCallback(() => setActiveIndex((i) => i + 1), []);
+  const next = React.useCallback(() => {
+    if (activeIndex === numSections - 1) {
+      const nextPage = order[order.indexOf(page) + 1];
+      if (nextPage) {
+        window.location.href = `/paths/${nextPage}`;
+        return;
+      }
+    }
+    setActiveIndex((i) => i + 1);
+  }, [activeIndex, numSections, page]);
+
   const prev = React.useCallback(
     () => setActiveIndex((i) => Math.max(0, i - 1)),
     []
@@ -29,7 +43,9 @@ export const PageProvider = ({ children }) => {
   }, [next, prev]);
 
   return (
-    <PageContext.Provider value={{ activeIndex, next, prev }}>
+    <PageContext.Provider
+      value={{ page, numSections, activeIndex, next, prev }}
+    >
       {children}
     </PageContext.Provider>
   );
