@@ -56,6 +56,7 @@ export function PathAxes({ size, columns, rows }: SvgConfig) {
 export function AxesLabels({ size, columns, rows }: SvgConfig) {
   const fontSize = size * TEXT_SIZE_FACTOR;
   const labelOffset = size * TEXT_GAP_FACTOR;
+  console.log(rows);
   return (
     <>
       <g
@@ -64,13 +65,7 @@ export function AxesLabels({ size, columns, rows }: SvgConfig) {
         }}
       >
         {rows.map((y) => (
-          <LabelText
-            fontSize={fontSize}
-            key={`row-label-${y}`}
-            x="0"
-            y={y}
-            textAnchor="end"
-          >
+          <LabelText key={`row-label-${y}`} x="0" y={y} textAnchor="end">
             {y}
           </LabelText>
         ))}
@@ -81,18 +76,36 @@ export function AxesLabels({ size, columns, rows }: SvgConfig) {
         }}
       >
         {columns.map((x) => (
-          <LabelText
-            fontSize={fontSize}
-            key={`col-label-${x}`}
-            x={x}
-            y="0"
-            textAnchor="end"
-          >
+          <LabelText key={`col-label-${x}`} x={x} y="0" textAnchor="end">
             {x}
           </LabelText>
         ))}
       </g>
     </>
+  );
+}
+
+export function Text({ x, y, ...props }) {
+  const { size, strokeWidth } = useBackgroundContext();
+  const fontSize = size * TEXT_SIZE_FACTOR;
+
+  let extraProps = {};
+  if (props.center) {
+    extraProps = {
+      textAnchor: "middle",
+      dominantBaseline: "middle",
+    };
+  }
+
+  return (
+    <motion.g style={{ x, y }}>
+      <motion.text
+        fontSize={props.large ? fontSize * 1.5 : fontSize}
+        strokeWidth={strokeWidth / 3}
+        {...extraProps}
+        {...props}
+      />
+    </motion.g>
   );
 }
 
@@ -159,7 +172,7 @@ const OriginPoint = styled(motion.circle, {
   fill: "$gray3",
 });
 
-const LabelText = styled("text", {
+const LabelText = styled(Text, {
   fontFamily: "$mono",
   fill: "$gray9",
   fontWeight: "bold",
