@@ -8,8 +8,9 @@ export const InteractivePathPlayground = ({
   commands,
   size = 24,
   step = 4,
+  autoplay = false,
 }) => {
-  const [playing, setPlaying] = React.useState(false);
+  const [playing, setPlaying] = React.useState(autoplay);
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const _commands = parse(commands);
 

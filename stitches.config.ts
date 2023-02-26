@@ -130,6 +130,7 @@ export const globalStyles = globalCss({
   body: {
     fontFamily: "$sans",
     background: "$gray4",
+    scrollBehavior: "smooth",
   },
   "h1, h2": {
     fontWeight: "normal",

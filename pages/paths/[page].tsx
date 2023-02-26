@@ -2,6 +2,7 @@ import React from "react";
 import type { GetStaticPropsContext } from "next";
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { getMDXComponent } from "mdx-bundler/client";
+import { OrderedList } from "~/components/OrderedList";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -32,5 +33,5 @@ export default function PathsPage({
     () => getMDXComponent(content.code),
     [content.code]
   );
-  return <Content />;
+  return <Content components={{ ol: OrderedList as any }} />;
 }

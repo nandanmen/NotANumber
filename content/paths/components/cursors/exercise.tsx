@@ -91,5 +91,5 @@ const AnimatedEndpoint = ({ cx, cy, delay }) => {
 };
 
 const Shadow = styled(motion.circle, {
-  fill: "$gray2",
+  fill: "$gray8",
 });

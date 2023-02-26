@@ -2,9 +2,12 @@ import React from "react";
 
 import { styled } from "~/stitches.config";
 
-export function OrderedList({ children }: { children: React.ReactNode }) {
+export function OrderedList({
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<"ol">) {
   return (
-    <ListWrapper>
+    <ListWrapper css={{ "--start": props.start }} {...props}>
       {React.Children.toArray(children)
         .filter(Boolean)
         .map((child: any, index) =>

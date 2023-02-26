@@ -7,7 +7,7 @@ import { usePageContext } from "./PageProvider";
 export const PageFooter = () => {
   const { next, prev } = usePageContext();
   return (
-    <Footer layout="position">
+    <Footer>
       <IconButton onClick={prev}>
         <FaArrowLeft />
       </IconButton>
@@ -18,7 +18,7 @@ export const PageFooter = () => {
   );
 };
 
-const Footer = styled(motion.footer, {
+const Footer = styled("footer", {
   display: "flex",
   justifyContent: "flex-end",
   gap: "$1",

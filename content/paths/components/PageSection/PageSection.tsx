@@ -4,14 +4,25 @@ import { styled } from "~/stitches.config";
 import { usePageContext } from "../PageProvider";
 
 export const PageSection = ({ index, children }) => {
+  const ref = React.useRef<HTMLElement>(null);
   const { activeIndex } = usePageContext();
   const hidden = activeIndex < index;
+
+  React.useEffect(() => {
+    if (!hidden) {
+      window.scrollTo({
+        top: ref.current.offsetTop,
+      });
+    }
+  }, [hidden]);
+
   if (hidden) return null;
   return (
     <Section
-      animate={{ y: 0, opacity: 1 }}
-      initial={{ y: 16, opacity: 0 }}
-      transition={{ type: "spring", damping: 25, stiffness: 200 }}
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", damping: 20 }}
     >
       {children}
     </Section>
@@ -20,13 +31,22 @@ export const PageSection = ({ index, children }) => {
 
 const Section = styled(motion.section, {
   lineHeight: "$body",
+  padding: "$12",
 
-  "> *": {
+  "&:not(:last-of-type)": {
+    borderBottom: "1px dashed $gray8",
+  },
+
+  "> *:not(:last-child)": {
     marginBottom: "1em",
   },
 
+  "h1,h2,h3": {
+    lineHeight: "$title",
+  },
+
   h1: {
-    fontSize: "$xl",
+    fontSize: "$2xl",
     fontWeight: 800,
   },
 

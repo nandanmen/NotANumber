@@ -1,6 +1,23 @@
-# Path Commands
+import { PageSection } from "./components/PageSection";
+import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+import { CommandsVisual } from "./components/commands";
 
-SVG paths are constructed of a series of commands:
+<PageWrapper>
+
+<ArticleWrapper>
+
+<PageSection index={0}>
+
+# Paths Are Made Of Commands
+
+The weird string that you see in the `d` attribute of SVG paths is actually a series of commands:
 
 ```
 M 20 20
@@ -11,11 +28,24 @@ M 10 50
 Q 40 70 65 50
 ```
 
-Each command starts with an **identifier** that specifies the type of the command, followed by a **sequence of numbers**, which represents the arguments passed to the command.
+As you might be able to tell, each command essentially follows the same format:
 
-Commands are split into three different types:
+1. A **letter** that identifies the type of the command, and;
+2. A **sequence of numbers** that represents the arguments passed to the command.
 
-1. **Cursor commands**
+</PageSection>
+
+<PageSection index={1}>
+
+Commands are grouped into three different types:
+
+</PageSection>
+
+<PageSection index={2}>
+
+### Cursor Commands
+
+These commands move the path's internal cursor, letting you create different path segments.
 
 ```
 M 20 20
@@ -23,17 +53,45 @@ m 30 0
 M 10 50
 ```
 
-2. **Line commands**
+</PageSection>
+
+<PageSection index={3}>
+
+### Line Commands
+
+These commands draw lines from the current cursor position to a new position.
 
 ```
 v 20
 v -20
 ```
 
-3. **Curve commands**
+</PageSection>
+
+<PageSection index={4}>
+
+### Curve Commands
+
+These commands draw various curves from the current cursor position to a new position.
 
 ```
 Q 40 70 65 50
 ```
 
-There are many more commands than the ones you see here. Let's take a look at them, shall we?
+</PageSection>
+
+<PageSection index={5}>
+
+Of course, this is by no means an exhaustive list. There are many more commands than the ones you see here. Let's take a look at them, shall we?
+
+</PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper>
+  <CommandsVisual />
+</GraphWrapper>
+
+</PageWrapper>

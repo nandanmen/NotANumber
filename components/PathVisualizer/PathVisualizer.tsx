@@ -9,6 +9,7 @@ import {
 } from "./utils";
 import { styled } from "~/stitches.config";
 import { heart } from "../paths/templates";
+import { useBackgroundContext } from "~/components/PathPlayground";
 
 const ENDPOINT_SCALE_FACTOR = 68;
 
@@ -24,6 +25,7 @@ const PathVisualizerContext = React.createContext<{
   commands: Command[];
   activeCommands: Command[];
   config: Config;
+  highlight: string[];
 }>(null);
 
 export const Arcs = () => {
@@ -79,7 +81,6 @@ export const PathSections = () => {
       {activeCommands.map((command, index) => {
         const lastCursor = getCursorAtIndex(commands, index - 1);
         const path = toPath(command);
-        console.log(path);
         return (
           <Path
             key={path + index}
@@ -120,60 +121,71 @@ export const Lines = () => {
             );
           case "Q":
             return (
-              <Group color="blue">
-                <AnimatableLine
-                  x1={command.x1}
-                  y1={command.y1}
-                  x2={lastCursor.x}
-                  y2={lastCursor.y}
-                />
-                <AnimatableLine
-                  x1={command.x1}
-                  y1={command.y1}
-                  x2={command.x}
-                  y2={command.y}
-                />
-              </Group>
+              <BezierCurveLines
+                pointA={{
+                  x1: command.x1,
+                  y1: command.y1,
+                  x2: lastCursor.x,
+                  y2: lastCursor.y,
+                }}
+                pointB={{
+                  x1: command.x1,
+                  y1: command.y1,
+                  x2: command.x,
+                  y2: command.y,
+                }}
+              />
             );
           case "C":
             return (
-              <Group color="blue">
-                <AnimatableLine
-                  x1={command.x1}
-                  y1={command.y1}
-                  x2={lastCursor.x}
-                  y2={lastCursor.y}
-                />
-                <AnimatableLine
-                  x1={command.x2}
-                  y1={command.y2}
-                  x2={command.x}
-                  y2={command.y}
-                />
-              </Group>
+              <BezierCurveLines
+                pointA={{
+                  x1: command.x1,
+                  y1: command.y1,
+                  x2: lastCursor.x,
+                  y2: lastCursor.y,
+                }}
+                pointB={{
+                  x1: command.x2,
+                  y1: command.y2,
+                  x2: command.x,
+                  y2: command.y,
+                }}
+              />
             );
           case "c":
             return (
-              <Group color="blue">
-                <AnimatableLine
-                  x1={command.x1 + lastCursor.x}
-                  y1={command.y1 + lastCursor.y}
-                  x2={lastCursor.x}
-                  y2={lastCursor.y}
-                />
-                <AnimatableLine
-                  x1={command.x2 + lastCursor.x}
-                  y1={command.y2 + lastCursor.y}
-                  x2={command.x + lastCursor.x}
-                  y2={command.y + lastCursor.y}
-                />
-              </Group>
+              <BezierCurveLines
+                pointA={{
+                  x1: command.x1 + lastCursor.x,
+                  y1: command.y1 + lastCursor.y,
+                  x2: lastCursor.x,
+                  y2: lastCursor.y,
+                }}
+                pointB={{
+                  x1: command.x2 + lastCursor.x,
+                  y1: command.y2 + lastCursor.y,
+                  x2: command.x + lastCursor.x,
+                  y2: command.y + lastCursor.y,
+                }}
+              />
             );
           default:
             return null;
         }
       })}
     </g>
+  );
+};
+
+const BezierCurveLines = ({ pointA, pointB }) => {
+  const { highlight } = React.useContext(PathVisualizerContext);
+  const isHidden = highlight.length > 0 && !highlight.includes("curve");
+  return (
+    <Group color="blue" animate={{ opacity: isHidden ? 0.5 : 1 }}>
+      <AnimatableLine {...pointA} />
+      <AnimatableLine {...pointB} />
+    </Group>
   );
 };
 
@@ -233,8 +245,13 @@ export const Endpoints = () => {
           case "Q":
             return (
               <>
-                <CurveEndpoint cx={command.x1} cy={command.y1} />
-                <CurveEndpoint cx={command.x} cy={command.y} />
+                <CurveEndpoint cx={command.x1} cy={command.y1} shadow />
+                <CurveEndpoint
+                  cx={command.x}
+                  cy={command.y}
+                  shadow
+                  delay={0.25}
+                />
               </>
             );
           case "C":
@@ -274,6 +291,7 @@ export function PathProvider({
   size,
   commands,
   activeIndex = commands.length - 1,
+  highlight = [],
   children,
 }) {
   const activeCommands = commands.slice(0, activeIndex + 1);
@@ -284,6 +302,7 @@ export function PathProvider({
         config: { size, endpointSize, strokeWidth: endpointSize / 4 },
         commands,
         activeCommands,
+        highlight,
       }}
     >
       {children}
@@ -307,8 +326,8 @@ export function PathVisualizer({
     <PathProvider size={size} commands={commands} activeIndex={activeIndex}>
       <g>
         <Arcs />
-        <PathSections />
         <Lines />
+        <PathSections />
         <Endpoints />
       </g>
     </PathProvider>
@@ -322,9 +341,10 @@ const Move = ({
   y2,
   ...props
 }: React.ComponentPropsWithoutRef<typeof Line>) => {
-  const { config } = React.useContext(PathVisualizerContext);
+  const { config, highlight } = React.useContext(PathVisualizerContext);
+  const isHidden = highlight.length > 0 && !highlight.includes("move");
   return (
-    <Group color="red">
+    <Group color="red" animate={{ opacity: isHidden ? 0.5 : 1 }}>
       <Line
         x1={x1}
         y1={y1}
@@ -387,37 +407,105 @@ const _Line = styled(motion.line, {
 const CurveEndpoint = (
   props: React.ComponentPropsWithoutRef<typeof Endpoint>
 ) => {
-  return <Endpoint color="blue" {...props} />;
+  return <Endpoint type="curve" color="blue" {...props} />;
 };
 
 const LineEndpoint = (
   props: React.ComponentPropsWithoutRef<typeof Endpoint>
 ) => {
-  return <Endpoint color="yellow" {...props} />;
+  return <Endpoint type="line" color="yellow" {...props} />;
 };
 
 const MoveEndpoint = (
   props: React.ComponentPropsWithoutRef<typeof Endpoint>
 ) => {
-  return <Endpoint color="red" {...props} />;
+  return <Endpoint type="move" color="red" {...props} />;
 };
 
 export const Endpoint = (
-  props: React.ComponentPropsWithoutRef<typeof _Endpoint> & { small?: boolean }
+  props: React.ComponentPropsWithoutRef<typeof _Endpoint> & {
+    small?: boolean;
+    shadow?: boolean;
+    color?: "red" | "blue" | "yellow" | "green";
+    delay?: number;
+    type?: "curve" | "move" | "line";
+  }
 ) => {
-  const { config } = React.useContext(PathVisualizerContext);
+  const { cx, cy, delay = 0 } = props;
+  const { config, highlight } = React.useContext(PathVisualizerContext);
+  const { endpointSize, padding } = useBackgroundContext();
+  const id = React.useId();
+  const isHidden = highlight.length > 0 && !highlight.includes(props.type);
+
+  if (props.shadow) {
+    return (
+      <Group color={props.color}>
+        <mask id={id}>
+          <rect
+            x={-padding}
+            y={-padding}
+            width="100%"
+            height="100%"
+            fill="white"
+          />
+          <motion.circle
+            cx={cx}
+            cy={cy}
+            r={endpointSize * 1.25}
+            animate={{ r: endpointSize * 7 }}
+            transition={{ type: "spring", damping: 20, delay }}
+            initial={{ r: endpointSize * 1.25 }}
+            fill="black"
+          />
+        </mask>
+        <motion.circle
+          fill="currentColor"
+          cx={cx}
+          cy={cy}
+          r={endpointSize * 6}
+          mask={`url('#${id}')`}
+          animate="shown"
+          initial="hidden"
+          variants={{
+            hidden: { scale: 0.5, opacity: 0 },
+            shown: { scale: 1, opacity: 1 },
+          }}
+          transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
+        />
+        <_Endpoint
+          cx={cx}
+          cy={cy}
+          animate="shown"
+          initial="hidden"
+          variants={{
+            hidden: { scale: 0.5, opacity: 0 },
+            shown: { scale: 1, opacity: 1 },
+          }}
+          transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
+          as={motion.circle}
+          strokeWidth={config.strokeWidth}
+          r={props.small ? config.endpointSize * 0.75 : config.endpointSize}
+          hidden={isHidden}
+        />
+      </Group>
+    );
+  }
+
   return (
-    <_Endpoint
-      as={motion.circle}
-      strokeWidth={config.strokeWidth}
-      r={props.small ? config.endpointSize * 0.75 : config.endpointSize}
-      transition={{ duration: 1 }}
-      {...props}
-    />
+    <Group color={props.color}>
+      <_Endpoint
+        as={motion.circle}
+        strokeWidth={config.strokeWidth}
+        r={props.small ? config.endpointSize * 0.75 : config.endpointSize}
+        transition={{ duration: 1 }}
+        hidden={isHidden}
+        {...props}
+      />
+    </Group>
   );
 };
 
-const Group = styled("g", {
+const Group = styled(motion.g, {
   $$color: "$colors$gray8",
   color: "$$color",
   variants: {
@@ -439,23 +527,12 @@ const Group = styled("g", {
 });
 
 const _Endpoint = styled(motion.circle, {
-  $$color: "$colors$gray8",
   stroke: "$gray12",
   fill: "$$color",
-
   variants: {
-    color: {
-      red: {
-        $$color: "$colors$red8",
-      },
-      blue: {
-        $$color: "$colors$blue8",
-      },
-      yellow: {
-        $$color: "$colors$yellow8",
-      },
-      green: {
-        $$color: "$colors$green8",
+    hidden: {
+      true: {
+        opacity: 0.5,
       },
     },
   },
