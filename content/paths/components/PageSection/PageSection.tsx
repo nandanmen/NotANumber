@@ -65,6 +65,19 @@ const Section = styled(motion.section, {
     lineHeight: 1.4,
   },
 
+  textarea: {
+    display: "block",
+    width: "100%",
+    resize: "none",
+    border: "1px solid $gray8",
+    borderRadius: "$base",
+    padding: "$4",
+    minHeight: 300,
+    fontFamily: "$mono",
+    fontSize: "inherit",
+    background: "$gray3",
+  },
+
   "code:not(pre code)": {
     background: "$gray3",
     padding: "0 $1",

@@ -18,8 +18,10 @@ const Wrapper = styled("div", {
 
 const ContentWrapper = styled("div", {
   display: "grid",
-  gridTemplateColumns: "68ch 1fr",
+  gridTemplateColumns: "68ch 100vh",
   height: "100%",
+  margin: "0 auto",
+  width: "fit-content",
 });
 
 // --

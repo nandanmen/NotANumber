@@ -27,7 +27,8 @@ export const Exercise = () => {
     <PathProvider commands={[]} size={25}>
       {positions.map(({ cx, cy }, index) => {
         return (
-          <AnimatedEndpoint
+          <Endpoint
+            shadow
             key={`${cx}-${cy}`}
             cx={cx}
             cy={cy}
@@ -38,58 +39,3 @@ export const Exercise = () => {
     </PathProvider>
   );
 };
-
-const AnimatedEndpoint = ({ cx, cy, delay }) => {
-  const { endpointSize, padding } = useBackgroundContext();
-  const id = React.useId();
-  return (
-    <>
-      <mask id={id}>
-        <rect
-          x={-padding}
-          y={-padding}
-          width="100%"
-          height="100%"
-          fill="white"
-        />
-        <motion.circle
-          cx={cx}
-          cy={cy}
-          r={endpointSize * 1.25}
-          animate={{ r: endpointSize * 7 }}
-          transition={{ type: "spring", damping: 20, delay }}
-          initial={{ r: endpointSize * 1.25 }}
-          fill="black"
-        />
-      </mask>
-      <Shadow
-        cx={cx}
-        cy={cy}
-        r={endpointSize * 6}
-        mask={`url('#${id}')`}
-        animate="shown"
-        initial="hidden"
-        variants={{
-          hidden: { scale: 0.5, opacity: 0 },
-          shown: { scale: 1, opacity: 1 },
-        }}
-        transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
-      />
-      <Endpoint
-        cx={cx}
-        cy={cy}
-        animate="shown"
-        initial="hidden"
-        variants={{
-          hidden: { scale: 0.5, opacity: 0 },
-          shown: { scale: 1, opacity: 1 },
-        }}
-        transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
-      />
-    </>
-  );
-};
-
-const Shadow = styled(motion.circle, {
-  fill: "$gray8",
-});

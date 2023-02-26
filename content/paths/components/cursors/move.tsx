@@ -13,12 +13,19 @@ import {
 
 const views = [
   <>
-    <AnimatableLine x1="0" y1="0" x2="10" y2="20" />
-    <Line x1="10" y1="12.5" x2="20" y2="12.5" css={{ stroke: "$gray8" }} />
-    <Line x1="10" y1="12.5" x2="10" y2="20" css={{ stroke: "$gray8" }} />
-    <Endpoint cx="0" cy="0" />
-    <Endpoint animate={{ cx: 10, cy: 20 }} initial={{ cx: 0, cy: 0 }} />
-    <Endpoint small cx="10" cy="12.5" css={{ stroke: "none" }} />
+    <AnimatableLine
+      x1="0"
+      y1="0"
+      x2="10"
+      y2="20"
+      transition={{ duration: 1, delay: 0.5 }}
+    />
+    <Endpoint cx="0" cy="0" shadow />
+    <Endpoint
+      animate={{ cx: 10, cy: 20 }}
+      initial={{ cx: 0, cy: 0 }}
+      transition={{ duration: 1, delay: 0.5 }}
+    />
   </>,
   <>
     <AnimatableLine x1="0" y1="0" x2="10" y2="20" />
