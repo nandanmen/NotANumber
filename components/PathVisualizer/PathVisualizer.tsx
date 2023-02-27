@@ -107,10 +107,6 @@ export const PathSections = () => {
           <Path
             key={path + index}
             d={`M ${lastCursor.x} ${lastCursor.y} ${path}`}
-            strokeWidth={config.size / 100}
-            animate={{ pathLength: 1, opacity: isHidden ? 0 : 1 }}
-            initial={{ pathLength: 0 }}
-            transition={{ pathLength: { duration: 1 } }}
           />
         );
       })}
@@ -118,7 +114,20 @@ export const PathSections = () => {
   );
 };
 
-const Path = styled(motion.path, {
+export const Path = ({ isHidden = false, ...props }) => {
+  const { size } = useBackgroundContext();
+  return (
+    <_Path
+      strokeWidth={size / 100}
+      animate={{ pathLength: 1, opacity: isHidden ? 0 : 1 }}
+      initial={{ pathLength: 0 }}
+      transition={{ pathLength: { duration: 1 } }}
+      {...props}
+    />
+  );
+};
+
+const _Path = styled(motion.path, {
   stroke: "$gray12",
   fill: "none",
 });

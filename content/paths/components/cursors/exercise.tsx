@@ -24,7 +24,7 @@ const positions = [
 
 export const Exercise = () => {
   return (
-    <PathProvider commands={[]} size={25}>
+    <PathProvider commands={[]}>
       {positions.map(({ cx, cy }, index) => {
         return (
           <Endpoint

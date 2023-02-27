@@ -30,7 +30,7 @@ export const HeartAnimation = () => {
   );
   const currentPosition = cursorPositions[index];
   return (
-    <PathProvider commands={commands} size={25} activeIndex={index}>
+    <PathProvider commands={commands} activeIndex={index}>
       <PathSections />
       {cursorPositions.map((position, i) => {
         if (i >= index) return null;

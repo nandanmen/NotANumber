@@ -1,5 +1,5 @@
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { motion } from "framer-motion";
 import { IconButton } from "~/components/Visualizer";
 import { usePageContext } from "./PageProvider";
@@ -36,4 +36,8 @@ const Footer = styled("footer", {
   background: "hsla(0, 0%, 93.0%, 0.6)",
   backdropFilter: "blur(4px)",
   borderTop: "1px solid $gray8",
+
+  [`.${darkTheme} &`]: {
+    background: "hsla(0, 0%, 8.5%, 0.6)",
+  },
 });
