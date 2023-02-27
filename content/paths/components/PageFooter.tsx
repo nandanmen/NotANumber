@@ -26,11 +26,14 @@ export const PageFooter = () => {
 const Box = styled("div", {});
 
 const Footer = styled("footer", {
-  width: "100%",
+  fontSize: 16,
+  width: "calc(68ch - 1px)",
   display: "flex",
   alignItems: "center",
-  position: "absolute",
-  bottom: "0",
-  padding: "$8 $12",
-  borderTop: "1px dashed $gray8",
+  position: "fixed",
+  bottom: 0,
+  padding: "$6 $12",
+  background: "hsla(0, 0%, 93.0%, 0.6)",
+  backdropFilter: "blur(4px)",
+  borderTop: "1px solid $gray8",
 });
