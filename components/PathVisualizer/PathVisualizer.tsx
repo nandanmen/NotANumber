@@ -344,7 +344,7 @@ export function PathVisualizer({
   activeIndex = commands.length - 1,
 }) {
   return (
-    <PathProvider size={size} commands={commands} activeIndex={activeIndex}>
+    <PathProvider commands={commands} activeIndex={activeIndex}>
       <g>
         <Arcs />
         <Lines />

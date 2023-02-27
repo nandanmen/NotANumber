@@ -1,0 +1,81 @@
+import { PageSection } from "./components/PageSection";
+import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+import { CursorVisual } from "./components/cursors";
+
+<PageWrapper page="03-lines" numSections={5}>
+
+<ArticleWrapper>
+
+<PageSection index={0}>
+
+# Lines
+
+The line commands let you draw a straight line from the current cursor position to a new position. The most generic of them is the `L` command, which draws a line to a specific `(x, y)` coordinate:
+
+```
+L 10 20
+```
+
+</PageSection>
+
+<PageSection index={1}>
+
+Just like how the `m` command moves the cursor relative to its current position, the `l` command draws a line relative to the current cursor position:
+
+```
+L 10 20
+l 10 -7.5
+```
+
+</PageSection>
+
+<PageSection index={2}>
+
+If you'd just like to draw a line in a specific direction, you can use the `H` and `V` commands. `H` draws a horizontal line, and `V` draws a vertical line:
+
+```
+L 10 20
+H 30
+V 10
+```
+
+</PageSection>
+
+<PageSection index={3}>
+
+Like the other commands, `H` and `V` also come with lowercase versions that use relative coordinates:
+
+```
+L 10 20
+h 20
+v -10
+```
+
+</PageSection>
+
+<PageSection index={4}>
+
+## Practice
+
+Trace over this house using all of the commands we've seen so far (including the cursor commands from the last section):
+
+<PathEditor />
+
+</PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper>
+  <CursorVisual />
+</GraphWrapper>
+
+</PageWrapper>

@@ -15,7 +15,7 @@ export const PageWrapper = ({ page, numSections, children }) => {
 export const ArticleWrapper = styled("article", {
   position: "relative",
   height: "100%",
-  paddingBottom: "$24",
+  paddingBottom: "$20",
   borderRight: "1px solid $gray8",
   fontSize: 18,
 });
