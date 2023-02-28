@@ -1,0 +1,60 @@
+import { PageSection } from "./components/PageSection";
+import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+import { CubicCurvesVisual } from "./components/cubic-curves";
+
+<PageWrapper page="05-cubic-curves" numSections={4}>
+
+<ArticleWrapper>
+
+<PageSection index={0}>
+
+# Curves II: Cubic Curves
+
+Quadratic curves are great, but only having one control point can be limiting. For example, you can't really make a nice-looking pill shape using quadratic curves.
+
+</PageSection>
+
+<PageSection index={1}>
+
+On the other hand, cubic curves, the second type of SVG path curve, have **two control points**. This gives you a lot more flexibility in how you can shape your curves.
+
+</PageSection>
+
+<PageSection index={2}>
+
+The syntax is identical to quadratic curves, except you'd need to define two control points instead of 1:
+
+```
+C x1 y1, x2 y2, x y
+```
+
+</PageSection>
+
+<PageSection index={3}>
+
+## Practice
+
+Using all of the commands we've looked at so far (cursor, line, and quadratic curve), trace over this little picture frame icon:
+
+(As a little bonus, try rounding the frame!)
+
+<PathEditor />
+
+</PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper>
+  <CubicCurvesVisual />
+</GraphWrapper>
+
+</PageWrapper>

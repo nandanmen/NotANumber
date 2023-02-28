@@ -118,7 +118,7 @@ export const Path = ({ isHidden = false, ...props }) => {
   const { size } = useBackgroundContext();
   return (
     <_Path
-      strokeWidth={size / 100}
+      strokeWidth={size / (props.large ? 50 : 100)}
       animate={{ pathLength: 1, opacity: isHidden ? 0 : 1 }}
       initial={{ pathLength: 0 }}
       transition={{ pathLength: { duration: 1 } }}
@@ -164,6 +164,23 @@ export const Lines = () => {
                   y1: command.y1,
                   x2: command.x,
                   y2: command.y,
+                }}
+              />
+            );
+          case "q":
+            return (
+              <BezierCurveLines
+                pointA={{
+                  x1: lastCursor.x + command.x1,
+                  y1: lastCursor.y + command.y1,
+                  x2: lastCursor.x,
+                  y2: lastCursor.y,
+                }}
+                pointB={{
+                  x1: lastCursor.x + command.x1,
+                  y1: lastCursor.y + command.y1,
+                  x2: lastCursor.x + command.x,
+                  y2: lastCursor.y + command.y,
                 }}
               />
             );
@@ -273,6 +290,19 @@ export const Endpoints = () => {
                 }}
               />
             );
+          case "h":
+            return (
+              <LineEndpoint
+                initial={{
+                  cx: lastCursor.x,
+                  cy: lastCursor.y,
+                }}
+                animate={{
+                  cx: lastCursor.x + command.x,
+                  cy: lastCursor.y,
+                }}
+              />
+            );
           case "Q":
             return (
               <>
@@ -285,12 +315,38 @@ export const Endpoints = () => {
                 />
               </>
             );
+          case "q":
+            return (
+              <>
+                <CurveEndpoint
+                  cx={lastCursor.x + command.x1}
+                  cy={lastCursor.y + command.y1}
+                  shadow
+                />
+                <CurveEndpoint
+                  cx={lastCursor.x + command.x}
+                  cy={lastCursor.y + command.y}
+                  shadow
+                  delay={0.25}
+                />
+              </>
+            );
           case "C":
             return (
               <>
-                <CurveEndpoint cx={command.x1} cy={command.y1} />
-                <CurveEndpoint cx={command.x2} cy={command.y2} />
-                <CurveEndpoint cx={command.x} cy={command.y} />
+                <CurveEndpoint cx={command.x1} cy={command.y1} shadow />
+                <CurveEndpoint
+                  cx={command.x2}
+                  cy={command.y2}
+                  shadow
+                  delay={0.25}
+                />
+                <CurveEndpoint
+                  cx={command.x}
+                  cy={command.y}
+                  shadow
+                  delay={0.5}
+                />
               </>
             );
           case "c":
@@ -299,14 +355,19 @@ export const Endpoints = () => {
                 <CurveEndpoint
                   cx={command.x1 + lastCursor.x}
                   cy={command.y1 + lastCursor.y}
+                  shadow
                 />
                 <CurveEndpoint
                   cx={command.x2 + lastCursor.x}
                   cy={command.y2 + lastCursor.y}
+                  shadow
+                  delay={0.25}
                 />
                 <CurveEndpoint
                   cx={command.x + lastCursor.x}
                   cy={command.y + lastCursor.y}
+                  shadow
+                  delay={0.5}
                 />
               </>
             );

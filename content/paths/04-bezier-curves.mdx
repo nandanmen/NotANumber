@@ -1,0 +1,83 @@
+import { PageSection } from "./components/PageSection";
+import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+import { BezierCurvesVisual } from "./components/bezier-curves";
+
+<PageWrapper page="04-bezier-curves" numSections={4}>
+
+<ArticleWrapper>
+
+<PageSection index={0}>
+
+# Curves I: Bezier Curves
+
+Great work!
+
+Now let's talk about curve commands. Curve commands are a tad more complex to wrap your head around, but if you can master them, you can make some _really_ cool shapes with SVG paths.
+
+We'll divide our conversation on curves into two parts — **bezier curves** and **arcs**. We'll start with bezier curves.
+
+</PageSection>
+
+<PageSection index={1}>
+
+## Bezier Curves
+
+A bezier curve is made from a series of points — a start point, an endpoint, and a series of control points in between.
+
+The start and end points determine where the curve will start and end, respectively, while the control points determine the overall shape of the curve.
+
+**Try moving the control points in the playground and notice how the curve changes.**
+
+SVG paths support two types of bezier curves — quadratic and cubic.
+
+</PageSection>
+
+<PageSection index={2}>
+
+### Quadratic Curves
+
+A quadratic curve is a bezier curve with a **single control point**. Its syntax looks like this:
+
+```
+Q controlX controlY endX endY
+```
+
+This curve, for example, creates a rounded corner:
+
+```
+M 5 5
+v 5
+Q 5 15 10 15
+h 5
+```
+
+</PageSection>
+
+<PageSection index={3}>
+
+## Practice
+
+Using all of the commands we've looked at so far (cursor, line, and quadratic curve), trace over this little picture frame icon:
+
+(As a little bonus, try rounding the frame!)
+
+<PathEditor />
+
+</PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper>
+  <BezierCurvesVisual />
+</GraphWrapper>
+
+</PageWrapper>

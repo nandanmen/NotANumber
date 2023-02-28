@@ -122,7 +122,7 @@ const BackgroundContext = React.createContext<{
   padding: number;
 }>(null);
 
-const ENDPOINT_SCALE_FACTOR = 68;
+const ENDPOINT_SCALE_FACTOR = 80;
 
 export const useBackgroundContext = () => React.useContext(BackgroundContext);
 

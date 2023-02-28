@@ -63,6 +63,7 @@ const Section = styled(motion.section, {
     border: "1px solid $gray8",
     padding: "$4",
     lineHeight: 1.4,
+    fontSize: "$base",
   },
 
   textarea: {
@@ -74,7 +75,7 @@ const Section = styled(motion.section, {
     padding: "$4",
     minHeight: 300,
     fontFamily: "$mono",
-    fontSize: "inherit",
+    fontSize: "$base",
     background: "$gray3",
   },
 

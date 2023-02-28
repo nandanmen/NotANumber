@@ -10,7 +10,13 @@ const PageContext = React.createContext<{
 
 export const usePageContext = () => React.useContext(PageContext);
 
-const order = ["01-commands", "02-cursors", "03-lines"];
+const order = [
+  "01-commands",
+  "02-cursors",
+  "03-lines",
+  "04-bezier-curves",
+  "05-cubic-curves",
+];
 
 export const PageProvider = ({ page, numSections, children }) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
