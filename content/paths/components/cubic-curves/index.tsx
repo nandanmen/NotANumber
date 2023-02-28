@@ -25,7 +25,9 @@ q -3.5 2 -7 0
 
 const badPill = "M 8.5 10.0 h 8 q 5 2.5 0 5 h -8 q -5 -2.5 0 -5";
 
-const mapCommandToIndex = [badPill, badPill, trophy];
+const goodPill = "M 8.5 10.0 h 8 c 5 0 5 5 0 5 h -8 c -5 0 -5 -5 0 -5";
+
+const mapCommandToIndex = [badPill, goodPill, trophy];
 
 export const CubicCurvesVisual = () => {
   const { activeIndex } = usePageContext();
