@@ -9,7 +9,7 @@ import {
 } from "./components/PageWrapper";
 import { CubicCurvesVisual } from "./components/cubic-curves";
 
-<PageWrapper page="05-cubic-curves" numSections={4}>
+<PageWrapper page="05-cubic-curves" numSections={6}>
 
 <ArticleWrapper>
 
@@ -29,23 +29,54 @@ On the other hand, cubic curves, the second type of SVG path curve, have **two c
 
 <PageSection index={2}>
 
-The syntax is identical to quadratic curves, except you'd need to define two control points instead of 1:
-
-```
-C x1 y1, x2 y2, x y
-```
+Two control points mean you can bend your curve in two different directions. Like maybe to make a little trophy?
 
 </PageSection>
 
 <PageSection index={3}>
 
+## Syntax
+
+Making a cubic bezier curve is very similar to making a quadratic curve, but with the addition of one extra control point (which means an extra pair of `x`—`y` coordinates):
+
+```
+C x1 y1, x2 y2, x y
+```
+
+Like all the other commands, you can use the lowercase `c` to make all the coordinates relative to the cursor.
+
+```
+c dx1 dy1, dx2 dy2, dx dy
+```
+
+</PageSection>
+
+<PageSection index={4}>
+
 ## Practice
 
-Using all of the commands we've looked at so far (cursor, line, and quadratic curve), trace over this little picture frame icon:
-
-(As a little bonus, try rounding the frame!)
+Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
 
 <PathEditor />
+
+</PageSection>
+
+<PageSection index={5}>
+
+```
+M 10 20
+c -10 -1 -10 -14 0 -15
+q 6 -1 8 5
+c 7 0 7 10 0 10
+m -1.0 -2
+v 6
+m -2.0 -4.5
+v 6
+m -2.0 -6
+v 6
+m -2.0 -7.5
+v 6
+```
 
 </PageSection>
 

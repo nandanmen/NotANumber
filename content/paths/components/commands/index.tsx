@@ -11,6 +11,7 @@ import {
 } from "~/components/PathVisualizer";
 import { PathBackground } from "~/components/PathPlayground";
 import { usePageContext } from "../PageProvider";
+import { phone } from "~/components/paths/templates";
 
 const path = `M 20 10
 v 20
@@ -23,7 +24,7 @@ export const CommandsVisual = () => {
   const { activeIndex } = usePageContext();
   const [playing, setPlaying] = React.useState(true);
   const [index, setIndex] = React.useState(0);
-  const commands = parse(path);
+  const commands = parse(phone);
 
   useInterval(
     () => {
@@ -43,7 +44,7 @@ export const CommandsVisual = () => {
   };
 
   return (
-    <PathBackground size={70} step={10}>
+    <PathBackground size={24} step={4}>
       <PathProvider
         commands={commands}
         activeIndex={index}

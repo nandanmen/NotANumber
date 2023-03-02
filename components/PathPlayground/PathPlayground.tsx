@@ -56,7 +56,6 @@ export function PathAxes({ size, columns, rows }: SvgConfig) {
 export function AxesLabels({ size, columns, rows }: SvgConfig) {
   const fontSize = size * TEXT_SIZE_FACTOR;
   const labelOffset = size * TEXT_GAP_FACTOR;
-  console.log(rows);
   return (
     <>
       <g
@@ -153,7 +152,7 @@ export function PathPlayground({
   commands = parse(`M 10 20\nL 30 40`),
   size = 25,
   step = 5,
-  activeIndex = undefined,
+  activeIndex = commands.length - 1,
 }) {
   return (
     <PathBackground size={size} step={step}>

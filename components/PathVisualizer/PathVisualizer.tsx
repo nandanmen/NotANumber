@@ -7,7 +7,7 @@ import {
   parse,
   type Command,
 } from "./utils";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { heart } from "../paths/templates";
 import { useBackgroundContext } from "~/components/PathPlayground";
 
@@ -277,6 +277,19 @@ export const Endpoints = () => {
                 }}
               />
             );
+          case "l":
+            return (
+              <LineEndpoint
+                initial={{
+                  cx: lastCursor.x,
+                  cy: lastCursor.y,
+                }}
+                animate={{
+                  cx: lastCursor.x + command.x,
+                  cy: lastCursor.y + command.y,
+                }}
+              />
+            );
           case "v":
             return (
               <LineEndpoint
@@ -409,7 +422,6 @@ export function usePathContext() {
 }
 
 export function PathVisualizer({
-  size = 30,
   commands = defaultCommands,
   activeIndex = commands.length - 1,
 }) {
@@ -450,7 +462,12 @@ const Move = ({
         x2={x1}
         y2={y1}
         strokeWidth={config.endpointSize / 2 + 1}
-        css={{ stroke: "$gray4" }}
+        css={{
+          stroke: "$gray4",
+          [`.${darkTheme} &`]: {
+            stroke: "$gray1",
+          },
+        }}
         animate={{ pathLength: 0 }}
         initial={{ pathLength: 1 }}
       />
@@ -603,15 +620,31 @@ const Group = styled(motion.g, {
     color: {
       red: {
         $$color: "$colors$red8",
+
+        [`.${darkTheme} &`]: {
+          $$color: "$colors$red9",
+        },
       },
       blue: {
         $$color: "$colors$blue8",
+
+        [`.${darkTheme} &`]: {
+          $$color: "$colors$blue9",
+        },
       },
       yellow: {
         $$color: "$colors$yellow8",
+
+        [`.${darkTheme} &`]: {
+          $$color: "$colors$yellow9",
+        },
       },
       green: {
         $$color: "$colors$green8",
+
+        [`.${darkTheme} &`]: {
+          $$color: "$colors$green9",
+        },
       },
     },
   },
@@ -620,6 +653,11 @@ const Group = styled(motion.g, {
 const _Endpoint = styled(motion.circle, {
   stroke: "$gray12",
   fill: "$$color",
+
+  [`.${darkTheme} &`]: {
+    stroke: "$gray1",
+  },
+
   variants: {
     hidden: {
       true: {
