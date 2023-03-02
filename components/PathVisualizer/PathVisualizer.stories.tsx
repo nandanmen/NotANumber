@@ -14,11 +14,7 @@ export const Default = () => {
     <Visualizer>
       <Content>
         <svg viewBox={`0 0 ${size} ${size}`}>
-          <PathVisualizer
-            size={size}
-            activeIndex={activeIndex}
-            commands={commands}
-          />
+          <PathVisualizer activeIndex={activeIndex} commands={commands} />
         </svg>
       </Content>
       <Controls css={{ justifyContent: "space-between" }}>

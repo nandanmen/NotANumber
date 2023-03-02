@@ -156,11 +156,7 @@ export function PathPlayground({
 }) {
   return (
     <PathBackground size={size} step={step}>
-      <PathVisualizer
-        commands={commands}
-        size={size}
-        activeIndex={activeIndex}
-      />
+      <PathVisualizer commands={commands} activeIndex={activeIndex} />
       <OriginPoint r={size / 68} strokeWidth={size / 68 / 3} />
     </PathBackground>
   );
