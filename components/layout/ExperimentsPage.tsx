@@ -12,6 +12,7 @@ const experiments = [
   "path-animation",
   "heavy-square",
   "family-input",
+  "safari-scroll",
 ];
 
 export function ExperimentsPage({ children, page }) {
