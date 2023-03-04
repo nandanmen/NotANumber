@@ -8,7 +8,7 @@ import { FaUndo } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 
 export default function SafariScrollPage() {
-  const [open, toggle] = React.useReducer((state) => !state, true);
+  const [open, setOpen] = React.useState(true);
   return (
     <ExperimentsPage page="safari-scroll">
       <Box
@@ -24,8 +24,8 @@ export default function SafariScrollPage() {
           overflowY: "auto",
         }}
       >
-        <Box css={{ height: 1500 }}>
-          <Box css={{ padding: "$8" }}>Scroll me!</Box>
+        <Box>
+          <Article />
         </Box>
         <Box
           css={{
@@ -44,6 +44,7 @@ export default function SafariScrollPage() {
               paddingBottom: "$10",
               borderBottomLeftRadius: 16,
               borderBottomRightRadius: 16,
+              borderTop: "1px solid $gray3",
             }}
             animate={{ y: open ? 0 : 80 }}
           >
@@ -108,11 +109,55 @@ export default function SafariScrollPage() {
         </Box>
       </Box>
       <Box css={{ width: "fit-content", margin: "0 auto", marginTop: "$6" }}>
-        <button onClick={toggle}>Toggle</button>
+        <button onClick={() => setOpen(!open)}>Toggle</button>
       </Box>
     </ExperimentsPage>
   );
 }
+
+const Article = () => {
+  return (
+    <Box
+      css={{
+        padding: "$12",
+        p: { marginTop: "$6", "&:first-of-type": { marginTop: "$12" } },
+        display: "flex",
+        flexDirection: "column",
+        gap: "$8",
+      }}
+    >
+      <Box as="h1" css={{ fontWeight: "bold", lineHeight: 1 }}>
+        Remaking Safari's Bottom Nav in Framer Motion
+      </Box>
+      <SkeletonText lines={6} css={{ marginTop: "$4" }} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+      <SkeletonText lines={6} />
+    </Box>
+  );
+};
+
+const SkeletonText = ({ lines, ...props }) => {
+  return (
+    <Box {...props}>
+      {Array.from({ length: lines }, (_, i) => (
+        <Box
+          key={i}
+          css={{
+            height: "1.2em",
+            background: "$gray2",
+            width: i === lines - 1 ? "50%" : "100%",
+            marginTop: i === 0 ? 0 : "$2",
+          }}
+        />
+      ))}
+    </Box>
+  );
+};
 
 const Box = styled(motion.div, {});
 
