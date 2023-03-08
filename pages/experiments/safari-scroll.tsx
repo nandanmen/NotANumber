@@ -33,7 +33,7 @@ function useScrollOffset(ref: React.RefObject<HTMLElement>) {
 
       timeout = setTimeout(() => {
         scrollOffset.set(0);
-      }, 400);
+      }, 500);
     };
 
     wrapper.addEventListener("scroll", handleScroll);
@@ -50,11 +50,23 @@ const MAX_OFFSET = 50;
 
 export default function SafariScrollPage() {
   const wrapperRef = React.useRef<HTMLDivElement>();
+  const textRef = React.useRef<HTMLDivElement>();
   const [open, setOpen] = React.useState(true);
   const scrollOffset = useScrollOffset(wrapperRef);
 
   React.useEffect(() => {
     scrollOffset.on("change", (v) => {
+      if (textRef.current) {
+        textRef.current.textContent = `${v}px`;
+        if (Math.abs(v) >= 50) {
+          textRef.current.style.color = "var(--colors-blue9)";
+          textRef.current.style.fontWeight = "bold";
+        } else {
+          textRef.current.style.color = "inherit";
+          textRef.current.style.fontWeight = "normal";
+        }
+      }
+
       if (v > MAX_OFFSET) setOpen(false);
       if (v < -MAX_OFFSET) setOpen(true);
     });
@@ -90,6 +102,18 @@ export default function SafariScrollPage() {
           }}
         >
           <Navbar open={open} scrollOffset={scrollOffset} />
+        </Box>
+      </Box>
+      <Box
+        css={{
+          fontFamily: "$mono",
+          width: "fit-content",
+          margin: "0 auto",
+          marginTop: "$4",
+        }}
+      >
+        <Box>
+          Scroll offset: <Box as="span" ref={textRef} />
         </Box>
       </Box>
     </ExperimentsPage>
