@@ -9,7 +9,7 @@ import {
 } from "./components/PageWrapper";
 import { BezierCurvesVisual } from "./components/bezier-curves";
 
-<PageWrapper page="04-bezier-curves" numSections={4}>
+<PageWrapper page="04-bezier-curves" numSections={7}>
 
 <ArticleWrapper>
 
@@ -35,11 +35,15 @@ The start and end points determine where the curve will start and end, respectiv
 
 **Try moving the control points in the playground and notice how the curve changes.**
 
-SVG paths support two types of bezier curves — quadratic and cubic.
-
 </PageSection>
 
 <PageSection index={2}>
+
+SVG paths support two types of bezier curves — **quadratic** bezier curves and **cubic** bezier curves.
+
+</PageSection>
+
+<PageSection index={3}>
 
 ### Quadratic Curves
 
@@ -60,7 +64,33 @@ h 5
 
 </PageSection>
 
-<PageSection index={3}>
+<PageSection index={4}>
+
+### Multiple Quadratic Curves
+
+If you want to write multiple, consecutive quadratic curves, you might be tempted to write something like this:
+
+```
+Q 5 15 10 15
+Q 15 15 15 10
+```
+
+</PageSection>
+
+<PageSection index={5}>
+
+While this works just fine, there is an easier way — **using the `T` command**:
+
+```
+Q 5 15 10 15
+T 15 10
+```
+
+The `T` command will draw a new quadratic curve using the _reflection_ of the previous curve's control point. Try changing the control point of the first curve and notice how it changes the second curve.
+
+</PageSection>
+
+<PageSection index={6}>
 
 ## Practice
 

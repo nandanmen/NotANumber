@@ -55,6 +55,7 @@ export function svgArcToCenterParam(x1, y1, rx, ry, phi, fA, fS, x2, y2) {
   var ryx1_ = ry * x1_;
   var sum_of_sq = rxy1_ * rxy1_ + ryx1_ * ryx1_; // sum of square
   if (!sum_of_sq) {
+    console.log(phi);
     throw Error("start point can not be same as end point");
   }
   var coe = Math.sqrt(Math.abs((rxry * rxry - sum_of_sq) / sum_of_sq));

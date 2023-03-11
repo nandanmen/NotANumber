@@ -63,6 +63,17 @@ export const CubicCurvesVisual = () => {
       </PathBackground>
     );
   }
+  if (activeIndex === 4) {
+    return (
+      <PathBackground size={30} step={5}>
+        <path
+          d="M 0 15 c 5 10 10 -10 15 0 s 10 -10 15 0"
+          fill="none"
+          stroke="white"
+        />
+      </PathBackground>
+    );
+  }
   return (
     <PathBackground size={30} step={5}>
       <Path
@@ -71,7 +82,7 @@ export const CubicCurvesVisual = () => {
         css={{ stroke: "$gray8" }}
         transition={{ duration: 2 }}
       />
-      {activeIndex === 5 && <PathVisualizer commands={parse(rain)} />}
+      {activeIndex === 6 && <PathVisualizer commands={parse(rain)} />}
     </PathBackground>
   );
 };

@@ -57,6 +57,10 @@ const Section = styled(motion.section, {
     borderColor: "$gray8",
   },
 
+  strong: {
+    color: "$green8",
+  },
+
   pre: {
     background: "$gray3",
     borderRadius: "$base",

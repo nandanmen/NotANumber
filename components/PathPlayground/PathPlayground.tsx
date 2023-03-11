@@ -174,7 +174,7 @@ const LabelText = styled(Text, {
 });
 
 const GridLine = styled("line", {
-  stroke: "$gray8",
+  stroke: "$gray6",
 });
 
 const SvgWrapper = styled("div", {

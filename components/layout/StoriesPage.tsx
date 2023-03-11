@@ -133,9 +133,7 @@ const ContentWrapper = styled("div", {
 });
 
 const Content = styled("ul", {
-  maxWidth: 800,
-  display: "grid",
-  gridTemplateColumns: "min(100%, 65ch) 1fr",
+  width: "fit-content",
   margin: "0 auto",
   listStyle: "none",
 

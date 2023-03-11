@@ -16,6 +16,7 @@ const order = [
   "03-lines",
   "04-bezier-curves",
   "05-cubic-curves",
+  "06-arcs",
 ];
 
 export const PageProvider = ({ page, numSections, children }) => {
@@ -32,10 +33,16 @@ export const PageProvider = ({ page, numSections, children }) => {
     setActiveIndex((i) => i + 1);
   }, [activeIndex, numSections, page]);
 
-  const prev = React.useCallback(
-    () => setActiveIndex((i) => Math.max(0, i - 1)),
-    []
-  );
+  const prev = React.useCallback(() => {
+    if (activeIndex === 0) {
+      const prevPage = order[order.indexOf(page) - 1];
+      if (prevPage) {
+        window.location.href = `/paths/${prevPage}`;
+        return;
+      }
+    }
+    setActiveIndex((i) => i - 1);
+  }, [activeIndex, page]);
 
   React.useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {

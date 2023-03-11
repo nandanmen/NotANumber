@@ -1,0 +1,115 @@
+import { PageSection } from "./components/PageSection";
+import { PathEditor } from "./components/PathEditor";
+import { PageProvider } from "./components/PageProvider";
+import { PageFooter } from "./components/PageFooter";
+import {
+  PageWrapper,
+  ArticleWrapper,
+  GraphWrapper,
+} from "./components/PageWrapper";
+import { ArcsVisual } from "./components/arcs";
+
+<PageWrapper page="06-arcs" numSections={6}>
+
+<ArticleWrapper>
+
+<PageSection index={0}>
+
+# Arcs
+
+The arc, or `A` command, is the last of the SVG path commands we'll be looking at and, in my opinion, the least intuitive to use.
+
+The syntax looks like this:
+
+```
+A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+```
+
+It's certainly not easy to grasp, so let's start from the beginning.
+
+</PageSection>
+
+<PageSection index={1}>
+
+## How Arcs Are Formed
+
+**An arc is a portion of an ellipse.**
+
+You use the `rx` and `ry` values to control the ellipse's size, and the `x` and `y` values to control where the arc ends on the canvas.
+
+</PageSection>
+
+<PageSection index={2}>
+
+The arc command works by taking the following values:
+
+1. The initial cursor position;
+2. The `rx` and `ry` values;
+3. The `x` and `y` values;
+
+And then finding an ellipse that "matches" the given values — that is, an ellipse with both of the arc's points on its circumference and with radius `rx` and `ry`.
+
+**Try changing the radius of the arc or the endpoint in the sandbox**. Notice that the ellipse will change to always fit the two points and the provided radii.
+
+</PageSection>
+
+<PageSection index={3}>
+
+What happens when there _isn't_ a match?
+
+We can make that happen by making the diameter smaller than the distance between the arc's points. **Try reducing the `rx` value to anything less than ten** and see what happens.
+
+</PageSection>
+
+<PageSection index={4}>
+
+Notice that when the ellipse isn't big enough to fit the arc's points, the arc isn't affected — it still follows the ellipse's curve. This suggests that the ellipse is implicitly _scaled_ to fit the arc!
+
+</PageSection>
+
+<PageSection index={5}>
+
+## X-Axis Rotation
+
+Let's look at the next argument, `x-axis-rotation`. As you might expect, this value rotates the ellipse around its x (or horizontal) axis.
+
+</PageSection>
+
+<PageSection index={6}>
+
+## Practice
+
+Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
+
+<PathEditor />
+
+</PageSection>
+
+<PageSection index={7}>
+
+```
+M 10 20
+c -10 -1 -10 -14 0 -15
+q 6 -1 8 5
+c 7 0 7 10 0 10
+m -1.0 -2
+v 6
+m -2.0 -4.5
+v 6
+m -2.0 -6
+v 6
+m -2.0 -7.5
+v 6
+```
+
+</PageSection>
+
+<PageFooter />
+
+</ArticleWrapper>
+
+<GraphWrapper>
+  <ArcsVisual />
+</GraphWrapper>
+
+</PageWrapper>

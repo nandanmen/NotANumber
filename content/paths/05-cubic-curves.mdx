@@ -9,7 +9,7 @@ import {
 } from "./components/PageWrapper";
 import { CubicCurvesVisual } from "./components/cubic-curves";
 
-<PageWrapper page="05-cubic-curves" numSections={6}>
+<PageWrapper page="05-cubic-curves" numSections={7}>
 
 <ArticleWrapper>
 
@@ -53,6 +53,19 @@ c dx1 dy1, dx2 dy2, dx dy
 
 <PageSection index={4}>
 
+## Multiple Bezier Curves
+
+Just like with quadratic curves, you can create a cubic curve that depends on the previous curve using the `S` command:
+
+```
+C 10 25 20 5 25 15
+S 40 5 45 15
+```
+
+</PageSection>
+
+<PageSection index={5}>
+
 ## Practice
 
 Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
@@ -61,7 +74,7 @@ Using _both_ curve commands and the other commands we've seen, trace over this r
 
 </PageSection>
 
-<PageSection index={5}>
+<PageSection index={6}>
 
 ```
 M 10 20
