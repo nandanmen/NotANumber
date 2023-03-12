@@ -63,6 +63,26 @@ export const ArcsVisual = () => {
   );
 };
 
+const FadeOut = ({ active, children }) => {
+  return (
+    <motion.g
+      animate={active ? "visible" : "hidden"}
+      variants={{
+        visible: { opacity: 1, transition: { type: false } },
+        hidden: { opacity: 0, transition: { delay: 0.2 } },
+      }}
+      initial="hidden"
+    >
+      {children}
+    </motion.g>
+  );
+};
+
+const toCartesian = (angle: number, radius: number) => ({
+  x: radius * Math.cos(angle * (Math.PI / 180)),
+  y: radius * Math.sin(angle * (Math.PI / 180)),
+});
+
 type ArcArg = "rx" | "ry" | "x" | "y" | "rotation";
 
 const ArcPlayground = ({
@@ -110,28 +130,26 @@ const ArcPlayground = ({
     _y
   );
 
-  const endX = cx - 3 * Math.cos(_rotation * (Math.PI / 180));
-  const endY = cy - 3 * Math.sin(_rotation * (Math.PI / 180));
+  const endX = cx - toCartesian(_rotation, 3).x;
+  const endY = cy - toCartesian(_rotation, 3).y;
+
+  const textX = cx - toCartesian(_rotation / 2, 4).x;
+  const textY = cy - toCartesian(_rotation / 2, 4).y;
 
   return (
     <>
       <PathBackground size={30} step={5}>
-        <LineGroup
-          animate={active === "rotation" ? "visible" : "hidden"}
-          variants={{
-            visible: { opacity: 1, transition: { type: false } },
-            hidden: { opacity: 0 },
-          }}
-          initial="hidden"
-        >
-          <line x1="0" x2="30" y1={cy} y2={cy} />
-          <path
-            d={`M ${cx - 3} ${cy} A 3 3 0 0 ${
-              endY > cy ? 0 : 1
-            } ${endX} ${endY}`}
-            fill="none"
-          />
-        </LineGroup>
+        <FadeOut active={active === "rotation"}>
+          <LineGroup>
+            <line x1="0" x2="30" y1={cy} y2={cy} />
+            <path
+              d={`M ${cx - 3} ${cy} A 3 3 0 0 ${
+                endY > cy ? 0 : 1
+              } ${endX} ${endY}`}
+              fill="none"
+            />
+          </LineGroup>
+        </FadeOut>
         <Ellipse
           cx={cx}
           cy={cy}
@@ -140,6 +158,19 @@ const ArcPlayground = ({
           rotation={_rotation}
           debug={active === "rotation"}
         />
+        <FadeOut active={active === "rotation"}>
+          <Text
+            x={textX}
+            y={textY}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontWeight="bold"
+            stroke="none"
+            fill="var(--colors-gray8)"
+          >
+            {_rotation.toFixed(1)}°
+          </Text>
+        </FadeOut>
         <ArcPath
           x0={x0}
           y0={y0}
@@ -275,7 +306,26 @@ const LineGroup = ({ children, dashed = false, ...props }) => {
   );
 };
 
-const Ellipse = ({ cx, cy, rx, ry, rotation, debug = false }) => {
+const Text = ({ children, ...props }) => {
+  const { endpointSize, strokeWidth } = useBackgroundContext();
+  return (
+    <>
+      <text
+        {...props}
+        fontSize={endpointSize * 2}
+        stroke="var(--colors-gray1)"
+        strokeWidth={strokeWidth * 2}
+      >
+        {children}
+      </text>
+      <text fontSize={endpointSize * 2} {...props}>
+        {children}
+      </text>
+    </>
+  );
+};
+
+export const Ellipse = ({ cx, cy, rx, ry, rotation, debug = false }) => {
   const { strokeWidth } = useBackgroundContext();
   return (
     <g
@@ -287,36 +337,57 @@ const Ellipse = ({ cx, cy, rx, ry, rotation, debug = false }) => {
     >
       <g stroke="var(--colors-gray8)">
         <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" />
-        <motion.line
-          animate={debug ? "visible" : "hidden"}
-          variants={{
-            visible: { opacity: 1, transition: { type: false } },
-            hidden: { opacity: 0 },
-          }}
-          initial="hidden"
-          x1={cx}
-          y1={cy}
-          x2={cx - rx}
-          y2={cy}
-          strokeDasharray={strokeWidth * 2}
-        />
+        <FadeOut active={debug}>
+          <line
+            x1={cx}
+            y1={cy}
+            x2={cx - rx}
+            y2={cy}
+            strokeDasharray={strokeWidth * 2}
+          />
+        </FadeOut>
       </g>
       <circle cx={cx} cy={cy} fill="var(--colors-gray8)" r={strokeWidth * 3} />
     </g>
   );
 };
 
-const ArcPath = ({ x0, y0, rx, ry, x, y, rotation, largeArc, sweep }) => {
+type ArcPathProps = {
+  x0: number;
+  y0: number;
+  rx: number;
+  ry: number;
+  x: number;
+  y: number;
+  rotation: number;
+  largeArc: boolean;
+  sweep: boolean;
+  pathProps?: React.ComponentPropsWithoutRef<typeof motion["path"]>;
+};
+
+export const ArcPath = ({
+  x0,
+  y0,
+  rx,
+  ry,
+  x,
+  y,
+  rotation,
+  largeArc,
+  sweep,
+  pathProps = {},
+}: ArcPathProps) => {
   const { strokeWidth, endpointSize } = useBackgroundContext();
   return (
     <>
-      <path
+      <motion.path
         strokeWidth={strokeWidth * 4}
         stroke="white"
         fill="none"
         d={`M ${x0} ${y0} A ${rx} ${ry} ${rotation} ${largeArc ? 1 : 0} ${
           sweep ? 1 : 0
         } ${x} ${y}`}
+        {...pathProps}
       />
       <circle
         cx={x0}
