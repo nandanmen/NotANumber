@@ -1,29 +1,12 @@
 import React from "react";
-import {
-  parse,
-  PathVisualizer,
-  PathProvider,
-  PathSections,
-  Endpoint,
-  getCursorAtIndex,
-  Lines,
-  Endpoints,
-  Path,
-  svgArcToCenterParam,
-} from "~/components/PathVisualizer";
-import {
-  motion,
-  transform,
-  AnimatePresence,
-  useAnimationControls,
-} from "framer-motion";
+import { svgArcToCenterParam } from "~/components/PathVisualizer";
+import { motion, transform } from "framer-motion";
 import {
   PathBackground,
   useBackgroundContext,
 } from "~/components/PathPlayground";
 import { usePageContext } from "../PageProvider";
-import { InteractivePathPlayground } from "~/components/InteractivePathPlayground";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 
 const arcProps = [
   {
@@ -193,11 +176,16 @@ const ArcPlayground = ({
           left: "50%",
           transform: "translateX(-50%)",
           padding: "$6 $10",
-          background: "hsl(0 0% 5%)",
+          background: "$gray2",
           borderRadius: 9999,
-          border: "2px solid $gray4",
+          border: "2px solid $gray6",
           boxShadow: "$md",
           gap: "$3",
+
+          [`.${darkTheme}`]: {
+            background: "hsl(0 0% 5%)",
+            border: "2px solid $gray4",
+          },
         }}
       >
         <span>A</span>
@@ -278,13 +266,23 @@ const Button = styled(motion.button, {
   borderRadius: "$base",
 
   "&:hover": {
-    background: "$gray2",
+    background: "$gray5",
+  },
+
+  [`.${darkTheme}`]: {
+    "&:hover": {
+      background: "$gray2",
+    },
   },
 
   variants: {
     active: {
       true: {
-        background: "$gray2",
+        background: "$gray5",
+
+        [`.${darkTheme}`]: {
+          background: "$gray2",
+        },
       },
     },
   },
@@ -379,32 +377,37 @@ export const ArcPath = ({
 }: ArcPathProps) => {
   const { strokeWidth, endpointSize } = useBackgroundContext();
   return (
-    <>
+    <Box
+      as="g"
+      css={{
+        color: "$gray12",
+      }}
+    >
       <motion.path
-        strokeWidth={strokeWidth * 4}
-        stroke="white"
         fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth * 4}
         d={`M ${x0} ${y0} A ${rx} ${ry} ${rotation} ${largeArc ? 1 : 0} ${
           sweep ? 1 : 0
         } ${x} ${y}`}
         {...pathProps}
       />
-      <circle
-        cx={x0}
-        cy={y0}
-        fill="white"
-        strokeWidth={strokeWidth}
-        stroke="white"
-        r={strokeWidth * 3}
-      />
-      <circle
+      <circle cx={x0} cy={y0} fill="currentColor" r={strokeWidth * 4} />
+      <Box
+        as="circle"
+        css={{
+          fill: "$gray4",
+
+          [`.${darkTheme}`]: {
+            fill: "$gray1",
+          },
+        }}
         cx={x}
         cy={y}
-        fill="var(--colors-gray1)"
-        strokeWidth={strokeWidth}
-        stroke="white"
+        strokeWidth={strokeWidth * 1.5}
+        stroke="currentColor"
         r={endpointSize}
       />
-    </>
+    </Box>
   );
 };

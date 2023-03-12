@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { PathVisualizer, parse } from "~/components/PathVisualizer";
 
 const range = (start: number, end: number, skip = 1) => {
@@ -174,7 +174,11 @@ const LabelText = styled(Text, {
 });
 
 const GridLine = styled("line", {
-  stroke: "$gray6",
+  stroke: "$gray7",
+
+  [`.${darkTheme}`]: {
+    stroke: "$gray6",
+  },
 });
 
 const SvgWrapper = styled("div", {
