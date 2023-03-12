@@ -91,6 +91,8 @@ export const ArcPlayground = ({
   const [_x, setX] = React.useState(x);
   const [_y, setY] = React.useState(y);
   const [_rotation, setRotation] = React.useState(rotation);
+  const [_largeArc, setLargeArc] = React.useState(largeArc);
+  const [_sweep, setSweep] = React.useState(sweep);
 
   const [state, send] = useMachine(arcsMachine);
   const isActive = (name: string) => state.context.name === name;
@@ -101,24 +103,51 @@ export const ArcPlayground = ({
     setX(x);
     setY(y);
     setRotation(rotation);
-  }, [rx, ry, x, y, rotation]);
+    setLargeArc(largeArc);
+    setSweep(sweep);
+  }, [rx, ry, x, y, rotation, largeArc, sweep]);
 
-  const { cx, cy } = svgArcToCenterParam(
+  const ellipseOne = svgArcToCenterParam(
     x0,
     y0,
     _rx,
     _ry,
     _rotation * (Math.PI / 180),
-    largeArc,
-    sweep,
+    false,
+    false,
     _x,
     _y
   );
+  const ellipseTwo = svgArcToCenterParam(
+    x0,
+    y0,
+    _rx,
+    _ry,
+    _rotation * (Math.PI / 180),
+    true,
+    false,
+    _x,
+    _y
+  );
+
+  const getActiveEllipse = () => {
+    if ((_largeArc && _sweep) || (!_largeArc && !_sweep)) {
+      return ellipseOne;
+    }
+    return ellipseTwo;
+  };
 
   const getCurrentAxis = () => {
     if (isActive("rx")) return "x";
     if (isActive("ry")) return "y";
     if (isActive("rotation")) return "x";
+  };
+
+  const { cx, cy } = getActiveEllipse();
+
+  const isEllipseActive = (ellipse: { cx: number; cy: number }) => {
+    if (isActive("largeArc") || isActive("sweep")) return true;
+    return ellipse.cx === cx && ellipse.cy === cy;
   };
 
   return (
@@ -128,19 +157,45 @@ export const ArcPlayground = ({
           <RotationGroup rotation={_rotation} cx={cx} cy={cy} />
         </FadeOut>
         {isActive("y") && (
-          <Line css={{ stroke: "$gray8" }} x1={_x} x2={_x} y1={0} y2={SIZE} />
+          <Line
+            css={{ stroke: "$gray8" }}
+            x1={_x}
+            x2={_x}
+            y1={0}
+            y2={SIZE}
+            dashed
+          />
         )}
         {isActive("x") && (
-          <Line css={{ stroke: "$gray8" }} x1={0} x2={SIZE} y1={_y} y2={_y} />
+          <Line
+            css={{ stroke: "$gray8" }}
+            x1={0}
+            x2={SIZE}
+            y1={_y}
+            y2={_y}
+            dashed
+          />
         )}
-        <Ellipse
-          cx={cx}
-          cy={cy}
-          rx={_rx}
-          ry={_ry}
-          rotation={_rotation}
-          axis={getCurrentAxis()}
-        />
+        {isEllipseActive(ellipseOne) && (
+          <Ellipse
+            cx={ellipseOne.cx}
+            cy={ellipseOne.cy}
+            rx={_rx}
+            ry={_ry}
+            rotation={_rotation}
+            axis={getCurrentAxis()}
+          />
+        )}
+        {isEllipseActive(ellipseTwo) && (
+          <Ellipse
+            cx={ellipseTwo.cx}
+            cy={ellipseTwo.cy}
+            rx={_rx}
+            ry={_ry}
+            rotation={_rotation}
+            axis={getCurrentAxis()}
+          />
+        )}
         <motion.g style={{ x: cx, y: cy }}>
           <Polar radius={_ry / 2} angle={-90 + _rotation}>
             <FadeOut active={isActive("ry")}>
@@ -166,8 +221,20 @@ export const ArcPlayground = ({
           x={_x}
           y={_y}
           rotation={_rotation}
-          largeArc={false}
-          sweep={false}
+          largeArc={isActive("largeArc") ? !_largeArc : _largeArc}
+          sweep={isActive("sweep") ? !_sweep : _sweep}
+          stroke="var(--colors-gray8)"
+        />
+        <ArcPath
+          x0={x0}
+          y0={y0}
+          rx={_rx}
+          ry={_ry}
+          x={_x}
+          y={_y}
+          rotation={_rotation}
+          largeArc={_largeArc}
+          sweep={_sweep}
         />
         <Startpoint x={x0} y={y0} />
         <Endpoint x={_x} y={_y} active={isActive("x") || isActive("y")} />
@@ -223,8 +290,20 @@ export const ArcPlayground = ({
           onHoverStart={() => send({ type: "hoverStart", name: "rotation" })}
           onHoverEnd={() => send({ type: "hoverEnd", name: "rotation" })}
         />
-        <span>0</span>
-        <span>0</span>
+        <Button
+          onClick={() => setLargeArc(!_largeArc)}
+          onHoverStart={() => send({ type: "hoverStart", name: "largeArc" })}
+          onHoverEnd={() => send({ type: "hoverEnd", name: "largeArc" })}
+        >
+          {_largeArc ? 1 : 0}
+        </Button>
+        <Button
+          onClick={() => setSweep(!_sweep)}
+          onHoverStart={() => send({ type: "hoverStart", name: "sweep" })}
+          onHoverEnd={() => send({ type: "hoverEnd", name: "sweep" })}
+        >
+          {_sweep ? 1 : 0}
+        </Button>
         <SlideButton
           value={_x}
           onChange={setX}
@@ -252,7 +331,7 @@ const RotationGroup = ({ cx, cy, rotation }) => {
   const endY = cy - toCartesian(rotation, 3).y;
   return (
     <g stroke="var(--colors-gray8)" strokeWidth={strokeWidth}>
-      <line x1="0" x2={SIZE} y1={cy} y2={cy} />
+      <Line x1="0" x2={SIZE} y1={cy} y2={cy} />
       <path
         d={`M ${cx - 3} ${cy} A 3 3 0 0 ${endY > cy ? 0 : 1} ${endX} ${endY}`}
         fill="none"
@@ -367,9 +446,16 @@ const Text = ({ children, ...props }) => {
   );
 };
 
-const Line = (props) => {
+const Line = ({ dashed = false, ...props }) => {
   const { strokeWidth } = useBackgroundContext();
-  return <Box as={motion.line} strokeWidth={strokeWidth} {...props} />;
+  return (
+    <Box
+      as={motion.line}
+      strokeWidth={strokeWidth}
+      strokeDasharray={dashed ? strokeWidth * 2 : undefined}
+      {...props}
+    />
+  );
 };
 
 export const Ellipse = ({
@@ -399,22 +485,10 @@ export const Ellipse = ({
       <g stroke="var(--colors-gray8)">
         <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" />
         <FadeOut active={axis === "x"}>
-          <line
-            x1={cx}
-            y1={cy}
-            x2={cx - rx}
-            y2={cy}
-            strokeDasharray={strokeWidth * 2}
-          />
+          <Line x1={cx} y1={cy} x2={cx - rx} y2={cy} dashed />
         </FadeOut>
         <FadeOut active={axis === "y"}>
-          <line
-            x1={cx}
-            y1={cy}
-            x2={cx}
-            y2={cy - ry}
-            strokeDasharray={strokeWidth * 2}
-          />
+          <Line x1={cx} y1={cy} x2={cx} y2={cy - ry} dashed />
         </FadeOut>
       </g>
       <circle cx={cx} cy={cy} fill="var(--colors-gray8)" r={strokeWidth * 3} />
