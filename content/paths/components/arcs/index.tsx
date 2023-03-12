@@ -148,8 +148,6 @@ const ArcPlayground = ({
             textAnchor="middle"
             dominantBaseline="middle"
             fontWeight="bold"
-            stroke="none"
-            fill="var(--colors-gray8)"
           >
             {_rotation.toFixed(1)}°
           </Text>
@@ -182,7 +180,7 @@ const ArcPlayground = ({
           boxShadow: "$md",
           gap: "$3",
 
-          [`.${darkTheme}`]: {
+          [`.${darkTheme} &`]: {
             background: "hsl(0 0% 5%)",
             border: "2px solid $gray4",
           },
@@ -269,7 +267,7 @@ const Button = styled(motion.button, {
     background: "$gray5",
   },
 
-  [`.${darkTheme}`]: {
+  [`.${darkTheme} &`]: {
     "&:hover": {
       background: "$gray2",
     },
@@ -280,7 +278,7 @@ const Button = styled(motion.button, {
       true: {
         background: "$gray5",
 
-        [`.${darkTheme}`]: {
+        [`.${darkTheme} &`]: {
           background: "$gray2",
         },
       },
@@ -308,17 +306,28 @@ const Text = ({ children, ...props }) => {
   const { endpointSize, strokeWidth } = useBackgroundContext();
   return (
     <>
-      <text
+      <Box
+        as="text"
         {...props}
         fontSize={endpointSize * 2}
-        stroke="var(--colors-gray1)"
         strokeWidth={strokeWidth * 2}
+        css={{
+          stroke: "$gray4",
+          [`.${darkTheme} &`]: {
+            stroke: "$gray1",
+          },
+        }}
       >
         {children}
-      </text>
-      <text fontSize={endpointSize * 2} {...props}>
+      </Box>
+      <Box
+        as="text"
+        css={{ fill: "$gray10" }}
+        fontSize={endpointSize * 2}
+        {...props}
+      >
         {children}
-      </text>
+      </Box>
     </>
   );
 };
@@ -398,7 +407,7 @@ export const ArcPath = ({
         css={{
           fill: "$gray4",
 
-          [`.${darkTheme}`]: {
+          [`.${darkTheme} &`]: {
             fill: "$gray1",
           },
         }}
