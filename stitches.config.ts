@@ -8,7 +8,6 @@ import {
   grayDark,
   blueDark,
   yellowDark,
-  redDark,
 } from "@radix-ui/colors";
 
 const SPACING = {
