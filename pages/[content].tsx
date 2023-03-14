@@ -61,9 +61,7 @@ export default function PostPage({ content }: { content: Post }) {
       <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
-          <NextLink href="/">
-            <a>NaN</a>
-          </NextLink>
+          <NextLink href="/">NaN</NextLink>
         </h2>
         <ul>
           {headings.map((heading) => (
