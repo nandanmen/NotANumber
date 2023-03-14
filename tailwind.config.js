@@ -13,9 +13,9 @@ module.exports = {
         ...yellow,
       },
       fontFamily: {
-        serif: `PP Editorial New, ui-serif, Georgia, serif`,
-        mono: `JetBrains Mono, ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
-        sans: `Nunito, system-ui, -apple-system, sans-serif`,
+        serif: "var(--font-serif)",
+        mono: "var(--font-mono)",
+        sans: "var(--font-sans)",
       },
     },
   },

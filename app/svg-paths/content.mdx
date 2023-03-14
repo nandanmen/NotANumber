@@ -1,0 +1,58 @@
+# Paths Are Made Of Commands
+
+The weird string that you see in the `d` attribute of SVG paths is actually a series of commands:
+
+```
+M 20 20
+v 20
+m 30 0
+v -20
+M 10 50
+Q 40 70 65 50
+```
+
+As you might be able to tell, each command essentially follows the same format:
+
+1. A **letter** that identifies the type of the command, and;
+2. A **sequence of numbers** that represents the arguments passed to the command.
+
+---
+
+Commands are grouped into three different types:
+
+---
+
+### Cursor Commands
+
+These commands move the path's internal cursor, letting you create different path segments.
+
+```
+M 20 20
+m 30 0
+M 10 50
+```
+
+---
+
+### Line Commands
+
+These commands draw lines from the current cursor position to a new position.
+
+```
+v 20
+v -20
+```
+
+---
+
+### Curve Commands
+
+These commands draw various curves from the current cursor position to a new position.
+
+```
+Q 40 70 65 50
+```
+
+---
+
+Of course, this is by no means an exhaustive list. There are many more commands than the ones you see here. Let's take a look at them, shall we?
