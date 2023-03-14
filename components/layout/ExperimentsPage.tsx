@@ -21,18 +21,17 @@ export function ExperimentsPage({ children, page }) {
       <ContentWrapper>
         <Row as={NavWrapper} css={{ flexDirection: "column", gap: "$4" }}>
           <LinkWrapper>
-            <Link href="/">
-              <a>NaN</a>
-            </Link>
+            <Link href="/">NaN</Link>
           </LinkWrapper>
           <ExperimentsList>
             {experiments.map((experiment) => (
               <li key={experiment}>
-                <Link href={`/experiments/${experiment}`} passHref>
-                  <ExperimentItem active={page === experiment}>
-                    {`${page === experiment ? ">" : ""} ${experiment}`}
-                  </ExperimentItem>
-                </Link>
+                <ExperimentItem
+                  href={`/experiments/${experiment}`}
+                  active={page === experiment}
+                >
+                  {`${page === experiment ? ">" : ""} ${experiment}`}
+                </ExperimentItem>
               </li>
             ))}
           </ExperimentsList>
@@ -43,7 +42,7 @@ export function ExperimentsPage({ children, page }) {
   );
 }
 
-const ExperimentItem = styled("a", {
+const ExperimentItem = styled(Link, {
   color: "$gray11",
   variants: {
     active: {
