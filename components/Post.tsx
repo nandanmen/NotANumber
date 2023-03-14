@@ -33,32 +33,24 @@ export function Post({ post, children, direction = "left" }: PostProps) {
           }).format(new Date(post.editedAt))}
         </PostUpdatedText>
         <PostTitle whileHover="hover">
-          {isExternal ? (
-            <TitleAnchor href={post.slug} direction={direction}>
-              <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
-            </TitleAnchor>
-          ) : (
-            <Link href={post.slug} passHref>
-              <TitleAnchor direction={direction}>
-                <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
-              </TitleAnchor>
-            </Link>
-          )}
+          <TitleAnchor
+            as={isExternal ? undefined : Link}
+            href={post.slug}
+            direction={direction}
+          >
+            <Balancer ratio={0.8}>{titleCase(post.title)}</Balancer>
+          </TitleAnchor>
         </PostTitle>
         <PostDescription>{post.description}</PostDescription>
-        {isExternal ? (
-          <TitleAnchor small href={post.slug} direction={direction}>
-            Read now
-            <BsArrowRight width="12" height="12" />
-          </TitleAnchor>
-        ) : (
-          <Link href={post.slug} passHref>
-            <TitleAnchor small direction={direction}>
-              Read now
-              <BsArrowRight width="12" height="12" />
-            </TitleAnchor>
-          </Link>
-        )}
+        <TitleAnchor
+          as={isExternal ? undefined : Link}
+          small
+          href={post.slug}
+          direction={direction}
+        >
+          Read now
+          <BsArrowRight width="12" height="12" />
+        </TitleAnchor>
       </PostContent>
       <Figure>{children}</Figure>
     </PostWrapper>

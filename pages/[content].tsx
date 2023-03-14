@@ -4,11 +4,10 @@ import NextLink from "next/link";
 import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
 import Balancer from "react-wrap-balancer";
-import Image from "next/image";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { BASE_URL } from "~/lib/config";
-import { darkTheme, styled } from "~/stitches.config";
+import { styled } from "~/stitches.config";
 
 import { Heading, Subheading } from "~/components/Heading";
 import { OrderedList } from "~/components/OrderedList";
@@ -16,7 +15,6 @@ import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
 import { Link } from "~/components/Link";
 import { Content } from "~/components/Content";
-// import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
@@ -63,9 +61,7 @@ export default function PostPage({ content }: { content: Post }) {
       <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
-          <NextLink href="/">
-            <a>NaN</a>
-          </NextLink>
+          <NextLink href="/">NaN</NextLink>
         </h2>
         <ul>
           {headings.map((heading) => (
