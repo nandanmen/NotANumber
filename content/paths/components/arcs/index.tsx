@@ -243,7 +243,7 @@ export const ArcPlayground = ({
         css={{
           display: "flex",
           fontFamily: "$mono",
-          fontSize: "$xl",
+          fontSize: "$lg",
           position: "absolute",
           bottom: "8vh",
           left: "50%",
@@ -361,6 +361,7 @@ const SlideButton = ({
   const [panning, setPanning] = React.useState(false);
   return (
     <Button
+      css={{ cursor: "ew-resize" }}
       onPanStart={(...args) => {
         setPanning(true);
         onPanStart?.(...args);
