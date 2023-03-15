@@ -11,14 +11,21 @@ const components = {
 export const MDX = ({
   content,
   numSections,
+  children,
 }: {
   content: MDXRemoteSerializeResult;
   numSections: number;
+  children?: React.ReactNode;
 }) => {
   return (
     <IndexProvider numSections={numSections}>
-      <MDXRemote {...content} components={components} />
-      <Footer />
+      <article className="border-r border-gray8 divide-y divide-dashed divide-gray8">
+        <MDXRemote {...content} components={components} />
+        <Footer />
+      </article>
+      <div className="h-full max-h-[100vh] sticky top-0 p-10 max-w-[100vh] mx-auto w-full flex items-center">
+        {children}
+      </div>
     </IndexProvider>
   );
 };

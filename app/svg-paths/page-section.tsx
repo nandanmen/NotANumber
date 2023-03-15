@@ -40,5 +40,5 @@ export function PageSection({
 }) {
   const { index: activeIndex } = useIndexContext();
   if (index > activeIndex) return null;
-  return <section>{children}</section>;
+  return <section className="p-10">{children}</section>;
 }

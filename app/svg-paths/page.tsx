@@ -5,7 +5,13 @@ import { MDX } from "./mdx";
 export default async function SvgPathsPage() {
   const source = await fs.readFile("./app/svg-paths/content.mdx", "utf8");
   const { content, length } = splitPage(source);
-  return <MDX content={await serialize(content)} numSections={length} />;
+  return (
+    <MDX content={await serialize(content)} numSections={length}>
+      <svg viewBox="0 0 50 50" width="100%">
+        <circle cx="25" cy="25" r="25" fill="red" />
+      </svg>
+    </MDX>
+  );
 }
 
 /**
