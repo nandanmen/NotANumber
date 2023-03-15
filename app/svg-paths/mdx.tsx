@@ -48,7 +48,7 @@ const Footer = () => {
   }, [next, prev]);
 
   return (
-    <footer>
+    <footer className="sticky bottom-0">
       <p>
         {index + 1} / {numSections}
       </p>

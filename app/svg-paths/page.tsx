@@ -1,15 +1,14 @@
 import * as fs from "fs/promises";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDX } from "./mdx";
+import { Svg } from "./svg";
 
 export default async function SvgPathsPage() {
   const source = await fs.readFile("./app/svg-paths/content.mdx", "utf8");
   const { content, length } = splitPage(source);
   return (
     <MDX content={await serialize(content)} numSections={length}>
-      <svg viewBox="0 0 50 50" width="100%">
-        <circle cx="25" cy="25" r="25" fill="red" />
-      </svg>
+      <Svg size={50}></Svg>
     </MDX>
   );
 }
