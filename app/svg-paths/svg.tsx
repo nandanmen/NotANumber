@@ -109,12 +109,5 @@ function Dot({ x, y }: { x: number; y: number }) {
   const { getRelative } = useSvgContext();
   const isHighlighted = x % 5 === 0 && y % 5 === 0;
   const radius = getRelative(isHighlighted ? 0.5 : 0.2);
-  return (
-    <circle
-      cx={x}
-      cy={y}
-      r={radius}
-      className={isHighlighted ? "fill-gray7" : "fill-gray6"}
-    />
-  );
+  return <circle cx={x} cy={y} r={radius} className="fill-gray8" />;
 }

@@ -1,6 +1,7 @@
 import * as fs from "fs/promises";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDX } from "./mdx";
+import { PathVisualizer } from "./path-visualizer";
 import { Svg } from "./svg";
 
 export default async function SvgPathsPage() {
@@ -8,7 +9,9 @@ export default async function SvgPathsPage() {
   const { content, length } = splitPage(source);
   return (
     <MDX content={await serialize(content)} numSections={length}>
-      <Svg size={50}></Svg>
+      <Svg size={25}>
+        <PathVisualizer command="M 22 17 v 3 a 2 2 0 0 1 -2 2 a 20 20 0 0 1 -9 -3 a 20 20 0 0 1 -6 -6 a 20 20 0 0 1 -3 -9 A 2 2 0 0 1 4 2 h 3 a 2 2 0 0 1 2 2 a 13 13 0 0 0 1 3 a 2 2 0 0 1 -1 2 L 8 10 a 16 16 0 0 0 6 6 l 1 -1 a 2 2 0 0 1 2 -1 a 13 13 0 0 0 3 1 A 2 2 0 0 1 22 17 Z" />
+      </Svg>
     </MDX>
   );
 }
