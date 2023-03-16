@@ -1,4 +1,4 @@
-const { gray, blue, green, red, yellow } = require("@radix-ui/colors");
+const { gray, blue, green, red, yellow, cyan } = require("@radix-ui/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -11,6 +11,7 @@ module.exports = {
         ...green,
         ...red,
         ...yellow,
+        ...cyan,
       },
       fontFamily: {
         serif: "var(--font-serif)",
