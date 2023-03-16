@@ -8,6 +8,7 @@ import {
   type Command,
 } from "svg-path-parser";
 import { produce } from "immer";
+import { clsx } from "clsx";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
 
@@ -46,12 +47,22 @@ const toPath = (command: CommandMadeAbsolute) => {
   return `M ${x0} ${y0} ${code} ${Object.values(rest).join(" ")}`;
 };
 
+type CommandType = "cursor" | "curve" | "arc" | "line";
+
+const mapCodeToType = (code: CommandMadeAbsolute["code"]): CommandType => {
+  if (code === "A") return "arc";
+  if (["L", "H", "V"].includes(code)) return "line";
+  if (["C", "S", "Q", "T"].includes(code)) return "curve";
+  return "cursor";
+};
+
 const PathContext = React.createContext<{
   path: string;
   commands: Command[];
   absoluteCommands: CommandMadeAbsolute[];
   hasIndex: boolean;
   index?: number;
+  type?: CommandType;
 }>(null);
 
 export function usePathContext() {
@@ -61,9 +72,11 @@ export function usePathContext() {
 export function PathVisualizer({
   path,
   index,
+  type,
 }: {
   path: string;
   index?: number;
+  type?: CommandType;
 }) {
   const commands = parseSVG(path);
   const absoluteCommands = produce(commands, (draft) =>
@@ -80,13 +93,15 @@ export function PathVisualizer({
           absoluteCommands,
           hasIndex,
           index,
+          type,
         }}
       >
-        <g className={hasIndex && "text-gray8"}>
+        <g className={(type || hasIndex) && "text-gray8"}>
           <Arcs />
           <Lines />
           <Sections />
           <Endpoints />
+          <CursorPoints />
         </g>
       </PathContext.Provider>
     </g>
@@ -95,15 +110,19 @@ export function PathVisualizer({
 
 const Sections = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands } = usePathContext();
+  const { absoluteCommands, type } = usePathContext();
   return (
     <g>
       {absoluteCommands.map((command, index) => {
+        const active = !type || type === mapCodeToType(command.code);
         return (
           <g key={command.code + index}>
             <path
               d={toPath(command)}
-              className="stroke-current fill-none"
+              className={clsx(
+                "fill-none",
+                active ? "stroke-gray12" : "stroke-current"
+              )}
               strokeWidth={getRelative(1)}
             />
           </g>
@@ -142,10 +161,12 @@ const Arcs = () => {
 
 const Lines = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands } = usePathContext();
+  const { absoluteCommands, type } = usePathContext();
   return (
     <g strokeWidth={getRelative(0.5)} className="stroke-gray10">
       {absoluteCommands.map((command, index) => {
+        const active = !type || type === mapCodeToType(command.code);
+        if (!active) return null;
         switch (command.code) {
           case "M": {
             return (
@@ -231,53 +252,74 @@ const Text = ({ children, ...props }) => {
   const { getRelative } = useSvgContext();
   const fontSize = getRelative(2);
   return (
-    <g>
-      <text
-        fontSize={fontSize}
-        strokeWidth={getRelative(0.5)}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        className="stroke-gray4"
-        fontWeight="bold"
-        {...props}
-      >
+    <g
+      fontSize={fontSize}
+      textAnchor="middle"
+      dominantBaseline="middle"
+      fontWeight="bold"
+      className="font-mono"
+    >
+      <text strokeWidth={getRelative(0.5)} className="stroke-gray4" {...props}>
         {children}
       </text>
-      <text
-        fontSize={fontSize}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        className="fill-gray10 stroke-none"
-        fontWeight="bold"
-        {...props}
-      >
+      <text className="fill-gray10 stroke-none" {...props}>
         {children}
       </text>
     </g>
   );
 };
 
-const Endpoints = () => {
+const CursorPoints = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands } = usePathContext();
+  const { absoluteCommands, type } = usePathContext();
   return (
     <g>
-      <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
       {absoluteCommands.map((command, i) => {
+        if (command.code === "Z") return null;
+        const active = !type || type === mapCodeToType(command.code);
+        return (
+          <circle
+            key={command.code + i}
+            cx={command.x}
+            cy={command.y}
+            r={getRelative(1)}
+            strokeWidth={getRelative(0.6)}
+            className={clsx(
+              "fill-gray4",
+              active ? "stroke-gray12" : "stroke-current"
+            )}
+          />
+        );
+      })}
+    </g>
+  );
+};
+
+const Endpoints = () => {
+  const { getRelative } = useSvgContext();
+  const { absoluteCommands, type } = usePathContext();
+  return (
+    <g>
+      {absoluteCommands.map((command, i) => {
+        const active = !type || type === mapCodeToType(command.code);
+        if (!active) return null;
         switch (command.code) {
-          case "Z": {
-            return null;
+          case "M": {
+            if (!command.x0 && !command.y0) {
+              return (
+                <circle
+                  key={command.code + i}
+                  cx="0"
+                  cy="0"
+                  r={getRelative(1)}
+                  className="fill-gray10"
+                />
+              );
+            }
           }
           case "L": {
             return (
               <g key={command.code + i}>
-                <circle
-                  cx={command.x}
-                  cy={command.y}
-                  r={getRelative(1)}
-                  strokeWidth={getRelative(0.6)}
-                  className="fill-gray4 stroke-current"
-                />
                 <circle
                   cx={command.x0}
                   cy={command.y}
@@ -290,13 +332,6 @@ const Endpoints = () => {
           case "C": {
             return (
               <g key={command.code + i}>
-                <circle
-                  cx={command.x}
-                  cy={command.y}
-                  r={getRelative(1)}
-                  strokeWidth={getRelative(0.6)}
-                  className="fill-gray4 stroke-current"
-                />
                 <circle
                   cx={command.x1}
                   cy={command.y1}
@@ -312,18 +347,8 @@ const Endpoints = () => {
               </g>
             );
           }
-          default: {
-            return (
-              <circle
-                key={command.code + i}
-                cx={command.x}
-                cy={command.y}
-                r={getRelative(1)}
-                strokeWidth={getRelative(0.6)}
-                className="fill-gray4 stroke-current"
-              />
-            );
-          }
+          default:
+            return null;
         }
       })}
     </g>

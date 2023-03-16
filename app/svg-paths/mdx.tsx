@@ -23,7 +23,7 @@ export const MDX = ({
         <MDXRemote {...content} components={components} />
         <Footer />
       </article>
-      <div className="h-full max-h-[100vh] sticky top-0 p-10 max-w-[100vh] mx-auto w-full flex items-center">
+      <div className="h-full max-h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 max-w-[calc(100vh_-_theme(space.16))] mx-auto w-full flex items-center">
         {children}
       </div>
     </IndexProvider>

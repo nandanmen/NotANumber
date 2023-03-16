@@ -47,8 +47,8 @@ export function Svg({
 
   return (
     <svg
-      viewBox={`-${padding} -${padding} ${size + padding * 2} ${
-        size + padding * 2
+      viewBox={`-${padding} -${padding} ${size + padding + padding / 2} ${
+        size + padding + padding / 2
       }`}
     >
       <SvgContext.Provider value={{ size, config: _config, getRelative }}>
