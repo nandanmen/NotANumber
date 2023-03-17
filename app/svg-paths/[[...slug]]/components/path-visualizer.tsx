@@ -57,12 +57,7 @@ const mapCodeToType = (code: CommandMadeAbsolute["code"]): CommandType => {
 };
 
 const PathContext = React.createContext<{
-  path: string;
-  commands: Command[];
-  absoluteCommands: CommandMadeAbsolute[];
-  hasIndex: boolean;
-  index?: number;
-  type?: CommandType;
+  commands: CommandMadeAbsolute[];
 }>(null);
 
 export function usePathContext() {
@@ -82,26 +77,33 @@ export function PathVisualizer({
   const absoluteCommands = produce(commands, (draft) =>
     makeAbsolute(draft)
   ) as CommandMadeAbsolute[];
-  const hasIndex = typeof index === "number";
+
+  const activeCommands = absoluteCommands.filter((command) => {
+    if (!type) return true;
+    return mapCodeToType(command.code) === type;
+  });
 
   return (
     <g>
       <PathContext.Provider
         value={{
-          path,
-          commands,
-          absoluteCommands,
-          hasIndex,
-          index,
-          type,
+          commands: absoluteCommands,
         }}
       >
-        <g className={(type || hasIndex) && "text-gray8"}>
+        <g className="text-gray8">
+          <Sections />
+        </g>
+      </PathContext.Provider>
+      <PathContext.Provider
+        value={{
+          commands: activeCommands,
+        }}
+      >
+        <g>
           <Arcs />
           <Lines />
-          <Sections />
           <Endpoints />
-          <CursorPoints />
+          <Sections />
         </g>
       </PathContext.Provider>
     </g>
@@ -110,34 +112,46 @@ export function PathVisualizer({
 
 const Sections = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands, type } = usePathContext();
+  const { commands } = usePathContext();
   return (
     <g>
-      {absoluteCommands.map((command, index) => {
-        const active = !type || type === mapCodeToType(command.code);
-        return (
-          <g key={command.code + index}>
+      <g>
+        {commands.map((command, index) => {
+          return (
             <path
+              key={command.code + index}
               d={toPath(command)}
-              className={clsx(
-                "fill-none",
-                active ? "stroke-gray12" : "stroke-current"
-              )}
+              className="fill-none stroke-current"
               strokeWidth={getRelative(1)}
             />
-          </g>
-        );
-      })}
+          );
+        })}
+      </g>
+      <g>
+        {commands.map((command, i) => {
+          if (command.code === "Z") return null;
+          return (
+            <circle
+              key={command.code + i}
+              cx={command.x}
+              cy={command.y}
+              r={getRelative(1)}
+              strokeWidth={getRelative(0.6)}
+              className="fill-gray4 stroke-current"
+            />
+          );
+        })}
+      </g>
     </g>
   );
 };
 
 const Arcs = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands } = usePathContext();
+  const { commands } = usePathContext();
   return (
     <g strokeWidth={getRelative(0.5)}>
-      {absoluteCommands.map((command, index) => {
+      {commands.map((command, index) => {
         switch (command.code) {
           case "A": {
             const { cx, cy } = getArcCenter(command);
@@ -161,12 +175,10 @@ const Arcs = () => {
 
 const Lines = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands, type } = usePathContext();
+  const { commands } = usePathContext();
   return (
     <g strokeWidth={getRelative(0.5)} className="stroke-gray10">
-      {absoluteCommands.map((command, index) => {
-        const active = !type || type === mapCodeToType(command.code);
-        if (!active) return null;
+      {commands.map((command, index) => {
         switch (command.code) {
           case "M": {
             return (
@@ -269,40 +281,12 @@ const Text = ({ children, ...props }) => {
   );
 };
 
-const CursorPoints = () => {
-  const { getRelative } = useSvgContext();
-  const { absoluteCommands, type } = usePathContext();
-  return (
-    <g>
-      {absoluteCommands.map((command, i) => {
-        if (command.code === "Z") return null;
-        const active = !type || type === mapCodeToType(command.code);
-        return (
-          <circle
-            key={command.code + i}
-            cx={command.x}
-            cy={command.y}
-            r={getRelative(1)}
-            strokeWidth={getRelative(0.6)}
-            className={clsx(
-              "fill-gray4",
-              active ? "stroke-gray12" : "stroke-current"
-            )}
-          />
-        );
-      })}
-    </g>
-  );
-};
-
 const Endpoints = () => {
   const { getRelative } = useSvgContext();
-  const { absoluteCommands, type } = usePathContext();
+  const { commands } = usePathContext();
   return (
     <g>
-      {absoluteCommands.map((command, i) => {
-        const active = !type || type === mapCodeToType(command.code);
-        if (!active) return null;
+      {commands.map((command, i) => {
         switch (command.code) {
           case "M": {
             if (!command.x0 && !command.y0) {

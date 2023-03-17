@@ -54,3 +54,5 @@ Another thing I can do is to just duplicate the paths when they're active.
 - Actually this won't work if I want to show the helper lines for all the parts at once
 
 I wonder if I should actually show all of the path aids at the same time. Does it make more sense to only show the "active" path?
+
+The one "bug" here is that the active commands can appear below the inactive commands because we're using only one component. I feel like it makes sense to show the active commands on top of the inactive ones by duplicating the components. Not really sure how to organize those components just yet though.
