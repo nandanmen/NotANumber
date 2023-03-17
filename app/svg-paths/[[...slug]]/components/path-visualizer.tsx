@@ -5,10 +5,8 @@ import {
   parseSVG,
   makeAbsolute,
   type CommandMadeAbsolute,
-  type Command,
 } from "svg-path-parser";
 import { produce } from "immer";
-import { clsx } from "clsx";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
 
@@ -287,54 +285,63 @@ const Endpoints = () => {
   return (
     <g>
       {commands.map((command, i) => {
-        switch (command.code) {
-          case "M": {
-            if (!command.x0 && !command.y0) {
-              return (
-                <circle
-                  key={command.code + i}
-                  cx="0"
-                  cy="0"
-                  r={getRelative(1)}
-                  className="fill-gray10"
-                />
-              );
-            }
-          }
-          case "L": {
-            return (
-              <g key={command.code + i}>
-                <circle
-                  cx={command.x0}
-                  cy={command.y}
-                  r={getRelative(0.8)}
-                  className="fill-gray10"
-                />
-              </g>
-            );
-          }
-          case "C": {
-            return (
-              <g key={command.code + i}>
-                <circle
-                  cx={command.x1}
-                  cy={command.y1}
-                  r={getRelative(0.8)}
-                  className="fill-gray10"
-                />
-                <circle
-                  cx={command.x2}
-                  cy={command.y2}
-                  r={getRelative(0.8)}
-                  className="fill-gray10"
-                />
-              </g>
-            );
-          }
-          default:
-            return null;
-        }
+        return (
+          <g key={command.code + i}>
+            <circle
+              cx={command.x0}
+              cy={command.y0}
+              r={getRelative(1)}
+              className="fill-current"
+            />
+            <CommandEndpoint command={command} />
+          </g>
+        );
       })}
     </g>
   );
+};
+
+const CommandEndpoint = ({ command }: { command: CommandMadeAbsolute }) => {
+  const { getRelative } = useSvgContext();
+  switch (command.code) {
+    case "M": {
+      if (!command.x0 && !command.y0) {
+        return (
+          <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
+        );
+      }
+    }
+    case "L": {
+      return (
+        <>
+          <circle
+            cx={command.x0}
+            cy={command.y}
+            r={getRelative(0.8)}
+            className="fill-gray10"
+          />
+        </>
+      );
+    }
+    case "C": {
+      return (
+        <>
+          <circle
+            cx={command.x1}
+            cy={command.y1}
+            r={getRelative(0.8)}
+            className="fill-gray10"
+          />
+          <circle
+            cx={command.x2}
+            cy={command.y2}
+            r={getRelative(0.8)}
+            className="fill-gray10"
+          />
+        </>
+      );
+    }
+    default:
+      return null;
+  }
 };
