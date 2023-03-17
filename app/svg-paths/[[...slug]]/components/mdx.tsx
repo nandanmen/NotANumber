@@ -2,7 +2,8 @@
 
 import React from "react";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
-import { IndexProvider, PageSection, useIndexContext } from "./page-section";
+import { PageSection } from "./page-section";
+import { IndexProvider, useIndexContext } from "./index-provider";
 
 const components = {
   PageSection,

@@ -1,35 +1,5 @@
 import React from "react";
-
-const IndexContext = React.createContext<{
-  index: number;
-  numSections: number;
-  next: () => void;
-  prev: () => void;
-}>(null);
-
-export function IndexProvider({
-  children,
-  numSections = Number.POSITIVE_INFINITY,
-}: {
-  numSections?: number;
-  children: React.ReactNode;
-}) {
-  const [index, setIndex] = React.useState(0);
-  const next = React.useCallback(
-    () => setIndex((i) => Math.min(i + 1, numSections - 1)),
-    [numSections]
-  );
-  const prev = React.useCallback(() => setIndex((i) => Math.max(i - 1, 0)), []);
-  return (
-    <IndexContext.Provider value={{ index, numSections, next, prev }}>
-      {children}
-    </IndexContext.Provider>
-  );
-}
-
-export function useIndexContext() {
-  return React.useContext(IndexContext);
-}
+import { useIndexContext } from "./index-provider";
 
 export function PageSection({
   index,
@@ -38,7 +8,27 @@ export function PageSection({
   index: number;
   children: React.ReactNode;
 }) {
-  const { index: activeIndex } = useIndexContext();
-  if (index > activeIndex) return null;
-  return <section className="p-10">{children}</section>;
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { set } = useIndexContext();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const { top } = ref.current.getBoundingClientRect();
+        if (top < window.innerHeight / 2) {
+          set(index);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [index, set]);
+
+  return (
+    <section ref={ref} className="p-10 min-h-[50vh]">
+      {children}
+    </section>
+  );
 }

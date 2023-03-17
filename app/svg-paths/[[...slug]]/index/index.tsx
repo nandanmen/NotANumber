@@ -1,6 +1,6 @@
 "use client";
 
-import { useIndexContext } from "../components/page-section";
+import { useIndexContext } from "../components/index-provider";
 import { PathVisualizer } from "../components/path-visualizer";
 import { Svg } from "../components/svg";
 
@@ -17,9 +17,9 @@ C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
 Z`;
 
 const mapIndexToType = {
-  2: "cursor",
-  3: "line",
-  4: "curve",
+  1: "cursor",
+  2: "line",
+  3: "curve",
 };
 
 export function Index() {
