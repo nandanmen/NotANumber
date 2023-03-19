@@ -6,6 +6,12 @@ import { PageSection } from "./page-section";
 import { IndexProvider, useIndexContext } from "./index-provider";
 
 const components = {
+  h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
+  code: (props) => <code className="inline-code" {...props} />,
+  pre: (props) => (
+    <pre className="border border-gray8 bg-gray3 p-4 rounded-md" {...props} />
+  ),
+  ul: (props) => <ul className="list-disc list-inside" {...props} />,
   PageSection,
 };
 
@@ -20,11 +26,10 @@ export const MDX = ({
 }) => {
   return (
     <IndexProvider numSections={numSections}>
-      <article className="border-r border-gray8 divide-y divide-dashed divide-gray8">
+      <article className="border-r border-gray8 divide-y divide-dashed divide-gray8 leading-7">
         <MDXRemote {...content} components={components} />
-        <Footer />
       </article>
-      <div className="h-full max-h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 max-w-[calc(100vh_-_theme(space.16))] mx-auto w-full flex items-center">
+      <div className="h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 aspect-square flex items-center">
         {children}
       </div>
     </IndexProvider>

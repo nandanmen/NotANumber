@@ -11,18 +11,24 @@ M 10 50
 Q 40 70 65 50
 ```
 
-As you might be able to tell, each command essentially follows the same format:
+All path commands follow the same format:
 
-1. A **letter** that identifies the type of the command, and;
-2. A **sequence of numbers** that represents the arguments passed to the command.
+- A **letter code** indicating the command type, and;
+- A series of **numbers** indicating the command's parameters.
+
+The letter can be uppercase or lowercase, with a lowercase letter indicating the command uses _relative_ coordinates.
+
+For example, you can think of the `M 20 20` command as a function call that looks like this:
+
+```js
+M({ x: 20, y: 20, relative: false });
+```
 
 ---
 
 Commands are grouped into three different types:
 
-### Cursor Commands
-
-These commands move the path's internal cursor, letting you create different path segments.
+**Cursor commands**, which move the path's internal cursor without drawing a line or a curve;
 
 ```
 M 20 20
@@ -32,9 +38,7 @@ M 10 50
 
 ---
 
-### Line Commands
-
-These commands draw lines from the current cursor position to a new position.
+**Line commands**, which draw a straight line from the cursor's current position to another position;
 
 ```
 v 20
@@ -43,9 +47,7 @@ v -20
 
 ---
 
-### Curve Commands
-
-These commands draw various curves from the current cursor position to a new position.
+And **curve commands**, which draw a curve from the cursor's current position to another position, using control points to determine its "curvy"-ness.
 
 ```
 Q 40 70 65 50

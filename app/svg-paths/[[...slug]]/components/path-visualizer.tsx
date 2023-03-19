@@ -9,15 +9,19 @@ import {
 import { produce } from "immer";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { v4 } from "uuid";
 
-const getColor = (code: CommandMadeAbsolute["code"]) => {
+type Command = CommandMadeAbsolute & { id: string };
+
+const getColor = (code: Command["code"]) => {
   if (code === "A") return "text-blue10";
   if (["L", "H", "V"].includes(code)) return "text-green10";
   if (["C", "S", "Q", "T"].includes(code)) return "text-cyan10";
   return "text-gray10";
 };
 
-const toPath = (command: CommandMadeAbsolute) => {
+const toPath = (command: Command) => {
   const {
     code,
     x0,
@@ -47,7 +51,7 @@ const toPath = (command: CommandMadeAbsolute) => {
 
 type CommandType = "cursor" | "curve" | "arc" | "line";
 
-const mapCodeToType = (code: CommandMadeAbsolute["code"]): CommandType => {
+const mapCodeToType = (code: Command["code"]): CommandType => {
   if (code === "A") return "arc";
   if (["L", "H", "V"].includes(code)) return "line";
   if (["C", "S", "Q", "T"].includes(code)) return "curve";
@@ -55,7 +59,7 @@ const mapCodeToType = (code: CommandMadeAbsolute["code"]): CommandType => {
 };
 
 const PathContext = React.createContext<{
-  commands: CommandMadeAbsolute[];
+  commands: Command[];
 }>(null);
 
 export function usePathContext() {
@@ -71,10 +75,14 @@ export function PathVisualizer({
   index?: number;
   type?: CommandType;
 }) {
-  const commands = parseSVG(path);
-  const absoluteCommands = produce(commands, (draft) =>
-    makeAbsolute(draft)
-  ) as CommandMadeAbsolute[];
+  const absoluteCommands = React.useMemo(() => {
+    const commands = parseSVG(path);
+    makeAbsolute(commands);
+    return commands.map((command) => ({
+      ...command,
+      id: v4(),
+    }));
+  }, [path]) as Command[];
 
   const activeCommands = absoluteCommands.filter((command) => {
     if (!type) return true;
@@ -111,34 +119,45 @@ export function PathVisualizer({
 const Sections = () => {
   const { getRelative } = useSvgContext();
   const { commands } = usePathContext();
+  console.log(commands);
   return (
     <g>
       <g>
-        {commands.map((command, index) => {
-          return (
-            <path
-              key={command.code + index}
-              d={toPath(command)}
-              className="fill-none stroke-current"
-              strokeWidth={getRelative(1)}
-            />
-          );
-        })}
+        <AnimatePresence>
+          {commands.map((command) => {
+            return (
+              <motion.path
+                key={command.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                d={toPath(command)}
+                className="fill-none stroke-current"
+                strokeWidth={getRelative(1)}
+              />
+            );
+          })}
+        </AnimatePresence>
       </g>
       <g>
-        {commands.map((command, i) => {
-          if (command.code === "Z") return null;
-          return (
-            <circle
-              key={command.code + i}
-              cx={command.x}
-              cy={command.y}
-              r={getRelative(1)}
-              strokeWidth={getRelative(0.6)}
-              className="fill-gray4 stroke-current"
-            />
-          );
-        })}
+        <AnimatePresence>
+          {commands.map((command, i) => {
+            if (command.code === "Z") return null;
+            return (
+              <motion.circle
+                key={command.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                cx={command.x}
+                cy={command.y}
+                r={getRelative(1)}
+                strokeWidth={getRelative(0.6)}
+                className="fill-gray4 stroke-current"
+              />
+            );
+          })}
+        </AnimatePresence>
       </g>
     </g>
   );
@@ -155,7 +174,7 @@ const Arcs = () => {
             const { cx, cy } = getArcCenter(command);
             return (
               <ellipse
-                key={command.code + index}
+                key={command.id}
                 cx={cx}
                 cy={cy}
                 rx={command.rx}
@@ -181,7 +200,7 @@ const Lines = () => {
           case "M": {
             return (
               <line
-                key={command.code + index}
+                key={command.id}
                 x1={command.x0}
                 y1={command.y0}
                 x2={command.x}
@@ -218,7 +237,7 @@ const Lines = () => {
           }
           case "Q": {
             return (
-              <g key={command.code + index}>
+              <g key={command.id}>
                 <line
                   x1={command.x0}
                   y1={command.y0}
@@ -236,7 +255,7 @@ const Lines = () => {
           }
           case "C": {
             return (
-              <g key={command.code + index}>
+              <g key={command.id}>
                 <line
                   x1={command.x0}
                   y1={command.y0}
@@ -286,7 +305,7 @@ const Endpoints = () => {
     <g>
       {commands.map((command, i) => {
         return (
-          <g key={command.code + i}>
+          <g key={command.id}>
             <circle
               cx={command.x0}
               cy={command.y0}
@@ -301,7 +320,7 @@ const Endpoints = () => {
   );
 };
 
-const CommandEndpoint = ({ command }: { command: CommandMadeAbsolute }) => {
+const CommandEndpoint = ({ command }: { command: Command }) => {
   const { getRelative } = useSvgContext();
   switch (command.code) {
     case "M": {
