@@ -1,0 +1,49 @@
+# Cursors
+
+At the heart of all SVG paths is the **cursor**. All path commands _use_ the cursor to determine where to start drawing from, and all path commands _move_ the cursor to ensure the following command starts from the correct position.
+
+---
+
+Consider this little corner, defined with the following commands:
+
+```
+M 10 10
+L 20 10
+v 10
+```
+
+The cursor always starts at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
+
+- `M 10 10` moves the cursor to `(10, 10)`.
+- `L 20 10` draws a line from `(10, 10)` to `(20, 10)`, and moves the cursor to `(20, 10)`.
+- `v 10` draws a line from `(20, 10)` to `(20, 20)`, and moves the cursor to `(20, 20)`.
+
+---
+
+By checking if the command is **absolute** or **relative**, we can determine how the cursor will be moved after the command is executed:
+
+- For **absolute commands**, the cursor will end up at the command's `x` and `y` values. For example, `L 10 10` will move the cursor to `(10, 10)`.
+- For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(10, 10)`, then `l 10 10` will move the cursor to `(20, 20)`.
+
+Remember: commands written with an uppercase letter are **absolute** commands, while commands written with a lowercase letter are **relative** commands.
+
+---
+
+## Move Command
+
+There is a special command that _only_ moves the cursor without drawing anything. This command is called the **move command** and is denoted with the `M` (or `m`) code.
+
+These are useful when you want to start drawing a new, disconnected path:
+
+```
+M 10 10
+v 10
+M 30 10
+v 10
+```
+
+---
+
+## Practice
+
+Using the `M` and/or `m` commands, **move the cursor to the points shown on the canvas**.

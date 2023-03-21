@@ -1,0 +1,59 @@
+# Curves II: Cubic Curves
+
+Quadratic curves are great, but only having one control point can be limiting. For example, you can't really make a nice-looking pill shape using quadratic curves.
+
+---
+
+On the other hand, cubic curves, the second type of SVG path curve, have **two control points**. This gives you a lot more flexibility in how you can shape your curves.
+
+---
+
+Two control points mean you can bend your curve in two different directions. Like maybe to make a little trophy?
+
+---
+
+## Syntax
+
+Making a cubic bezier curve is very similar to making a quadratic curve, but with the addition of one extra control point (which means an extra pair of `x`—`y` coordinates):
+
+```
+C x1 y1, x2 y2, x y
+```
+
+Like all the other commands, you can use the lowercase `c` to make all the coordinates relative to the cursor.
+
+```
+c dx1 dy1, dx2 dy2, dx dy
+```
+
+---
+
+## Multiple Bezier Curves
+
+Just like with quadratic curves, you can create a cubic curve that depends on the previous curve using the `S` command:
+
+```
+C 10 25 20 5 25 15
+S 40 5 45 15
+```
+
+---
+
+## Practice
+
+Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
+
+```
+M 10 20
+c -10 -1 -10 -14 0 -15
+q 6 -1 8 5
+c 7 0 7 10 0 10
+m -1.0 -2
+v 6
+m -2.0 -4.5
+v 6
+m -2.0 -6
+v 6
+m -2.0 -7.5
+v 6
+```

@@ -11,7 +11,7 @@ const components = {
   pre: (props) => (
     <pre className="border border-gray8 bg-gray3 p-4 rounded-md" {...props} />
   ),
-  ul: (props) => <ul className="list-disc list-inside" {...props} />,
+  ul: (props) => <ul className="list-disc ml-4" {...props} />,
   PageSection,
 };
 
@@ -28,6 +28,7 @@ export const MDX = ({
     <IndexProvider numSections={numSections}>
       <article className="border-r border-gray8 divide-y divide-dashed divide-gray8 leading-7">
         <MDXRemote {...content} components={components} />
+        <Footer />
       </article>
       <div className="h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 aspect-square flex items-center">
         {children}
@@ -54,7 +55,7 @@ const Footer = () => {
   }, [next, prev]);
 
   return (
-    <footer className="sticky bottom-0">
+    <footer>
       <p>
         {index + 1} / {numSections}
       </p>

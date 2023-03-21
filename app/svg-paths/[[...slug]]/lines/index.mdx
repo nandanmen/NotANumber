@@ -1,0 +1,48 @@
+# Lines
+
+Now that we know all about cursors, let's start drawing stuff.
+
+We've seen a bit of line commands in the last section, but we'll cover them in full here. As you might expect, the line commands let you draw **straight lines**.
+
+The most generic of them is the `L` command, which draws a line to a specific `(x, y)` coordinate:
+
+```
+L 10 20
+```
+
+---
+
+Just like how the `m` command moves the cursor relative to its current position, the lowercase `l` command draws a line relative to the current cursor position:
+
+```
+L 10 20
+l 10 -7.5
+```
+
+---
+
+If you'd just like to draw a line in a specific direction, you can use the `H` and `V` commands. `H` draws a horizontal line, and `V` draws a vertical line:
+
+```
+L 10 20
+H 30
+V 10
+```
+
+---
+
+Like the other commands, `H` and `V` also come with lowercase versions that use relative coordinates:
+
+```
+L 10 20
+h 20
+v -10
+```
+
+_(This will be the last time I explicitly mention the lowercase relative version of the commands. For the rest of this guide, assume that all commands have a relative variant!)_
+
+---
+
+## Practice
+
+Trace over this house using all of the commands we've seen so far (including the cursor commands from the last section):

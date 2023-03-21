@@ -27,10 +27,7 @@ export function PageSection({
   }, [index, set]);
 
   return (
-    <section
-      ref={ref}
-      className="p-10 min-h-[50vh] last:min-h-[60vh] space-y-[1em]"
-    >
+    <section ref={ref} className="p-10 min-h-[50vh] space-y-[1em]">
       {children}
     </section>
   );
