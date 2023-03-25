@@ -1,11 +1,13 @@
 import * as fs from "fs/promises";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDX } from "./components/mdx";
+import { Cursors } from "./cursors";
 
 import { Index } from "./index";
 
 const mapSlugToComponent = {
   index: <Index />,
+  cursors: <Cursors />,
 };
 
 export default async function SvgPathsPage({

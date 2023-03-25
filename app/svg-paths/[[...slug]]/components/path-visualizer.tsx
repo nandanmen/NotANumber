@@ -5,6 +5,7 @@ import {
   parseSVG,
   makeAbsolute,
   type CommandMadeAbsolute,
+  type Command as CommandBase,
 } from "svg-path-parser";
 import { produce } from "immer";
 import { useSvgContext } from "./svg";
@@ -71,21 +72,26 @@ export function PathVisualizer({
   index,
   type,
 }: {
-  path: string;
+  path: string | CommandBase[];
   index?: number;
   type?: CommandType;
 }) {
+  const commands = React.useMemo(() => {
+    if (Array.isArray(path)) return path;
+    return parseSVG(path);
+  }, [path]);
+
   const absoluteCommands = React.useMemo(() => {
-    const commands = parseSVG(path);
     makeAbsolute(commands);
     return commands.map((command) => ({
       ...command,
       id: v4(),
     }));
-  }, [path]) as Command[];
+  }, [commands]) as Command[];
 
-  const activeCommands = absoluteCommands.filter((command) => {
-    if (!type) return true;
+  const activeCommands = absoluteCommands.filter((command, i) => {
+    if (!type && typeof index !== "number") return true;
+    if (typeof index === "number") return i <= index;
     return mapCodeToType(command.code) === type;
   });
 
@@ -97,7 +103,7 @@ export function PathVisualizer({
         }}
       >
         <g className="text-gray8">
-          <Sections />
+          <Sections type="placeholder" />
         </g>
       </PathContext.Provider>
       <PathContext.Provider
@@ -116,50 +122,107 @@ export function PathVisualizer({
   );
 }
 
-const Sections = () => {
+const Sections = ({ type }: { type?: "placeholder" }) => {
   const { getRelative } = useSvgContext();
   const { commands } = usePathContext();
-  console.log(commands);
   return (
     <g>
       <g>
-        <AnimatePresence>
-          {commands.map((command) => {
-            return (
-              <motion.path
-                key={command.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                d={toPath(command)}
-                className="fill-none stroke-current"
-                strokeWidth={getRelative(1)}
-              />
-            );
-          })}
-        </AnimatePresence>
+        {commands.map((command) => {
+          return (
+            <motion.path
+              key={command.id}
+              d={toPath(command)}
+              className="fill-none stroke-current"
+              strokeWidth={getRelative(1)}
+              animate={{ pathLength: 1 }}
+              initial={{ pathLength: type === "placeholder" ? 1 : 0 }}
+              transition={{ type: "spring", bounce: 0 }}
+            />
+          );
+        })}
       </g>
       <g>
-        <AnimatePresence>
-          {commands.map((command, i) => {
-            if (command.code === "Z") return null;
-            return (
-              <motion.circle
-                key={command.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                cx={command.x}
-                cy={command.y}
-                r={getRelative(1)}
-                strokeWidth={getRelative(0.6)}
-                className="fill-gray4 stroke-current"
-              />
-            );
-          })}
-        </AnimatePresence>
+        {commands.map((command, i) => {
+          if (command.code === "Z") return null;
+          if (type === "placeholder")
+            return <Endpoint key={command.id} cx={command.x} cy={command.y} />;
+          return (
+            <AnimatedEndpoint key={command.id} cx={command.x} cy={command.y} />
+          );
+        })}
       </g>
     </g>
+  );
+};
+
+const AnimatedEndpoint = ({ cx, cy, delay = 0 }) => {
+  const id = React.useId();
+  const { config, getRelative } = useSvgContext();
+  const padding = getRelative(config.padding);
+  const endpointSize = getRelative(1);
+  return (
+    <g>
+      <mask id={id}>
+        <rect
+          x={-padding}
+          y={-padding}
+          width="100%"
+          height="100%"
+          fill="white"
+        />
+        <motion.circle
+          cx={cx}
+          cy={cy}
+          r={endpointSize * 1.25}
+          animate={{ r: endpointSize * 7 }}
+          transition={{ type: "spring", damping: 20, delay }}
+          initial={{ r: endpointSize * 1.25 }}
+          fill="black"
+        />
+      </mask>
+      <motion.circle
+        className="fill-gray12"
+        cx={cx}
+        cy={cy}
+        r={endpointSize * 6}
+        mask={`url('#${id}')`}
+        animate="shown"
+        initial="hidden"
+        variants={{
+          hidden: { scale: 0.5, opacity: 0 },
+          shown: { scale: 1, opacity: 1 },
+        }}
+        transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
+      />
+      <Endpoint
+        cx={cx}
+        cy={cy}
+        animate="shown"
+        initial="hidden"
+        variants={{
+          hidden: { scale: 0.5, opacity: 0 },
+          shown: { scale: 1, opacity: 1 },
+        }}
+        transition={{ type: "spring", damping: 10, stiffness: 150, delay }}
+      />
+    </g>
+  );
+};
+
+const Endpoint = ({ cx, cy, ...props }) => {
+  const { config, getRelative } = useSvgContext();
+  const endpointSize = getRelative(1);
+  const strokeWidth = getRelative(0.6);
+  return (
+    <motion.circle
+      className="fill-gray4 stroke-current"
+      cx={cx}
+      cy={cy}
+      strokeWidth={strokeWidth}
+      r={endpointSize}
+      {...props}
+    />
   );
 };
 
@@ -306,12 +369,6 @@ const Endpoints = () => {
       {commands.map((command, i) => {
         return (
           <g key={command.id}>
-            <circle
-              cx={command.x0}
-              cy={command.y0}
-              r={getRelative(1)}
-              className="fill-current"
-            />
             <CommandEndpoint command={command} />
           </g>
         );
