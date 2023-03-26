@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { GridOverflowBox } from "~/components/Grid";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 const tokens = [
   [
@@ -152,10 +152,22 @@ const Token = styled(motion.li, {
       keyword: {
         background: "$red7",
         borderColor: "$red8",
+
+        [`.${darkTheme} &`]: {
+          background: "$red9",
+          borderColor: "$red10",
+          color: "$gray1",
+        },
       },
       identifier: {
         background: "$blue8",
         borderColor: "$blue8",
+
+        [`.${darkTheme} &`]: {
+          background: "$blue9",
+          borderColor: "$blue10",
+          color: "$gray1",
+        },
       },
       "single-character": {
         background: "$gray6",
@@ -163,6 +175,12 @@ const Token = styled(motion.li, {
       string: {
         background: "$green7",
         borderColor: "$green8",
+
+        [`.${darkTheme} &`]: {
+          background: "$green9",
+          borderColor: "$green10",
+          color: "$gray1",
+        },
       },
       hidden: {
         background: "$gray4",

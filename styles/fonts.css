@@ -1,62 +1,17 @@
-/**
- * @license
- * MyFonts Webfont Build ID 4086117, 2021-05-09T12:08:41-0400
- * 
- * The fonts listed in this notice are subject to the End User License
- * Agreement(s) entered into by the website owner. All other parties are 
- * explicitly restricted from using the Licensed Webfonts(s).
- * 
- * You may obtain a valid license at the URLs below.
- * 
- * Webfont: Recoleta-RegularDEMO by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/regular-demo/
- * 
- * Webfont: Recoleta-Black by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/black/
- * 
- * Webfont: Recoleta-Bold by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/bold/
- * 
- * Webfont: Recoleta-Medium by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/medium/
- * 
- * Webfont: Recoleta-Thin by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/thin/
- * 
- * Webfont: Recoleta-Light by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/light/
- * 
- * Webfont: Recoleta-Regular by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/regular/
- * 
- * Webfont: Recoleta-SemiBold by Latinotype
- * URL: https://www.myfonts.com/fonts/latinotype/recoleta/sem-ibold/
- * 
- * 
- * Webfonts copyright: Copyright &amp;#x00A9; 2018 by Jorge Cisterna. All rights reserved.
- * 
- * © 2021 MyFonts Inc
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 @font-face {
-  font-family: 'Recoleta';
+  font-family: "PP Editorial New";
   font-weight: 400;
-  src: url('/fonts/RecoletaRegular/font.woff2') format('woff2'),
-    url('/fonts/RecoletaRegular/font.woff') format('woff');
+  src: url("/fonts/pp-editorial-new/PPEditorialNew-Regular.woff2")
+      format("woff2"),
+    url("/fonts/pp-editorial-new/PPEditorialNew-Regular.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'Recoleta';
-  font-weight: 500;
-  src: url('/fonts/RecoletaMedium/font.woff2') format('woff2'),
-    url('/fonts/RecoletaMedium/font.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Recoleta';
-  font-weight: 600;
-  src: url('/fonts/RecoletaSemiBold/font.woff2') format('woff2'),
-    url('/fonts/RecoletaSemiBold/font.woff') format('woff');
+  font-family: "PP Editorial New";
+  font-weight: 700;
+  src: url("/fonts/pp-editorial-new/PPEditorialNew-Bold.woff2") format("woff2"),
+    url("/fonts/pp-editorial-new/PPEditorialNew-Bold.woff") format("woff");
 }

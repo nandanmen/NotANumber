@@ -3,6 +3,8 @@ import type { GetStaticPropsContext } from "next";
 import NextLink from "next/link";
 import Head from "next/head";
 import { getMDXComponent } from "mdx-bundler/client";
+import Balancer from "react-wrap-balancer";
+import Image from "next/image";
 
 import { getAllPosts, getPost, type Post } from "~/lib/content.server";
 import { BASE_URL } from "~/lib/config";
@@ -13,6 +15,7 @@ import { OrderedList } from "~/components/OrderedList";
 import { NewsletterForm } from "~/components/NewsletterForm";
 import { MobileBottomBar } from "~/components/MobileBottomBar";
 import { Link } from "~/components/Link";
+import { Content } from "~/components/Content";
 // import { ThemeToggle } from "~/components/ThemeToggle";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
@@ -24,15 +27,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 export async function getStaticPaths() {
-  // When this is true (in preview environments) don't
-  // prerender any static pages
-  // (faster builds, but slower initial page load)
-  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
-    return {
-      paths: [],
-      fallback: "blocking",
-    };
-  }
   const posts = await getAllPosts();
   return {
     paths: posts.map((post) => ({ params: { content: post.slug } })),
@@ -67,9 +61,7 @@ export default function PostPage({ content }: { content: Post }) {
       <MobileBottomBar headings={headings} />
       <Nav>
         <h2>
-          <NextLink href="/">
-            <a>NaN</a>
-          </NextLink>
+          <NextLink href="/">NaN</NextLink>
         </h2>
         <ul>
           {headings.map((heading) => (
@@ -79,13 +71,17 @@ export default function PostPage({ content }: { content: Post }) {
           ))}
         </ul>
       </Nav>
-      <Article>
+      <Article as="article">
         <Header>
           <LastUpdated>
             {formatter.format(new Date(frontmatter.editedAt))}
           </LastUpdated>
-          <Title>{frontmatter.title}</Title>
-          <Blurb>{frontmatter.blurb}</Blurb>
+          <Title>
+            <Balancer>{frontmatter.title}</Balancer>
+          </Title>
+          <Blurb>
+            <Balancer>{frontmatter.blurb}</Balancer>
+          </Blurb>
         </Header>
         <PostContent
           components={{
@@ -148,6 +144,7 @@ const Nav = styled("nav", {
 const PageWrapper = styled("main", {
   width: `min(80rem, 100%)`,
   margin: "0 auto",
+  padding: "$16 0",
 });
 
 const Title = styled("h1", {
@@ -174,7 +171,7 @@ const Header = styled("header", {
   },
 });
 
-const Article = styled("article", {
+const Article = styled(Content, {
   lineHeight: "$body",
   maxWidth: 800,
   display: "grid",
@@ -184,86 +181,6 @@ const Article = styled("article", {
   paddingBottom: "$12",
 
   "@media (min-width: 72rem)": {
-    paddingBottom: "$4",
-  },
-
-  "> *": {
-    gridColumn: "1",
-  },
-
-  "> figure": {
-    marginTop: "$4",
-    marginBottom: "$8",
-  },
-
-  "> .note": {
-    gridColumn: "1 / -1",
-  },
-
-  "> .full-width": {
-    gridColumn: "1 / -1",
-    marginTop: "$4",
-    marginBottom: "$8",
-    width: "100%",
-  },
-
-  "> :where(:not(:last-child))": {
-    marginBottom: "$4",
-  },
-
-  h2: {
-    fontFamily: "$serif",
-  },
-
-  "> p": {
-    "> span > code, > code": {
-      background: "$gray7",
-      padding: 2,
-      fontSize: "$sm",
-    },
-  },
-
-  "*": {
-    "&[data-theme='dark']": {
-      display: "none",
-    },
-
-    [`.${darkTheme} &`]: {
-      "&[data-theme='light']": {
-        display: "none",
-      },
-      "&[data-theme='dark']": {
-        display: "revert",
-      },
-    },
-  },
-
-  pre: {
-    marginTop: "$4",
-    marginBottom: "$8",
-    whiteSpace: "pre-wrap",
-    border: "1px solid $gray8",
-    padding: "$4",
-    borderRadius: "$base",
-    fontSize: "$sm",
-    overflowX: "auto",
-  },
-
-  blockquote: {
-    paddingLeft: "$4",
-    borderLeft: "2px solid $gray8",
-    color: "$gray11",
-    fontStyle: "italic",
-  },
-
-  hr: {
-    marginTop: "$6",
-    marginBottom: "$12",
-    width: "30%",
-    borderTop: "1px solid $gray8",
-  },
-
-  "[data-rehype-pretty-code-fragment] > pre": {
-    marginBottom: "$4",
+    paddingBottom: "0",
   },
 });

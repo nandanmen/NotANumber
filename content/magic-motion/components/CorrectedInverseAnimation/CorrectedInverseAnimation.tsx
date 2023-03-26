@@ -6,9 +6,8 @@ import {
   MotionValue,
   useTransform,
 } from "framer-motion";
-import { FaUndo, FaPlay } from "react-icons/fa";
 
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { useSharedState } from "~/components/SharedState";
 import {
@@ -286,9 +285,17 @@ const StripedSquare = styled("rect", {
   rx: 6,
   fill: "url(#pattern)",
   stroke: "$blue7",
+
+  [`.${darkTheme} &`]: {
+    stroke: "$blue11",
+  },
 });
 
 const StripeLine = styled("line", {
   stroke: "$blue7",
   strokeWidth: 10,
+
+  [`.${darkTheme} &`]: {
+    stroke: "$blue11",
+  },
 });

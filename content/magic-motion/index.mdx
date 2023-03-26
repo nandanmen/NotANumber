@@ -3,7 +3,7 @@ title: "Inside Framer's Magic Motion"
 blurb: "A guide on recreating framer's magical layout animations."
 description: "A guide on recreating framer's magical layout animations."
 publishedAt: "2022-11-15"
-editedAt: "2022-11-15"
+editedAt: "2022-11-22"
 ---
 
 import { Callout } from "~/components/Callout";
@@ -516,3 +516,19 @@ While implementing FLIP with position changes was pretty straightforward, the sa
 Once we figured out both of these problems, we ended up with a pretty solid implementation of automatic layout animation!
 
 That's all for today; thanks for reading!
+
+## Addendum
+
+[Matt Perry](https://twitter.com/mattgperry), the mastermind behind Framer Motion, graciously offered to expand a bit on how Framer Motion works in his [Now in Motion newsletter](https://www.getrevue.co/profile/nowinmotion):
+
+> A straightforward FLIP implementation would be a “view” transition - the difference between how the viewport looks before and after a change.
+
+> Whereas Framer Motion is attempting to do “layout” transitions. As [this sandbox demonstrates](https://codesandbox.io/s/framer-motion-page-scroll-animation-forked-2585g2?utm_campaign=Now+in+Motion&utm_medium=email&utm_source=Revue+newsletter&file=/src/App.tsx), when a page scroll is thrown into play, we don’t want to animate this vertical change. It doesn’t look good when view transitions animate page scroll.
+
+> A further key difference between FLIP is that rather than animating this initial “inverted” delta down to 0, while we do this, once every frame we first convert this delta to a bounding box where we want the animating element to appear on screen every frame. We call this a “projection target”.
+
+> This is how we perform scale correction and shared element transitions. By getting this projection target as a box, once every frame we can apply all the transforms currently applied to this box by its ancestors. From there, we can calculate the transform actually required to get the element from its transformed and scrolled position on screen, to the projection target.
+
+> Performing shared element transitions becomes a matter of calculating a transform that gets a second element into this same projection target.
+
+Really appreciative of Matt here to chime in and provide more context!

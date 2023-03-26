@@ -1,7 +1,7 @@
 import React, { ComponentPropsWithoutRef } from "react";
 import { animate } from "popmotion";
 
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 
 type MotionProps = {
   size?: number;
@@ -84,6 +84,11 @@ const Square = styled("div", {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+
+  [`.${darkTheme} &`]: {
+    background: "$blueDark8",
+    border: "1px solid $blueDark10",
+  },
 });
 
 function isBoxDifferent(box: DOMRect, lastBox: DOMRect) {

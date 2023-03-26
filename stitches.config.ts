@@ -7,8 +7,7 @@ import {
   yellow,
   grayDark,
   blueDark,
-  greenDark,
-  redDark,
+  yellowDark,
 } from "@radix-ui/colors";
 
 const SPACING = {
@@ -49,6 +48,15 @@ const SPACING = {
   96: "24rem",
 } as const;
 
+const rename = (from, to, obj) => {
+  const newObj = {};
+  for (const key in obj) {
+    const [, num] = key.split(from);
+    newObj[`${to}${num}`] = obj[key];
+  }
+  return newObj;
+};
+
 export const baseTheme = {
   colors: {
     ...gray,
@@ -58,8 +66,8 @@ export const baseTheme = {
     ...yellow,
   },
   fonts: {
-    serif: `Recoleta, ui-serif, Georgia, serif`,
-    mono: `ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
+    serif: `PP Editorial New, ui-serif, Georgia, serif`,
+    mono: `JetBrains Mono, ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
     sans: `Nunito, system-ui, -apple-system, sans-serif`,
   },
   fontSizes: {
@@ -73,7 +81,7 @@ export const baseTheme = {
   sizes: SPACING,
   lineHeights: {
     body: 1.7,
-    title: 1,
+    title: 1.1,
   },
   shadows: {
     md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
@@ -99,9 +107,8 @@ export const { styled, getCssText, globalCss, createTheme, css, keyframes } =
 export const darkTheme = createTheme({
   colors: {
     ...grayDark,
-    ...blueDark,
-    ...greenDark,
-    ...redDark,
+    ...rename("blue", "blueDark", blueDark),
+    ...rename("yellow", "yellowDark", yellowDark),
   },
 });
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, MotionValue } from "framer-motion";
 
-import { styled } from "~/stitches.config";
+import { darkTheme, styled } from "~/stitches.config";
 import { SQUARE_RADIUS, PADDING, SvgSquare } from "../styles";
 
 export type SizeDiagramProps = {
@@ -82,12 +82,21 @@ const OriginalSquare = styled("div", {
   height: SQUARE_RADIUS * 2,
   width: "100%",
   borderRadius: "$base",
+
+  [`.${darkTheme} &`]: {
+    background: `repeating-linear-gradient(-45deg, $colors$gray5, $colors$gray5 8px, transparent 8px, transparent 16px)`,
+    border: "1px solid $gray5",
+  },
 });
 
 const TranslateText = styled(motion.text, {
   fontFamily: "$mono",
   fontSize: "$sm",
   fill: "$blue11",
+
+  [`.${darkTheme} &`]: {
+    fill: "$blueDark12",
+  },
 });
 
 const AnchorLine = styled("line", {

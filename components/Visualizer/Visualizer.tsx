@@ -1,16 +1,32 @@
 import { motion } from "framer-motion";
 import { ComponentPropsWithoutRef } from "react";
 import { FaPlay, FaUndo } from "react-icons/fa";
-import { styled } from "~/stitches.config";
+import { styled, darkTheme } from "~/stitches.config";
 import { GridBackground } from "../Grid";
 
 export const Visualizer = styled("div", {
-  border: "1px solid $gray8",
+  $$border: "1px solid $colors$gray8",
+
+  border: "$$border",
   borderRadius: "$base",
   overflow: "hidden",
 
   "> :not(:first-child)": {
-    borderTop: "1px solid $gray8",
+    borderTop: "$$border",
+  },
+
+  [`.${darkTheme} &`]: {
+    $$border: "1px solid $colors$gray6",
+  },
+
+  variants: {
+    childBorders: {
+      false: {
+        "> :not(:first-child)": {
+          border: "initial",
+        },
+      },
+    },
   },
 });
 
@@ -20,6 +36,10 @@ export const Controls = styled("div", {
   padding: "$2",
   display: "flex",
   justifyContent: "space-between",
+
+  [`.${darkTheme} &`]: {
+    background: "$gray2",
+  },
 });
 
 export const Content = styled(GridBackground, {
@@ -50,6 +70,10 @@ export const ToggleButton = styled(motion.button, {
 
   "&:hover": {
     borderColor: "$gray12",
+  },
+
+  "&:focus-visible": {
+    outline: "2px solid $gray8",
   },
 
   "&:disabled": {

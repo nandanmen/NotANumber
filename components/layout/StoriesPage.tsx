@@ -41,9 +41,7 @@ export default function StoriesPage({
                 <ul>
                   {group.stories.map((story) => (
                     <li key={story.name}>
-                      <Link href={`/_stories/${story.name}`}>
-                        <a>{story.name}</a>
-                      </Link>
+                      <Link href={`/_stories/${story.name}`}>{story.name}</Link>
                     </li>
                   ))}
                 </ul>
@@ -93,7 +91,6 @@ const Main = styled("main", {
   gridTemplateColumns: "min-content 1fr",
   gap: "$8",
   minHeight: "100vh",
-  margin: "-$16 0",
 });
 
 const Sidebar = styled("aside", {

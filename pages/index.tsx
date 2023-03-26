@@ -1,17 +1,32 @@
 import React from "react";
 import Head from "next/head";
-import { FaGithub, FaTwitter, FaArrowRight, FaTimes } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import { styled } from "~/stitches.config";
 import { BASE_URL } from "~/lib/config";
 import { Post } from "~/components/Post";
-import { SubscribeInput } from "~/components/SubscribeInput";
+import { SubscribeButton } from "~/components/SubscribeButton";
 
-import { Tokenizer } from "../_dist-content/tokenizer/components/Tokenizer";
-import { CorrectedInverseAnimation } from "../content/magic-motion/components/CorrectedInverseAnimation";
+import { FramerMagicMotion } from "~/components/home/FramerMagicMotion";
+import { TokenizerVisual } from "~/components/home/TokenizerVisual";
+import { HowArraysWork } from "~/components/home/HowArraysWork";
+import { Debugger } from "~/components/home/Debugger";
+import { SlidingWindow } from "~/components/home/SlidingWindow";
+import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
+import { DynamicIsland } from "~/components/MobileNavIsland";
 
 const posts = [
+  {
+    post: {
+      slug: "keys-in-framer-motion",
+      title: "The Power of Keys in Framer Motion",
+      description:
+        "The React key prop is often only used to suppress React warnings, but it's actually a super powerful tool when used together with Framer Motion. In this post, we'll explore how to use it to make some pretty cool animations.",
+      editedAt: "2023-02-22",
+    },
+    children: <FramerMotionKeys />,
+  },
   {
     post: {
       slug: "magic-motion",
@@ -20,19 +35,7 @@ const posts = [
         "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
       editedAt: "2022-11-15",
     },
-    children: (
-      <CorrectedInverseAnimation
-        from={(width, container) => ({
-          x: container.width - width - container.padding,
-          y: container.height / 2 - width / 2,
-        })}
-        to={(width, container) => ({
-          x: container.padding,
-          y: container.height / 2 - width / 2,
-        })}
-        origin="topLeft"
-      />
-    ),
+    children: <FramerMagicMotion />,
   },
   {
     post: {
@@ -42,13 +45,7 @@ const posts = [
         "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
       editedAt: "2022-02-20",
     },
-    children: (
-      <Tokenizer
-        name="singleCharacter"
-        input="{ console.log() }"
-        showKeywords={false}
-      />
-    ),
+    children: <TokenizerVisual />,
   },
   {
     post: {
@@ -58,6 +55,7 @@ const posts = [
         "What goes on under the hood of the most popular data structure? In this post, we'll uncover the secrets of the array by reinventing one ourselves.",
       editedAt: "2021-11-13",
     },
+    children: <HowArraysWork />,
   },
   {
     post: {
@@ -67,6 +65,7 @@ const posts = [
         "If you want to build your own debugger, where would you start? In this post, we'll take a look at the inner workings of Playground — an online JS debugger.",
       editedAt: "2021-05-15",
     },
+    children: <Debugger />,
   },
   {
     post: {
@@ -75,11 +74,11 @@ const posts = [
       description: "An interactive look at a classic array algorithm pattern.",
       editedAt: "2021-03-21",
     },
+    children: <SlidingWindow />,
   },
 ];
 
 export default function HomePage() {
-  const [subscribing, toggle] = React.useReducer((state) => !state, false);
   return (
     <PageWrapper>
       <Head>
@@ -100,81 +99,80 @@ export default function HomePage() {
       </Head>
       <ContentWrapper>
         <Header>
-          <Title>Not a Number</Title>
-          <Description>
-            An interactive blog on computer science and web development, by
-            Nanda Syahrasyad.
-          </Description>
-          <div>
-            <SubscribeButton onClick={toggle}>
-              Subscribe to the newsletter{" "}
-              {subscribing ? <FaTimes /> : <FaArrowRight />}
-            </SubscribeButton>
-            {subscribing && (
-              <SubscribeWrapper
-                animate={{ opacity: 1 }}
-                initial={{ opacity: 0 }}
-              >
-                <SubscribeInput />
-              </SubscribeWrapper>
-            )}
-          </div>
-          <Links layout>
-            <li>
-              <a
-                href="https://github.com/narendrasss/NotANumber"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Github"
-              >
-                <FaGithub />
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://twitter.com/nandafyi"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Twitter"
-              >
-                <FaTwitter />
-              </a>
-            </li>
+          <Links>
+            <SocialLinks />
           </Links>
+          <Title>
+            Not a Number<span>By Nanda Syahrasyad</span>
+          </Title>
+          <SubscribeWrapper>
+            <SubscribeButton />
+          </SubscribeWrapper>
         </Header>
         <Posts>
-          {posts.map((post) => (
-            <Post key={post.post.slug} {...post} />
+          {posts.map((post, index) => (
+            <Post
+              key={post.post.slug}
+              direction={index % 2 ? "right" : "left"}
+              {...post}
+            />
           ))}
         </Posts>
       </ContentWrapper>
+      <IslandWrapper>
+        <DynamicIsland
+          css={{
+            borderRadius: "calc($radii$base + 4px)",
+            height: "auto",
+            display: "flex",
+            alignItems: "center",
+            color: "$gray12",
+          }}
+        >
+          <MobileSocialWrapper>
+            <SocialLinks />
+          </MobileSocialWrapper>
+          <SubscribeButton small />
+        </DynamicIsland>
+      </IslandWrapper>
     </PageWrapper>
   );
 }
 
-const SubscribeButton = styled("button", {
-  color: "$gray11",
+const SocialLinks = () => {
+  return (
+    <>
+      <li>
+        <a
+          href="https://github.com/narendrasss/NotANumber"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Github"
+        >
+          <FaGithub />
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://twitter.com/nandafyi"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Twitter"
+        >
+          <FaTwitter />
+        </a>
+      </li>
+    </>
+  );
+};
+
+const MobileSocialWrapper = styled("ul", {
   display: "flex",
-  alignItems: "center",
-  gap: "$1",
-  fontWeight: "bold",
-  cursor: "pointer",
-
-  "&:hover": {
-    color: "$blue9",
-  },
-});
-
-const SubscribeWrapper = styled(motion.div, {
-  marginTop: "$2",
-  maxWidth: 400,
-});
-
-const Links = styled(motion.ul, {
-  fontSize: "$xl",
-  gap: "$4",
-  display: "flex",
+  gap: "$2",
+  padding: "0 $2",
   listStyle: "none",
+  fontSize: "$xl",
+  transform: "translateY(3px)",
 
   a: {
     color: "inherit",
@@ -186,59 +184,99 @@ const Links = styled(motion.ul, {
   },
 });
 
+const IslandWrapper = styled("div", {
+  position: "fixed",
+  bottom: "$4",
+  left: "$4",
+  right: "$4",
+  height: "auto",
+
+  "@md": {
+    display: "none",
+  },
+});
+
+const SubscribeWrapper = styled("div", {
+  display: "none",
+
+  "@md": {
+    display: "block",
+  },
+});
+
+const Links = styled(motion.ul, {
+  fontSize: "$xl",
+  gap: "$4",
+  display: "none",
+  listStyle: "none",
+
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+
+    "&:hover": {
+      color: "$blue9",
+    },
+  },
+
+  "@md": {
+    display: "flex",
+  },
+});
+
 const PageWrapper = styled("main", {
+  $$gap: "$space$16",
   width: "fit-content",
   margin: "0 auto",
-  padding: "$4",
-  maxWidth: "42rem",
+  padding: "0 $8",
+  paddingBottom: "calc($$gap + $space$16)",
+  maxWidth: "72rem",
+
+  "@lg": {
+    padding: "0 $16",
+    paddingBottom: "calc($$gap + $space$24)",
+  },
 
   "@media screen and (min-width: 75rem)": {
     maxWidth: "initial",
   },
 });
 
-const ContentWrapper = styled("div", {
-  "@media screen and (min-width: 75rem)": {
-    display: "grid",
-    gridTemplateColumns: "24rem 42rem",
-    gap: "$16",
-  },
-});
+const ContentWrapper = styled("div", {});
 
 const Title = styled("h1", {
   fontFamily: "$serif",
   fontSize: "3rem",
   lineHeight: "$title",
   fontWeight: 500,
+
+  span: {
+    display: "block",
+    fontSize: "$sm",
+    fontFamily: "$sans",
+    color: "$gray11",
+    textAlign: "center",
+    marginTop: "$2",
+  },
 });
 
 const Header = styled("header", {
   display: "flex",
-  flexDirection: "column",
-  gap: "$8",
-  height: "fit-content",
-  paddingBottom: "$8",
-  borderBottom: "1px solid $gray8",
-  marginBottom: "$8",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "$12 0",
+  marginBottom: "calc($$gap / 2)",
 
-  "@media screen and (min-width: 75rem)": {
-    paddingBottom: 0,
-    borderBottom: "none",
-    position: "fixed",
-    maxWidth: "24rem",
-    paddingRight: "$8",
-    borderRight: "1px solid $gray8",
+  "@md": {
+    marginBottom: "$$gap",
+    justifyContent: "space-between",
   },
-});
-
-const Description = styled("p", {
-  lineHeight: "$body",
 });
 
 const Posts = styled(motion.ul, {
   gridColumn: 2,
 
   "> :not(:last-child)": {
-    marginBottom: "$12",
+    marginBottom: "$$gap",
   },
 });

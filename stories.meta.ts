@@ -1,11 +1,25 @@
 import * as Checkbox from './components/Checkbox/Checkbox.stories'
+import * as Debugger from './components/home/Debugger/Debugger.stories'
+import * as FramerMagicMotion from './components/home/FramerMagicMotion/FramerMagicMotion.stories'
+import * as FramerMotionKeys from './components/home/FramerMotionKeys/FramerMotionKeys.stories'
+import * as HowArraysWork from './components/home/HowArraysWork/HowArraysWork.stories'
+import * as SlidingWindow from './components/home/SlidingWindow/SlidingWindow.stories'
+import * as TokenizerVisual from './components/home/TokenizerVisual/TokenizerVisual.stories'
 import * as Link from './components/Link/Link.stories'
 import * as MobileNavIsland from './components/MobileNavIsland/MobileNavIsland.stories'
+import * as PrimaryButton from './components/PrimaryButton/PrimaryButton.stories'
 import * as Quiz from './components/Quiz/Quiz.stories'
 import * as Sandbox from './components/Sandbox/Sandbox.stories'
+import * as SubscribeButton from './components/SubscribeButton/SubscribeButton.stories'
 import * as SvgGridWrapper from './components/SvgGridWrapper/SvgGridWrapper.stories'
 import * as Visualizer from './components/Visualizer/Visualizer.stories'
+<<<<<<< HEAD
 import * as HardDrive from './_dist-content/hard-drives/components/HardDrive/HardDrive.stories'
+=======
+import * as AnimationShowcase from './_dist-content/keys-in-framer-motion/components/AnimationShowcase/AnimationShowcase.stories'
+import * as KanjiCarousel from './_dist-content/keys-in-framer-motion/components/KanjiCarousel/KanjiCarousel.stories'
+import * as NextButton from './_dist-content/keys-in-framer-motion/components/NextButton/NextButton.stories'
+>>>>>>> main
 import * as CorrectedInverseAnimation from './_dist-content/magic-motion/components/CorrectedInverseAnimation/CorrectedInverseAnimation.stories'
 import * as FlipExample from './_dist-content/magic-motion/components/FlipExample/FlipExample.stories'
 import * as FlipFirst from './_dist-content/magic-motion/components/FlipFirst/FlipFirst.stories'
@@ -35,9 +49,20 @@ import * as SizeMeasurements from './_dist-content/magic-motion/components/SizeM
 import * as SizePlayAnimation from './_dist-content/magic-motion/components/SizePlayAnimation/SizePlayAnimation.stories'
 import * as WidthTransitionSandbox from './_dist-content/magic-motion/components/WidthTransitionSandbox/WidthTransitionSandbox.stories'
 import * as Tokenizer from './_dist-content/tokenizer/components/Tokenizer/Tokenizer.stories'
+import * as BezierCurveQuiz from './experiments/BezierCurveQuiz/BezierCurveQuiz.stories'
+import * as Cards from './experiments/Cards/Cards.stories'
+import * as ControllableAnimation from './experiments/ControllableAnimation/ControllableAnimation.stories'
+import * as EasingCurveEditor from './experiments/EasingCurveEditor/EasingCurveEditor.stories'
+import * as EasingFunctionSandbox from './experiments/EasingFunctionSandbox/EasingFunctionSandbox.stories'
+import * as TextLoadAnimation from './experiments/TextLoadAnimation/TextLoadAnimation.stories'
 import * as TopDownParser from './experiments/TopDownParser/TopDownParser.stories'
+<<<<<<< HEAD
 export const stories = [{ name: `components`, stories: [{ name: 'Checkbox', variants: Checkbox },{ name: 'Link', variants: Link },{ name: 'MobileNavIsland', variants: MobileNavIsland },{ name: 'Quiz', variants: Quiz },{ name: 'Sandbox', variants: Sandbox },{ name: 'SvgGridWrapper', variants: SvgGridWrapper },{ name: 'Visualizer', variants: Visualizer }] },
 { name: `hard-drives`, stories: [{ name: 'HardDrive', variants: HardDrive }] },
+=======
+export const stories = [{ name: `components`, stories: [{ name: 'Checkbox', variants: Checkbox },{ name: 'Debugger', variants: Debugger },{ name: 'FramerMagicMotion', variants: FramerMagicMotion },{ name: 'FramerMotionKeys', variants: FramerMotionKeys },{ name: 'HowArraysWork', variants: HowArraysWork },{ name: 'SlidingWindow', variants: SlidingWindow },{ name: 'TokenizerVisual', variants: TokenizerVisual },{ name: 'Link', variants: Link },{ name: 'MobileNavIsland', variants: MobileNavIsland },{ name: 'PrimaryButton', variants: PrimaryButton },{ name: 'Quiz', variants: Quiz },{ name: 'Sandbox', variants: Sandbox },{ name: 'SubscribeButton', variants: SubscribeButton },{ name: 'SvgGridWrapper', variants: SvgGridWrapper },{ name: 'Visualizer', variants: Visualizer }] },
+{ name: `keys-in-framer-motion`, stories: [{ name: 'AnimationShowcase', variants: AnimationShowcase },{ name: 'KanjiCarousel', variants: KanjiCarousel },{ name: 'NextButton', variants: NextButton }] },
+>>>>>>> main
 { name: `magic-motion`, stories: [{ name: 'CorrectedInverseAnimation', variants: CorrectedInverseAnimation },{ name: 'FlipExample', variants: FlipExample },{ name: 'FlipFirst', variants: FlipFirst },{ name: 'FlipInverse', variants: FlipInverse },{ name: 'FlipLast', variants: FlipLast },{ name: 'FlipLastReact', variants: FlipLastReact },{ name: 'FlipOverview', variants: FlipOverview },{ name: 'FlipPlay', variants: FlipPlay },{ name: 'InitialPositionSandbox', variants: InitialPositionSandbox },{ name: 'InverseSandbox', variants: InverseSandbox },{ name: 'InverseScaleFormula', variants: InverseScaleFormula },{ name: 'InverseScaleGraph', variants: InverseScaleGraph },{ name: 'InverseScaleSandbox', variants: InverseScaleSandbox },{ name: 'InverseSizeSlider', variants: InverseSizeSlider },{ name: 'LayoutChangeExample', variants: LayoutChangeExample },{ name: 'Motion', variants: Motion },{ name: 'MotionSandbox', variants: MotionSandbox },{ name: 'MotionSquare', variants: MotionSquare },{ name: 'PlaySandbox', variants: PlaySandbox },{ name: 'HorizontalRuler', variants: HorizontalRuler },{ name: 'SizeDiagram', variants: SizeDiagram },{ name: 'SizeDistanceExample', variants: SizeDistanceExample },{ name: 'SizeDistanceInverseSnapshot', variants: SizeDistanceInverseSnapshot },{ name: 'SizeDistanceRelationship', variants: SizeDistanceRelationship },{ name: 'SizeLayoutExample', variants: SizeLayoutExample },{ name: 'SizeMeasurements', variants: SizeMeasurements },{ name: 'SizePlayAnimation', variants: SizePlayAnimation },{ name: 'WidthTransitionSandbox', variants: WidthTransitionSandbox }] },
 { name: `tokenizer`, stories: [{ name: 'Tokenizer', variants: Tokenizer }] },
-{ name: `experiments`, stories: [{ name: 'TopDownParser', variants: TopDownParser }] }];
+{ name: `experiments`, stories: [{ name: 'BezierCurveQuiz', variants: BezierCurveQuiz },{ name: 'Cards', variants: Cards },{ name: 'ControllableAnimation', variants: ControllableAnimation },{ name: 'EasingCurveEditor', variants: EasingCurveEditor },{ name: 'EasingFunctionSandbox', variants: EasingFunctionSandbox },{ name: 'TextLoadAnimation', variants: TextLoadAnimation },{ name: 'TopDownParser', variants: TopDownParser }] }];
