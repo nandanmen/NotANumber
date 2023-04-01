@@ -9,3 +9,129 @@ editedAt: "2022-02-20"
 import { HardDrive } from "./components/HardDrive";
 
 <HardDrive />
+
+# How do hard drives work?
+
+Why do we need to know why hard drives work?
+
+- Building a database requires knowing how hard drives work because the data structures are optimized for hard drives' unique restrictions
+
+---
+
+- Hard drives are divided up into tracks, which are themselves divided up into sectors
+- Unlike memory, hard drives are not **byte addressable** — it's not possible to request data for just "one byte"
+- The smallest unit that can be read or written is a sector, which can range from 512 bytes to 4kb in size
+
+If your hard drive was an npm module, its API might look something like:
+
+```javascript
+import HardDrive from "hard-drive";
+
+const data = await HardDrive.read(1); // read sector 1
+await HardDrive.write(2, "Hello!"); // set sector 2 to 'hello'
+```
+
+One of the key components of a hard drive is the _disk head_. To read or write data, the hard drive needs to physically position the disk head over the requested sector, in a process that involves _rotating_ the disk and _seeking_ the head to the right track:
+
+This process is, relatively speaking, pretty slow. The problem isn’t the rotation—hard drives can rotate pretty fast, with most modern drives rotating between 5400-7200 revolutions per minute, or 90-120 times per second. No, the problem is *seeking—*moving the head to the right track.
+
+You see, it takes about 4ms for the computer to read 1 million bytes from the hard drive. Out of those 4ms, **3ms** is used to position the head over the correct track. In that same amount of time, the computer can read _600_ million bytes from main memory. Seeking is slow!
+
+The one thing to remember here is you don’t _always_ have to seek every time you want to read or write data to the hard drive. If all of the data you need is on the same track, then you only need to seek once:
+
+So if seeking is slow, and we don’t need to seek every time, we should strive to **minimize the number of times we need to seek** if we want to maximize our disk's performance.
+
+It turns out the best way to do this is to access our data _sequentially_ as much as possible; that is, we should do this:
+
+```javascript
+await HardDrive.read(1);
+await HardDrive.read(2);
+await HardDrive.read(3);
+await HardDrive.read(4);
+```
+
+And not this:
+
+```javascript
+await HardDrive.read(3);
+await HardDrive.read(1);
+await HardDrive.read(4);
+await HardDrive.read(2);
+```
+
+Let me illustrate. Here’s a hard drive with an unrealistically-small number of sectors per track. The inner track here has two sectors, sectors 1 and 2, and the outer track has three sectors, sectors 3, 4, and 5.
+
+If we assume that seeking to a track takes 3ms and that reading a sector takes 1ms (realistically a super slow read), then performing the reads sequentially (the first code snippet above) will take a total of **10ms**:
+
+In contrast, performing the reads in **random** order (the second code snippet) will take a total of **16ms**—60% slower! The additional 6ms is because we needed to seek two more times than when we read the data sequentially.
+
+This demo is also ignoring rotation delay, i.e. the time it takes to wait for the disk to spin so that the sector lands under the head. If we take this into account, the random order will be even slower!
+
+## In Practice
+
+Of course, we don’t work with sectors directly when writing applications—that would be a huge pain! Instead, we work with _files_. Under the hood, the operating system divides up the files into sector-sized chunks and reads and writes them to the disk as needed.
+
+In JavaScript-land, you often work with entire files at once—`readFile` loads the entire file into memory, and `writeFile` writes the entire file to disk.
+
+```js
+// the entirety of 'my-file.txt' is loaded into data
+const data = await readFile("my-file.txt", "utf-8");
+await writeFile("my-file.txt", data + "Hello!");
+```
+
+> There _are_ ways to read and write files in chunks, but they're not nearly as common in my experience. If you're interested, check out the [`fs.createReadStream`](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options) and [`fs.createWriteStream`](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options) APIs.
+
+By reading and writing entire files, you're already taking advantage of the sequential access pattern. If our `my-file.txt` file is 2kb large and our disk has 512-byte sectors, then doing `readFile(‘my-file.txt’)` is more or less equivalent to the following four sectors reads:
+
+```javascript
+let data = "";
+
+// Assuming the file starts at sector 1
+data += await HardDrive.read(1); // first 512 bytes
+data += await HardDrive.read(2); // next 512 bytes (1kb total)
+data += await HardDrive.read(3); // next 512 bytes (1.5kb total)
+data += await HardDrive.read(4); // next 512 bytes (2kb total)
+
+return data;
+```
+
+Writing data is pretty similar—since `writeFile` accepts the file's entire contents at once, `writeFile` would be more or less equivalent to the following four writes:
+
+```javascript
+const sectors = splitIntoSectorSizedChunks(data);
+
+// Assuming the file starts at sector 1
+await HardDrive.write(1, sectors[0]); // first 512 bytes
+await HardDrive.write(2, sectors[1]); // next 512 bytes (1kb total)
+await HardDrive.write(3, sectors[2]); // next 512 bytes (1.5kb total)
+await HardDrive.write(4, secotrs[3]); // next 512 bytes (2kb total)
+```
+
+There might be some level of optimization here that Node does so that we don’t write the parts of the file that didn’t change, but the sequential access here still stands.
+
+## Random Reads With Seeks
+
+If you’re using a language that has access to lower-level APIs like `seek`, then you have more control over how you read and write data. For example, in C, you can use `fseek` to move the file pointer to a specific byte in the file:
+
+```c
+FILE *file = fopen("my-file.txt", "r");
+fseek(file, 1024, SEEK_SET); // move the file pointer to the 1024th byte
+char *data = malloc(512); // allocate 512 bytes of memory
+fread(data, 1, 512, file); // read 512 bytes from the file
+```
+
+Seeks let you read data starting from anywhere in the file—if you want to read data from the last 100 bytes, you can do so without loading the entire file into memory. This makes it a great choice for **database operations**, where files can get very large.
+
+The flexibility of seeks comes at a cost, though. Since you can read data from anywhere in the file, it's up to you to make sure you're reading the data in the right order.
+
+Consider this JSON database with a large number of records and three keys we want to read: `john`, which is the first record, `hannah`, which is the last record, and `jane`, which is somewhere in the middle:
+
+```json
+{
+  "john": "doe",
+  /* ... lots of other records ... */
+  "jane": "doe"
+  /* ... lots of other records ... */
+  "hannah": "smith",
+}
+```

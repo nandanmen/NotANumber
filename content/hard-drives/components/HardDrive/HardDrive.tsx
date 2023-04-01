@@ -1,175 +1,345 @@
-import React from "react";
-import { motion } from "framer-motion";
-
-import { FullWidth } from "~/components/FullWidth";
 import {
-  Visualizer,
-  Content,
-  Controls,
-  ToggleButton,
-} from "~/components/Visualizer";
+  motion,
+  useAnimationControls,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "framer-motion";
+import React from "react";
+import { FullWidth } from "~/components/FullWidth";
+import { Slider } from "~/components/Slider";
+import {
+  SvgBackgroundGradient,
+  getFillFromId,
+} from "~/components/utils/SvgBackgroundGradient";
+import { range } from "~/lib/utils";
 import { styled } from "~/stitches.config";
 
-const X_MAX = 120;
-const Y_MAX = 90;
-const DISK_RADIUS = 40;
-const PADDING = 5;
+const numArcs = 6;
+const numSectors = 5;
 
-const getPointAtAngle = (angle: number, radius: number) => {
-  const inRadians = (angle * Math.PI) / 180;
-  return {
-    x: Math.cos(inRadians) * radius,
-    y: Math.sin(inRadians) * radius,
-  };
-};
+const ARC_LENGTH = (2 * Math.PI * 20) / numArcs;
 
-const range = (from: number, to: number, skip = 1) => {
-  const nums = [];
-  for (let i = from; i < to; i += skip) {
-    nums.push(i);
-  }
-  return nums;
-};
+const getRadius = (i: number) => 20 + ((i + 1) * (70 - 20)) / numSectors;
 
 export const HardDrive = () => {
-  const [spinning, setSpinning] = React.useState(false);
+  const [rotation, setRotation] = React.useState(20);
+  const rotationAnimation = useAnimationControls();
+  const arcGroupControls = useAnimationControls();
+  const rotate = useMotionValue(0);
+  const id = React.useId();
+  const highlightId = React.useId();
+  const [reading, setReading] = React.useState(false);
+
+  React.useEffect(() => {
+    rotate.onChange((r) => {
+      if (r >= 95 && r <= 220) {
+        setReading(true);
+      } else {
+        setReading(false);
+      }
+    });
+  }, [rotate]);
 
   return (
     <FullWidth>
-      <Visualizer>
-        <ContentWrapper noOverflow>
-          <svg
-            width="100%"
-            height="100%"
-            viewBox={`${-PADDING} -${PADDING} ${X_MAX + 2 * PADDING} ${
-              Y_MAX + 2 * PADDING
-            }`}
+      <Slider
+        min={20}
+        max={48}
+        step={0.5}
+        value={[rotation]}
+        onValueChange={([r]) => {
+          setRotation(r);
+          rotationAnimation.start({
+            rotate: -1 * r,
+          });
+        }}
+      />
+      <Box as="div" css={{ background: "$gray4", padding: "$12" }}>
+        <svg viewBox="20 0 180 160">
+          <SvgBackgroundGradient
+            id={id}
+            startColor="var(--colors-gray3)"
+            stopColor="var(--colors-gray4)"
+            rotate={90}
+          />
+          <SvgBackgroundGradient
+            id={highlightId}
+            startColor="var(--colors-blue5)"
+            stopColor="var(--colors-blue6)"
+            rotate={90}
+          />
+          <Box
+            stroke="var(--colors-gray9)"
+            strokeWidth="0.3"
+            fill="var(--colors-gray4"
           >
-            <motion.g
-              style={{ x: X_MAX - DISK_RADIUS, y: Y_MAX / 2 }}
-              animate={{ rotate: 360 }}
-              transition={{
-                type: "tween",
-                duration: 5,
-                ease: "linear",
-                repeat: spinning ? Number.POSITIVE_INFINITY : 0,
-              }}
-            >
-              <Disk r={DISK_RADIUS} />
-              <DiskCenter r={DISK_RADIUS / 4} />
+            <Box as={motion.g} style={{ x: 120, y: 80, rotate }}>
+              <circle r="71" fill={getFillFromId(id)} />
+              <circle r="70" stroke="none" />
+              <motion.g
+                animate="visible"
+                initial="hidden"
+                stroke="var(--colors-gray7)"
+                transition={{ staggerChildren: 0.1 }}
+              >
+                {range(numSectors).map((i) => {
+                  const r = getRadius(i);
+                  const numArcs = Math.floor((2 * Math.PI * r) / ARC_LENGTH);
+                  return (
+                    <>
+                      <motion.circle
+                        key={r}
+                        variants={{
+                          visible: { r },
+                          hidden: { r: 0 },
+                        }}
+                        transition={{ type: "spring", damping: 20 }}
+                        onAnimationComplete={() => {
+                          if (i === numSectors - 1) {
+                            arcGroupControls.start("shown");
+                            rotationAnimation.start({
+                              rotate: -41,
+                              transition: {
+                                type: "spring",
+                                damping: 20,
+                              },
+                            });
+                          }
+                        }}
+                        fill="none"
+                      />
+                      {range(numArcs).map((j) => {
+                        const angle = j * (360 / numArcs);
+                        return (
+                          <PolarLine
+                            key={j}
+                            index={i}
+                            p0={{ angle, radius: r }}
+                            p1={{ angle, radius: getRadius(i - 1) }}
+                          />
+                        );
+                      })}
+                    </>
+                  );
+                })}
+              </motion.g>
+              <Box
+                as="circle"
+                css={{ filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))` }}
+                r="20"
+                fill={getFillFromId(id)}
+              />
               <g>
-                <Track r={DISK_RADIUS - 2} />
-                <Track r={DISK_RADIUS / 4 + 2} />
-                <Track r={20.5} />
-                <Track r={29.5} />
-                {range(0, 360, 30).map((angle) => (
-                  <Sector
-                    key={`track1-${angle}`}
-                    angle={angle}
-                    from={12}
-                    to={20.5}
-                  />
-                ))}
-                {range(0, 360, 20).map((angle) => (
-                  <Sector
-                    key={`track2-${angle}`}
-                    angle={angle}
-                    from={20.5}
-                    to={29.5}
-                  />
-                ))}
-                {range(0, 360, 15).map((angle) => (
-                  <Sector
-                    key={`track2-${angle}`}
-                    angle={angle}
-                    from={29.5}
-                    to={38}
-                  />
-                ))}
-                <ActiveSector
-                  startAngle={0}
-                  endAngle={20}
-                  startRadius={20.5}
-                  endRadius={29.5}
-                />
-                <ActiveSector
-                  startAngle={120}
-                  endAngle={150}
-                  startRadius={12}
-                  endRadius={20.5}
+                <Bolt cy={-12} rotation={rotate} />
+                <Bolt cy={12} rotation={rotate} />
+                <Bolt cx={-12} rotation={rotate} />
+                <Bolt cx={12} rotation={rotate} />
+                <Box
+                  as="circle"
+                  r="5"
+                  fill="var(--colors-gray2)"
+                  css={{
+                    filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                  }}
                 />
               </g>
+              <g
+                fill={getFillFromId(highlightId)}
+                stroke="var(--colors-blue8)"
+                strokeWidth="0.3"
+              >
+                <ArcGroup
+                  startAngle={0}
+                  sectorNumber={1}
+                  length={4}
+                  animate={arcGroupControls}
+                  onAnimationComplete={() => {
+                    animate(rotate, 360, {
+                      type: "tween",
+                      // ease: "linear",
+                      duration: 8,
+                    });
+                  }}
+                />
+              </g>
+            </Box>
+            <motion.g style={{ x: 30, y: 30 }}>
+              <Box
+                as={motion.g}
+                style={{
+                  originX: "9px",
+                  originY: "9px",
+                }}
+                animate={rotationAnimation}
+                fill={getFillFromId(id)}
+              >
+                <motion.g style={{ x: 6.5, y: 90 }}>
+                  <motion.circle
+                    animate={{ r: reading ? 2 : 0 }}
+                    transition={{ type: "spring", damping: 20 }}
+                    stroke="none"
+                    cx="2.5"
+                    cy="8"
+                    fill="var(--colors-blue7)"
+                  />
+                  <Box
+                    as="path"
+                    d="M 0 0 l 2.5 8 l 2.5 -8 z"
+                    fill="var(--colors-gray3)"
+                    css={{
+                      filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                    }}
+                  />
+                </motion.g>
+                <Box
+                  as="path"
+                  d="M 0 9 l 5 80 l 1 2 h 6 l 1 -2 l 5 -80 A 9 9 0 0 0 0 9"
+                  css={{
+                    filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                  }}
+                />
+                <Box
+                  as="circle"
+                  css={{
+                    filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+                  }}
+                  r="6"
+                  cx="9"
+                  cy="9"
+                  fill="var(--colors-gray2)"
+                />
+              </Box>
             </motion.g>
-          </svg>
-        </ContentWrapper>
-        <Controls>
-          <ToggleButton onClick={() => setSpinning(!spinning)}>
-            Toggle
-          </ToggleButton>
-        </Controls>
-      </Visualizer>
+          </Box>
+        </svg>
+      </Box>
     </FullWidth>
   );
 };
 
-const ActiveSector = ({ startAngle, endAngle, startRadius, endRadius }) => {
-  const lowerArcStart = getPointAtAngle(startAngle, startRadius);
-  const lowerArcEnd = getPointAtAngle(endAngle, startRadius);
-  const upperArcStart = getPointAtAngle(startAngle, endRadius);
-  const upperArcEnd = getPointAtAngle(endAngle, endRadius);
-
-  const d = `
-    M ${lowerArcStart.x} ${lowerArcStart.y}
-    A ${startRadius} ${startRadius} 0 0 1 ${lowerArcEnd.x} ${lowerArcEnd.y}
-    L ${upperArcEnd.x} ${upperArcEnd.y}
-    A ${endRadius} ${endRadius} 0 0 0 ${upperArcStart.x} ${upperArcStart.y}
-    Z
-  `;
-
-  return <_ActiveSector d={d} />;
+const ArcGroup = ({ startAngle, sectorNumber, length = 1, ...props }) => {
+  const radius = getRadius(sectorNumber);
+  const arcAngle = 360 / Math.floor((2 * Math.PI * radius) / ARC_LENGTH);
+  return (
+    <Box
+      as={motion.g}
+      initial="hidden"
+      transition={{ staggerChildren: 0.1 }}
+      {...props}
+    >
+      {range(length).map((i) => {
+        return (
+          <Arc
+            key={i}
+            startAngle={startAngle + i * arcAngle}
+            sectorNumber={sectorNumber}
+          />
+        );
+      })}
+    </Box>
+  );
 };
 
-const _ActiveSector = styled("path", {
-  fill: "$blue6",
-  stroke: "$blue8",
-  strokeWidth: "0.2",
-  filter: "drop-shadow($shadows$md)",
-});
+const Arc = ({ startAngle, sectorNumber }) => {
+  const radius = getRadius(sectorNumber);
+  const numArcs = Math.floor((2 * Math.PI * radius) / ARC_LENGTH);
+  const arcAngle = 360 / numArcs;
+  const endAngle = startAngle + arcAngle;
 
-const Sector = ({ angle, from, to }) => {
-  const { x: x1, y: y1 } = getPointAtAngle(angle, from);
-  const { x: x2, y: y2 } = getPointAtAngle(angle, to);
-  return <SectorLine x1={x1} y1={y1} x2={x2} y2={y2} />;
+  const { x: x1, y: y1 } = toCartesian(startAngle, radius);
+  const { x: x2, y: y2 } = toCartesian(endAngle, radius);
+
+  const innerRadius = getRadius(sectorNumber - 1);
+  const { x: x3, y: y3 } = toCartesian(endAngle, innerRadius);
+  const { x: x4, y: y4 } = toCartesian(startAngle, innerRadius);
+
+  const d = [
+    `M ${x1} ${y1}`,
+    `A ${radius} ${radius} 0 0 1 ${x2} ${y2}`,
+    `L ${x3} ${y3}`,
+    `A ${innerRadius} ${innerRadius} 0 0 0 ${x4} ${y4}`,
+    "Z",
+  ].join(" ");
+
+  return (
+    <Box
+      as={motion.path}
+      variants={{
+        shown: { scale: 1 },
+        hidden: { scale: 0 },
+      }}
+      transition={{ type: "spring", damping: 20 }}
+      d={d}
+      css={{
+        filter: `drop-shadow( 0px 1px 0px rgba(0, 0, 0, .05))`,
+      }}
+    />
+  );
 };
 
-const ContentWrapper = styled(Content, {
-  aspectRatio: 4 / 3,
-});
+const Bolt = ({ cy = 0, cx = 0, rotation }) => {
+  const id = React.useId();
+  const inverse = useTransform(rotation, (r) => r * -1);
+  return (
+    <motion.g style={{ y: cy, x: cx }}>
+      <mask id={id}>
+        <circle r="6" x="0" y="0" width="3" height="3" fill="black" />
+        <circle r="2.7" x="0" y="0" width="3" height="3" fill="white" />
+      </mask>
+      <circle r="3" fill="var(--colors-gray8)" />
+      <motion.circle
+        r="3"
+        cx="0"
+        cy="1"
+        mask={getFillFromId(id)}
+        fill="var(--colors-gray4)"
+        stroke="none"
+        style={{ rotate: inverse, originX: "0px", originY: "0px" }}
+      />
+    </motion.g>
+  );
+};
 
-const SectorLine = styled("line", {
-  fill: "none",
-  stroke: "$gray9",
-  strokeWidth: "0.2",
-  strokeDasharray: "1.2",
-});
+type PolarCoordinates = {
+  angle: number;
+  radius: number;
+};
 
-const Track = styled("circle", {
-  fill: "none",
-  stroke: "$gray9",
-  strokeWidth: "0.2",
-  strokeDasharray: "1.2",
-});
+const PolarLine = ({
+  p0,
+  p1,
+  index,
+  animate = true,
+}: {
+  p0: PolarCoordinates;
+  p1: PolarCoordinates;
+  index?: number;
+  animate?: boolean;
+}) => {
+  return (
+    <motion.g style={{ originX: "0px", originY: "0px", rotate: p0.angle }}>
+      <motion.line
+        x1="0"
+        y1={p1.radius}
+        x2="0"
+        y2={p0.radius}
+        {...(animate && {
+          animate: { pathLength: 1 },
+          initial: { pathLength: 0 },
+          transition: { type: "spring", damping: 20, delay: 2 * (0.1 * index) },
+        })}
+      />
+    </motion.g>
+  );
+};
 
-const Disk = styled("circle", {
-  fill: "$gray5",
-  stroke: "$gray8",
-  strokeWidth: "0.2",
-  filter: "drop-shadow($shadows$md)",
-});
+const Box = styled("g", {});
 
-const DiskCenter = styled("circle", {
-  fill: "$gray3",
-  stroke: "$gray8",
-  strokeWidth: "0.2",
-  filter: "drop-shadow($shadows$md)",
-});
+const toCartesian = (angle: number, radius: number) => {
+  const angleInRadians = ((angle - 90) * Math.PI) / 180.0;
+  return {
+    x: radius * Math.cos(angleInRadians),
+    y: radius * Math.sin(angleInRadians),
+  };
+};

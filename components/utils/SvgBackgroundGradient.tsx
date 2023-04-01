@@ -1,11 +1,13 @@
 import React from "react";
 import { darkTheme, styled } from "~/stitches.config";
 
-export type Color = "yellow" | "green";
+export type Color = "yellow" | "green" | string;
 
 export type SvgBackgroundGradientProps = {
   id: string;
   color?: Color;
+  startColor?: Color;
+  stopColor?: Color;
 };
 
 export const getFillFromId = (id: string) => `url('#${id}')`;
@@ -13,12 +15,14 @@ export const getFillFromId = (id: string) => `url('#${id}')`;
 export function SvgBackgroundGradient({
   id,
   color,
+  startColor = color,
+  stopColor = color,
 }: SvgBackgroundGradientProps) {
   return (
     <defs>
       <linearGradient id={id} gradientTransform="rotate(45)">
-        <StopStart offset="0%" color={color} />
-        <StopEnd offset="100%" color={color} />
+        <stop offset="0%" stopColor={startColor} />
+        <stop offset="100%" stopColor={stopColor} />
       </linearGradient>
     </defs>
   );
