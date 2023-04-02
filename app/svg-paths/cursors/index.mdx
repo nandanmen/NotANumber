@@ -22,8 +22,9 @@ The cursor always starts at the top left corner, the origin point `(0, 0)`. Then
 
 By checking if the command is **absolute** or **relative**, we can determine how the cursor will be moved after the command is executed:
 
-- For **absolute commands**, the cursor will end up at the command's `x` and `y` values. For example, `L 10 10` will move the cursor to `(10, 10)`.
-- For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(10, 10)`, then `l 10 10` will move the cursor to `(20, 20)`.
+For **absolute commands**, the cursor will end up at the command's `x` and `y` values. For example, `L 10 15` will move the cursor to `(10, 15)` _regardless_ of where the cursor is currently at.
+
+For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(15, 5)`, then `l 10 15` will move the cursor to `(25, 20)`.
 
 Remember: commands written with an uppercase letter are **absolute** commands, while commands written with a lowercase letter are **relative** commands.
 

@@ -19,11 +19,11 @@ export const Tooltip = ({
   const [box, setBox] = React.useState<DOMRect>();
   const { getRelative } = useSvgContext();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (textRef.current) {
       setBox(textRef.current.getBBox());
     }
-  }, []);
+  }, [children]);
 
   const boxWidth = box?.width || 0;
   const boxHeight = box?.height || 0;

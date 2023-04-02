@@ -5,7 +5,7 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
 import { IndexProvider, useIndexContext } from "./index-provider";
 
-const components = {
+const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
@@ -18,16 +18,21 @@ const components = {
 export const MDX = ({
   content,
   numSections,
+  components,
   children,
 }: {
   content: MDXRemoteSerializeResult;
   numSections: number;
+  components?: Record<string, (props: unknown) => JSX.Element>;
   children?: React.ReactNode;
 }) => {
   return (
     <IndexProvider numSections={numSections}>
       <article className="border-r border-gray8 divide-y divide-dashed divide-gray8 leading-7">
-        <MDXRemote {...content} components={components} />
+        <MDXRemote
+          {...content}
+          components={{ ...baseComponents, ...components }}
+        />
         <Footer />
       </article>
       <div className="h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 aspect-square flex items-center">

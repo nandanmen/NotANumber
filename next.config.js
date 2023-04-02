@@ -6,9 +6,6 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDir: true,
   },
-  images: {
-    domains: ["tdzetyetdwbxwkrrdmvi.supabase.co"],
-  },
   async redirects() {
     return [
       {

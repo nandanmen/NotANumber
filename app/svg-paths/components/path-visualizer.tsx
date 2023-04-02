@@ -1,18 +1,10 @@
 "use client";
 
 import React from "react";
-import {
-  parseSVG,
-  makeAbsolute,
-  type CommandMadeAbsolute,
-  type Command as CommandBase,
-} from "svg-path-parser";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
 import { motion } from "framer-motion";
-import { v4 } from "uuid";
-
-type Command = CommandMadeAbsolute & { id: string };
+import { parsePath, type Command } from "../utils";
 
 const getColor = (code: Command["code"]) => {
   if (code === "A") return "text-blue10";
@@ -72,25 +64,17 @@ export function PathVisualizer({
   type,
   helpers = true,
 }: {
-  path: string | CommandBase[];
+  path: string | Command[];
   index?: number;
   type?: CommandType;
   helpers?: boolean;
 }) {
   const commands = React.useMemo(() => {
     if (Array.isArray(path)) return path;
-    return parseSVG(path);
+    return parsePath(path);
   }, [path]);
 
-  const absoluteCommands = React.useMemo(() => {
-    makeAbsolute(commands);
-    return commands.map((command) => ({
-      ...command,
-      id: v4(),
-    }));
-  }, [commands]) as Command[];
-
-  const activeCommands = absoluteCommands.filter((command, i) => {
+  const activeCommands = commands.filter((command, i) => {
     if (!type && typeof index !== "number") return true;
     if (typeof index === "number") return i <= index;
     return mapCodeToType(command.code) === type;
@@ -100,7 +84,7 @@ export function PathVisualizer({
     <g>
       <PathContext.Provider
         value={{
-          commands: absoluteCommands,
+          commands,
         }}
       >
         <g className="text-gray8">
@@ -127,9 +111,16 @@ export function PathVisualizer({
   );
 }
 
-const Sections = ({ type }: { type?: "placeholder" }) => {
+export const Sections = ({
+  commands,
+  type,
+}: {
+  commands?: Command[];
+  type?: "placeholder";
+}) => {
   const { getRelative } = useSvgContext();
-  const { commands } = usePathContext();
+  const pathContext = usePathContext();
+  if (pathContext) commands = pathContext.commands;
   return (
     <g>
       <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
@@ -293,6 +284,7 @@ const Lines = () => {
             );
           }
           case "L": {
+            if (!command.source.relative) return null;
             const height = command.y - command.y0;
             const width = command.x - command.x0;
             return (
@@ -408,6 +400,7 @@ const CommandEndpoint = ({ command }: { command: Command }) => {
       }
     }
     case "L": {
+      if (!command.source.relative) return null;
       return (
         <>
           <circle

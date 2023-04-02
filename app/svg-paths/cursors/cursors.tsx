@@ -1,22 +1,16 @@
 "use client";
 
 import React from "react";
-import {
-  Command,
-  CommandMadeAbsolute,
-  makeAbsolute,
-  parseSVG,
-} from "svg-path-parser";
 import { motion } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
-import { PathVisualizer, Text } from "../components/path-visualizer";
+import { PathVisualizer, Sections, Text } from "../components/path-visualizer";
 import { Svg, useSvgContext } from "../components/svg";
-import { heart } from "../index";
-import produce from "immer";
+import { heart } from "../index/index";
 import { useIndexContext } from "../components/index-provider";
 import { Tooltip } from "../components/svg/tooltip";
+import { parsePath, type Command } from "../utils";
 
-const heartCommands = parseSVG(heart);
+const heartCommands = parsePath(heart);
 
 const usePathAnimation = (
   commands: Command[],
@@ -59,14 +53,7 @@ const usePathAnimation = (
 
 const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
   const { index, play } = usePathAnimation(commands);
-
-  const absoluteCommands = React.useMemo(() => {
-    return produce(commands, (draft) => {
-      makeAbsolute(draft);
-    }) as CommandMadeAbsolute[];
-  }, [commands]);
-  const currentCommand = absoluteCommands[index];
-
+  const currentCommand = commands[index];
   return (
     <div className="w-full">
       <Svg size={size}>
@@ -96,17 +83,14 @@ const CursorPoint = ({ cx, cy }) => {
 
 // --
 
-const corner = parseSVG("M 5 5 v 5 L 10 15 h 5");
-const absoluteCorner = produce(corner, (draft) => {
-  makeAbsolute(draft);
-}) as CommandMadeAbsolute[];
+const corner = parsePath("M 5 5 v 5 L 10 15 h 5");
 
 const Corner = () => {
   const [showText, setShowText] = React.useState(false);
   const { index, play, next, prev } = usePathAnimation(corner, {
     onComplete: () => setShowText(true),
   });
-  const currentCommand = absoluteCorner[index];
+  const currentCommand = corner[index];
 
   return (
     <div className="w-full">
@@ -153,7 +137,32 @@ const Corner = () => {
 
 // --
 
-const mapIndexToComponent = [CursorOverview, Corner];
+const AbsoluteRelative = () => {
+  return (
+    <div className="w-full">
+      <Svg size={30}>
+        <PathVisualizer path="M 5 5 L 10 15" />
+        <PathVisualizer path="M 15 5 l 10 15" />
+        <Tooltip x={5} y={5} placement="top">
+          (5, 5)
+        </Tooltip>
+        <Tooltip x={15} y={5} placement="top">
+          (15, 5)
+        </Tooltip>
+        <Tooltip x={10} y={15} placement="bottom">
+          (10, 15)
+        </Tooltip>
+        <Tooltip x={25} y={20} placement="bottom">
+          (25, 20)
+        </Tooltip>
+      </Svg>
+    </div>
+  );
+};
+
+// --
+
+const mapIndexToComponent = [CursorOverview, Corner, AbsoluteRelative];
 
 export function Cursors() {
   const { index } = useIndexContext();
