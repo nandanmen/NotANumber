@@ -7,10 +7,9 @@ import {
   type CommandMadeAbsolute,
   type Command as CommandBase,
 } from "svg-path-parser";
-import { produce } from "immer";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { v4 } from "uuid";
 
 type Command = CommandMadeAbsolute & { id: string };
@@ -71,10 +70,12 @@ export function PathVisualizer({
   path,
   index,
   type,
+  helpers = true,
 }: {
   path: string | CommandBase[];
   index?: number;
   type?: CommandType;
+  helpers?: boolean;
 }) {
   const commands = React.useMemo(() => {
     if (Array.isArray(path)) return path;
@@ -112,9 +113,13 @@ export function PathVisualizer({
         }}
       >
         <g>
-          <Arcs />
-          <Lines />
-          <Endpoints />
+          {helpers && (
+            <>
+              <Arcs />
+              <Lines />
+              <Endpoints />
+            </>
+          )}
           <Sections />
         </g>
       </PathContext.Provider>
@@ -127,8 +132,23 @@ const Sections = ({ type }: { type?: "placeholder" }) => {
   const { commands } = usePathContext();
   return (
     <g>
+      <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
       <g>
         {commands.map((command) => {
+          if (command.code === "M") {
+            return (
+              <line
+                key={command.id}
+                x1={command.x0}
+                y1={command.y0}
+                x2={command.x}
+                y2={command.y}
+                strokeDasharray={getRelative(1)}
+                strokeWidth={getRelative(0.5)}
+                className="stroke-gray10"
+              />
+            );
+          }
           return (
             <motion.path
               key={command.id}
@@ -340,7 +360,7 @@ const Lines = () => {
   );
 };
 
-const Text = ({ children, ...props }) => {
+export const Text = ({ children, ...props }) => {
   const { getRelative } = useSvgContext();
   const fontSize = getRelative(2);
   return (
