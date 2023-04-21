@@ -9,6 +9,7 @@ import { heart } from "../index/index";
 import { useIndexContext } from "../components/index-provider";
 import { Tooltip } from "../components/svg/tooltip";
 import { parsePath, type Command } from "../utils";
+import { useStateContext } from "./state-context";
 
 const heartCommands = parsePath(heart);
 
@@ -138,25 +139,73 @@ const Corner = () => {
 // --
 
 const AbsoluteRelative = () => {
+  const { data: absolute, set: setAbsolute } = useStateContext<{
+    x: number;
+    y: number;
+  }>("absolute");
+  const { data: relative, set: setRelative } = useStateContext<{
+    x: number;
+    y: number;
+  }>("relative");
+
+  const absoluteCommand = React.useMemo(() => {
+    return parsePath(`M ${absolute.x} ${absolute.y} L 10 15`);
+  }, [absolute.x, absolute.y]);
+
+  const relativeCommand = React.useMemo(() => {
+    return parsePath(`M ${relative.x} ${relative.y} l 10 15`);
+  }, [relative.x, relative.y]);
+
   return (
     <div className="w-full">
       <Svg size={30}>
-        <PathVisualizer path="M 5 5 L 10 15" />
-        <PathVisualizer path="M 15 5 l 10 15" />
-        <Tooltip x={5} y={5} placement="top">
-          (5, 5)
+        <PathVisualizer path={absoluteCommand} />
+        <PathVisualizer path={relativeCommand} />
+        <Tooltip x={absolute.x} y={absolute.y} placement="top">
+          ({absolute.x.toFixed(1)}, {absolute.y.toFixed(1)})
         </Tooltip>
-        <Tooltip x={15} y={5} placement="top">
-          (15, 5)
+        <Tooltip x={relative.x} y={relative.y} placement="top">
+          ({relative.x.toFixed(1)}, {relative.y.toFixed(1)})
         </Tooltip>
         <Tooltip x={10} y={15} placement="bottom">
           (10, 15)
         </Tooltip>
-        <Tooltip x={25} y={20} placement="bottom">
-          (25, 20)
+        <Tooltip x={relative.x + 10} y={relative.y + 15} placement="bottom">
+          ({(relative.x + 10).toFixed(1)}, {(relative.y + 15).toFixed(1)})
         </Tooltip>
       </Svg>
+      <div className="absolute bottom-24 right-24">
+        <button
+          className="bg-gray12 text-gray1 p-2 rounded-xl shadow-md border border-gray11"
+          onClick={() => {
+            setRelative({ x: 15, y: 5 });
+            setAbsolute({ x: 5, y: 5 });
+          }}
+        >
+          <Refresh />
+        </button>
+      </div>
     </div>
+  );
+};
+
+const Refresh = () => {
+  return (
+    <svg
+      width="32"
+      height="32"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+    >
+      <path d="M11.25 4.75L8.75 7L11.25 9.25" />
+      <path d="M12.75 19.25L15.25 17L12.75 14.75" />
+      <path d="M9.75 7H13.25C16.5637 7 19.25 9.68629 19.25 13V13.25" />
+      <path d="M14.25 17H10.75C7.43629 17 4.75 14.3137 4.75 11V10.75" />
+    </svg>
   );
 };
 

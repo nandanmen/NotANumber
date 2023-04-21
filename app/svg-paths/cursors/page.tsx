@@ -1,13 +1,8 @@
 import { serialize } from "next-mdx-remote/serialize";
-import { MDX } from "../components/mdx";
 import { readPage } from "../lib/fs";
-import { Cursors } from "./cursors";
+import { CursorsContent } from "./content";
 
-export default async function SvgPathsPage() {
+export default async function CursorsPage() {
   const { content, length } = await readPage("cursors");
-  return (
-    <MDX content={await serialize(content)} numSections={length}>
-      <Cursors />
-    </MDX>
-  );
+  return <CursorsContent content={await serialize(content)} length={length} />;
 }

@@ -38,6 +38,9 @@ const toPath = (command: Command) => {
       command.y
     }`;
   }
+  if (code === "L") {
+    return `M ${x0} ${y0} L ${command.x} ${command.y}`;
+  }
   return `M ${x0} ${y0} ${code} ${Object.values(rest).join(" ")}`;
 };
 
@@ -125,11 +128,11 @@ export const Sections = ({
     <g>
       <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
       <g>
-        {commands.map((command) => {
+        {commands.map((command, i) => {
           if (command.code === "M") {
             return (
               <line
-                key={command.id}
+                key={command.code + i}
                 x1={command.x0}
                 y1={command.y0}
                 x2={command.x}
@@ -142,7 +145,7 @@ export const Sections = ({
           }
           return (
             <motion.path
-              key={command.id}
+              key={command.code + i}
               d={toPath(command)}
               className="fill-none stroke-current"
               strokeWidth={getRelative(1)}
@@ -157,9 +160,15 @@ export const Sections = ({
         {commands.map((command, i) => {
           if (command.code === "Z") return null;
           if (type === "placeholder")
-            return <Endpoint key={command.id} cx={command.x} cy={command.y} />;
+            return (
+              <Endpoint key={command.code + i} cx={command.x} cy={command.y} />
+            );
           return (
-            <AnimatedEndpoint key={command.id} cx={command.x} cy={command.y} />
+            <AnimatedEndpoint
+              key={command.code + i}
+              cx={command.x}
+              cy={command.y}
+            />
           );
         })}
       </g>
@@ -380,7 +389,7 @@ const Endpoints = () => {
     <g>
       {commands.map((command, i) => {
         return (
-          <g key={command.id}>
+          <g key={command.code + i}>
             <CommandEndpoint command={command} />
           </g>
         );
