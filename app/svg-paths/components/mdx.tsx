@@ -10,7 +10,10 @@ const baseComponents = {
   h2: (props) => <h1 className="text-2xl font-bold" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
-    <pre className="border border-gray8 bg-gray3 p-4 rounded-md" {...props} />
+    <pre
+      className="border border-gray8 bg-gray3 px-4 py-3 rounded-md"
+      {...props}
+    />
   ),
   ul: (props) => <ul className="list-disc ml-4" {...props} />,
   PageSection,

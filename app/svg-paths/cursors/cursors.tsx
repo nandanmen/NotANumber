@@ -12,6 +12,14 @@ import { parsePath, type Command } from "../utils";
 import { useStateContext } from "./state-context";
 import { useDebouncedCallback } from "use-debounce";
 
+const Controls = ({ children }) => {
+  return (
+    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1">
+      {children}
+    </div>
+  );
+};
+
 const heartCommands = parsePath(heart);
 
 const usePathAnimation = (
@@ -65,14 +73,14 @@ const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
           transition={{ type: "spring", bounce: 0 }}
         />
       </Svg>
-      <div className="absolute bottom-24 right-24 flex gap-1">
+      <Controls>
         <button
           className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
           onClick={play}
         >
           {playing ? <Pause /> : <Play />}
         </button>
-      </div>
+      </Controls>
     </div>
   );
 };
@@ -140,7 +148,7 @@ const Corner = () => {
           </motion.g>
         )}
       </Svg>
-      <div className="absolute bottom-24 right-24 flex gap-1">
+      <Controls>
         <button
           className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
           onClick={play}
@@ -159,7 +167,7 @@ const Corner = () => {
         >
           <ArrowRight />
         </button>
-      </div>
+      </Controls>
     </div>
   );
 };
@@ -248,7 +256,7 @@ const AbsoluteRelative = () => {
           transition={{ type: "spring", bounce: 0 }}
         />
       </Svg>
-      <div className="absolute bottom-24 right-24">
+      <Controls>
         <button
           className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
           onClick={() => {
@@ -258,7 +266,7 @@ const AbsoluteRelative = () => {
         >
           <Refresh />
         </button>
-      </div>
+      </Controls>
     </div>
   );
 };
@@ -356,7 +364,25 @@ const ArrowLeft = () => {
 
 // --
 
-const mapIndexToComponent = [CursorOverview, Corner, AbsoluteRelative];
+const MoveCommand = () => {
+  return (
+    <CursorOverview
+      commands={parsePath(
+        "M 5 8 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"
+      )}
+      size={20}
+    />
+  );
+};
+
+// --
+
+const mapIndexToComponent = [
+  CursorOverview,
+  Corner,
+  AbsoluteRelative,
+  MoveCommand,
+];
 
 export function Cursors() {
   const { index } = useIndexContext();

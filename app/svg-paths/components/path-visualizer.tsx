@@ -407,6 +407,7 @@ const CommandEndpoint = ({ command }: { command: Command }) => {
           <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
         );
       }
+      return null;
     }
     case "L": {
       if (!command.source.relative) return null;

@@ -1,4 +1,4 @@
-import { Nunito, Roboto_Mono } from "next/font/google";
+import { Nunito, Source_Code_Pro } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -14,7 +14,7 @@ const sans = Nunito({
   subsets: ["latin"],
 });
 
-const mono = Roboto_Mono({
+const mono = Source_Code_Pro({
   weight: ["400", "700"],
   variable: "--font-mono",
   subsets: ["latin"],

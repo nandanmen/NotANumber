@@ -6,11 +6,14 @@ At the heart of all SVG paths is the **cursor**. All path commands _use_ the cur
 
 Consider this little corner, defined with the following commands:
 
-```
-M 10 10
-L 20 10
-v 10
-```
+<CommandList
+  id="command-list-corner"
+  commands="
+    M 10 10
+    L 20 10
+    v 10
+  "
+/>
 
 The cursor always starts at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
 
@@ -42,16 +45,26 @@ Remember: commands written with an uppercase letter are **absolute** commands, w
 
 ## Move Command
 
-There is a special command that _only_ moves the cursor without drawing anything. This command is called the **move command** and is denoted with the `M` (or `m`) code.
-
-These are useful when you want to start drawing a new, disconnected path:
+There is a special command that _only_ moves the cursor without drawing anything. This command is called the **move command** and is denoted with the `M` (or `m`) code:
 
 ```
-M 10 10
-v 10
-M 30 10
-v 10
+M <x> <y>
+m <dx> <dy>
 ```
+
+These are useful when you want to draw paths that aren't connected to one another:
+
+<CommandList
+  id="command-list-move"
+  commands="
+    M 5 8
+    q 2 2 0 4
+    m 3 -6
+    q 4 4 0 8
+    m 3 -10
+    q 4 6 0 12
+  "
+/>
 
 ---
 

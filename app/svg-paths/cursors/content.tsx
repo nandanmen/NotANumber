@@ -4,6 +4,7 @@ import { MDX } from "../components/mdx";
 import { Cursors } from "./cursors";
 import { StateProvider } from "./state-context";
 import { InteractiveCommand } from "./interactive-command";
+import { CommandList } from "./command-list";
 
 export function CursorsContent({ content, length }) {
   return (
@@ -16,7 +17,7 @@ export function CursorsContent({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ InteractiveCommand }}
+        components={{ InteractiveCommand, CommandList }}
       >
         <Cursors />
       </MDX>
