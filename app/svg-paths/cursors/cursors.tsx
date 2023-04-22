@@ -3,7 +3,7 @@
 import React from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
-import { PathVisualizer, Sections, Text } from "../components/path-visualizer";
+import { PathVisualizer, Text } from "../components/path-visualizer";
 import { Svg, useSvgContext } from "../components/svg";
 import { heart } from "../index/index";
 import { useIndexContext } from "../components/index-provider";
@@ -266,8 +266,8 @@ const AbsoluteRelative = () => {
 const Refresh = () => {
   return (
     <svg
-      width="32"
-      height="32"
+      width="24"
+      height="24"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

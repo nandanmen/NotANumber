@@ -29,7 +29,7 @@ export function PageSection({
   return (
     <section
       ref={ref}
-      className="p-10 min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute before:right-0 before:top-0 before:w-1/4"
+      className="p-10 pb-32 min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute before:right-0 before:top-0 before:w-1/4 first-of-type:before:hidden"
     >
       {children}
     </section>

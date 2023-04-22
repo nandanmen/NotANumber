@@ -7,6 +7,7 @@ import { IndexProvider, useIndexContext } from "./index-provider";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
+  h2: (props) => <h1 className="text-2xl font-bold" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
     <pre className="border border-gray8 bg-gray3 p-4 rounded-md" {...props} />
@@ -35,8 +36,8 @@ export const MDX = ({
         />
         <Footer />
       </article>
-      <div className="h-screen max-w-[100vh] sticky top-0 p-10 aspect-square flex items-center">
-        {children}
+      <div className="h-screen sticky top-0 flex items-center justify-center">
+        <div className="w-full max-w-[100vh] p-10">{children}</div>
       </div>
     </IndexProvider>
   );
