@@ -176,7 +176,7 @@ export const Sections = ({
   );
 };
 
-const AnimatedEndpoint = ({ cx, cy, delay = 0 }) => {
+export const AnimatedEndpoint = ({ cx, cy, delay = 0 }) => {
   const id = React.useId();
   const { config, getRelative } = useSvgContext();
   const padding = getRelative(config.padding);

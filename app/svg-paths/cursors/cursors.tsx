@@ -1,15 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
-import { PathVisualizer, Text } from "../components/path-visualizer";
+import {
+  AnimatedEndpoint,
+  PathVisualizer,
+  Text,
+} from "../components/path-visualizer";
 import { Svg, useSvgContext } from "../components/svg";
 import { heart } from "../index/index";
 import { useIndexContext } from "../components/index-provider";
 import { Tooltip } from "../components/svg/tooltip";
 import { parsePath, type Command } from "../utils";
-import { useStateContext } from "./state-context";
+import { useStateContext } from "../components/state-context";
 import { useDebouncedCallback } from "use-debounce";
 
 const Controls = ({ children }) => {
@@ -377,11 +381,50 @@ const MoveCommand = () => {
 
 // --
 
+const points = [
+  [0, 5],
+  [5, 15],
+  [10, 10],
+  [15, 10],
+  [20, 0],
+];
+
+const Practice = () => {
+  const { data } = useStateContext<{ value: string }>("editor");
+  const [path, setPath] = React.useState([]);
+
+  React.useEffect(() => {
+    try {
+      const parsed = parsePath(data?.value);
+      setPath(parsed);
+    } catch {}
+  }, [data?.value]);
+
+  return (
+    <Svg size={20}>
+      {points.map(([x, y], index) => {
+        return (
+          <AnimatedEndpoint
+            key={`${x}-${y}`}
+            cx={x}
+            cy={y}
+            delay={index * 0.2}
+          />
+        );
+      })}
+      <PathVisualizer path={path} />
+    </Svg>
+  );
+};
+
+// --
+
 const mapIndexToComponent = [
   CursorOverview,
   Corner,
   AbsoluteRelative,
   MoveCommand,
+  Practice,
 ];
 
 export function Cursors() {

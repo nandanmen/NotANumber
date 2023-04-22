@@ -4,6 +4,9 @@ import React from "react";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
 import { IndexProvider, useIndexContext } from "./index-provider";
+import { InteractiveCommand } from "./interactive-command";
+import { CommandList } from "./command-list";
+import { PathEditor } from "./path-editor";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
@@ -17,6 +20,9 @@ const baseComponents = {
   ),
   ul: (props) => <ul className="list-disc ml-4" {...props} />,
   PageSection,
+  InteractiveCommand,
+  CommandList,
+  PathEditor,
 };
 
 export const MDX = ({

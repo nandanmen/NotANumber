@@ -56,3 +56,9 @@ Another thing I can do is to just duplicate the paths when they're active.
 I wonder if I should actually show all of the path aids at the same time. Does it make more sense to only show the "active" path?
 
 The one "bug" here is that the active commands can appear below the inactive commands because we're using only one component. I feel like it makes sense to show the active commands on top of the inactive ones by duplicating the components. Not really sure how to organize those components just yet though.
+
+---
+
+I want the path visualizer to be _completely_ configurable. I should be able to say "only show the move lines and the path sections" and have that work.
+
+- For this to happen, I need to break everything into smaller components; instead of a <Lines /> component, I need a <MoveLines /> component, a <CurveLines /> component, etc.
