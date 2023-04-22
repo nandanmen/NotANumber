@@ -28,7 +28,7 @@ export const MDX = ({
 }) => {
   return (
     <IndexProvider numSections={numSections}>
-      <article className="border-r border-gray8 divide-y divide-dashed divide-gray8 leading-7">
+      <article className="border-r border-gray8 leading-7">
         <MDXRemote
           {...content}
           components={{ ...baseComponents, ...components }}

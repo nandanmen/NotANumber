@@ -27,7 +27,10 @@ export function PageSection({
   }, [index, set]);
 
   return (
-    <section ref={ref} className="p-10 min-h-[50vh] space-y-[1em]">
+    <section
+      ref={ref}
+      className="p-10 min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute before:right-0 before:top-0 before:w-1/4"
+    >
       {children}
     </section>
   );

@@ -8,7 +8,7 @@ const MIDPOINT = BUTTON_GRID_SIZE / 2;
 
 const getOffset = transform([-100, 100], [-MIDPOINT, MIDPOINT]);
 
-export const InteractiveCommand = ({ id, code }) => {
+export const InteractiveCommand = ({ id, template }) => {
   const [offset, setOffset] = React.useState({ x: 0, y: 0 });
   const {
     data: { x, y },
@@ -17,9 +17,7 @@ export const InteractiveCommand = ({ id, code }) => {
   return (
     <div className="flex justify-between bg-gray3 border border-gray8 rounded-md p-1 items-center">
       <p className="ml-2">
-        <code>
-          {code} {x.toFixed(1)} {y.toFixed(1)}
-        </code>
+        <code>{template({ x, y })}</code>
       </p>
       <motion.button
         className="block"
