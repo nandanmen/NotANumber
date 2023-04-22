@@ -391,7 +391,7 @@ const points = [
 
 const Practice = () => {
   const { data } = useStateContext<{ value: string }>("editor");
-  const [path, setPath] = React.useState([]);
+  const [path, setPath] = React.useState<Command[]>([]);
 
   React.useEffect(() => {
     try {
@@ -400,6 +400,7 @@ const Practice = () => {
     } catch {}
   }, [data?.value]);
 
+  const lastCommand = path.at(-1);
   return (
     <Svg size={20}>
       {points.map(([x, y], index) => {
@@ -413,6 +414,12 @@ const Practice = () => {
         );
       })}
       <PathVisualizer path={path} />
+      {lastCommand && (
+        <CursorPoint
+          animate={{ x: lastCommand.x, y: lastCommand.y }}
+          transition={{ type: "spring", bounce: 0 }}
+        />
+      )}
     </Svg>
   );
 };
