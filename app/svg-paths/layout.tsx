@@ -1,10 +1,7 @@
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-gray4">
-      <header className="h-16 border-b border-gray8 sticky top-0 bg-inherit">
-        <h1>SVG Paths</h1>
-      </header>
-      <main className="grid grid-cols-[60ch_1fr] min-h-[calc(100vh_-_theme(space.16))] w-fit mx-auto">
+      <main className="grid grid-cols-[60ch_1fr] min-h-100vh w-fit mx-auto">
         {children}
       </main>
     </div>

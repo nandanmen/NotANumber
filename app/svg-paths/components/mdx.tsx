@@ -35,7 +35,7 @@ export const MDX = ({
         />
         <Footer />
       </article>
-      <div className="h-[calc(100vh_-_theme(space.16))] sticky top-16 p-10 aspect-square flex items-center">
+      <div className="h-screen max-w-[100vh] sticky top-0 p-10 aspect-square flex items-center">
         {children}
       </div>
     </IndexProvider>
