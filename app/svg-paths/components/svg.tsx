@@ -107,8 +107,8 @@ function Axes() {
 }
 
 function Dot({ x, y }: { x: number; y: number }) {
-  const { getRelative } = useSvgContext();
+  const { getRelative, size } = useSvgContext();
   const isHighlighted = x % 5 === 0 && y % 5 === 0;
-  const radius = getRelative(isHighlighted ? 0.5 : 0.2);
+  const radius = getRelative(isHighlighted ? 0.5 : size > 25 ? 0.15 : 0.2);
   return <circle cx={x} cy={y} r={radius} className="fill-gray8" />;
 }
