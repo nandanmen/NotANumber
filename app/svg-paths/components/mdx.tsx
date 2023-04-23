@@ -10,7 +10,7 @@ import { PathEditor } from "./path-editor";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { FaGit, FaGithub, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 
 const baseComponents = {

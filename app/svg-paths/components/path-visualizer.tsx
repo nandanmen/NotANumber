@@ -114,6 +114,53 @@ export function PathVisualizer({
   );
 }
 
+export const PathSectionPoint = ({
+  command,
+  type,
+}: {
+  command: Command;
+  type?: "placeholder";
+}) => {
+  if (command.code === "Z") return null;
+  if (type === "placeholder") return <Endpoint cx={command.x} cy={command.y} />;
+  return <AnimatedEndpoint cx={command.x} cy={command.y} />;
+};
+
+export const PathSection = ({
+  command,
+  type,
+  ...props
+}: {
+  command: Command;
+  type?: "placeholder";
+} & React.ComponentPropsWithoutRef<"line">) => {
+  const { getRelative } = useSvgContext();
+  if (command.code === "M") {
+    return (
+      <line
+        x1={command.x0}
+        y1={command.y0}
+        x2={command.x}
+        y2={command.y}
+        strokeDasharray={getRelative(1)}
+        strokeWidth={getRelative(0.5)}
+        className="stroke-gray10"
+        {...props}
+      />
+    );
+  }
+  return (
+    <motion.path
+      d={toPath(command)}
+      className="fill-none stroke-current"
+      strokeWidth={getRelative(1)}
+      animate={{ pathLength: 1 }}
+      initial={{ pathLength: type === "placeholder" ? 1 : 0 }}
+      transition={{ type: "spring", bounce: 0 }}
+    />
+  );
+};
+
 export const Sections = ({
   commands,
   type,
@@ -129,45 +176,18 @@ export const Sections = ({
       <circle cx="0" cy="0" r={getRelative(1)} className="fill-gray10" />
       <g>
         {commands.map((command, i) => {
-          if (command.code === "M") {
-            return (
-              <line
-                key={command.code + i}
-                x1={command.x0}
-                y1={command.y0}
-                x2={command.x}
-                y2={command.y}
-                strokeDasharray={getRelative(1)}
-                strokeWidth={getRelative(0.5)}
-                className="stroke-gray10"
-              />
-            );
-          }
           return (
-            <motion.path
-              key={command.code + i}
-              d={toPath(command)}
-              className="fill-none stroke-current"
-              strokeWidth={getRelative(1)}
-              animate={{ pathLength: 1 }}
-              initial={{ pathLength: type === "placeholder" ? 1 : 0 }}
-              transition={{ type: "spring", bounce: 0 }}
-            />
+            <PathSection key={command.code + i} command={command} type={type} />
           );
         })}
       </g>
       <g>
         {commands.map((command, i) => {
-          if (command.code === "Z") return null;
-          if (type === "placeholder")
-            return (
-              <Endpoint key={command.code + i} cx={command.x} cy={command.y} />
-            );
           return (
-            <AnimatedEndpoint
+            <PathSectionPoint
               key={command.code + i}
-              cx={command.x}
-              cy={command.y}
+              command={command}
+              type={type}
             />
           );
         })}

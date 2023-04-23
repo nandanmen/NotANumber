@@ -27,6 +27,10 @@ export function useStateContext<Type extends Record<string, unknown>>(
     set(data: Partial<Type>) {
       setState((current) =>
         produce(current, (draft) => {
+          if (data === null) {
+            draft[key] = null;
+            return;
+          }
           draft[key] = { ...draft[key], ...data };
         })
       );

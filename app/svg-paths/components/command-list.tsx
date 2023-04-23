@@ -18,7 +18,10 @@ export const CommandList = ({
 }) => {
   const { set } = useStateContext(id);
   return (
-    <ol className="border border-gray8 bg-gray3 rounded-md p-1 font-mono leading-none">
+    <motion.ol
+      className="border border-gray8 bg-gray3 rounded-md p-1 font-mono leading-none"
+      onHoverEnd={() => set(null)}
+    >
       {commands
         .split("\n")
         .filter((command) => command.trim().length > 0)
@@ -38,6 +41,6 @@ export const CommandList = ({
             </motion.li>
           );
         })}
-    </ol>
+    </motion.ol>
   );
 };

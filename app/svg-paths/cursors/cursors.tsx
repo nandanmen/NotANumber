@@ -5,6 +5,8 @@ import { motion, useAnimationControls } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
 import {
   AnimatedEndpoint,
+  PathSection,
+  PathSectionPoint,
   PathVisualizer,
   Text,
 } from "../components/path-visualizer";
@@ -284,14 +286,44 @@ const AbsoluteRelative = () => {
 
 // --
 
+const commands = parsePath(
+  "M 5 8 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"
+);
+
 const MoveCommand = () => {
+  const { data } = useStateContext<{ active: number } | null>(
+    "command-list-move"
+  );
+  const isHovering = typeof data?.active === "number";
   return (
-    <CursorOverview
-      commands={parsePath(
-        "M 5 8 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"
-      )}
-      size={20}
-    />
+    <Svg size={20}>
+      <g>
+        {commands.map((command, index) => {
+          const isPlaceholder = isHovering && data?.active !== index;
+          const getClassName = () => {
+            if (command.code !== "M") return;
+            if (!isHovering) return "stroke-gray10";
+            if (isPlaceholder) return "stroke-gray8";
+            return "stroke-gray12";
+          };
+          return (
+            <g key={command.id} className={isPlaceholder && "text-gray8"}>
+              <PathSection command={command} className={getClassName()} />
+            </g>
+          );
+        })}
+      </g>
+      <g>
+        {commands.map((command, index) => {
+          const isPlaceholder = isHovering && data?.active !== index;
+          return (
+            <g key={command.id} className={isPlaceholder && "text-gray8"}>
+              <PathSectionPoint command={command} />
+            </g>
+          );
+        })}
+      </g>
+    </Svg>
   );
 };
 
