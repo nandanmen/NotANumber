@@ -84,8 +84,9 @@ export const MDX = ({
       </article>
       <div className="h-screen sticky top-0 flex flex-col">
         <header className="p-8">
-          <nav>
-            <ul className="flex">
+          <nav className="flex">
+            <h2 className="text-gray10 font-bold">Understanding SVG Paths</h2>
+            <ul className="flex ml-auto">
               {sections.map((section) => {
                 const href = toHref(section);
                 return (
@@ -120,15 +121,25 @@ const Footer = () => {
   const prev = sections[pathIndex - 1];
   const next = sections[pathIndex + 1];
   return (
-    <footer className="px-16 pb-8 flex justify-between text-gray11">
-      <Link href={toHref(prev)} className="flex gap-2 items-center capitalize">
-        <ArrowLeft />
-        <span>{prev}</span>
-      </Link>
-      <Link href={toHref(next)} className="flex gap-2 items-center capitalize">
-        <span>{next}</span>
-        <ArrowRight />
-      </Link>
+    <footer className="px-16 pb-8 flex text-gray11">
+      {prev && (
+        <Link
+          href={toHref(prev)}
+          className="flex gap-2 items-center capitalize"
+        >
+          <ArrowLeft />
+          <span>{prev}</span>
+        </Link>
+      )}
+      {next && (
+        <Link
+          href={toHref(next)}
+          className="flex gap-2 items-center capitalize ml-auto"
+        >
+          <span>{next}</span>
+          <ArrowRight />
+        </Link>
+      )}
     </footer>
   );
 };
