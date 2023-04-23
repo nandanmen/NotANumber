@@ -47,7 +47,8 @@ export function Svg({
 
   return (
     <svg
-      width="100%"
+      width="auto"
+      height="100%"
       viewBox={`-${padding} -${padding} ${size + padding + padding / 2} ${
         size + padding + padding / 2
       }`}
