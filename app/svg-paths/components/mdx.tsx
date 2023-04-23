@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
 import { IndexProvider } from "./index-provider";
@@ -84,25 +85,38 @@ export const MDX = ({
       </article>
       <div className="h-screen sticky top-0 flex flex-col">
         <header className="p-8">
-          <nav className="flex">
-            <h2 className="text-gray10 font-bold">Understanding SVG Paths</h2>
-            <ul className="flex ml-auto">
+          <nav>
+            <ul className="flex">
               {sections.map((section) => {
                 const href = toHref(section);
                 return (
-                  <li key={section}>
-                    <Link
-                      href={href}
-                      className={clsx(
-                        "capitalize py-1 px-2 rounded-md",
-                        href === pathName ? "bg-gray7" : "text-gray10"
-                      )}
-                    >
-                      {section}
-                    </Link>
+                  <li
+                    key={section}
+                    className={clsx(
+                      "capitalize rounded-md py-1 px-2",
+                      href === pathName ? "bg-gray7" : "text-gray10"
+                    )}
+                  >
+                    <Link href={href}>{section}</Link>
                   </li>
                 );
               })}
+              <li className="ml-auto bg-blue6 rounded-md py-1 px-2">
+                <motion.a
+                  className="flex items-center text-sm font-bold gap-1"
+                  href="https://ko-fi.com/nandafyi"
+                  target="_blank"
+                  rel="noreferrer"
+                  whileHover="hover"
+                  initial="idle"
+                  transition={{
+                    staggerChildren: 0.1,
+                  }}
+                >
+                  <CoffeeIcon />
+                  <span>Buy me a coffee</span>
+                </motion.a>
+              </li>
             </ul>
           </nav>
         </header>
@@ -111,6 +125,44 @@ export const MDX = ({
         </div>
       </div>
     </IndexProvider>
+  );
+};
+
+const CoffeeIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <motion.g
+        variants={{
+          idle: { y: -2 },
+          hover: { y: 0 },
+        }}
+      >
+        <path d="M19.25 17.25V8.75H7.75V17.25C7.75 18.3546 8.64543 19.25 9.75 19.25H17.25C18.3546 19.25 19.25 18.3546 19.25 17.25Z" />
+        <path d="M7.5 10.75H6.75C5.64543 10.75 4.75 11.6454 4.75 12.75V14.25C4.75 15.3546 5.64543 16.25 6.75 16.25H7.5" />
+      </motion.g>
+      <motion.path
+        variants={{ idle: { opacity: 0, y: 4 }, hover: { opacity: 1, y: 0 } }}
+        d="M13.25 4.75V6.25"
+      />
+      <motion.path
+        variants={{ idle: { opacity: 0, y: 4 }, hover: { opacity: 1, y: 0 } }}
+        d="M8.25 4.75C8.25 4.75 9.25 4.75 9.25 6.25"
+      />
+      <motion.path
+        variants={{ idle: { opacity: 0, y: 4 }, hover: { opacity: 1, y: 0 } }}
+        d="M18.25 4.75C18.25 4.75 17.25 4.75 17.25 6.25"
+      />
+    </svg>
   );
 };
 
