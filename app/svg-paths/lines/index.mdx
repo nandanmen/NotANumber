@@ -6,9 +6,17 @@ We've seen a bit of line commands in the last section, but we'll cover them in f
 
 The most generic of them is the `L` command, which draws a line to a specific `(x, y)` coordinate:
 
-```
-L 10 20
-```
+<InteractiveCommand
+  id="L"
+  template={({ x, y }) => (
+    <span>
+      <span className="text-gray10">M 5 5</span>
+      <span>
+        L {x.toFixed(1)} {y.toFixed(1)}
+      </span>
+    </span>
+  )}
+/>
 
 ---
 
