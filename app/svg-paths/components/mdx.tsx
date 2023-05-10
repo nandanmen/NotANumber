@@ -101,7 +101,7 @@ export const MDX = ({
                   </li>
                 );
               })}
-              <li className="ml-auto bg-blue6 rounded-md py-1 px-2">
+              <li className="ml-auto bg-green6 rounded-md py-1 px-2">
                 <motion.a
                   className="flex items-center text-sm font-bold gap-1"
                   href="https://ko-fi.com/nandafyi"

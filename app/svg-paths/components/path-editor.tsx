@@ -9,7 +9,7 @@ export const PathEditor = ({ id, placeholder = "" }) => {
         <EditIcon />
       </span>
       <textarea
-        className="w-full border-gray8 border rounded-md bg-gray3 h-[200px] font-mono px-4 py-3 outline-none outline-[3px] focus-visible:outline-green9"
+        className="w-full border-gray8 border rounded-md bg-gray3 h-[200px] font-mono px-4 py-3 outline-none outline-[3px] focus-visible:outline-gray10"
         placeholder={placeholder}
         value={value}
         onChange={(e) => set({ value: e.target.value })}
