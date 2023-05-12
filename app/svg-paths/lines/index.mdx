@@ -22,35 +22,77 @@ The most generic of them is the `L` command, which draws a line to a specific `(
 
 Just like how the `m` command moves the cursor relative to its current position, the lowercase `l` command draws a line relative to the current cursor position:
 
+<InteractiveCommand
+  id="l"
+  template={({ x, y }) => (
+    <span>
+      <span className="text-gray10">M 5 5</span>
+      <span>
+        l {x.toFixed(1)} {y.toFixed(1)}
+      </span>
+    </span>
+  )}
+/>
+
+---
+
+## Vertical and Horizontal Lines
+
+You can draw lines in specific directions using the `H` and `V` commands. `H` draws a horizontal line while `V` draws a vertical line:
+
+<CommandList
+  id="command-list-lines"
+  commands="
+    M 13 5
+    h -6
+    V 15
+    H 13
+    M 7 10
+    h 4
+  "
+/>
+
+`H` and `V` also have lowercase versions, which use relative coordinates instead (just like the `l` command we just saw).
+
+> This will be the last time I explicitly mention the lowercase relative version of the commands. For the rest of this guide, assume that all commands have a relative variant!
+
+---
+
+## The Close Path Command
+
+The last type of line command is the **close path command** `Z`. This command draws a straight line from the current cursor position to the start of the path.
+
+This means instead of explicitly using a line command to close a shape, you can accomplish the same thing by using `Z`:
+
 ```
-L 10 20
-l 10 -7.5
+M 10 5
+l -5 10
+h 10
+Z
 ```
 
 ---
 
-If you'd just like to draw a line in a specific direction, you can use the `H` and `V` commands. `H` draws a horizontal line, and `V` draws a vertical line:
+One cool thing about `Z` is that it will "close" your path, even if the cursor is already back at the start of the path. Consider this heart shape for example:
 
-```
-L 10 20
-H 30
-V 10
-```
+<HeartCommands />
+
+Notice that the heart begins and ends at the same point (highlighted above). This means there's no need for the `Z` command, right?
 
 ---
 
-Like the other commands, `H` and `V` also come with lowercase versions that use relative coordinates:
+This heart just has one small problem. If we zoom in to the middle of the heart, we find this awkward corner where the start and end curves meet.
 
-```
-L 10 20
-h 20
-v -10
-```
+We can make this point look smoother by adding the `Z` command to the end of the path:
 
-_(This will be the last time I explicitly mention the lowercase relative version of the commands. For the rest of this guide, assume that all commands have a relative variant!)_
+<ClosePathToggle />
+
+While using `Z` here doesn't add any new lines, it does tell the browser that the path is "closed", allowing it to draw the path correctly.
 
 ---
 
 ## Practice
 
 Trace over this house using all of the commands we've seen so far (including the cursor commands from the last section):
+
+<LineQuestion />

@@ -17,9 +17,11 @@ export const parsePath = (path: string): Command[] => {
   const copy = produce(commands, (draft) => {
     makeAbsolute(draft);
   }) as Command[];
-  return copy.map((command, index) => ({
-    ...command,
-    source: commands[index],
-    id: v4(),
-  }));
+  return copy.map((command, index) => {
+    return {
+      ...command,
+      source: commands[index],
+      id: v4(),
+    };
+  });
 };

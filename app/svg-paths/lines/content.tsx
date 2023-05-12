@@ -1,57 +1,198 @@
+/* eslint-disable react/jsx-key */
 "use client";
 
+import React from "react";
+import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
 import { StateProvider, useStateContext } from "../components/state-context";
 import { useIndexContext } from "../components/index-provider";
-import { Svg } from "../components/svg";
-import { PathVisualizer } from "../components/path-visualizer";
+import { Svg, useSvgContext } from "../components/svg";
+import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
 import { parsePath } from "../utils";
 import { Tooltip } from "../components/svg/tooltip";
+import { PathHoverVisual } from "../components/path-hover-visual";
+import { HeartCommands, ClosePathToggle, LineQuestion } from "./components";
+import { PathPractice } from "../components/path-practice";
+
+const mapIndexToSize = [
+  20,
+  25,
+  20,
+  20,
+  25,
+  { size: 10, config: { pan: { x: 7, y: 3 } } },
+  25,
+];
 
 export function LinesContent({ content, length }) {
   return (
     <StateProvider
       initial={{
-        L: { x: 15, y: 15 },
+        L: { x: 15, y: 10 },
+        l: { x: 15, y: 10 },
+        z: { active: false },
+        answer: { active: false },
       }}
     >
-      <MDX content={content} numSections={length}>
+      <MDX
+        content={content}
+        numSections={length}
+        components={{ HeartCommands, ClosePathToggle, LineQuestion }}
+      >
         <LineVisuals />
       </MDX>
     </StateProvider>
   );
 }
 
-// eslint-disable-next-line react/jsx-key
-const mapIndexToComponent = [<Line index={0} />, <Line index={1} />];
+const commands = parsePath("M 13 5 h -6 V 15 H 13 M 7 10 h 4");
+
+const mapIndexToComponent = [
+  <Line index={0} />,
+  <Line index={1} />,
+  <PathHoverVisual commands={commands} id="command-list-lines" />,
+  <ZExample />,
+  <HeartPath />,
+  <Heart />,
+  <Practice />,
+];
+
+const houseCommands = parsePath(
+  "M 5 10 l 2.5 -5 h 10 l 2.5 5 h -12.5 v 10 h 5 v -5 h -2.5 v 5 h 7.5 v -10 z"
+);
+
+function Practice() {
+  const { data } = useStateContext<{ active: boolean }>("answer");
+  return (
+    <g>
+      <Path
+        className="stroke-gray8"
+        d="M 5 10 l 2.5 -5 h 10 l 2.5 5 h -12.5 v 10 h 5 v -5 h -2.5 v 5 h 7.5 v -10 z"
+      />
+      <PathPractice id="line-practice" />
+      {data.active && (
+        <PathHoverVisual
+          commands={houseCommands}
+          id="command-list-line-answers"
+        />
+      )}
+    </g>
+  );
+}
+
+function ZExample() {
+  const { useRelativeMotionValue } = useSvgContext();
+  return (
+    <g>
+      <PathVisualizer path="M 10 5 l -5 10 h 10 Z" helpers={false} />
+      <motion.line
+        x1="15"
+        y1="15"
+        x2="10"
+        y2="5"
+        strokeWidth={useRelativeMotionValue(1.2)}
+        className="stroke-blue9"
+      />
+      <Endpoint cx={15} cy={15} />
+      <g className="text-blue9">
+        <Endpoint cx={10} cy={5} />
+      </g>
+      <Text x="13" y="9" fontSize={4} className="fill-blue9 stroke-none">
+        Z
+      </Text>
+    </g>
+  );
+}
 
 function LineVisuals() {
   const { index } = useIndexContext();
   const children = mapIndexToComponent[index];
-  if (!children) return null;
-  return children;
+  if (!children) return <Svg size={25} />;
+
+  let props: any = mapIndexToSize[index];
+  if (typeof props === "number") props = { size: props };
+  return <Svg {...props}>{children}</Svg>;
 }
 
 function Line({ index }) {
+  const { data: absolute } = useStateContext<{ x: number; y: number }>("L");
+  const { data: relative } = useStateContext<{ x: number; y: number }>("l");
+
+  const absolutePath = React.useMemo(() => {
+    return parsePath(`M 5 5 L ${absolute.x} ${absolute.y}`);
+  }, [absolute.x, absolute.y]);
+
+  const relativePath = React.useMemo(() => {
+    return parsePath(`M 5 5 l ${relative.x} ${relative.y}`);
+  }, [relative.x, relative.y]);
+
   return (
-    <Svg size={index ? 30 : 20}>
-      <SingleLine />
-    </Svg>
+    <>
+      <PathVisualizer path={absolutePath} />
+      <CoordinatesTooltip x={absolute.x} y={absolute.y} />
+      {index && (
+        <>
+          <PathVisualizer path={relativePath} />
+          <CoordinatesTooltip x={5 + relative.x} y={5 + relative.y} />
+        </>
+      )}
+    </>
   );
 }
 
-function SingleLine() {
-  const {
-    data: { x, y },
-    set,
-  } = useStateContext<{ x: number; y: number }>("L");
-  const path = parsePath(`M 5 5 L ${x} ${y}`);
+function Path(props: React.ComponentPropsWithoutRef<(typeof motion)["path"]>) {
+  const { useRelativeMotionValue } = useSvgContext();
+  return (
+    <motion.path
+      strokeWidth={useRelativeMotionValue(1.2)}
+      fill="none"
+      {...props}
+    />
+  );
+}
+
+function HeartPath({ withZ = false, ...props }) {
+  return (
+    <Path
+      className="stroke-current"
+      d={`M11.995 7.23319
+C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
+C4.4959 8.14609 4.2403 10.6312 5.66654 12.3892
+L11.995 18.25
+L18.3235 12.3892
+C19.7498 10.6312 19.5253 8.13046 17.6779 6.65972
+C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
+${withZ ? "Z" : ""}`}
+      {...props}
+    />
+  );
+}
+
+function Heart() {
+  const { useRelativeMotionValue } = useSvgContext();
+  const { data } = useStateContext<{ active: boolean }>("z");
   return (
     <>
-      <PathVisualizer path={path} />
-      <Tooltip x={x} y={y} placement="top">
-        ({x.toFixed(1)}, {y.toFixed(1)})
-      </Tooltip>
+      <HeartPath withZ={data.active} strokeWidth={0.3} />
+      <motion.circle
+        cx="12"
+        cy="7.2"
+        strokeWidth={useRelativeMotionValue(1.5)}
+        r={useRelativeMotionValue(8)}
+        className="stroke-blue9"
+        fill="none"
+        animate={{ pathLength: 1 }}
+        initial={{ pathLength: 0 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      />
     </>
+  );
+}
+
+function CoordinatesTooltip({ x, y }) {
+  return (
+    <Tooltip x={x} y={y} placement="top">
+      ({x.toFixed(1)}, {y.toFixed(1)})
+    </Tooltip>
   );
 }

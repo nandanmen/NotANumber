@@ -5,8 +5,6 @@ import { motion, useAnimationControls } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
 import {
   AnimatedEndpoint,
-  PathSection,
-  PathSectionPoint,
   PathVisualizer,
   Text,
 } from "../components/path-visualizer";
@@ -24,6 +22,8 @@ import {
   Play,
   Refresh,
 } from "../components/icons";
+import { PathHoverVisual } from "../components/path-hover-visual";
+import { PathPractice } from "../components/path-practice";
 
 const Controls = ({ children }) => {
   return (
@@ -291,38 +291,9 @@ const commands = parsePath(
 );
 
 const MoveCommand = () => {
-  const { data } = useStateContext<{ active: number } | null>(
-    "command-list-move"
-  );
-  const isHovering = typeof data?.active === "number";
   return (
     <Svg size={20}>
-      <g>
-        {commands.map((command, index) => {
-          const isPlaceholder = isHovering && data?.active !== index;
-          const getClassName = () => {
-            if (command.code !== "M") return;
-            if (!isHovering) return "stroke-gray10";
-            if (isPlaceholder) return "stroke-gray8";
-            return "stroke-gray12";
-          };
-          return (
-            <g key={command.id} className={isPlaceholder && "text-gray8"}>
-              <PathSection command={command} className={getClassName()} />
-            </g>
-          );
-        })}
-      </g>
-      <g>
-        {commands.map((command, index) => {
-          const isPlaceholder = isHovering && data?.active !== index;
-          return (
-            <g key={command.id} className={isPlaceholder && "text-gray8"}>
-              <PathSectionPoint command={command} />
-            </g>
-          );
-        })}
-      </g>
+      <PathHoverVisual id="command-list-move" commands={commands} />
     </Svg>
   );
 };
@@ -338,17 +309,6 @@ const points = [
 ];
 
 const Practice = () => {
-  const { data } = useStateContext<{ value: string }>("editor");
-  const [path, setPath] = React.useState<Command[]>([]);
-
-  React.useEffect(() => {
-    try {
-      const parsed = parsePath(data?.value);
-      setPath(parsed);
-    } catch {}
-  }, [data?.value]);
-
-  const lastCommand = path.at(-1);
   return (
     <Svg size={20}>
       {points.map(([x, y], index) => {
@@ -361,13 +321,7 @@ const Practice = () => {
           />
         );
       })}
-      <PathVisualizer path={path} />
-      {lastCommand && (
-        <CursorPoint
-          animate={{ x: lastCommand.x, y: lastCommand.y }}
-          transition={{ type: "spring", bounce: 0 }}
-        />
-      )}
+      <PathPractice id="editor" />
     </Svg>
   );
 };

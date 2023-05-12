@@ -23,7 +23,7 @@ const toPath = (command: Command) => {
     ...rest
   } = command;
   if (code === "Z") {
-    return `M ${x0} ${y0} Z`;
+    return `M ${x0} ${y0} L ${command.x} ${command.y}`;
   }
   if (code === "H") {
     return `M ${x0} ${y0} H ${command.x}`;
@@ -66,11 +66,13 @@ export function PathVisualizer({
   index,
   type,
   helpers = true,
+  placeholder = false,
 }: {
   path: string | Command[];
   index?: number;
   type?: CommandType;
   helpers?: boolean;
+  placeholder?: boolean;
 }) {
   const commands = React.useMemo(() => {
     if (Array.isArray(path)) return path;
@@ -82,6 +84,20 @@ export function PathVisualizer({
     if (typeof index === "number") return i <= index;
     return mapCodeToType(command.code) === type;
   });
+
+  if (placeholder) {
+    return (
+      <PathContext.Provider
+        value={{
+          commands,
+        }}
+      >
+        <g className="text-gray8">
+          <Sections type="placeholder" />
+        </g>
+      </PathContext.Provider>
+    );
+  }
 
   return (
     <g>
@@ -121,7 +137,6 @@ export const PathSectionPoint = ({
   command: Command;
   type?: "placeholder";
 }) => {
-  if (command.code === "Z") return null;
   if (type === "placeholder") return <Endpoint cx={command.x} cy={command.y} />;
   return <AnimatedEndpoint cx={command.x} cy={command.y} />;
 };
@@ -250,8 +265,8 @@ export const AnimatedEndpoint = ({ cx, cy, delay = 0 }) => {
   );
 };
 
-const Endpoint = ({ cx, cy, ...props }) => {
-  const { config, getRelative } = useSvgContext();
+export const Endpoint = ({ cx, cy, ...props }) => {
+  const { getRelative } = useSvgContext();
   const endpointSize = getRelative(1);
   const strokeWidth = getRelative(0.6);
   return (
@@ -381,12 +396,12 @@ const Lines = () => {
   );
 };
 
-export const Text = ({ children, ...props }) => {
+export const Text = ({ children, fontSize = 2, ...props }) => {
   const { getRelative } = useSvgContext();
-  const fontSize = getRelative(2);
+  const _fontSize = getRelative(fontSize);
   return (
     <g
-      fontSize={fontSize}
+      fontSize={_fontSize}
       textAnchor="middle"
       dominantBaseline="middle"
       fontWeight="bold"

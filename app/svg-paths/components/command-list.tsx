@@ -7,6 +7,12 @@ const mapCodeToHint = {
   v: "relative vertical line",
   q: "relative quadratic curve",
   m: "relative move",
+  l: "relative line",
+  h: "relative horizontal line",
+  H: "horizontal line",
+  V: "vertical line",
+  z: "close path",
+  Z: "close path",
 };
 
 export const CommandList = ({
@@ -26,7 +32,7 @@ export const CommandList = ({
         .split("\n")
         .filter((command) => command.trim().length > 0)
         .map((command, index) => {
-          const code = command.split(" ").at(0);
+          const code = command.trim().split(" ").at(0);
           return (
             <motion.li
               key={command}

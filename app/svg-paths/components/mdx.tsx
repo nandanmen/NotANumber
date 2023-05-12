@@ -25,6 +25,9 @@ const baseComponents = {
     />
   ),
   ul: (props) => <ul className="list-disc ml-4" {...props} />,
+  blockquote: (props) => (
+    <blockquote className="bg-gray7 rounded-md px-4 py-3" {...props} />
+  ),
   PageSection,
   InteractiveCommand,
   CommandList,
@@ -120,7 +123,7 @@ export const MDX = ({
             </ul>
           </nav>
         </header>
-        <div className="flex items-center justify-center w-full h-full p-8">
+        <div className="flex items-center justify-center w-full h-full">
           <div className="h-full">{children}</div>
         </div>
       </div>

@@ -15,7 +15,7 @@ module.exports = {
       },
       fontFamily: {
         serif: "var(--font-serif)",
-        mono: "var(--font-mono)",
+        mono: "Menlo",
         sans: "var(--font-sans)",
       },
     },

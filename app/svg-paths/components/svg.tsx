@@ -21,6 +21,10 @@ const getRelativeMotionValueHook =
 
 type Config = {
   padding: number;
+  pan: {
+    x: number;
+    y: number;
+  };
 };
 
 const SvgContext = React.createContext<{
@@ -28,6 +32,8 @@ const SvgContext = React.createContext<{
   config: Config;
   getRelative: (value: number) => number;
   useRelativeMotionValue: (value: number) => MotionValue<number>;
+  panX: MotionValue<number>;
+  panY: MotionValue<number>;
 }>(null);
 
 export const useSvgContext = () => {
@@ -35,6 +41,10 @@ export const useSvgContext = () => {
 };
 
 const defaultConfig: Config = {
+  pan: {
+    x: 0,
+    y: 0,
+  },
   padding: 7,
 };
 
@@ -55,25 +65,49 @@ export function Svg({
   children?: React.ReactNode;
   config?: Partial<Config>;
 }) {
-  const _size = useMotionValue(size);
+  const sizeMotion = useMotionValue(size);
 
   const _config = { ...defaultConfig, ...config };
   const getRelative = getRelativeFunction(size);
+  const panX = useMotionValue(_config.pan.x);
+  const panY = useMotionValue(_config.pan.y);
 
-  const useRelativeMotionValue = getRelativeMotionValueHook(_size);
+  const useRelativeMotionValue = getRelativeMotionValueHook(sizeMotion);
   const padding = useRelativeMotionValue(_config.padding);
   const realSize = useTransform(
-    [_size, padding],
+    [sizeMotion, padding],
     ([s, p]: [number, number]) => s + p + p / 2
   );
-  const viewBox = useMotionTemplate`-${padding} -${padding} ${realSize} ${realSize}`;
+  const startX = useTransform(
+    [padding, panX],
+    ([p, x]: [number, number]) => x - p
+  );
+  const startY = useTransform(
+    [padding, panY],
+    ([p, y]: [number, number]) => y - p
+  );
+  const viewBox = useMotionTemplate`${startX} ${startY} ${realSize} ${realSize}`;
 
   React.useEffect(() => {
-    animate(_size, size, {
+    animate(panX, _config.pan.x, {
       type: "spring",
       bounce: 0,
     });
-  }, [size, _size]);
+  }, [panX, _config.pan.x]);
+
+  React.useEffect(() => {
+    animate(panY, _config.pan.y, {
+      type: "spring",
+      bounce: 0,
+    });
+  }, [panY, _config.pan.y]);
+
+  React.useEffect(() => {
+    animate(sizeMotion, size, {
+      type: "spring",
+      bounce: 0,
+    });
+  }, [size, sizeMotion]);
 
   return (
     <motion.svg width="auto" height="100%" viewBox={viewBox}>
@@ -82,8 +116,10 @@ export function Svg({
           size,
           config: _config,
           getRelative,
+          panX,
+          panY,
           useRelativeMotionValue: (value: number) => {
-            return useTransform(_size, (s) => {
+            return useTransform(sizeMotion, (s) => {
               return (value / 100) * s;
             });
           },
@@ -100,10 +136,20 @@ export function Svg({
 const GAP = 5;
 
 function AxesLabels() {
-  const { size, useRelativeMotionValue } = useSvgContext();
+  const { size, useRelativeMotionValue, panX, panY, config } = useSvgContext();
   const fontSize = useRelativeMotionValue(2);
   const offset = useRelativeMotionValue(-4);
-  const cols = range(size, 0, GAP);
+  const offsetX = useTransform(
+    [offset, panX],
+    ([o, x]: [number, number]) => o + x
+  );
+  const offsetY = useTransform(
+    [offset, panY],
+    ([o, y]: [number, number]) => o + y
+  );
+
+  const cols = range(size + config.pan.x, config.pan.x, GAP);
+  const rows = range(size + config.pan.y, config.pan.y, GAP);
 
   return (
     <g>
@@ -112,7 +158,7 @@ function AxesLabels() {
           return (
             <motion.text
               key={x}
-              y={offset}
+              y={offsetY}
               x={x}
               fontSize={fontSize}
               className="font-mono fill-gray10"
@@ -124,11 +170,11 @@ function AxesLabels() {
         })}
       </g>
       <g data-y-axis>
-        {cols.map((y) => {
+        {rows.map((y) => {
           return (
             <motion.text
               key={y}
-              x={offset}
+              x={offsetX}
               y={y}
               fontSize={fontSize}
               className="font-mono fill-gray10"
@@ -145,8 +191,10 @@ function AxesLabels() {
 }
 
 function AxesLines() {
-  const { size, useRelativeMotionValue } = useSvgContext();
-  const cols = range(size);
+  const { size, useRelativeMotionValue, config } = useSvgContext();
+  const { x: panX, y: panY } = config.pan;
+  const cols = range(size + panX, panX);
+  const rows = range(size + panY, panY);
   const stroke = useRelativeMotionValue(0.1);
   const highlightedStroke = useRelativeMotionValue(0.25);
   const isHighlighted = (xOrY: number) => xOrY % 5 === 0;
@@ -160,35 +208,26 @@ function AxesLines() {
               strokeWidth={isHighlighted(x) ? highlightedStroke : stroke}
               x1={x}
               x2={x}
-              y1={0}
-              y2={size}
+              y1={panY}
+              y2={size + panY}
             />
           );
         })}
       </g>
       <g data-y-axis-lines>
-        {cols.map((y) => {
+        {rows.map((y) => {
           return (
             <motion.line
               key={y}
               strokeWidth={isHighlighted(y) ? highlightedStroke : stroke}
               y1={y}
               y2={y}
-              x1={0}
-              x2={size}
+              x1={panX}
+              x2={size + panX}
             />
           );
         })}
       </g>
     </g>
   );
-}
-
-function Dot({ x, y }: { x: number; y: number }) {
-  const { useRelativeMotionValue, size } = useSvgContext();
-  const isHighlighted = x % 5 === 0 && y % 5 === 0;
-  const radius = useRelativeMotionValue(
-    isHighlighted ? 0.5 : size > 25 ? 0.15 : 0.2
-  );
-  return <motion.circle cx={x} cy={y} r={radius} className="fill-gray8" />;
 }
