@@ -2,27 +2,25 @@
 
 Let's be honest. You wouldn't be reaching for SVG paths if you only wanted to draw straight lines; you'd use an SVG `<line />` element instead.
 
-No — the true power of SVG paths come from being able to draw curves. So let's talk about curve commands! We'll divide our conversation on curves into two parts — **bezier curves** and **arcs**. We'll start with bezier curves.
+The true power of SVG paths comes from being able to draw curves. So let's talk about curve commands! There are three types of curves you can draw using SVG paths: **quadratic bezier curves**, **cubic bezier curves**, and **arcs**.
+
+We'll divide these conversations into three parts, starting with quadratic bezier curves first.
 
 ---
 
 ## Bezier Curves
 
-A bezier curve is made from a series of points — a start point, an endpoint, and a series of control points in between.
+A bezier curve is a curve that is defined by a series of points known as **control points**. SVG paths support two types of bezier curves — **quadratic** bezier curves, which have one control point, and **cubic** bezier curves, which have two control points.
 
-The start and end points determine where the curve will start and end, respectively, while the control points determine the overall shape of the curve.
-
-**Try moving the control points in the playground and notice how the curve changes.**
+**The more control points a curve has, the more complex the curve can be.** Try moving the points in the playground and notice that the cubic bezier curve (the bottom curve) has a lot more freedom in its shape when compared to the quadratic curve (the top curve).
 
 ---
 
-SVG paths support two types of bezier curves — **quadratic** bezier curves and **cubic** bezier curves.
+## Quadratic Curves
 
----
+While cubic bezier curves are more flexible, quadratic bezier curves are simpler to write, making them preferable when you don't need the extra shape.
 
-### Quadratic Curves
-
-A quadratic curve is a bezier curve with a **single control point**. Its syntax looks like this:
+The `Q` command lets you draw a quadratic bezier curve:
 
 ```
 Q controlX controlY endX endY
@@ -39,7 +37,7 @@ h 5
 
 ---
 
-### Chaining Quadratic Curves
+## Chaining Quadratic Curves
 
 If you want to write multiple, consecutive quadratic curves, you might be tempted to write something like this:
 

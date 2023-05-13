@@ -19,7 +19,7 @@ const getRelativeMotionValueHook =
     return useTransform(size, (s) => (value / 100) * s);
   };
 
-type Config = {
+export type Config = {
   padding: number;
   pan: {
     x: number;
@@ -57,11 +57,11 @@ const range = (end: number, start = 0, skip = 1) => {
 };
 
 export function Svg({
-  size,
+  size = 25,
   config = defaultConfig,
   children,
 }: {
-  size: number;
+  size?: number;
   children?: React.ReactNode;
   config?: Partial<Config>;
 }) {

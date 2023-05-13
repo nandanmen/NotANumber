@@ -447,14 +447,22 @@ const CommandEndpoint = ({ command }: { command: Command }) => {
     case "L": {
       if (!command.source.relative) return null;
       return (
-        <>
-          <circle
-            cx={command.x0}
-            cy={command.y}
-            r={getRelative(0.8)}
-            className="fill-gray10"
-          />
-        </>
+        <circle
+          cx={command.x0}
+          cy={command.y}
+          r={getRelative(0.8)}
+          className="fill-gray10"
+        />
+      );
+    }
+    case "Q": {
+      return (
+        <circle
+          cx={command.x1}
+          cy={command.y1}
+          r={getRelative(0.8)}
+          className="fill-gray10"
+        />
       );
     }
     case "C": {

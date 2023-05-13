@@ -9,6 +9,18 @@ type TooltipProps = {
   children: React.ReactNode;
 };
 
+export function CoordinatesTooltip({
+  x,
+  y,
+  placement = "top",
+}: Omit<TooltipProps, "children">) {
+  return (
+    <Tooltip x={x} y={y} placement={placement}>
+      ({x.toFixed(1)}, {y.toFixed(1)})
+    </Tooltip>
+  );
+}
+
 export const Tooltip = ({
   x,
   y,

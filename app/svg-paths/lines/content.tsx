@@ -9,10 +9,11 @@ import { useIndexContext } from "../components/index-provider";
 import { Svg, useSvgContext } from "../components/svg";
 import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
 import { parsePath } from "../utils";
-import { Tooltip } from "../components/svg/tooltip";
+import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { HeartCommands, ClosePathToggle, LineQuestion } from "./components";
 import { PathPractice } from "../components/path-practice";
+import { Path } from "../components/path";
 
 const mapIndexToSize = [
   20,
@@ -140,17 +141,6 @@ function Line({ index }) {
   );
 }
 
-function Path(props: React.ComponentPropsWithoutRef<(typeof motion)["path"]>) {
-  const { useRelativeMotionValue } = useSvgContext();
-  return (
-    <motion.path
-      strokeWidth={useRelativeMotionValue(1.2)}
-      fill="none"
-      {...props}
-    />
-  );
-}
-
 function HeartPath({ withZ = false, ...props }) {
   return (
     <Path
@@ -186,13 +176,5 @@ function Heart() {
         transition={{ duration: 1, delay: 0.5 }}
       />
     </>
-  );
-}
-
-function CoordinatesTooltip({ x, y }) {
-  return (
-    <Tooltip x={x} y={y} placement="top">
-      ({x.toFixed(1)}, {y.toFixed(1)})
-    </Tooltip>
   );
 }
