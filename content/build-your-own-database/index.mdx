@@ -248,15 +248,27 @@ If your array is sorted, however, you'll only need to look for the first element
 [1,2,3,4,5]
 ```
 
+And if we use an index, we can find the first element essentially immediately.
+
+This begs the question though - how do we keep our data sorted without having to sort it every time we add a new record? In other words:
+
+<ProblemStatement>
+
+**How do we keep our data sorted _and_ append-only?** We can't sort the data every time we add a new record because we'll have to move around old records; and as we've discussed, moving records around is slow on a hard drive.
+
+</ProblemStatement>
+
+The trick is to **sort the data in memory first, _then_ write it to disk**. There are various ways to keep data sorted in memory, but the most common is to use a **balanced tree**.
+
 - SSTs are an improvement because they allow for sparse indices and better range query performance
   - Though sparse, keys still have to fit in memory
   - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
 
-## Fast Sorts With Balanced Trees
+### Fast Sorts With Balanced Trees
 
 ## How Hard Drives Work
 
-Let's talk a bit about how hard drives work and how they differ from RAM.
+Since we want to design data structures that work well with hard drives, let's talk about how hard drives work and how they differ from RAM.
 
 ### Hard drives are not byte addressable
 
