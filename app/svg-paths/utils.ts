@@ -4,14 +4,16 @@ import {
   type CommandMadeAbsolute,
   type Command as BaseCommand,
   makeAbsolute,
+  parseSVG,
 } from "svg-path-parser";
-import { parseSVG } from "svg-path-parser";
 import { v4 } from "uuid";
 
 export type Command = CommandMadeAbsolute & {
   id: string;
   source: BaseCommand;
 };
+
+export type RelativeCommand = BaseCommand & { id: string };
 
 type CommandTypes = Command["code"];
 
@@ -32,12 +34,39 @@ export const parsePath = (path: string): Command[] => {
   return commands;
 };
 
-export const useEditableCommand = (path: string) => {
-  const [commands, setCommands] = React.useState(() => parsePath(path));
+export const useEditablePath = (
+  path: string
+): {
+  commands: Command[];
+  get<Type extends CommandTypes>(
+    index: number
+  ): Extract<Command, { code: Type }>;
+  set<Type extends CommandTypes>(
+    index: number,
+    command: Partial<Omit<Extract<Command, { code: Type }>, "id" | "code">>
+  ): void;
+} => {
+  const [commands, setCommands] = React.useState<RelativeCommand[]>(() =>
+    parseSVG(path).map((command) => ({ ...command, id: v4() }))
+  );
+
+  const absoluteCopy = React.useMemo<Command[]>(() => {
+    const copy = produce(commands, (draft) => {
+      makeAbsolute(draft);
+    }) as Command[];
+
+    return copy.map((command, index) => {
+      return {
+        ...command,
+        source: commands[index],
+      };
+    });
+  }, [commands]);
+
   return {
-    commands,
+    commands: absoluteCopy,
     get<Type extends CommandTypes>(index: number) {
-      return commands[index] as Extract<Command, { code: Type }>;
+      return absoluteCopy[index] as Extract<Command, { code: Type }>;
     },
     set<Type extends CommandTypes>(
       index: number,

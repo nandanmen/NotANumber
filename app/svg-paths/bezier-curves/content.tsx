@@ -12,7 +12,7 @@ import { StateProvider } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { parsePath, useEditableCommand } from "../utils";
+import { parsePath, useEditablePath } from "../utils";
 
 export function Content({ content, length }) {
   return (
@@ -36,6 +36,10 @@ export function Content({ content, length }) {
             },
             {
               children: <RoundedCorner />,
+              svg: 20,
+            },
+            {
+              children: <Chain />,
               svg: 20,
             },
           ]}
@@ -122,9 +126,7 @@ function Curve({ path }) {
 }
 
 function RoundedCorner() {
-  const { commands, get, set } = useEditableCommand(
-    "M 5 0 v 5 Q 5 15 15 15 h 5"
-  );
+  const { commands, get, set } = useEditablePath("M 5 0 v 5 Q 5 15 15 15 h 5");
   const { useRelativeMotionValue } = useSvgContext();
   const curveCommand = get<"Q">(2);
   return (
@@ -183,6 +185,124 @@ function RoundedCorner() {
         y={curveCommand.y1}
         placement="bottom"
       />
+    </g>
+  );
+}
+
+const getReflection = (x0: number, y0: number, x1: number, y1: number) => {
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+  return {
+    x: x1 + dx,
+    y: y1 + dy,
+  };
+};
+
+function Chain() {
+  const id = React.useId();
+  const { commands, get, set } = useEditablePath("M 5 5 Q 5 10 10 10 T 15 15");
+  const { useRelativeMotionValue } = useSvgContext();
+
+  const curveCommand = get<"Q">(1);
+  const tCommand = get<"T">(2);
+  const { x: tx, y: ty } = getReflection(
+    curveCommand.x1,
+    curveCommand.y1,
+    curveCommand.x,
+    curveCommand.y
+  );
+
+  return (
+    <g>
+      <defs>
+        <linearGradient
+          id={id}
+          x1={20 - curveCommand.y1}
+          y1={curveCommand.x1}
+          x2={curveCommand.y1}
+          y2={20 - curveCommand.x1}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0.2" stopColor="transparent" />
+          <stop offset="0.5" stopColor="currentColor" className="text-gray8" />
+          <stop offset="0.8" stopColor="transparent" />
+        </linearGradient>
+      </defs>
+      <motion.g
+        className="stroke-gray10"
+        strokeWidth={useRelativeMotionValue(0.5)}
+      >
+        <line
+          x1={curveCommand.x0}
+          y1={curveCommand.y0}
+          x2={curveCommand.x1}
+          y2={curveCommand.y1}
+        />
+        <line
+          x1={curveCommand.x}
+          y1={curveCommand.y}
+          x2={curveCommand.x1}
+          y2={curveCommand.y1}
+        />
+        <motion.g strokeDasharray={useRelativeMotionValue(1)}>
+          <line x1={curveCommand.x} y1={curveCommand.y} x2={tx} y2={ty} />
+          <line x1={tx} y1={ty} x2={tCommand.x} y2={tCommand.y} />
+        </motion.g>
+        <line
+          stroke={`url(#${id})`}
+          x1={20 - curveCommand.y1}
+          y1={curveCommand.x1}
+          x2={curveCommand.y1}
+          y2={20 - curveCommand.x1}
+        />
+      </motion.g>
+      <motion.g
+        strokeWidth={useRelativeMotionValue(1.2)}
+        stroke="currentColor"
+        fill="none"
+      >
+        {commands.map((command, index) => {
+          if (command.code === "T") {
+            const [curveCommand, tCommand] = commands.slice(
+              index - 1,
+              index + 1
+            ) as any;
+            const path = `M ${curveCommand.x0} ${curveCommand.y0} Q ${curveCommand.x1} ${curveCommand.y1} ${curveCommand.x} ${curveCommand.y} T ${tCommand.x} ${tCommand.y}`;
+            return <path key={command.id} d={path} />;
+          }
+          return <path key={command.id} d={toPath(command)} />;
+        })}
+      </motion.g>
+      <g>
+        <motion.circle
+          r={useRelativeMotionValue(1.2)}
+          fill="currentColor"
+          cx={curveCommand.x0}
+          cy={curveCommand.y0}
+        />
+        <motion.circle
+          r={useRelativeMotionValue(1.2)}
+          className="fill-gray10"
+          cx={tx}
+          cy={ty}
+        />
+        <DraggableEndpoint
+          cx={curveCommand.x}
+          cy={curveCommand.y}
+          onPan={(x, y) => set<"Q">(1, { x, y })}
+        />
+        <DraggableEndpoint
+          cx={curveCommand.x1}
+          cy={curveCommand.y1}
+          onPan={(x, y) => set<"Q">(1, { x1: x, y1: y })}
+        />
+      </g>
+      <CoordinatesTooltip
+        x={curveCommand.x1}
+        y={curveCommand.y1}
+        placement="left"
+      />
+      <CoordinatesTooltip x={tx} y={ty} placement="right" />
     </g>
   );
 }
