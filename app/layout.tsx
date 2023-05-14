@@ -43,7 +43,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={clsx(sans.variable, serif.variable, "font-sans")}>
+      <body
+        className={clsx(
+          sans.variable,
+          serif.variable,
+          mono.variable,
+          "font-sans"
+        )}
+      >
         {children}
       </body>
     </html>

@@ -110,7 +110,7 @@ export function Svg({
   }, [size, sizeMotion]);
 
   return (
-    <motion.svg width="auto" height="100%" viewBox={viewBox}>
+    <motion.svg width="auto" height="100%" viewBox={viewBox} data-svg>
       <SvgContext.Provider
         value={{
           size,

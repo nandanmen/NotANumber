@@ -6,14 +6,7 @@ import { getArcCenter } from "./utils";
 import { motion } from "framer-motion";
 import { parsePath, type Command } from "../utils";
 
-const getColor = (code: Command["code"]) => {
-  if (code === "A") return "text-blue10";
-  if (["L", "H", "V"].includes(code)) return "text-green10";
-  if (["C", "S", "Q", "T"].includes(code)) return "text-cyan10";
-  return "text-gray10";
-};
-
-const toPath = (command: Command) => {
+export const toPath = (command: Command) => {
   const {
     code,
     x0,
@@ -265,15 +258,15 @@ export const AnimatedEndpoint = ({ cx, cy, delay = 0 }) => {
   );
 };
 
-export const Endpoint = ({ cx, cy, ...props }) => {
+export const Endpoint = (
+  props: React.ComponentPropsWithoutRef<(typeof motion)["circle"]>
+) => {
   const { getRelative } = useSvgContext();
   const endpointSize = getRelative(1);
   const strokeWidth = getRelative(0.6);
   return (
     <motion.circle
       className="fill-gray4 stroke-current"
-      cx={cx}
-      cy={cy}
       strokeWidth={strokeWidth}
       r={endpointSize}
       {...props}
@@ -285,21 +278,42 @@ const Arcs = () => {
   const { getRelative } = useSvgContext();
   const { commands } = usePathContext();
   return (
-    <g strokeWidth={getRelative(0.5)}>
+    <g strokeWidth={getRelative(0.5)} className="stroke-gray10">
       {commands.map((command, index) => {
         switch (command.code) {
           case "A": {
             const { cx, cy } = getArcCenter(command);
             return (
-              <ellipse
-                key={command.id}
-                cx={cx}
-                cy={cy}
-                rx={command.rx}
-                ry={command.ry}
-                fill="none"
-                className="stroke-current"
-              />
+              <g>
+                <ellipse
+                  key={command.id}
+                  cx={cx}
+                  cy={cy}
+                  rx={command.rx}
+                  ry={command.ry}
+                  fill="none"
+                />
+                <line
+                  x1={cx}
+                  x2={cx + command.rx}
+                  y1={cy}
+                  y2={cy}
+                  strokeDasharray={getRelative(1)}
+                />
+                <line
+                  x1={cx}
+                  x2={cx}
+                  y1={cy}
+                  y2={cy + command.ry}
+                  strokeDasharray={getRelative(1)}
+                />
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={getRelative(0.8)}
+                  className="fill-gray10"
+                />
+              </g>
             );
           }
         }

@@ -123,7 +123,7 @@ export const MDX = ({
             </ul>
           </nav>
         </header>
-        <div className="flex items-center justify-center w-full h-full">
+        <div className="flex items-center justify-center w-full h-full pb-4 pl-4 select-none">
           <div className="h-full">{children}</div>
         </div>
       </div>
