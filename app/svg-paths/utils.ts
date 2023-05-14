@@ -1,3 +1,4 @@
+import React from "react";
 import produce from "immer";
 import {
   type CommandMadeAbsolute,
@@ -12,16 +13,45 @@ export type Command = CommandMadeAbsolute & {
   source: BaseCommand;
 };
 
+type CommandTypes = Command["code"];
+
 export const parsePath = (path: string): Command[] => {
-  const commands = parseSVG(path);
-  const copy = produce(commands, (draft) => {
+  const parsed = parseSVG(path);
+  const copy = produce(parsed, (draft) => {
     makeAbsolute(draft);
   }) as Command[];
-  return copy.map((command, index) => {
+
+  const commands = copy.map((command, index) => {
     return {
       ...command,
-      source: commands[index],
+      source: parsed[index],
       id: v4(),
     };
   });
+
+  return commands;
+};
+
+export const useEditableCommand = (path: string) => {
+  const [commands, setCommands] = React.useState(() => parsePath(path));
+  return {
+    commands,
+    get<Type extends CommandTypes>(index: number) {
+      return commands[index] as Extract<Command, { code: Type }>;
+    },
+    set<Type extends CommandTypes>(
+      index: number,
+      command: Partial<Omit<Extract<Command, { code: Type }>, "id" | "code">>
+    ) {
+      setCommands((prev) => {
+        const copy = [...prev];
+        const current = copy[index];
+        copy[index] = {
+          ...current,
+          ...command,
+        };
+        return copy;
+      });
+    },
+  };
 };

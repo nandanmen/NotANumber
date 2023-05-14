@@ -12,7 +12,7 @@ import { StateProvider } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { parsePath } from "../utils";
+import { parsePath, useEditableCommand } from "../utils";
 
 export function Content({ content, length }) {
   return (
@@ -34,15 +34,8 @@ export function Content({ content, length }) {
               children: <CurvePlayground />,
               svg: 20,
             },
-            ,
             {
-              children: (
-                <>
-                  <PathVisualizer path="M 5 0 v 5 Q 5 15 15 15 h 5" />
-                  <CoordinatesTooltip x={5} y={15} placement="bottom" />
-                  <CoordinatesTooltip x={15} y={15} placement="bottom" />
-                </>
-              ),
+              children: <RoundedCorner />,
               svg: 20,
             },
           ]}
@@ -128,6 +121,72 @@ function Curve({ path }) {
   throw new Error(`Invalid command code: ${command.code}`);
 }
 
+function RoundedCorner() {
+  const { commands, get, set } = useEditableCommand(
+    "M 5 0 v 5 Q 5 15 15 15 h 5"
+  );
+  const { useRelativeMotionValue } = useSvgContext();
+  const curveCommand = get<"Q">(2);
+  return (
+    <g>
+      <motion.g
+        className="stroke-gray10"
+        strokeWidth={useRelativeMotionValue(0.5)}
+      >
+        <line
+          x1={curveCommand.x0}
+          y1={curveCommand.y0}
+          x2={curveCommand.x1}
+          y2={curveCommand.y1}
+        />
+        <line
+          x1={curveCommand.x}
+          y1={curveCommand.y}
+          x2={curveCommand.x1}
+          y2={curveCommand.y1}
+        />
+      </motion.g>
+      <motion.g
+        strokeWidth={useRelativeMotionValue(1.2)}
+        stroke="currentColor"
+        fill="none"
+      >
+        {commands.map((command) => {
+          return <path key={command.id} d={toPath(command)} />;
+        })}
+      </motion.g>
+      <g>
+        <motion.circle
+          r={useRelativeMotionValue(1.2)}
+          fill="currentColor"
+          cx={curveCommand.x0}
+          cy={curveCommand.y0}
+        />
+        <DraggableEndpoint
+          cx={curveCommand.x}
+          cy={curveCommand.y}
+          onPan={(x, y) => set<"Q">(2, { x, y })}
+        />
+        <DraggableEndpoint
+          cx={curveCommand.x1}
+          cy={curveCommand.y1}
+          onPan={(x, y) => set<"Q">(2, { x1: x, y1: y })}
+        />
+      </g>
+      <CoordinatesTooltip
+        x={curveCommand.x}
+        y={curveCommand.y}
+        placement="bottom"
+      />
+      <CoordinatesTooltip
+        x={curveCommand.x1}
+        y={curveCommand.y1}
+        placement="bottom"
+      />
+    </g>
+  );
+}
+
 function DraggableEndpoint({
   cx,
   cy,
@@ -137,16 +196,18 @@ function DraggableEndpoint({
   cy: number;
   onPan: (x: number, y: number) => void;
 }) {
+  const [active, setActive] = React.useState(false);
   const { size, getRelative } = useSvgContext();
   return (
-    <motion.g className="cursor-pointer" whileHover="hover">
+    <motion.g className="cursor-pointer" whileHover="active">
       <motion.circle
         r={getRelative(1)}
         className="fill-blue9"
         cx={cx}
         cy={cy}
+        animate={active && "active"}
         variants={{
-          hover: {
+          active: {
             r: getRelative(2),
           },
         }}
@@ -154,6 +215,7 @@ function DraggableEndpoint({
       <Endpoint
         cx={cx}
         cy={cy}
+        onPanStart={() => setActive(true)}
         onPan={(_, info) => {
           const { width, x, y } = document
             .querySelector("[data-x-axis-lines]")
@@ -166,6 +228,7 @@ function DraggableEndpoint({
           const newY = transformer(relativeY);
           onPan(newX, newY);
         }}
+        onPanEnd={() => setActive(false)}
       />
     </motion.g>
   );
