@@ -333,6 +333,11 @@ function Chain() {
           cy={curveCommand.y1}
           onPan={(x, y) => set<"Q">(1, { x1: x, y1: y })}
         />
+        <DraggableEndpoint
+          cx={tCommand.x}
+          cy={tCommand.y}
+          onPan={(x, y) => set<"T">(2, { x, y })}
+        />
       </g>
       <CoordinatesTooltip
         x={curveCommand.x1}
@@ -340,6 +345,7 @@ function Chain() {
         placement="left"
       />
       <CoordinatesTooltip x={tx} y={ty} placement="right" />
+      <CoordinatesTooltip x={tCommand.x} y={tCommand.y} placement="bottom" />
     </g>
   );
 }
