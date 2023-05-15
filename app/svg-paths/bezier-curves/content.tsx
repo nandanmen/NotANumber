@@ -198,6 +198,37 @@ const getReflection = (x0: number, y0: number, x1: number, y1: number) => {
   };
 };
 
+const normalize = ([x, y]: [number, number]) => {
+  const length = Math.sqrt(x * x + y * y);
+  return [x / length, y / length];
+};
+
+const NORMAL_LENGTH = 3;
+
+const getPerpendicular = (x0: number, y0: number, x1: number, y1: number) => {
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+
+  if (dy === 0) {
+    return {
+      x0: x1,
+      y0: y1 - 3,
+      x: x1,
+      y: y1 - 3,
+    };
+  }
+
+  const [xn, yn] = normalize([1, -dx / dy]).map((n) => n * NORMAL_LENGTH);
+  const [xo, yo] = normalize([-1, dx / dy]).map((n) => n * NORMAL_LENGTH);
+
+  return {
+    x0: x1 + xo,
+    y0: y1 + yo,
+    x: x1 + xn,
+    y: y1 + yn,
+  };
+};
+
 function Chain() {
   const id = React.useId();
   const { commands, get, set } = useEditablePath("M 5 5 Q 5 10 10 10 T 15 15");
@@ -211,21 +242,27 @@ function Chain() {
     curveCommand.x,
     curveCommand.y
   );
+  const normal = getPerpendicular(
+    curveCommand.x1,
+    curveCommand.y1,
+    curveCommand.x,
+    curveCommand.y
+  );
 
   return (
     <g>
       <defs>
         <linearGradient
           id={id}
-          x1={20 - curveCommand.y1}
-          y1={curveCommand.x1}
-          x2={curveCommand.y1}
-          y2={20 - curveCommand.x1}
+          x1={normal.x0}
+          y1={normal.y0}
+          x2={normal.x}
+          y2={normal.y}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.2" stopColor="transparent" />
+          <stop offset="0" stopColor="transparent" />
           <stop offset="0.5" stopColor="currentColor" className="text-gray8" />
-          <stop offset="0.8" stopColor="transparent" />
+          <stop offset="1" stopColor="transparent" />
         </linearGradient>
       </defs>
       <motion.g
@@ -250,10 +287,10 @@ function Chain() {
         </motion.g>
         <line
           stroke={`url(#${id})`}
-          x1={20 - curveCommand.y1}
-          y1={curveCommand.x1}
-          x2={curveCommand.y1}
-          y2={20 - curveCommand.x1}
+          x1={normal.x0}
+          y1={normal.y0}
+          x2={normal.x}
+          y2={normal.y}
         />
       </motion.g>
       <motion.g
