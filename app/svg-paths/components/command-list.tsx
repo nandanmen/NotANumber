@@ -6,6 +6,7 @@ const mapCodeToHint = {
   L: "line",
   v: "relative vertical line",
   q: "relative quadratic curve",
+  Q: "quadratic curve",
   m: "relative move",
   l: "relative line",
   h: "relative horizontal line",

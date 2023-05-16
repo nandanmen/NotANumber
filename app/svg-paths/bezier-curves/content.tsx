@@ -13,7 +13,13 @@ import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
 import { parsePath } from "../utils";
-import { RoundedCornerCommands, TCommandList } from "./rounded-corner-commands";
+import {
+  RoundedCornerCommands,
+  TCommandList,
+  BezierCurveQuestion,
+} from "./components";
+import { PathPractice } from "../components/path-practice";
+import { PathHoverVisual } from "../components/path-hover-visual";
 
 export function Content({ content, length }) {
   return (
@@ -33,12 +39,19 @@ export function Content({ content, length }) {
           tx: 15,
           ty: 15,
         },
+        answer: {
+          active: false,
+        },
       }}
     >
       <MDX
         content={content}
         numSections={length}
-        components={{ RoundedCornerCommands, TCommandList }}
+        components={{
+          RoundedCornerCommands,
+          TCommandList,
+          BezierCurveQuestion,
+        }}
       >
         <VisualWrapper
           components={[
@@ -64,10 +77,39 @@ export function Content({ content, length }) {
               children: <Chain />,
               svg: 20,
             },
+            {
+              children: <Practice />,
+            },
           ]}
         />
       </MDX>
     </StateProvider>
+  );
+}
+
+const frameCommands = parsePath(
+  "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
+);
+
+function Practice() {
+  const { data } = useStateContext<{ active: boolean }>("answer");
+  const { useRelativeMotionValue } = useSvgContext();
+  return (
+    <g>
+      <motion.path
+        strokeWidth={useRelativeMotionValue(2)}
+        className="stroke-gray8"
+        fill="none"
+        d="M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
+      />
+      <PathPractice id="bezier-curve-practice" />
+      {data.active && (
+        <PathHoverVisual
+          commands={frameCommands}
+          id="command-list-bezier-curve-answers"
+        />
+      )}
+    </g>
   );
 }
 
