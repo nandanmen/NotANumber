@@ -28,12 +28,7 @@ Q controlX controlY endX endY
 
 This curve, for example, creates a rounded corner:
 
-```
-M 5 5
-v 5
-Q 5 15 10 15
-h 5
-```
+<RoundedCornerCommands />
 
 ---
 
@@ -42,16 +37,13 @@ h 5
 If you want to write multiple, consecutive quadratic curves, you might be tempted to write something like this:
 
 ```
-Q 5 15 10 15
-Q 15 15 15 10
+Q 5 10 10 10
+Q 15 10 15 15
 ```
 
 While this works just fine, there _is_ an easier way — **using the `T` command**:
 
-```
-Q 5 15 10 15
-T 15 10
-```
+<TCommandList />
 
 The `T` command will draw a new quadratic curve using the _reflection_ of the previous curve's control point. Try changing the control point of the first curve and notice how it changes the second curve.
 

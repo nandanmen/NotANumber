@@ -8,16 +8,38 @@ import {
   PathVisualizer,
   toPath,
 } from "../components/path-visualizer";
-import { StateProvider } from "../components/state-context";
+import { StateProvider, useStateContext } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { parsePath, useEditablePath } from "../utils";
+import { parsePath } from "../utils";
+import { RoundedCornerCommands, TCommandList } from "./rounded-corner-commands";
 
 export function Content({ content, length }) {
   return (
-    <StateProvider initial={{}}>
-      <MDX content={content} numSections={length}>
+    <StateProvider
+      initial={{
+        curve: {
+          x1: 5,
+          y1: 15,
+          x: 15,
+          y: 15,
+        },
+        chain: {
+          x1: 5,
+          y1: 10,
+          x: 10,
+          y: 10,
+          tx: 15,
+          ty: 15,
+        },
+      }}
+    >
+      <MDX
+        content={content}
+        numSections={length}
+        components={{ RoundedCornerCommands, TCommandList }}
+      >
         <VisualWrapper
           components={[
             {
@@ -126,65 +148,47 @@ function Curve({ path }) {
 }
 
 function RoundedCorner() {
-  const { commands, get, set } = useEditablePath("M 5 0 v 5 Q 5 15 15 15 h 5");
+  const {
+    data: { x1, y1, x, y },
+    set,
+  } = useStateContext<{
+    x1: number;
+    y1: number;
+    x: number;
+    y: number;
+  }>("curve");
   const { useRelativeMotionValue } = useSvgContext();
-  const curveCommand = get<"Q">(2);
   return (
     <g>
       <motion.g
         className="stroke-gray10"
         strokeWidth={useRelativeMotionValue(0.5)}
       >
-        <line
-          x1={curveCommand.x0}
-          y1={curveCommand.y0}
-          x2={curveCommand.x1}
-          y2={curveCommand.y1}
-        />
-        <line
-          x1={curveCommand.x}
-          y1={curveCommand.y}
-          x2={curveCommand.x1}
-          y2={curveCommand.y1}
-        />
+        <line x1="5" y1="5" x2={x1} y2={y1} />
+        <line x1={x} y1={y} x2={x1} y2={y1} />
       </motion.g>
-      <motion.g
+      <motion.path
         strokeWidth={useRelativeMotionValue(1.2)}
         stroke="currentColor"
         fill="none"
-      >
-        {commands.map((command) => {
-          return <path key={command.id} d={toPath(command)} />;
-        })}
-      </motion.g>
+        d={`M 5 0 v 5 Q ${x1} ${y1} ${x} ${y} h 5`}
+      />
       <g>
         <motion.circle
           r={useRelativeMotionValue(1.2)}
           fill="currentColor"
-          cx={curveCommand.x0}
-          cy={curveCommand.y0}
+          cx="5"
+          cy="5"
         />
+        <DraggableEndpoint cx={x} cy={y} onPan={(x, y) => set({ x, y })} />
         <DraggableEndpoint
-          cx={curveCommand.x}
-          cy={curveCommand.y}
-          onPan={(x, y) => set<"Q">(2, { x, y })}
-        />
-        <DraggableEndpoint
-          cx={curveCommand.x1}
-          cy={curveCommand.y1}
-          onPan={(x, y) => set<"Q">(2, { x1: x, y1: y })}
+          cx={x1}
+          cy={y1}
+          onPan={(x, y) => set({ x1: x, y1: y })}
         />
       </g>
-      <CoordinatesTooltip
-        x={curveCommand.x}
-        y={curveCommand.y}
-        placement="bottom"
-      />
-      <CoordinatesTooltip
-        x={curveCommand.x1}
-        y={curveCommand.y1}
-        placement="bottom"
-      />
+      <CoordinatesTooltip x={x} y={y} placement="bottom" />
+      <CoordinatesTooltip x={x1} y={y1} placement="bottom" />
     </g>
   );
 }
@@ -231,23 +235,19 @@ const getPerpendicular = (x0: number, y0: number, x1: number, y1: number) => {
 
 function Chain() {
   const id = React.useId();
-  const { commands, get, set } = useEditablePath("M 5 5 Q 5 10 10 10 T 15 15");
+
+  const { data, set } = useStateContext<{
+    x1: number;
+    y1: number;
+    x: number;
+    y: number;
+    tx: number;
+    ty: number;
+  }>("chain");
   const { useRelativeMotionValue } = useSvgContext();
 
-  const curveCommand = get<"Q">(1);
-  const tCommand = get<"T">(2);
-  const { x: tx, y: ty } = getReflection(
-    curveCommand.x1,
-    curveCommand.y1,
-    curveCommand.x,
-    curveCommand.y
-  );
-  const normal = getPerpendicular(
-    curveCommand.x1,
-    curveCommand.y1,
-    curveCommand.x,
-    curveCommand.y
-  );
+  const { x: tx, y: ty } = getReflection(data.x1, data.y1, data.x, data.y);
+  const normal = getPerpendicular(data.x1, data.y1, data.x, data.y);
 
   return (
     <g>
@@ -269,21 +269,11 @@ function Chain() {
         className="stroke-gray10"
         strokeWidth={useRelativeMotionValue(0.5)}
       >
-        <line
-          x1={curveCommand.x0}
-          y1={curveCommand.y0}
-          x2={curveCommand.x1}
-          y2={curveCommand.y1}
-        />
-        <line
-          x1={curveCommand.x}
-          y1={curveCommand.y}
-          x2={curveCommand.x1}
-          y2={curveCommand.y1}
-        />
+        <line x1="5" y1="5" x2={data.x1} y2={data.y1} />
+        <line x1={data.x} y1={data.y} x2={data.x1} y2={data.y1} />
         <motion.g strokeDasharray={useRelativeMotionValue(1)}>
-          <line x1={curveCommand.x} y1={curveCommand.y} x2={tx} y2={ty} />
-          <line x1={tx} y1={ty} x2={tCommand.x} y2={tCommand.y} />
+          <line x1={data.x} y1={data.y} x2={tx} y2={ty} />
+          <line x1={tx} y1={ty} x2={data.tx} y2={data.ty} />
         </motion.g>
         <line
           stroke={`url(#${id})`}
@@ -293,29 +283,18 @@ function Chain() {
           y2={normal.y}
         />
       </motion.g>
-      <motion.g
+      <motion.path
         strokeWidth={useRelativeMotionValue(1.2)}
         stroke="currentColor"
         fill="none"
-      >
-        {commands.map((command, index) => {
-          if (command.code === "T") {
-            const [curveCommand, tCommand] = commands.slice(
-              index - 1,
-              index + 1
-            ) as any;
-            const path = `M ${curveCommand.x0} ${curveCommand.y0} Q ${curveCommand.x1} ${curveCommand.y1} ${curveCommand.x} ${curveCommand.y} T ${tCommand.x} ${tCommand.y}`;
-            return <path key={command.id} d={path} />;
-          }
-          return <path key={command.id} d={toPath(command)} />;
-        })}
-      </motion.g>
+        d={`M 5 5 Q ${data.x1} ${data.y1} ${data.x} ${data.y} T ${data.tx} ${data.ty}`}
+      />
       <g>
         <motion.circle
           r={useRelativeMotionValue(1.2)}
           fill="currentColor"
-          cx={curveCommand.x0}
-          cy={curveCommand.y0}
+          cx="5"
+          cy="5"
         />
         <motion.circle
           r={useRelativeMotionValue(1.2)}
@@ -324,28 +303,24 @@ function Chain() {
           cy={ty}
         />
         <DraggableEndpoint
-          cx={curveCommand.x}
-          cy={curveCommand.y}
-          onPan={(x, y) => set<"Q">(1, { x, y })}
+          cx={data.x}
+          cy={data.y}
+          onPan={(x, y) => set({ x, y })}
         />
         <DraggableEndpoint
-          cx={curveCommand.x1}
-          cy={curveCommand.y1}
-          onPan={(x, y) => set<"Q">(1, { x1: x, y1: y })}
+          cx={data.x1}
+          cy={data.y1}
+          onPan={(x, y) => set({ x1: x, y1: y })}
         />
         <DraggableEndpoint
-          cx={tCommand.x}
-          cy={tCommand.y}
-          onPan={(x, y) => set<"T">(2, { x, y })}
+          cx={data.tx}
+          cy={data.ty}
+          onPan={(x, y) => set({ tx: x, ty: y })}
         />
       </g>
-      <CoordinatesTooltip
-        x={curveCommand.x1}
-        y={curveCommand.y1}
-        placement="left"
-      />
+      <CoordinatesTooltip x={data.x1} y={data.y1} placement="left" />
       <CoordinatesTooltip x={tx} y={ty} placement="right" />
-      <CoordinatesTooltip x={tCommand.x} y={tCommand.y} placement="bottom" />
+      <CoordinatesTooltip x={data.tx} y={data.ty} placement="bottom" />
     </g>
   );
 }
