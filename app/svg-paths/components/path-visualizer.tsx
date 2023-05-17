@@ -410,7 +410,12 @@ const Lines = () => {
   );
 };
 
-export const Text = ({ children, fontSize = 2, ...props }) => {
+export const Text = ({
+  children,
+  fontSize = 2,
+  font = "font-mono",
+  ...props
+}) => {
   const { getRelative } = useSvgContext();
   const _fontSize = getRelative(fontSize);
   return (
@@ -419,7 +424,7 @@ export const Text = ({ children, fontSize = 2, ...props }) => {
       textAnchor="middle"
       dominantBaseline="middle"
       fontWeight="bold"
-      className="font-mono"
+      className={font}
     >
       <text strokeWidth={getRelative(0.5)} className="stroke-gray4" {...props}>
         {children}

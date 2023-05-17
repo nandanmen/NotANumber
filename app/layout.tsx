@@ -1,4 +1,4 @@
-import { Nunito, Source_Code_Pro } from "next/font/google";
+import { Nunito, Shantell_Sans, Source_Code_Pro } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -17,6 +17,13 @@ const sans = Nunito({
 const mono = Source_Code_Pro({
   weight: ["400", "700"],
   variable: "--font-mono",
+  subsets: ["latin"],
+});
+
+const draw = Shantell_Sans({
+  weight: ["400", "700"],
+  style: "normal",
+  variable: "--font-draw",
   subsets: ["latin"],
 });
 
@@ -48,6 +55,7 @@ export default function RootLayout({
           sans.variable,
           serif.variable,
           mono.variable,
+          draw.variable,
           "font-sans"
         )}
       >

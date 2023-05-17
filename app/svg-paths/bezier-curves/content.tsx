@@ -6,6 +6,7 @@ import { MDX } from "../components/mdx";
 import {
   Endpoint,
   PathVisualizer,
+  Text,
   toPath,
 } from "../components/path-visualizer";
 import { StateProvider, useStateContext } from "../components/state-context";
@@ -114,15 +115,52 @@ function Practice() {
 }
 
 function CurvePlayground() {
+  const [showDrag, setShowDrag] = React.useState(true);
+  const { getRelative } = useSvgContext();
   return (
     <>
-      <Curve path="M 5 7 q 5 -3 10 0" />
-      <Curve path="M 5 13 c 5 -3 5 3 10 0" />
+      <motion.g
+        animate="active"
+        initial="idle"
+        transition={{ staggerChildren: 0.1 }}
+      >
+        <Curve path="M 5 7 q 5 -3 10 0" onChange={() => setShowDrag(false)} />
+        <Curve
+          path="M 5 13 c 5 -3 5 3 10 0"
+          onChange={() => setShowDrag(false)}
+        />
+        {showDrag && (
+          <motion.g
+            variants={{
+              active: { y: 0, opacity: 1 },
+              idle: { y: 1, opacity: 0 },
+            }}
+          >
+            <Text
+              x="7"
+              y="2"
+              font="font-draw"
+              fontSize={3}
+              className="fill-current stroke-none"
+            >
+              Drag me!
+            </Text>
+            <path
+              d="M 8.7 2 q 1 0 1.3 1.5"
+              fill="none"
+              strokeWidth={getRelative(0.6)}
+              stroke="currentColor"
+            />
+            <circle cx="10" cy="3.5" r={getRelative(0.5)} />
+            <circle cx="8.7" cy="2" r={getRelative(0.5)} />
+          </motion.g>
+        )}
+      </motion.g>
     </>
   );
 }
 
-function Curve({ path }) {
+function Curve({ path, onChange = () => {} }) {
   const [command, setCommand] = React.useState(() => parsePath(path)[1]);
   const { useRelativeMotionValue } = useSvgContext();
 
@@ -134,7 +172,9 @@ function Curve({ path }) {
       y2 = command.y2;
     }
     return (
-      <g>
+      <motion.g
+        variants={{ active: { y: 0, opacity: 1 }, idle: { y: 1, opacity: 0 } }}
+      >
         <motion.g
           className="stroke-gray10"
           strokeWidth={useRelativeMotionValue(0.5)}
@@ -164,6 +204,7 @@ function Curve({ path }) {
           cy={command.y}
           onPan={(x, y) => {
             setCommand({ ...command, x, y });
+            onChange?.();
           }}
         />
         <DraggableEndpoint
@@ -171,6 +212,7 @@ function Curve({ path }) {
           cy={command.y1}
           onPan={(x, y) => {
             setCommand({ ...command, x1: x, y1: y });
+            onChange?.();
           }}
         />
         {command.code === "C" && (
@@ -179,10 +221,11 @@ function Curve({ path }) {
             cy={command.y2}
             onPan={(x, y) => {
               setCommand({ ...command, x2: x, y2: y });
+              onChange?.();
             }}
           />
         )}
-      </g>
+      </motion.g>
     );
   }
 
@@ -214,6 +257,9 @@ function RoundedCorner() {
         stroke="currentColor"
         fill="none"
         d={`M 5 0 v 5 Q ${x1} ${y1} ${x} ${y} h 5`}
+        animate={{ pathLength: 1 }}
+        initial={{ pathLength: 0 }}
+        transition={{ type: "spring", duration: 1 }}
       />
       <g>
         <motion.circle
