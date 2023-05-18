@@ -4,30 +4,18 @@ Quadratic curves are great, but as we saw in the previous section, they can be p
 
 This pill shape, for example, doesn't look quite right using quadratic curves:
 
-<CommandList
-  id="pill"
-  commands="M 5 5
-    h 5 
-    q 5 2.5 0 5 
-    h -5
-    q -5 -2.5 0 -5
-    z
-  "
+<CommandHighlight
+  commands={["M 5 5", "h 5", "q 5 2.5 0 5", "h -5", "q -5 -2.5 0 -5", "z"]}
+  indices={[2, 4]}
 />
 
 ---
 
 Now if we change to use **cubic** curves which have **two** control points, we get a much nicer-looking pill shape:
 
-<CommandList
-  id="pill-corrected"
-  commands="M 5 5
-    h 5
-    c 4 0 4 5 0 5
-    h -5
-    c -4 0 -4 -5 0 -5
-    z
-  "
+<CommandHighlight
+  commands={["M 5 5", "h 5", "c 4 0 4 5 0 5", "h -5", "c -4 0 -4 -5 0 -5", "z"]}
+  indices={[2, 4]}
 />
 
 ---

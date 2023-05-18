@@ -19,14 +19,18 @@ export function PathHoverVisual({ id, commands }) {
           };
           return (
             <g key={command.id}>
-              <PathSection command={command} className={getClassName()} />
+              <PathSection
+                type="placeholder"
+                command={command}
+                className={getClassName()}
+              />
             </g>
           );
         })}
         {commands.map((command) => {
           return (
             <g key={command.id}>
-              <PathSectionPoint command={command} />
+              <PathSectionPoint type="placeholder" command={command} />
             </g>
           );
         })}
@@ -39,8 +43,8 @@ export function PathHoverVisual({ id, commands }) {
             cy={activeCommand.y0}
             className={activeCommand.code === "M" && "fill-gray10"}
           />
-          <PathSection command={activeCommand} />
-          <PathSectionPoint command={activeCommand} />
+          <PathSection type="placeholder" command={activeCommand} />
+          <PathSectionPoint type="placeholder" command={activeCommand} />
         </g>
       )}
     </>
