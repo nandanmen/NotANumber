@@ -1,30 +1,48 @@
 # Curves II: Cubic Curves
 
-Quadratic curves are great, but only having one control point can be limiting. For example, you can't really make a nice-looking pill shape using quadratic curves.
+Quadratic curves are great, but as we saw in the previous section, they can be pretty limiting — there are only so many shapes you can make with only one control point!
+
+This pill shape, for example, doesn't look quite right using quadratic curves:
+
+<CommandList
+  id="pill"
+  commands="M 5 5
+    h 5 
+    q 5 2.5 0 5 
+    h -5
+    q -5 -2.5 0 -5
+    z
+  "
+/>
 
 ---
 
-On the other hand, cubic curves, the second type of SVG path curve, have **two control points**. This gives you a lot more flexibility in how you can shape your curves.
+Now if we change to use **cubic** curves which have **two** control points, we get a much nicer-looking pill shape:
 
----
-
-Two control points mean you can bend your curve in two different directions. Like maybe to make a little trophy?
+<CommandList
+  id="pill-corrected"
+  commands="M 5 5
+    h 5
+    c 4 0 4 5 0 5
+    h -5
+    c -4 0 -4 -5 0 -5
+    z
+  "
+/>
 
 ---
 
 ## Syntax
 
-Making a cubic bezier curve is very similar to making a quadratic curve, but with the addition of one extra control point (which means an extra pair of `(x,y)` coordinates):
+We saw the cubic curve syntax just now, but here it is more explicitly:
 
 ```
 C x1 y1, x2 y2, x y
 ```
 
-Like all the other commands, you can use the lowercase `c` to make all the coordinates relative to the cursor.
+The command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
 
-```
-c dx1 dy1, dx2 dy2, dx dy
-```
+As another example, here we use cubic curves to draw a little trophy icon:
 
 ---
 

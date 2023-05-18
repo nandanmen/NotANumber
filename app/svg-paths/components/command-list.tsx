@@ -14,6 +14,8 @@ const mapCodeToHint = {
   V: "vertical line",
   z: "close path",
   Z: "close path",
+  C: "cubic curve",
+  c: "relative cubic curve",
 };
 
 export const CommandList = ({
