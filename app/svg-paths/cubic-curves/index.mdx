@@ -11,26 +11,51 @@ This pill shape, for example, doesn't look quite right using quadratic curves:
 
 ---
 
-Now if we change to use **cubic** curves which have **two** control points, we get a much nicer-looking pill shape:
+But if we change the quadratic curves to cubic curves instead, we get a much smoother pill shape:
 
 <CommandHighlight
   commands={["M 5 5", "h 5", "c 4 0 4 5 0 5", "h -5", "c -4 0 -4 -5 0 -5", "z"]}
   indices={[2, 4]}
 />
 
+We were able to make the curve look better because we had an extra control point to work with.
+
 ---
 
 ## Syntax
 
-We saw the cubic curve syntax just now, but here it is more explicitly:
+To draw a cubic curve, we use the `C` command:
 
 ```
-C x1 y1, x2 y2, x y
+C x1 y1 x2 y2 x y
 ```
 
 The command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
 
-As another example, here we use cubic curves to draw a little trophy icon:
+As another example, here we use cubic curves to draw a hot air balloon:
+
+<CommandHighlight
+  commands={[
+    "M 6 10",
+    "c 0 -2 -2 -2 -2 -5",
+    "c 0 -5 7 -5 7 0",
+    "c 0 3 -2 3 -2 5",
+    "h -3",
+    "m 0.25 0",
+    "v 1.5",
+    "h -0.25",
+    "v 1",
+    "q 0 1 1 1",
+    "h 1",
+    "q 1 0 1 -1",
+    "v -1",
+    "h -3",
+    "m 2.75 0",
+    "v -1.5",
+  ]}
+  indices={[1, 2, 3]}
+  collapseAfter={5}
+/>
 
 ---
 
@@ -48,6 +73,8 @@ S 40 5 45 15
 ## Practice
 
 Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
+
+<PathEditor id="practice" />
 
 ```
 M 10 20

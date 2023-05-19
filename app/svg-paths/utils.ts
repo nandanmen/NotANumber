@@ -17,6 +17,11 @@ export type RelativeCommand = BaseCommand & { id: string };
 
 type CommandTypes = Command["code"];
 
+export type CommandWithCode<Type extends CommandTypes> = Extract<
+  Command,
+  { code: Type }
+>;
+
 export const parsePath = (path: string): Command[] => {
   const parsed = parseSVG(path);
   const copy = produce(parsed, (draft) => {
