@@ -8,14 +8,16 @@ const StateContext = React.createContext<{
   >;
 }>(null);
 
-export const StateProvider = ({ initial, children }) => {
+export function StateProvider<
+  StateType extends Record<string, Record<string, unknown>>
+>({ initial, children }: { initial: StateType; children: React.ReactNode }) {
   const [state, setState] = React.useState(initial);
   return (
     <StateContext.Provider value={{ state, setState }}>
       {children}
     </StateContext.Provider>
   );
-};
+}
 
 export function useStateContext<Type extends Record<string, unknown>>(
   key: string

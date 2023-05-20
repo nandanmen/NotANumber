@@ -24,13 +24,19 @@ We were able to make the curve look better because we had an extra control point
 
 ## Syntax
 
-To draw a cubic curve, we use the `C` command:
+We saw the cubic curve syntax just now but here it is more formally. To draw a cubic curve, we use the `C` command:
 
 ```
 C x1 y1 x2 y2 x y
 ```
 
-The command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
+For example:
+
+<SyntaxExample />
+
+Notice that the command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
+
+---
 
 As another example, here we use cubic curves to draw a hot air balloon:
 
@@ -61,7 +67,7 @@ As another example, here we use cubic curves to draw a hot air balloon:
 
 ## Multiple Bezier Curves
 
-Just like with quadratic curves, you can create a cubic curve that depends on the previous curve using the `S` command:
+Just like with quadratic curves, you can create a cubic curve that depends on the previous curve by using the `S` command:
 
 ```
 C 10 25 20 5 25 15
