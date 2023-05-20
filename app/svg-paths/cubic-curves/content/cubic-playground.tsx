@@ -7,26 +7,24 @@ import type { SyntaxState } from "../types";
 type CubicPlaygroundProps = {
   state?: SyntaxState["state"];
   set?: (state: Partial<SyntaxState>) => void;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  x: number;
-  y: number;
+  coords: {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x: number;
+    y: number;
+  };
   tooltip?: boolean;
 };
 
 export function CubicPlayground({
   state,
   set,
-  x1,
-  y1,
-  x2,
-  y2,
-  x,
-  y,
+  coords,
   tooltip = false,
 }: CubicPlaygroundProps) {
+  const { x1, y1, x2, y2, x, y } = coords;
   const { getRelative } = useSvgContext();
 
   const getHandlers = (name: SyntaxState["active"]) => {

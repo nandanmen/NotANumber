@@ -39,7 +39,7 @@ function CurveGeneral() {
         />
       </g>
       <CubicPlayground
-        {...state}
+        coords={state}
         set={(partial) => {
           set((s) => ({ ...s, ...partial }));
         }}

@@ -46,40 +46,16 @@ You can kind of think of the cubic curve as a "generalization" of the quadratic 
 
 ---
 
-As another example, here we use cubic curves to draw a hot air balloon:
-
-<CommandHighlight
-  commands={[
-    "M 6 10",
-    "c 0 -2 -2 -2 -2 -5",
-    "c 0 -5 7 -5 7 0",
-    "c 0 3 -2 3 -2 5",
-    "h -3",
-    "m 0.25 0",
-    "v 1.5",
-    "h -0.25",
-    "v 1",
-    "q 0 1 1 1",
-    "h 1",
-    "q 1 0 1 -1",
-    "v -1",
-    "h -3",
-    "m 2.75 0",
-    "v -1.5",
-  ]}
-  indices={[1, 2, 3]}
-  collapseAfter={5}
-/>
-
----
-
 ## Multiple Bezier Curves
 
-Just like with quadratic curves, you can create a cubic curve that depends on the previous curve by using the `S` command:
+Just like how quadratic curves can use the `T` command to chain two quadratic curves together, cubic curves can use the `S` command to chain two cubic curves together.
+
+Here, we use the `S` command to create a hot air balloon shape:
 
 ```
-C 10 25 20 5 25 15
-S 40 5 45 15
+M 6 10
+c 0 -2 -2 -2 -2 -5
+s 2 -3 2 -5
 ```
 
 ---
