@@ -24,9 +24,9 @@ export function useStateContext<Type extends Record<string, unknown>>(
 ) {
   const { state, setState } = React.useContext(StateContext);
   const data = state[key] as Type;
-  return {
-    data,
-    set(data: Partial<Type>) {
+
+  const set = React.useCallback(
+    (data: Partial<Type>) => {
       setState((current) =>
         produce(current, (draft) => {
           if (data === null) {
@@ -37,5 +37,11 @@ export function useStateContext<Type extends Record<string, unknown>>(
         })
       );
     },
+    [key, setState]
+  );
+
+  return {
+    data,
+    set,
   };
 }

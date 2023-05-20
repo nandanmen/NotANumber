@@ -41,7 +41,6 @@ const sections = [
   "bezier curves",
   "cubic curves",
   "arcs",
-  "animation",
 ];
 
 export const MDX = ({
@@ -58,7 +57,7 @@ export const MDX = ({
   const pathName = usePathname();
   return (
     <IndexProvider numSections={numSections}>
-      <article className="border-r border-gray8 leading-7">
+      <article className="border-r border-gray8 leading-7 w-[68ch] max-w-[50vw]">
         <header className="px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>

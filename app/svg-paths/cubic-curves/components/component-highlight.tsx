@@ -1,37 +1,77 @@
 import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
+import { useStateContext } from "app/svg-paths/components/state-context";
+
+const mapCodeToHint = {
+  M: "move",
+  L: "line",
+  v: "relative vertical line",
+  q: "relative quadratic curve",
+  Q: "quadratic curve",
+  m: "relative move",
+  l: "relative line",
+  h: "relative horizontal line",
+  H: "horizontal line",
+  V: "vertical line",
+  z: "close path",
+  Z: "close path",
+  C: "cubic curve",
+  c: "relative cubic curve",
+  s: "relative shorthand cubic curve",
+  S: "shorthand cubic curve",
+  t: "relative shorthand quadratic curve",
+  T: "shorthand quadratic curve",
+};
 
 export const CommandHighlight = ({
+  id,
   commands,
   indices,
   collapseAfter,
 }: {
+  id?: string;
   commands: string[];
   indices: number[];
   collapseAfter?: number;
 }) => {
+  const { set } = useStateContext<{ index: number; expanded: boolean }>(id);
+  const [active, setActive] = React.useState(null);
   const [expanded, setExpanded] = React.useState(false);
   const _commands = expanded ? commands : commands.slice(0, collapseAfter);
+
+  React.useEffect(() => {
+    if (id) {
+      set({ index: active, expanded });
+    }
+  }, [id, active, expanded, set]);
+
   return (
-    <ol className="border border-gray8 bg-gray3 px-4 py-3 rounded-md font-mono relative overflow-hidden">
+    <ol className="border py-3 border-gray8 bg-gray3 rounded-md font-mono relative overflow-hidden">
       {_commands.map((command, i) => {
         return (
-          <li
+          <motion.li
             key={command}
             className={clsx(
-              indices.includes(i) &&
-                "-mx-4 px-3 bg-gray6 border-l-4 border-gray8"
+              "flex justify-between items-center group hover:bg-gray5",
+              indices.includes(i)
+                ? "bg-gray6 border-gray8 border-l-4 px-3"
+                : "px-4"
             )}
+            onHoverStart={() => setActive(i)}
+            onHoverEnd={() => setActive(null)}
           >
-            {command}
-          </li>
+            <span>{command}</span>
+            <span className="text-sm text-gray11 hidden group-hover:inline">
+              {mapCodeToHint[command.at(0)]}
+            </span>
+          </motion.li>
         );
       })}
       {collapseAfter && !expanded && (
         <>
-          <li className="opacity-50">{commands.at(collapseAfter)}</li>
-          <li className="absolute opacity-20">
+          <li className="px-4 opacity-50">{commands.at(collapseAfter)}</li>
+          <li className="px-4 absolute opacity-20">
             {commands.at(collapseAfter + 1)}
           </li>
         </>
@@ -39,8 +79,11 @@ export const CommandHighlight = ({
       {collapseAfter && (
         <motion.button
           onClick={() => setExpanded(!expanded)}
-          className="absolute bottom-2 right-2"
-          animate={{ rotate: expanded ? 180 : 0 }}
+          className="absolute bottom-0 right-0 p-2 block"
+          animate={{
+            rotate: expanded ? 180 : 0,
+            y: active === commands.length - 1 ? 16 : 0,
+          }}
           title={expanded ? "Hide commands" : "Show all commands"}
         >
           <ChevronDown />
