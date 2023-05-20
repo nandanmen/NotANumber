@@ -1,44 +1,23 @@
 "use client";
 
 import React from "react";
-import { motion, transform } from "framer-motion";
+import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
-import {
-  AnimatedEndpoint,
-  Endpoint,
-  PathVisualizer,
-  Text,
-  toPath,
-} from "../components/path-visualizer";
+import { AnimatedEndpoint, Endpoint } from "../components/path-visualizer";
 import { StateProvider, useStateContext } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { PathHoverVisual } from "../components/path-hover-visual";
 import { type CommandWithCode, parsePath } from "../utils";
-import { CommandHighlight, SyntaxExample } from "./components";
+import { CommandHighlight } from "./components/component-highlight";
+import { SyntaxExample } from "./components/syntax-example";
 import { PathPractice } from "../components/path-practice";
-import { CoordinatesTooltip } from "../components/svg/tooltip";
-import type { SyntaxState } from "./types";
-
-const pillCommands = parsePath("M 5 5 h 5 q 5 2.5 0 5 h -5 q -5 -2.5 0 -5 z");
-const pillCommandsCorrected = parsePath(
-  "M 5 5 h 5 c 4 0 4 5 0 5 h -5 c -4 0 -4 -5 0 -5 z"
-);
+import * as syntax from "./content/syntax";
 
 export function Content({ content, length }) {
   return (
-    <StateProvider<{ syntax: SyntaxState }>
+    <StateProvider
       initial={{
-        syntax: {
-          state: "idle",
-          active: null,
-          x1: 0,
-          y1: 5,
-          x2: 20,
-          y2: 5,
-          x: 15,
-          y: 13,
-        },
+        syntax: syntax.initialState,
       }}
     >
       <MDX
@@ -56,10 +35,7 @@ export function Content({ content, length }) {
               children: <Pill quadratic />,
               svg: 15,
             },
-            {
-              children: <Syntax />,
-              svg: 20,
-            },
+            syntax.page,
             {
               children: <Chain />,
               svg: 20,
@@ -72,77 +48,6 @@ export function Content({ content, length }) {
         />
       </MDX>
     </StateProvider>
-  );
-}
-
-function Syntax() {
-  const { getRelative } = useSvgContext();
-  const { data, set } = useStateContext<SyntaxState>("syntax");
-  const { x1, y1, x2, y2, x, y, state } = data;
-
-  const getHandlers = (name: SyntaxState["active"]) => {
-    return {
-      hoverStart: () => {
-        if (state !== "idle") return;
-        set({ state: "hovering", active: name });
-      },
-      hoverEnd: () => {
-        if (state !== "hovering") return;
-        set({ state: "idle", active: null });
-      },
-      panStart: () => {
-        set({ state: "panning", active: name });
-      },
-      panEnd: () => {
-        set({ state: "idle", active: null });
-      },
-    };
-  };
-
-  return (
-    <g>
-      <g className="stroke-gray10" strokeWidth={getRelative(0.75)}>
-        <line x1={5} y1={13} x2={x1} y2={y1} />
-        <line x1={x} y1={y} x2={x2} y2={y2} />
-      </g>
-      <motion.path
-        d={`M 5 13 C ${x1} ${y1} ${x2} ${y2} ${x} ${y}`}
-        strokeWidth={getRelative(1.25)}
-        stroke="currentColor"
-        fill="none"
-        animate={{ pathLength: 1 }}
-        initial={{ pathLength: 0 }}
-        transition={{ type: "spring", bounce: 0 }}
-      />
-      <circle fill="currentColor" r={getRelative(1)} cx={5} cy={13} />
-      <DraggableEndpoint
-        cx={x1}
-        cy={y1}
-        on={{
-          ...getHandlers("x1"),
-          pan: (x, y) => set({ x1: x, y1: y }),
-        }}
-      />
-      <DraggableEndpoint
-        cx={x2}
-        cy={y2}
-        on={{
-          ...getHandlers("x2"),
-          pan: (x, y) => set({ x2: x, y2: y }),
-        }}
-      />
-      <DraggableEndpoint
-        cx={x}
-        cy={y}
-        on={{
-          ...getHandlers("x"),
-          pan: (x, y) => set({ x, y }),
-        }}
-      />
-      <CoordinatesTooltip x={x1} y={y1} placement="right" />
-      <CoordinatesTooltip x={x2} y={y2} placement="left" />
-      <CoordinatesTooltip x={x} y={y} placement="bottom" />
-    </g>
   );
 }
 
@@ -335,84 +240,5 @@ function Pill({ quadratic = false }) {
         <Endpoint cx="10" cy="10" />
       </g>
     </g>
-  );
-}
-
-type EndpointEventHandlers = {
-  panStart: () => void;
-  pan: (x: number, y: number) => void;
-  panEnd: () => void;
-  hoverStart: () => void;
-  hoverEnd: () => void;
-};
-
-function DraggableEndpoint({
-  cx,
-  cy,
-  on,
-}: {
-  cx: number;
-  cy: number;
-  on: Partial<EndpointEventHandlers>;
-}) {
-  const [panning, setPanning] = React.useState(false);
-  const [active, setActive] = React.useState(false);
-  const { size, getRelative } = useSvgContext();
-  return (
-    <motion.g
-      className="cursor-pointer"
-      onHoverStart={() => {
-        if (panning) return;
-        setActive(true);
-        on.hoverStart?.();
-      }}
-      onHoverEnd={() => {
-        if (panning) return;
-        setActive(false);
-        on.hoverEnd?.();
-      }}
-    >
-      <motion.circle
-        r={getRelative(1)}
-        className="fill-blue9"
-        cx={cx}
-        cy={cy}
-        animate={active ? "active" : "idle"}
-        variants={{
-          active: {
-            r: getRelative(2),
-          },
-          idle: {
-            r: getRelative(1),
-          },
-        }}
-      />
-      <Endpoint
-        cx={cx}
-        cy={cy}
-        onPanStart={() => {
-          on.panStart?.();
-          setPanning(true);
-          setActive(true);
-        }}
-        onPan={(_, info) => {
-          const { width, x, y } = document
-            .querySelector("[data-x-axis-lines]")
-            .getBoundingClientRect();
-          const relativeX = info.point.x - x;
-          const relativeY =
-            info.point.y - y - document.documentElement.scrollTop;
-          const transformer = transform([0, width], [0, size]);
-          const newX = transformer(relativeX);
-          const newY = transformer(relativeY);
-          on.pan?.(newX, newY);
-        }}
-        onPanEnd={() => {
-          on.panEnd?.();
-          setPanning(false);
-          setActive(false);
-        }}
-      />
-    </motion.g>
   );
 }
