@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useSvgContext } from "app/svg-paths/components/svg";
-import { type CommandWithCode, parsePath } from "app/svg-paths/utils";
-import { AnimatedEndpoint } from "app/svg-paths/components/path-visualizer";
+import { type CommandWithCode, parsePath, Command } from "app/svg-paths/utils";
 import { useStateContext } from "app/svg-paths/components/state-context";
 import { DraggableEndpoint } from "app/svg-paths/components/draggable-endpoint";
 
@@ -15,44 +14,100 @@ const curves = parsedBaloon.filter(
   (c) => c.code === "C" || c.code === "S"
 ) as Array<CommandWithCode<"C"> | CommandWithCode<"S">>;
 
+const curveIndices = [1, 2, 3];
+
 function Chain() {
   const {
     data: { index, expanded },
-  } = useStateContext<{ index: number; expanded: boolean }>("chain");
+  } = useStateContext<{ index: number | null; expanded: boolean }>("chain");
   const { getRelative } = useSvgContext();
+  const isHovering = curveIndices.includes(index);
   return (
     <g>
-      <g>
-        {curves.map((command, index) => {
-          if (command.code === "C")
-            return <CurveCommand key={command.id} command={command} />;
-          const lastCommand = curves.at(index - 1);
-          return (
-            <ShortcutCommand
-              key={command.id}
-              command={command}
-              lastCommand={lastCommand}
-            />
-          );
-        })}
-      </g>
-      <g strokeWidth={getRelative(1.25)} className="fill-none stroke-current">
-        <path d={baloon} />
-        <motion.path animate={{ opacity: expanded ? 1 : 0.2 }} d={basket} />
-      </g>
-      <g>
-        {curves.map((command, index) => {
-          const { x0, y0, x, y } = command;
-          const last = index === curves.length - 1;
-          return (
-            <g key={command.id} fill="currentColor">
-              <circle cx={x0} cy={y0} r={getRelative(1.2)} />
-              {last && <circle cx={x} cy={y} r={getRelative(1.2)} />}
-            </g>
-          );
-        })}
-      </g>
+      <motion.g
+        animate={{ opacity: isHovering ? 0.2 : 1 }}
+        transition={{ type: false }}
+      >
+        <g>
+          {curves.map((command, index) => {
+            if (command.code === "C")
+              return <CurveCommand key={command.id} command={command} />;
+            const lastCommand = curves.at(index - 1);
+            return (
+              <ShortcutCommand
+                key={command.id}
+                command={command}
+                lastCommand={lastCommand}
+              />
+            );
+          })}
+        </g>
+        <g strokeWidth={getRelative(1.25)} className="fill-none stroke-current">
+          <path d={baloon} />
+          <motion.path animate={{ opacity: expanded ? 1 : 0.2 }} d={basket} />
+        </g>
+        <g>
+          {curves.map((command, index) => {
+            const { x0, y0, x, y } = command;
+            const last = index === curves.length - 1;
+            return (
+              <g key={command.id} fill="currentColor">
+                <circle cx={x0} cy={y0} r={getRelative(1.2)} />
+                {last && <circle cx={x} cy={y} r={getRelative(1.2)} />}
+              </g>
+            );
+          })}
+        </g>
+      </motion.g>
+      {isHovering && (
+        <g>
+          <Curve commands={parsedBaloon} index={index} />
+          <path
+            d={getPath(parsedBaloon, index)}
+            strokeWidth={getRelative(1.25)}
+            className="fill-none stroke-current"
+          />
+          <circle
+            cx={parsedBaloon[index].x0}
+            cy={parsedBaloon[index].y0}
+            r={getRelative(1.2)}
+          />
+          <circle
+            cx={parsedBaloon[index].x}
+            cy={parsedBaloon[index].y}
+            r={getRelative(1.2)}
+          />
+        </g>
+      )}
     </g>
+  );
+}
+
+function getPath(commands: Command[], index: number) {
+  const command = commands[index];
+  if (command.code !== "C" && command.code !== "S") return null;
+  if (command.code === "C") {
+    return `M ${command.x0} ${command.y0} C ${command.x1} ${command.y1} ${command.x2} ${command.y2} ${command.x} ${command.y}`;
+  }
+  const lastCommand = commands.at(index - 1);
+  if (lastCommand.code !== "C" && lastCommand.code !== "S") return null;
+  const { x1, y1 } = getReflection(lastCommand);
+  return `M ${command.x0} ${command.y0} C ${x1} ${y1} ${command.x2} ${command.y2} ${command.x} ${command.y}`;
+}
+
+function Curve({ commands, index }: { commands: Command[]; index: number }) {
+  const command = commands[index];
+  if (command.code !== "C" && command.code !== "S") return null;
+  if (command.code === "C")
+    return <CurveCommand key={command.id} command={command} />;
+  const lastCommand = commands.at(index - 1);
+  if (lastCommand.code !== "C" && lastCommand.code !== "S") return null;
+  return (
+    <ShortcutCommand
+      key={command.id}
+      command={command}
+      lastCommand={lastCommand}
+    />
   );
 }
 
