@@ -12,6 +12,7 @@ import { CommandHighlight } from "./components/component-highlight";
 import { SyntaxExample } from "./components/syntax-example";
 import { PathPractice } from "../components/path-practice";
 import * as syntax from "./content/syntax";
+import * as curveGeneral from "./content/curve-general";
 
 export function Content({ content, length }) {
   return (
@@ -36,6 +37,7 @@ export function Content({ content, length }) {
               svg: 15,
             },
             syntax.page,
+            curveGeneral.page,
             {
               children: <Chain />,
               svg: 20,

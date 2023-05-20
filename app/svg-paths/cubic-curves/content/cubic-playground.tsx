@@ -13,6 +13,7 @@ type CubicPlaygroundProps = {
   y2: number;
   x: number;
   y: number;
+  tooltip?: boolean;
 };
 
 export function CubicPlayground({
@@ -24,6 +25,7 @@ export function CubicPlayground({
   y2,
   x,
   y,
+  tooltip = false,
 }: CubicPlaygroundProps) {
   const { getRelative } = useSvgContext();
 
@@ -87,9 +89,13 @@ export function CubicPlayground({
           pan: (x, y) => set({ x, y }),
         }}
       />
-      <CoordinatesTooltip x={x1} y={y1} placement="right" />
-      <CoordinatesTooltip x={x2} y={y2} placement="left" />
-      <CoordinatesTooltip x={x} y={y} placement="bottom" />
+      {tooltip && (
+        <>
+          <CoordinatesTooltip x={x1} y={y1} placement="right" />
+          <CoordinatesTooltip x={x2} y={y2} placement="left" />
+          <CoordinatesTooltip x={x} y={y} placement="bottom" />
+        </>
+      )}
     </g>
   );
 }

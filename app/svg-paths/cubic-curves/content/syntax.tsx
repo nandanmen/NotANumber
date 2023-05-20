@@ -4,7 +4,7 @@ import { CubicPlayground } from "./cubic-playground";
 
 function Syntax() {
   const { data, set } = useStateContext<SyntaxState>("syntax");
-  return <CubicPlayground {...data} set={set} />;
+  return <CubicPlayground {...data} set={set} tooltip />;
 }
 
 export const initialState: SyntaxState = {
