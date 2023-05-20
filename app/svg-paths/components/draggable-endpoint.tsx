@@ -14,11 +14,13 @@ export type EndpointEventHandlers = {
 export function DraggableEndpoint({
   cx,
   cy,
-  on,
+  on = {},
+  onPan,
 }: {
   cx: number;
   cy: number;
-  on: Partial<EndpointEventHandlers>;
+  on?: Partial<EndpointEventHandlers>;
+  onPan?: (x: number, y: number) => void;
 }) {
   const [panning, setPanning] = React.useState(false);
   const [active, setActive] = React.useState(false);
@@ -71,6 +73,7 @@ export function DraggableEndpoint({
           const newX = transformer(relativeX);
           const newY = transformer(relativeY);
           on.pan?.(newX, newY);
+          onPan?.(newX, newY);
         }}
         onPanEnd={() => {
           on.panEnd?.();

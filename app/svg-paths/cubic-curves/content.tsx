@@ -7,7 +7,6 @@ import { Endpoint } from "../components/path-visualizer";
 import { StateProvider, useStateContext } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { CommandHighlight } from "./components/component-highlight";
 import { SyntaxExample } from "./components/syntax-example";
 import { PathPractice } from "../components/path-practice";
 import * as syntax from "./content/syntax";
@@ -24,7 +23,7 @@ export function Content({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ CommandHighlight, SyntaxExample }}
+        components={{ SyntaxExample }}
       >
         <VisualWrapper
           components={[

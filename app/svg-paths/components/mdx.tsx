@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
+import { CommandHighlight } from "./command-highlight";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
@@ -32,6 +33,7 @@ const baseComponents = {
   InteractiveCommand,
   CommandList,
   PathEditor,
+  CommandHighlight,
 };
 
 const sections = [
