@@ -9,18 +9,12 @@ import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
 import { parsePath } from "../utils";
+import { RoundedCornerCommands, TCommandList } from "./components";
 import {
-  RoundedCornerCommands,
-  TCommandList,
-  BezierCurveQuestion,
-} from "./components";
-import { PathPractice, PracticeQuestion } from "../components/path-practice";
-import { PathHoverVisual } from "../components/path-hover-visual";
+  getInitialPracticeQuestionState,
+  PracticeQuestion,
+} from "../components/path-practice";
 import { DraggableEndpoint } from "../components/draggable-endpoint";
-
-const frameCommands = parsePath(
-  "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
-);
 
 export function Content({ content, length }) {
   return (
@@ -40,9 +34,17 @@ export function Content({ content, length }) {
           tx: 15,
           ty: 15,
         },
-        answer: {
-          active: false,
-        },
+        ...getInitialPracticeQuestionState([
+          "M 5 17",
+          "Q 10 8 15 17",
+          "M 10 12.5",
+          "Q 15 5 20 12.5",
+          "M 5 5",
+          "v 15",
+          "h 15",
+          "v -15",
+          "z",
+        ]),
       }}
     >
       <MDX
@@ -51,7 +53,6 @@ export function Content({ content, length }) {
         components={{
           RoundedCornerCommands,
           TCommandList,
-          BezierCurveQuestion,
         }}
       >
         <VisualWrapper
@@ -79,7 +80,7 @@ export function Content({ content, length }) {
               svg: 20,
             },
             {
-              children: <PracticeQuestion commands={frameCommands} />,
+              children: <PracticeQuestion />,
             },
           ]}
         />

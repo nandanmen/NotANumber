@@ -1,6 +1,3 @@
-import { motion } from "framer-motion";
-import { CommandList } from "../components/command-list";
-import { PathEditor } from "../components/path-editor";
 import { useStateContext } from "../components/state-context";
 
 export function RoundedCornerCommands() {
@@ -41,44 +38,5 @@ export function TCommandList() {
         T {tx.toFixed(1)} {ty.toFixed(1)}
       </li>
     </ol>
-  );
-}
-
-export function BezierCurveQuestion() {
-  const { data, set } = useStateContext<{ active: boolean }>("answer");
-  return (
-    <div className="space-y-2">
-      <PathEditor id="practice" placeholder="M 5 10" />
-      <Button onClick={() => set({ active: !data.active })}>
-        Reveal Answer
-      </Button>
-      {data.active && (
-        <CommandList
-          id="answerKey"
-          commands={`M 5 17
-          Q 10 8 15 17
-          M 10 12.5
-          Q 15 5 20 12.5
-          M 5 5
-          v 15
-          h 15
-          v -15
-          z
-          `}
-        />
-      )}
-    </div>
-  );
-}
-
-function Button(
-  props: React.ComponentPropsWithoutRef<(typeof motion)["button"]>
-) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      className="bg-gray1 border-gray8 rounded-md border shadow-sm text-sm px-2 py-1"
-      {...props}
-    />
   );
 }
