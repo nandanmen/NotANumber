@@ -1,17 +1,15 @@
-import { useSvgContext } from "app/svg-paths/components/svg";
 import React from "react";
+import type { PointsGroup } from "app/svg-paths/components/drag-group";
+import { useSvgContext } from "app/svg-paths/components/svg";
 import { CubicPlayground } from "./cubic-playground";
 
 function CurveGeneral() {
   const { getRelative } = useSvgContext();
-  const [state, set] = React.useState({
-    x1: 0,
-    y1: 5,
-    x2: 20,
-    y2: 5,
-    x: 15,
-    y: 13,
-  });
+  const [points, set] = React.useState<PointsGroup>([
+    [0, 5],
+    [20, 5],
+    [15, 13],
+  ]);
   return (
     <g>
       <g className="text-gray8">
@@ -38,12 +36,7 @@ function CurveGeneral() {
           strokeWidth={getRelative(0.5)}
         />
       </g>
-      <CubicPlayground
-        coords={state}
-        set={(partial) => {
-          set((s) => ({ ...s, ...partial }));
-        }}
-      />
+      <CubicPlayground points={points} set={({ points }) => set(points)} />
     </g>
   );
 }

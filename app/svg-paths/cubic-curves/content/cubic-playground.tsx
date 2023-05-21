@@ -2,51 +2,32 @@ import { motion } from "framer-motion";
 import { CoordinatesTooltip } from "../../components/svg/tooltip";
 import { DraggableEndpoint } from "../../components/draggable-endpoint";
 import { useSvgContext } from "../../components/svg";
-import type { SyntaxState } from "../types";
+import {
+  type DragGroupState,
+  type PointsGroup,
+  getDragPoints,
+} from "app/svg-paths/components/drag-group";
 
 type CubicPlaygroundProps = {
-  state?: SyntaxState["state"];
-  set?: (state: Partial<SyntaxState>) => void;
-  coords: {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-    x: number;
-    y: number;
-  };
+  points: PointsGroup;
+  state?: DragGroupState["state"];
+  set?: (state: Partial<DragGroupState>) => void;
   tooltip?: boolean;
 };
 
 export function CubicPlayground({
   state,
   set,
-  coords,
+  points,
   tooltip = false,
 }: CubicPlaygroundProps) {
-  const { x1, y1, x2, y2, x, y } = coords;
+  const [[x1, y1], [x2, y2], [x, y]] = points;
   const { getRelative } = useSvgContext();
-
-  const getHandlers = (name: SyntaxState["active"]) => {
-    if (!state || !set) return {};
-    return {
-      hoverStart: () => {
-        if (state !== "idle") return;
-        set({ state: "hovering", active: name });
-      },
-      hoverEnd: () => {
-        if (state !== "hovering") return;
-        set({ state: "idle", active: null });
-      },
-      panStart: () => {
-        set({ state: "panning", active: name });
-      },
-      panEnd: () => {
-        set({ state: "idle", active: null });
-      },
-    };
-  };
-
+  const props = getDragPoints({
+    points,
+    state,
+    set,
+  });
   return (
     <g>
       <g className="stroke-gray10" strokeWidth={getRelative(0.75)}>
@@ -63,30 +44,9 @@ export function CubicPlayground({
         transition={{ type: "spring", bounce: 0 }}
       />
       <circle fill="currentColor" r={getRelative(1)} cx={5} cy={13} />
-      <DraggableEndpoint
-        cx={x1}
-        cy={y1}
-        on={{
-          ...getHandlers("x1"),
-          pan: (x, y) => set({ x1: x, y1: y }),
-        }}
-      />
-      <DraggableEndpoint
-        cx={x2}
-        cy={y2}
-        on={{
-          ...getHandlers("x2"),
-          pan: (x, y) => set({ x2: x, y2: y }),
-        }}
-      />
-      <DraggableEndpoint
-        cx={x}
-        cy={y}
-        on={{
-          ...getHandlers("x"),
-          pan: (x, y) => set({ x, y }),
-        }}
-      />
+      {props.map(({ x, y, on }, index) => {
+        return <DraggableEndpoint key={index} cx={x} cy={y} on={on} />;
+      })}
       {tooltip && (
         <>
           <CoordinatesTooltip x={x1} y={y1} placement="right" />

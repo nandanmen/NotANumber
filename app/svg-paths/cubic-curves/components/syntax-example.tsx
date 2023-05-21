@@ -1,21 +1,24 @@
+import React from "react";
+import { DragGroupState } from "app/svg-paths/components/drag-group";
 import { clsx } from "clsx";
 import { useStateContext } from "../../components/state-context";
-import type { SyntaxState } from "../types";
 
 export const SyntaxExample = () => {
   const {
-    data: { x1, y1, x, y, x2, y2, active },
-  } = useStateContext<SyntaxState>("syntax");
+    data: { points, active },
+  } = useStateContext<DragGroupState>("syntax");
   return (
     <p className="border border-gray8 bg-gray3 px-4 py-3 rounded-md font-mono relative overflow-hidden flex gap-[1ch]">
       <span className="text-gray10">M 5 13</span>
       <span>C</span>
-      <Highlight value={x1} active={active === "x1"} />
-      <Highlight value={y1} active={active === "x1"} />
-      <Highlight value={x2} active={active === "x2"} />
-      <Highlight value={y2} active={active === "x2"} />
-      <Highlight value={x} active={active === "x"} />
-      <Highlight value={y} active={active === "x"} />
+      {points.map(([x, y], index) => {
+        return (
+          <React.Fragment key={index}>
+            <Highlight value={x} active={active === index} />
+            <Highlight value={y} active={active === index} />
+          </React.Fragment>
+        );
+      })}
     </p>
   );
 };
