@@ -126,3 +126,15 @@ The nice thing about structuring the data this way is it's easier to write compo
 ```tsx
 <Arc command={path.at<"A">(1)} />
 ```
+
+> Actually, I'm not confident that an `id` is required. Why did I need an id in the first place?
+
+Should the commands always be absolute, or should they be kept what they are? Absolute commands are easier to work with when drawing, but relative commands are easier to update.
+
+It might make sense to have a `.setAbsolute()` method that receives absolute coordinates and does the conversion for you:
+
+```tsx
+const path = parsePath("M 10 10 l 5 5");
+path.setAbsolute(1, { x: 20, y: 20 });
+path.toPathString(); // prints M 10 10 l 10 10
+```
