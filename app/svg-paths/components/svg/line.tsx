@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useSvgContext } from "../svg";
 
-type LineVariant = "primary" | "secondary" | "highlight";
+type LineVariant = "primary" | "secondary" | "current";
 
 export function Line({
   variant = "primary",
@@ -17,7 +17,7 @@ export function Line({
   const mapVariantToStroke = {
     primary: "stroke-gray10",
     secondary: "stroke-gray8",
-    highlight: "stroke-blue9",
+    current: "stroke-current",
   };
   return (
     <motion.line

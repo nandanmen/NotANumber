@@ -4,7 +4,7 @@ import { useSvgContext } from "../svg";
 
 type CircleSize = "base" | "small" | "large";
 
-type CircleVariant = "primary" | "secondary" | "cursor" | "point";
+type CircleVariant = "primary" | "secondary" | "cursor" | "point" | "highlight";
 
 const mapSizeToRadius = {
   small: 0.75,
