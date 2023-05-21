@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useSvgContext } from "app/svg-paths/components/svg";
 import {
   type CommandWithCode,
   Command,
@@ -12,7 +11,9 @@ import {
   DragGroup,
   DragGroupState,
 } from "app/svg-paths/components/drag-group";
-import { Endpoint } from "app/svg-paths/components/path-visualizer";
+import { Line } from "app/svg-paths/components/svg/line";
+import { Path } from "app/svg-paths/components/svg/path";
+import { Circle } from "app/svg-paths/components/svg/circle";
 
 const balloon = "M 6 10 C 6 8 4 10 4 5 S 11 0 11 5 S 9 8 9 10 Z";
 
@@ -35,7 +36,6 @@ function Chain() {
     data: { index, expanded },
   } = useStateContext<{ index: number | null; expanded: boolean }>("chain");
   const { data } = useStateContext<DragGroupState>("chainDrag");
-  const { getRelative } = useSvgContext();
 
   const [c0, c1, s1, s2] = data.points;
   const path = useEditablePath(balloon);
@@ -70,54 +70,36 @@ function Chain() {
         animate={{ opacity: isHovering ? 0.2 : 1 }}
         transition={{ type: false }}
       >
-        <g>
-          <g className="text-gray10">
-            <g strokeWidth={getRelative(0.5)} stroke="currentColor">
-              <line x1="6" y1="10" x2={c0[0]} y2={c0[1]} />
-              <line x1="4" y1="5" x2={c1[0]} y2={c1[1]} />
-              <line x1="11" y1="5" x2={s1[0]} y2={s1[1]} />
-              <line x1="9" y1="10" x2={s2[0]} y2={s2[1]} />
-              <g strokeDasharray={getRelative(1)}>
-                <line
-                  x1={c1[0]}
-                  y1={c1[1]}
-                  x2={firstReflection.x1}
-                  y2={firstReflection.y1}
-                />
-                <line
-                  x1={s1[0]}
-                  y1={s1[1]}
-                  x2={secondReflection.x1}
-                  y2={secondReflection.y1}
-                />
-              </g>
-            </g>
-            <g fill="currentColor">
-              <circle
-                r={getRelative(1)}
-                cx={firstReflection.x1}
-                cy={firstReflection.y1}
-              />
-              <circle
-                r={getRelative(1)}
-                cx={secondReflection.x1}
-                cy={secondReflection.y1}
-              />
-            </g>
-          </g>
-        </g>
-        <g strokeWidth={getRelative(1.25)} className="fill-none stroke-current">
-          <path d={path.toPathString()} />
-          <motion.path animate={{ opacity: expanded ? 1 : 0.2 }} d={basket} />
-        </g>
+        <Line x1="6" y1="10" x2={c0[0]} y2={c0[1]} />
+        <Line x1="4" y1="5" x2={c1[0]} y2={c1[1]} />
+        <Line x1="11" y1="5" x2={s1[0]} y2={s1[1]} />
+        <Line x1="9" y1="10" x2={s2[0]} y2={s2[1]} />
+        <Line
+          dashed
+          x1={c1[0]}
+          y1={c1[1]}
+          x2={firstReflection.x1}
+          y2={firstReflection.y1}
+        />
+        <Line
+          dashed
+          x1={s1[0]}
+          y1={s1[1]}
+          x2={secondReflection.x1}
+          y2={secondReflection.y1}
+        />
+        <Circle cx={firstReflection.x1} cy={firstReflection.y1} />
+        <Circle cx={secondReflection.x1} cy={secondReflection.y1} />
+        <Path d={path.toPathString()} />
+        <Path animate={{ opacity: expanded ? 1 : 0.2 }} d={basket} />
         <g>
           {curves.map((command, index) => {
             const { x0, y0, x, y } = command;
             const last = index === curves.length - 1;
             return (
-              <g key={command.id} fill="currentColor">
-                <circle cx={x0} cy={y0} r={getRelative(1.2)} />
-                {last && <circle cx={x} cy={y} r={getRelative(1.2)} />}
+              <g key={command.id}>
+                <Circle cx={x0} cy={y0} variant="cursor" size="large" />
+                {last && <Circle cx={x} cy={y} variant="cursor" size="large" />}
               </g>
             );
           })}
@@ -127,20 +109,18 @@ function Chain() {
       {isHovering && (
         <g>
           <Curve commands={path.commands} index={index} />
-          <path
-            d={getPath(path.commands, index)}
-            strokeWidth={getRelative(1.25)}
-            className="fill-none stroke-current"
-          />
-          <circle
+          <Path d={getPath(path.commands, index)} />
+          <Circle
+            variant="cursor"
+            size="large"
             cx={path.commands[index].x0}
             cy={path.commands[index].y0}
-            r={getRelative(1.2)}
           />
-          <circle
+          <Circle
+            variant="cursor"
+            size="large"
             cx={path.commands[index].x}
             cy={path.commands[index].y}
-            r={getRelative(1.2)}
           />
         </g>
       )}
@@ -197,7 +177,6 @@ function ShortcutCommand({
   command: CommandWithCode<"S">;
   lastCommand: CommandWithCode<"C"> | CommandWithCode<"S">;
 }) {
-  const { getRelative } = useSvgContext();
   const { x2, y2, x, y, x0, y0 } = command;
   const { x1, y1 } = getReflection(
     command.x0,
@@ -206,49 +185,24 @@ function ShortcutCommand({
     lastCommand.y2
   );
   return (
-    <motion.g key={command.id}>
-      <line
-        className="text-gray10"
-        strokeWidth={getRelative(0.5)}
-        stroke="currentColor"
-        x1={x}
-        y1={y}
-        x2={x2}
-        y2={y2}
-      />
-      <g className="text-gray9">
-        <line
-          strokeWidth={getRelative(0.5)}
-          stroke="currentColor"
-          strokeDasharray={getRelative(1)}
-          x1={x0}
-          y1={y0}
-          x2={x1}
-          y2={y1}
-        />
-        <circle fill="currentColor" r={getRelative(1)} cx={x1} cy={y1} />
-      </g>
-      <Endpoint cx={x2} cy={y2} />
-    </motion.g>
+    <g key={command.id}>
+      <Line x1={x} y1={y} x2={x2} y2={y2} />
+      <Line dashed x1={x0} y1={y0} x2={x1} y2={y1} />
+      <Circle cx={x1} cy={y1} />
+      <Circle variant="point" cx={x2} cy={y2} />
+    </g>
   );
 }
 
 function CurveCommand({ command }: { command: CommandWithCode<"C"> }) {
-  const { getRelative } = useSvgContext();
   const { x, y, x1, y1, x2, y2, x0, y0 } = command;
   return (
-    <motion.g key={command.id}>
-      <g
-        className="text-gray10"
-        strokeWidth={getRelative(0.5)}
-        stroke="currentColor"
-      >
-        <line x1={x} y1={y} x2={x2} y2={y2} />
-        <line x1={x0} y1={y0} x2={x1} y2={y1} />
-      </g>
-      <Endpoint cx={x1} cy={y1} />
-      <Endpoint cx={x2} cy={y2} />
-    </motion.g>
+    <g key={command.id}>
+      <Line x1={x} y1={y} x2={x2} y2={y2} />
+      <Line x1={x0} y1={y0} x2={x1} y2={y1} />
+      <Circle variant="point" cx={x1} cy={y1} />
+      <Circle variant="point" cx={x2} cy={y2} />
+    </g>
   );
 }
 
