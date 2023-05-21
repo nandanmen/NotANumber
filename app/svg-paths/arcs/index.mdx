@@ -2,13 +2,17 @@
 
 The arc, or `A` command, is the last of the SVG path commands we'll be looking at and, in my opinion, the least intuitive to use.
 
-The syntax looks like this:
+The arc command lets you draw a **section of an ellipse** using the following (admittedly confusing) syntax:
 
 ```
 A rx ry rotation large-arc-flag sweep-flag x y
 ```
 
-It's certainly not easy to grasp, so let's try to break it down.
+As an example, the arc that you see here is drawn using the following commands:
+
+<CommandHighlight commands={["M 10 10", "A 10 10 0 0 0 20 20"]} />
+
+We'll dive into what each of these values means in a moment, but first, try to change the controls in the sandbox to get a feel for how the arc command works.
 
 ---
 

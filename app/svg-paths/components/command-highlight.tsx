@@ -5,15 +5,15 @@ import { useStateContext } from "app/svg-paths/components/state-context";
 
 const mapCodeToHint = {
   M: "move",
+  m: "relative move",
   L: "line",
+  l: "relative line",
+  V: "vertical line",
   v: "relative vertical line",
   q: "relative quadratic curve",
   Q: "quadratic curve",
-  m: "relative move",
-  l: "relative line",
   h: "relative horizontal line",
   H: "horizontal line",
-  V: "vertical line",
   z: "close path",
   Z: "close path",
   C: "cubic curve",
@@ -22,6 +22,8 @@ const mapCodeToHint = {
   S: "shorthand cubic curve",
   t: "relative shorthand quadratic curve",
   T: "shorthand quadratic curve",
+  a: "relative arc",
+  A: "arc",
 };
 
 export type CommandText =

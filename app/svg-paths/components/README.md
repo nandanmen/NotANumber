@@ -62,3 +62,67 @@ The one "bug" here is that the active commands can appear below the inactive com
 I want the path visualizer to be _completely_ configurable. I should be able to say "only show the move lines and the path sections" and have that work.
 
 - For this to happen, I need to break everything into smaller components; instead of a <Lines /> component, I need a <MoveLines /> component, a <CurveLines /> component, etc.
+
+## Handling Drag
+
+I think my ideal state is something like this:
+
+```tsx
+state = {
+  active: {
+    id: "...",
+    args: ["x1", "y1"],
+  },
+};
+```
+
+This means that the currently active command is the command with the id `id`, and the args `args` are the ones that are being dragged/highlighted.
+
+I want to centralize the location where the path is placed, which really should be in the `StateContext`:
+
+```tsx
+<StateContext
+  initialState={{
+    syntax: {
+      path: parsePath("M 10 10 A 10 10 0 0 0 20 20"),
+    },
+  }}
+/>
+```
+
+Then the `CommandList` can read the value from that location:
+
+```tsx
+<CommandList source="syntax.path" />
+```
+
+The drag points should also modify that `path` property:
+
+```tsx
+<DraggableEndpoint
+  onPan={(x, y) => {
+    // `path` is immutable, so `.set()` returns a new copy here
+    set({ path: path.set(cmd.id, { x, y }) });
+  }}
+/>
+```
+
+`parsePath` itself lets you construct a new path instance from a path string:
+
+```tsx
+interface Path {
+  commands: Command[];
+  get<CommandCode>(id: string): Command<CommandCode>;
+  at<CommandCode>(index: number): Command<CommandCode>;
+  set<CommandCode>(id: string, args: Partial<Command<CommandCode>>): Path;
+  toPathString(): string;
+}
+```
+
+- The command's `id` should only change if the code changes
+
+The nice thing about structuring the data this way is it's easier to write components too:
+
+```tsx
+<Arc command={path.at<"A">(1)} />
+```
