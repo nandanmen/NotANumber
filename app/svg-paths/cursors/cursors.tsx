@@ -23,7 +23,7 @@ import {
   Refresh,
 } from "../components/icons";
 import { PathHoverVisual } from "../components/path-hover-visual";
-import { PathPractice, PracticeQuestion } from "../components/path-practice";
+import { PracticeQuestion } from "../components/path-practice";
 
 const Controls = ({ children }) => {
   return (

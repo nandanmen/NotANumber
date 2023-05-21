@@ -26,7 +26,7 @@ export function Content({ content, length }) {
         ...getInitialPracticeQuestionState([
           "M 10 18",
           "c -10 -1 -10 -14 0 -15",
-          "q 6 -1 8 5",
+          "q 6 -0.75 8 5",
           "c 7 0 7 10 0 10",
           "m -1.0 -2",
           "v 6",
