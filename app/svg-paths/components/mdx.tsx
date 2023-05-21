@@ -6,7 +6,6 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
 import { IndexProvider } from "./index-provider";
 import { InteractiveCommand } from "./interactive-command";
-import { CommandList } from "./command-list";
 import { PathEditor } from "./path-editor";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,7 +31,6 @@ const baseComponents = {
   ),
   PageSection,
   InteractiveCommand,
-  CommandList,
   PathEditor,
   CommandHighlight,
   PracticeQuestionEditor,
