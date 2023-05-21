@@ -23,7 +23,7 @@ export const SyntaxExample = () => {
   );
 };
 
-const Highlight = ({
+export const Highlight = ({
   value,
   active = false,
 }: {
@@ -34,7 +34,7 @@ const Highlight = ({
     <span
       className={clsx(
         "transition-all",
-        active && "bg-gray7 -mx-1 px-1 rounded-[4px]"
+        active && "bg-gray12 text-gray1 -mx-1 px-1 rounded-[4px]"
       )}
     >
       {value.toFixed(1)}

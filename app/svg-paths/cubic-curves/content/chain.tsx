@@ -3,12 +3,10 @@ import { motion } from "framer-motion";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import {
   type CommandWithCode,
-  parsePath,
   Command,
   useEditablePath,
 } from "app/svg-paths/utils";
 import { useStateContext } from "app/svg-paths/components/state-context";
-import { DraggableEndpoint } from "app/svg-paths/components/draggable-endpoint";
 import {
   createInitialState,
   DragGroup,

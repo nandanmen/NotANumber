@@ -8,6 +8,7 @@ import { StateProvider, useStateContext } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { VisualWrapper } from "../components/visual-wrapper";
 import { SyntaxExample } from "./components/syntax-example";
+import { ChainExample } from "./components/chain-example";
 import { PathPractice } from "../components/path-practice";
 import * as syntax from "./content/syntax";
 import * as curveGeneral from "./content/curve-general";
@@ -24,7 +25,7 @@ export function Content({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ SyntaxExample }}
+        components={{ SyntaxExample, ChainExample }}
       >
         <VisualWrapper
           components={[

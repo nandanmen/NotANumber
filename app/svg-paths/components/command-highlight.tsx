@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { useStateContext } from "app/svg-paths/components/state-context";
@@ -24,6 +24,20 @@ const mapCodeToHint = {
   T: "shorthand quadratic curve",
 };
 
+export type CommandText =
+  | string
+  | {
+      code: string;
+      template: ReactNode;
+    };
+
+const getNode = (command: CommandText) => {
+  if (typeof command === "string") {
+    return command;
+  }
+  return command.template;
+};
+
 export const CommandHighlight = ({
   id,
   commands,
@@ -31,7 +45,7 @@ export const CommandHighlight = ({
   collapseAfter,
 }: {
   id?: string;
-  commands: string[];
+  commands: CommandText[];
   indices: number[];
   collapseAfter?: number;
 }) => {
@@ -49,9 +63,11 @@ export const CommandHighlight = ({
   return (
     <ol className="border py-3 border-gray8 bg-gray3 rounded-md font-mono relative overflow-hidden">
       {_commands.map((command, i) => {
+        const isString = typeof command === "string";
+        const key = isString ? command : command.code + i;
         return (
           <motion.li
-            key={command}
+            key={key}
             className={clsx(
               "flex justify-between items-center group hover:bg-gray5",
               indices.includes(i)
@@ -61,18 +77,20 @@ export const CommandHighlight = ({
             onHoverStart={() => setActive(i)}
             onHoverEnd={() => setActive(null)}
           >
-            <span>{command}</span>
+            <span>{getNode(command)}</span>
             <span className="text-sm text-gray11 hidden group-hover:inline">
-              {mapCodeToHint[command.at(0)]}
+              {mapCodeToHint[isString ? command.at(0) : command.code]}
             </span>
           </motion.li>
         );
       })}
       {collapseAfter && !expanded && (
         <>
-          <li className="px-4 opacity-50">{commands.at(collapseAfter)}</li>
+          <li className="px-4 opacity-50">
+            {getNode(commands.at(collapseAfter))}
+          </li>
           <li className="px-4 absolute opacity-20">
-            {commands.at(collapseAfter + 1)}
+            {getNode(commands.at(collapseAfter + 1))}
           </li>
         </>
       )}
