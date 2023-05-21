@@ -75,7 +75,7 @@ export const CommandHighlight = ({
           <motion.li
             key={key}
             className={clsx(
-              "flex justify-between items-center group hover:bg-gray5",
+              "py-1 flex justify-between items-center group hover:bg-gray5",
               indices.includes(i)
                 ? "bg-gray6 border-gray8 border-l-4 px-3"
                 : "px-4"
@@ -92,10 +92,10 @@ export const CommandHighlight = ({
       })}
       {collapseAfter && !expanded && (
         <>
-          <li className="px-4 opacity-50">
+          <li className="py-1 px-4 opacity-50">
             {getNode(commands.at(collapseAfter))}
           </li>
-          <li className="px-4 absolute opacity-20">
+          <li className="py-1 px-4 absolute opacity-20">
             {getNode(commands.at(collapseAfter + 1))}
           </li>
         </>

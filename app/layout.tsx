@@ -1,4 +1,4 @@
-import { DM_Mono, Nunito, Shantell_Sans } from "next/font/google";
+import { Nunito, PT_Mono, Shantell_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -14,8 +14,8 @@ const sans = Nunito({
   subsets: ["latin"],
 });
 
-const mono = DM_Mono({
-  weight: ["400", "500"],
+const mono = PT_Mono({
+  weight: ["400"],
   variable: "--font-mono",
   subsets: ["latin"],
 });
