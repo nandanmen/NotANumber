@@ -63,3 +63,19 @@ export function getDragPoints({
     };
   });
 }
+
+export function DragGroup({ source }: { source: string }) {
+  const { data, set } = useStateContext<DragGroupState>(source);
+  const props = getDragPoints({
+    points: data.points,
+    state: data.state,
+    set,
+  });
+  return (
+    <>
+      {props.map(({ x, y, on }, index) => {
+        return <DraggableEndpoint key={index} cx={x} cy={y} on={on} />;
+      })}
+    </>
+  );
+}

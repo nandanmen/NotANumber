@@ -18,6 +18,7 @@ export function Content({ content, length }) {
     <StateProvider
       initial={{
         syntax: syntax.initialState,
+        chainDrag: chain.initialState,
       }}
     >
       <MDX
