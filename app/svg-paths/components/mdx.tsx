@@ -14,6 +14,7 @@ import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { CommandHighlight } from "./command-highlight";
+import { PracticeQuestionEditor } from "./path-practice";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
@@ -34,6 +35,7 @@ const baseComponents = {
   CommandList,
   PathEditor,
   CommandHighlight,
+  PracticeQuestionEditor,
 };
 
 const sections = [

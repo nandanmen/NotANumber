@@ -14,9 +14,13 @@ import {
   TCommandList,
   BezierCurveQuestion,
 } from "./components";
-import { PathPractice } from "../components/path-practice";
+import { PathPractice, PracticeQuestion } from "../components/path-practice";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { DraggableEndpoint } from "../components/draggable-endpoint";
+
+const frameCommands = parsePath(
+  "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
+);
 
 export function Content({ content, length }) {
   return (
@@ -75,38 +79,12 @@ export function Content({ content, length }) {
               svg: 20,
             },
             {
-              children: <Practice />,
+              children: <PracticeQuestion commands={frameCommands} />,
             },
           ]}
         />
       </MDX>
     </StateProvider>
-  );
-}
-
-const frameCommands = parsePath(
-  "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
-);
-
-function Practice() {
-  const { data } = useStateContext<{ active: boolean }>("answer");
-  const { useRelativeMotionValue } = useSvgContext();
-  return (
-    <g>
-      <motion.path
-        strokeWidth={useRelativeMotionValue(2)}
-        className="stroke-gray8"
-        fill="none"
-        d="M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z"
-      />
-      <PathPractice id="bezier-curve-practice" />
-      {data.active && (
-        <PathHoverVisual
-          commands={frameCommands}
-          id="command-list-bezier-curve-answers"
-        />
-      )}
-    </g>
   );
 }
 

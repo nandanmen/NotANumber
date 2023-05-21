@@ -48,13 +48,13 @@ export function BezierCurveQuestion() {
   const { data, set } = useStateContext<{ active: boolean }>("answer");
   return (
     <div className="space-y-2">
-      <PathEditor id="bezier-curve-practice" placeholder="M 5 10" />
+      <PathEditor id="practice" placeholder="M 5 10" />
       <Button onClick={() => set({ active: !data.active })}>
         Reveal Answer
       </Button>
       {data.active && (
         <CommandList
-          id="command-list-bezier-curve-answers"
+          id="answerKey"
           commands={`M 5 17
           Q 10 8 15 17
           M 10 12.5

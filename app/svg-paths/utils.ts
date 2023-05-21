@@ -39,6 +39,64 @@ export const parsePath = (path: string): Command[] => {
   return commands;
 };
 
+export const getReflection = (x: number, y: number, x2: number, y2: number) => {
+  const dx = x - x2;
+  const dy = y - y2;
+  return {
+    x1: x + dx,
+    y1: y + dy,
+  };
+};
+
+export const toString = (command: Command) => {
+  switch (command.code) {
+    case "M":
+    case "L":
+    case "T":
+      return `${command.code} ${command.x} ${command.y}`;
+    case "H":
+      return `H ${command.x}`;
+    case "V":
+      return `V ${command.y}`;
+    case "C":
+      return `C ${command.x1} ${command.y1} ${command.x2} ${command.y2} ${command.x} ${command.y}`;
+    case "S":
+      return `S ${command.x2} ${command.y2} ${command.x} ${command.y}`;
+    case "Q":
+      return `Q ${command.x1} ${command.y1} ${command.x} ${command.y}`;
+    case "A":
+      return `A ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArc} ${command.sweep} ${command.x} ${command.y}`;
+    case "Z":
+      return "Z";
+  }
+};
+
+export const toPathSection = (command: Command, context: Command[]) => {
+  const prefix = `M ${command.x0} ${command.y0}`;
+  switch (command.code) {
+    case "S": {
+      const previous = context[context.indexOf(command) - 1];
+      if (previous.code !== "C" && previous.code !== "S")
+        throw new Error("Invalid path: No C or S command found before S");
+      const { x1, y1 } = getReflection(
+        previous.x,
+        previous.y,
+        previous.x2,
+        previous.y2
+      );
+      return `${prefix} C ${x1} ${y1} ${command.x2} ${command.y2} ${command.x} ${command.y}`;
+    }
+    case "Z":
+      return `${prefix} L ${command.x} ${command.y}`;
+    default:
+      return `${prefix} ${toString(command)}`;
+  }
+};
+
+export const toPathString = (commands: Command[]) => {
+  return commands.map(toString).join(" ");
+};
+
 export const useEditablePath = (
   path: string
 ): {
@@ -89,32 +147,7 @@ export const useEditablePath = (
           return copy;
         });
       },
-      toPathString() {
-        return absoluteCopy
-          .map((command) => {
-            switch (command.code) {
-              case "M":
-              case "L":
-              case "T":
-                return `${command.code} ${command.x} ${command.y}`;
-              case "H":
-                return `H ${command.x}`;
-              case "V":
-                return `V ${command.y}`;
-              case "C":
-                return `C ${command.x1} ${command.y1} ${command.x2} ${command.y2} ${command.x} ${command.y}`;
-              case "S":
-                return `S ${command.x2} ${command.y2} ${command.x} ${command.y}`;
-              case "Q":
-                return `Q ${command.x1} ${command.y1} ${command.x} ${command.y}`;
-              case "A":
-                return `A ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArc} ${command.sweep} ${command.x} ${command.y}`;
-              case "Z":
-                return "Z";
-            }
-          })
-          .join(" ");
-      },
+      toPathString: () => toPathString(absoluteCopy),
     };
   }, [absoluteCopy]);
 

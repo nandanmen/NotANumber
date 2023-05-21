@@ -41,13 +41,15 @@ const getNode = (command: CommandText) => {
 export const CommandHighlight = ({
   id,
   commands,
-  indices,
+  indices = [],
   collapseAfter,
+  onIndexChange = () => {},
 }: {
   id?: string;
   commands: CommandText[];
-  indices: number[];
+  indices?: number[];
   collapseAfter?: number;
+  onIndexChange?: (index: number) => void;
 }) => {
   const { set } = useStateContext<{ index: number; expanded: boolean }>(id);
   const [active, setActive] = React.useState(null);
@@ -59,6 +61,10 @@ export const CommandHighlight = ({
       set({ index: active, expanded });
     }
   }, [id, active, expanded, set]);
+
+  React.useEffect(() => {
+    onIndexChange(active);
+  }, [onIndexChange, active]);
 
   return (
     <ol className="border py-3 border-gray8 bg-gray3 rounded-md font-mono relative overflow-hidden">

@@ -1,13 +1,30 @@
 import { motion } from "framer-motion";
+import { Command } from "../utils";
 import { PathSection, PathSectionPoint } from "./path-visualizer";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
 
-export function PathHoverVisual({ id, commands }) {
+export function PathHoverVisual({
+  id,
+  commands,
+}: {
+  id: string;
+  commands: Command[];
+}) {
+  const { data } = useStateContext<{ index: number } | null>(id);
+  return <PathList commands={commands} index={data?.index} />;
+}
+
+export function PathList({
+  commands,
+  index,
+}: {
+  commands: Command[];
+  index: number | null;
+}) {
   const { useRelativeMotionValue } = useSvgContext();
-  const { data } = useStateContext<{ active: number } | null>(id);
-  const isHovering = typeof data?.active === "number";
-  const activeCommand = commands[data?.active];
+  const isHovering = typeof index === "number";
+  const activeCommand = commands[index];
   const circleR = useRelativeMotionValue(0.75);
   return (
     <>
