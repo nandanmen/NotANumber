@@ -1,8 +1,7 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useStateContext } from "../components/state-context";
-import { PathEditor } from "../components/path-editor";
-import { CommandList } from "../components/command-list";
+import { Button } from "../components/button";
 
 export function HeartCommands() {
   return (
@@ -47,47 +46,5 @@ export function ClosePathToggle() {
         )}
       </ol>
     </div>
-  );
-}
-
-export function LineQuestion() {
-  const { data, set } = useStateContext<{ active: boolean }>("answer");
-  return (
-    <div className="space-y-2">
-      <PathEditor id="line-practice" placeholder="M 5 10" />
-      <Button onClick={() => set({ active: !data.active })}>
-        Reveal Answer
-      </Button>
-      {data.active && (
-        <CommandList
-          id="command-list-line-answers"
-          commands={`M 5 10
-            l 2.5 -5
-            h 10
-            l 2.5 5
-            h -12.5
-            v 10
-            h 5
-            v -5
-            h -2.5
-            v 5
-            h 7.5
-            v -10
-            z`}
-        />
-      )}
-    </div>
-  );
-}
-
-function Button(
-  props: React.ComponentPropsWithoutRef<(typeof motion)["button"]>
-) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      className="bg-gray1 border-gray8 rounded-md border shadow-sm text-sm px-2 py-1"
-      {...props}
-    />
   );
 }

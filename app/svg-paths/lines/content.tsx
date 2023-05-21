@@ -11,8 +11,11 @@ import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
 import { parsePath } from "../utils";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
-import { HeartCommands, ClosePathToggle, LineQuestion } from "./components";
-import { PathPractice } from "../components/path-practice";
+import { HeartCommands, ClosePathToggle } from "./components";
+import {
+  getInitialPracticeQuestionState,
+  PracticeQuestion,
+} from "../components/path-practice";
 import { Path } from "../components/path";
 
 const mapIndexToSize = [
@@ -32,13 +35,27 @@ export function LinesContent({ content, length }) {
         L: { x: 15, y: 10 },
         l: { x: 15, y: 10 },
         z: { active: false },
-        answer: { active: false },
+        ...getInitialPracticeQuestionState([
+          "M 5 10",
+          "l 2.5 -5",
+          "h 10",
+          "l 2.5 5",
+          "h -12.5",
+          "v 10",
+          "h 5",
+          "v -5",
+          "h -2.5",
+          "v 5",
+          "h 7.5",
+          "v -10",
+          "z",
+        ]),
       }}
     >
       <MDX
         content={content}
         numSections={length}
-        components={{ HeartCommands, ClosePathToggle, LineQuestion }}
+        components={{ HeartCommands, ClosePathToggle }}
       >
         <LineVisuals />
       </MDX>
@@ -55,31 +72,8 @@ const mapIndexToComponent = [
   <ZExample />,
   <HeartPath />,
   <Heart />,
-  <Practice />,
+  <PracticeQuestion />,
 ];
-
-const houseCommands = parsePath(
-  "M 5 10 l 2.5 -5 h 10 l 2.5 5 h -12.5 v 10 h 5 v -5 h -2.5 v 5 h 7.5 v -10 z"
-);
-
-function Practice() {
-  const { data } = useStateContext<{ active: boolean }>("answer");
-  return (
-    <g>
-      <Path
-        className="stroke-gray8"
-        d="M 5 10 l 2.5 -5 h 10 l 2.5 5 h -12.5 v 10 h 5 v -5 h -2.5 v 5 h 7.5 v -10 z"
-      />
-      <PathPractice id="line-practice" />
-      {data.active && (
-        <PathHoverVisual
-          commands={houseCommands}
-          id="command-list-line-answers"
-        />
-      )}
-    </g>
-  );
-}
 
 function ZExample() {
   const { useRelativeMotionValue } = useSvgContext();
