@@ -23,7 +23,7 @@ import {
   Refresh,
 } from "../components/icons";
 import { PathHoverVisual } from "../components/path-hover-visual";
-import { PathPractice } from "../components/path-practice";
+import { PathPractice, PracticeQuestion } from "../components/path-practice";
 
 const Controls = ({ children }) => {
   return (
@@ -321,7 +321,7 @@ const Practice = () => {
           />
         );
       })}
-      <PathPractice id="editor" />
+      <PracticeQuestion />
     </Svg>
   );
 };
