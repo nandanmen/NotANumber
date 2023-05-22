@@ -5,6 +5,7 @@ import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";
 import * as syntax from "./content/syntax";
+import { CommandListFromSource } from "./command-list";
 
 export function Content({ content, length }) {
   return (
@@ -13,7 +14,11 @@ export function Content({ content, length }) {
         syntax: syntax.initialState,
       }}
     >
-      <MDX content={content} numSections={length}>
+      <MDX
+        content={content}
+        numSections={length}
+        components={{ CommandListFromSource }}
+      >
         <VisualWrapper components={[syntax.page]} />
       </MDX>
     </StateProvider>

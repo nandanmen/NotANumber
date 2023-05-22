@@ -84,4 +84,13 @@ describe("parsePath", () => {
     expect(line.y).toBe(-5);
     expect(newPath.toPathString()).toBe("M 10 10 l -5 -5");
   });
+
+  test(".setAbsolute() should work with absolute commands", () => {
+    const path = parsePath("M 10 10 L 20 20");
+    const newPath = path.setAbsolute(1, { x: 5, y: 5 });
+    const line = newPath.at<"L">(1);
+    expect(line.x).toBe(5);
+    expect(line.y).toBe(5);
+    expect(newPath.toPathString()).toBe("M 10 10 L 5 5");
+  });
 });

@@ -5,25 +5,37 @@ import {
   parseSVG,
   makeAbsolute,
 } from "svg-path-parser";
+import { v4 } from "uuid";
 
 export type CommandCode = BaseCommand["code"];
 
 export type Command<Code extends CommandCode = CommandCode> = Extract<
   BaseCommand,
   { code: Uppercase<Code> | Lowercase<Code> }
-> & { toPathString(): string };
+> & { id: string; toPathString(): string };
+
+export type AbsoluteCommandCode = CommandMadeAbsolute["code"];
 
 export type AbsoluteCommand<
-  Code extends CommandMadeAbsolute["code"] = CommandMadeAbsolute["code"]
+  Code extends AbsoluteCommandCode = AbsoluteCommandCode
 > = Extract<CommandMadeAbsolute, { code: Code }> & {
+  id: string;
   toPathString(): string;
   toPathSection(): string;
 };
 
-type Path = {
+export type Path = {
   commands: Command[];
   absolute: AbsoluteCommand[];
   at<Code extends CommandCode>(index: number): Command<Code>;
+  atAbsolute<Code extends AbsoluteCommandCode>(
+    index: number
+  ): AbsoluteCommand<Code>;
+
+  /**
+   * Returns the value at the given ID. An ID is of the format <index>.<key>.
+   */
+  get(id: string): number;
 
   /**
    * Immutably updates the command at the given index with the given arguments.
@@ -52,22 +64,34 @@ type Path = {
 
 export function parsePath(path: string): Path {
   const commands = parseSVG(path).map((command) => {
-    return { ...command, toPathString: () => commandToString(command) };
+    return {
+      ...command,
+      id: v4(),
+      toPathString: () => commandToString(command),
+    };
   });
   return createPath(commands);
 }
 
-function createPath(commands: Command[]): Path {
+export function createPath(commands: Command[]): Path {
   const absolute = createAbsolute(commands);
   return {
     commands,
     absolute,
+    get(id: string) {
+      const [index, key] = id.split(".");
+      const command = commands[parseInt(index)];
+      return command[key];
+    },
     at<Code extends CommandCode>(index: number) {
       return commands[index] as Command<Code>;
     },
+    atAbsolute<Code extends AbsoluteCommandCode>(index: number) {
+      return absolute[index] as AbsoluteCommand<Code>;
+    },
     set<Code extends CommandCode>(index: number, args: Partial<Command<Code>>) {
       return createPath(
-        produce(commands, (draft) => {
+        produce(commands, (draft: Command[]) => {
           const current = draft[index];
           const newCopy = { ...current, ...args };
           draft[index] = {
@@ -83,8 +107,10 @@ function createPath(commands: Command[]): Path {
       index: number,
       args: Partial<Command<Code>>
     ) {
+      const current = commands[index];
+      if (!current.relative) return this.set(index, args);
       return createPath(
-        produce(commands, (draft) => {
+        produce(commands, (draft: Command[]) => {
           const { x0, y0 } = absolute[index];
           const current = draft[index];
           const newCopy = {
@@ -164,7 +190,11 @@ function commandToString(command: BaseCommand) {
       return `${command.code} ${command.x1} ${command.y1} ${command.x} ${command.y}`;
     case "A":
     case "a":
-      return `${command.code} ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArc} ${command.sweep} ${command.x} ${command.y}`;
+      return `${command.code} ${command.rx} ${command.ry} ${
+        command.xAxisRotation
+      } ${command.largeArc ? 1 : 0} ${command.sweep ? 1 : 0} ${command.x} ${
+        command.y
+      }`;
     case "Z":
     case "z":
       return command.code;

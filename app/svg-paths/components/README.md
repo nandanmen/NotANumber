@@ -138,3 +138,7 @@ const path = parsePath("M 10 10 l 5 5");
 path.setAbsolute(1, { x: 20, y: 20 });
 path.toPathString(); // prints M 10 10 l 10 10
 ```
+
+---
+
+The tricky thing about making an API for dragging is that dragging really only cares about points (i.e. numbers) and not commands.
