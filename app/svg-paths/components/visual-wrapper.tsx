@@ -11,6 +11,17 @@ export type VisualWrapperComponents = Array<{
       };
 }>;
 
+export function ActiveComponent({
+  components,
+}: {
+  components: VisualWrapperComponents;
+}) {
+  const { index } = useIndexContext();
+  const component = components[index];
+  if (!component) return null;
+  return <>{component.children}</>;
+}
+
 export function VisualWrapper({
   components,
 }: {
