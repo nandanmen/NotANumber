@@ -1,9 +1,8 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { Command, Path } from "../lib/path";
 import { useStateContext } from "../components/state-context";
-import { Highlight } from "../cubic-curves/components/syntax-example";
 
 const mapCodeToHint = {
   M: "move",
@@ -229,5 +228,24 @@ const ChevronDown = () => {
         <path d="M8.75 12.75L12 16.25L15.25 12.75" />
       </g>
     </svg>
+  );
+};
+
+const Highlight = ({
+  value,
+  active = false,
+}: {
+  value: number;
+  active: boolean;
+}) => {
+  return (
+    <span
+      className={clsx(
+        "transition-all",
+        active && "bg-gray12 text-gray1 -mx-1 px-1 rounded-[4px]"
+      )}
+    >
+      {value.toFixed(1)}
+    </span>
   );
 };

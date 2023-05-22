@@ -15,18 +15,18 @@ export function getDragHandlers({
   set: (state: DragGroupState) => void;
 }) {
   return {
-    hoverStart: () => {
+    onHoverStart: () => {
       if (state !== "idle") return;
       set({ state: "hovering", active: id });
     },
-    hoverEnd: () => {
+    onHoverEnd: () => {
       if (state !== "hovering") return;
       set({ state: "idle", active: null });
     },
-    panStart: () => {
+    onPanStart: () => {
       set({ state: "panning", active: id });
     },
-    panEnd: () => {
+    onPanEnd: () => {
       set({ state: "idle", active: null });
     },
   };

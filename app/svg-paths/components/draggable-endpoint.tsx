@@ -1,42 +1,68 @@
 import React from "react";
-import { motion, transform } from "framer-motion";
+import { motion, type PanInfo, transform } from "framer-motion";
 import { useSvgContext } from "./svg";
 import { Endpoint } from "./path-visualizer";
 
 export type EndpointEventHandlers = {
-  panStart: () => void;
-  pan: (x: number, y: number) => void;
-  panEnd: () => void;
-  hoverStart: () => void;
-  hoverEnd: () => void;
+  onPanStart: () => void;
+  onPan: (x: number, y: number) => void;
+  onPanEnd: () => void;
+  onHoverStart: () => void;
+  onHoverEnd: () => void;
 };
+
+export function useSvgPanHandler() {
+  const { size } = useSvgContext();
+  return React.useCallback(
+    (info: PanInfo) => {
+      const { width, x, y } = document
+        .querySelector("[data-x-axis-lines]")
+        .getBoundingClientRect();
+      const relativeX = info.point.x - x;
+      const relativeY = info.point.y - y - document.documentElement.scrollTop;
+      const transformer = transform([0, width], [0, size]);
+      const deltaTransformer = transform([0, width], [0, size], {
+        clamp: false,
+      });
+      return {
+        x: transformer(relativeX),
+        y: transformer(relativeY),
+        dx: deltaTransformer(info.delta.x),
+        dy: deltaTransformer(info.delta.y),
+      };
+    },
+    [size]
+  );
+}
 
 export function DraggableEndpoint({
   cx,
   cy,
-  on = {},
   onPan,
+  onPanStart,
+  onPanEnd,
+  onHoverStart,
+  onHoverEnd,
 }: {
   cx: number;
   cy: number;
-  on?: Partial<EndpointEventHandlers>;
-  onPan?: (x: number, y: number) => void;
-}) {
+} & Partial<EndpointEventHandlers>) {
   const [panning, setPanning] = React.useState(false);
   const [active, setActive] = React.useState(false);
-  const { size, getRelative } = useSvgContext();
+  const handlePan = useSvgPanHandler();
+  const { getRelative } = useSvgContext();
   return (
     <motion.g
       className="cursor-pointer"
       onHoverStart={() => {
         if (panning) return;
         setActive(true);
-        on.hoverStart?.();
+        onHoverStart?.();
       }}
       onHoverEnd={() => {
         if (panning) return;
         setActive(false);
-        on.hoverEnd?.();
+        onHoverEnd?.();
       }}
     >
       <motion.circle
@@ -58,25 +84,16 @@ export function DraggableEndpoint({
         cx={cx}
         cy={cy}
         onPanStart={() => {
-          on.panStart?.();
+          onPanStart?.();
           setPanning(true);
           setActive(true);
         }}
         onPan={(_, info) => {
-          const { width, x, y } = document
-            .querySelector("[data-x-axis-lines]")
-            .getBoundingClientRect();
-          const relativeX = info.point.x - x;
-          const relativeY =
-            info.point.y - y - document.documentElement.scrollTop;
-          const transformer = transform([0, width], [0, size]);
-          const newX = transformer(relativeX);
-          const newY = transformer(relativeY);
-          on.pan?.(newX, newY);
-          onPan?.(newX, newY);
+          const { x, y } = handlePan(info);
+          onPan?.(x, y);
         }}
         onPanEnd={() => {
-          on.panEnd?.();
+          onPanEnd?.();
           setPanning(false);
           setActive(false);
         }}
