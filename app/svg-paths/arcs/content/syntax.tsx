@@ -2,15 +2,12 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useStateContext } from "app/svg-paths/components/state-context";
 import { Svg } from "app/svg-paths/components/svg";
-import { Command, parsePath, type Path as IPath } from "app/svg-paths/lib/path";
-import { createInitialState, DragGroupState } from "./drag-group";
+import { Command, parsePath } from "app/svg-paths/lib/path";
+import { createInitialState } from "./drag-group";
 import { ArcSandbox } from "./arc-sandbox";
+import { SyntaxState } from "./types";
 
 const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 15");
-
-type SyntaxState = {
-  path: IPath;
-} & DragGroupState;
 
 function ArcSyntax() {
   const {

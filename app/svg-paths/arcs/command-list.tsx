@@ -27,17 +27,27 @@ const mapCodeToHint = {
   A: "arc",
 };
 
+type CommandKey = `${number}.${string}`;
+
 export const CommandListFromSource = ({ source }: { source: string }) => {
   const {
-    data: { path, active },
+    data: { path, active, blocklist },
     set,
   } = useStateContext<{
     path: Path;
     index: number;
     expanded: boolean;
-    active?: string[];
+    active?: CommandKey[];
+    blocklist?: CommandKey[];
   }>(source);
-  return <CommandList active={active} path={path} onChange={set} />;
+  return (
+    <CommandList
+      active={active}
+      blocklist={blocklist}
+      path={path}
+      onChange={set}
+    />
+  );
 };
 
 export const CommandList = ({
@@ -45,13 +55,15 @@ export const CommandList = ({
   onChange = () => {},
   collapseAfter,
   active,
-  indices = [],
+  highlight = [],
+  blocklist = [],
 }: {
   path: Path | string;
-  active?: string[];
+  active?: CommandKey[];
   onChange?: (state: { index: number; expanded: boolean }) => void;
   collapseAfter?: number;
-  indices?: number[];
+  highlight?: number[];
+  blocklist?: CommandKey[];
 }) => {
   const path = React.useMemo(() => {
     if (typeof initialPath === "string") {
@@ -77,14 +89,22 @@ export const CommandList = ({
             key={command.id}
             className={clsx(
               "py-1 flex justify-between items-center group hover:bg-gray5",
-              indices.includes(i)
+              highlight.includes(i)
                 ? "bg-gray6 border-gray8 border-l-4 px-3"
                 : "px-4"
             )}
             onHoverStart={() => setIndex(i)}
             onHoverEnd={() => setIndex(null)}
           >
-            <CommandText command={command} active={active} />
+            <span className="flex gap-[1ch]">
+              <span>{command.code}</span>
+              <CommandText
+                index={i}
+                command={command}
+                active={active}
+                blocked={blocklist}
+              />
+            </span>
             <span className="text-sm text-gray11 hidden group-hover:inline">
               {mapCodeToHint[command.code]}
             </span>
@@ -120,13 +140,19 @@ export const CommandList = ({
 
 const CommandText = ({
   command,
-  active = [],
+  index,
+  blocked,
+  active,
 }: {
   command: Command;
-  active?: string[];
+  index: number;
+  blocked?: CommandKey[];
+  active?: CommandKey[];
 }) => {
-  const isActive = (id: string, prop: string) => {
-    return active?.includes(`${id}.${prop}`);
+  const getVariant = (prop: string): "blocked" | "active" | undefined => {
+    const key = `${index}.${prop}` as CommandKey;
+    if (blocked?.includes(key)) return "blocked";
+    if (active?.includes(key)) return "active";
   };
   switch (command.code) {
     case "M":
@@ -136,85 +162,70 @@ const CommandText = ({
     case "T":
     case "t":
       return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
+        <>
+          <Highlight value={command.x} variant={getVariant("x")} />
+          <Highlight value={command.y} variant={getVariant("y")} />
+        </>
       );
     case "H":
     case "h":
-      return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-        </span>
-      );
+      return <Highlight value={command.x} variant={getVariant("x")} />;
     case "V":
     case "v":
-      return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
-      );
+      return <Highlight value={command.y} variant={getVariant("y")} />;
     case "Q":
     case "q":
       return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.x1} active={isActive(command.id, "x1")} />
-          <Highlight value={command.y1} active={isActive(command.id, "y1")} />
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
+        <>
+          <Highlight value={command.x1} variant={getVariant("x1")} />
+          <Highlight value={command.y1} variant={getVariant("y1")} />
+          <Highlight value={command.x} variant={getVariant("x")} />
+          <Highlight value={command.y} variant={getVariant("y")} />
+        </>
       );
     case "S":
     case "s":
       return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.x2} active={isActive(command.id, "x2")} />
-          <Highlight value={command.y2} active={isActive(command.id, "y2")} />
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
+        <>
+          <Highlight value={command.x2} variant={getVariant("x2")} />
+          <Highlight value={command.y2} variant={getVariant("y2")} />
+          <Highlight value={command.x} variant={getVariant("x")} />
+          <Highlight value={command.y} variant={getVariant("y")} />
+        </>
       );
     case "C":
     case "c":
       return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.x1} active={isActive(command.id, "x1")} />
-          <Highlight value={command.y1} active={isActive(command.id, "y1")} />
-          <Highlight value={command.x2} active={isActive(command.id, "x2")} />
-          <Highlight value={command.y2} active={isActive(command.id, "y2")} />
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
+        <>
+          <Highlight value={command.x1} variant={getVariant("x1")} />
+          <Highlight value={command.y1} variant={getVariant("y1")} />
+          <Highlight value={command.x2} variant={getVariant("x2")} />
+          <Highlight value={command.y2} variant={getVariant("y2")} />
+          <Highlight value={command.x} variant={getVariant("x")} />
+          <Highlight value={command.y} variant={getVariant("y")} />
+        </>
       );
     case "A":
     case "a":
       return (
-        <span className="flex gap-[1ch]">
-          <span>{command.code}</span>
-          <Highlight value={command.rx} active={isActive(command.id, "rx")} />
-          <Highlight value={command.ry} active={isActive(command.id, "ry")} />
+        <>
+          <Highlight value={command.rx} variant={getVariant("rx")} />
+          <Highlight value={command.ry} variant={getVariant("ry")} />
           <Highlight
             value={command.xAxisRotation}
-            active={isActive(command.id, "xAxisRotation")}
+            variant={getVariant("xAxisRotation")}
           />
           <Highlight
             value={command.largeArc ? 1 : 0}
-            active={isActive(command.id, "largeArc")}
+            variant={getVariant("largeArc")}
           />
           <Highlight
             value={command.sweep ? 1 : 0}
-            active={isActive(command.id, "sweep")}
+            variant={getVariant("sweep")}
           />
-          <Highlight value={command.x} active={isActive(command.id, "x")} />
-          <Highlight value={command.y} active={isActive(command.id, "y")} />
-        </span>
+          <Highlight value={command.x} variant={getVariant("x")} />
+          <Highlight value={command.y} variant={getVariant("y")} />
+        </>
       );
     default:
       return null;
@@ -245,16 +256,17 @@ const ChevronDown = () => {
 
 const Highlight = ({
   value,
-  active = false,
+  variant,
 }: {
   value: number;
-  active: boolean;
+  variant?: "blocked" | "active";
 }) => {
   return (
     <span
       className={clsx(
         "transition-all",
-        active && "bg-gray12 text-gray1 -mx-1 px-1 rounded-[4px]"
+        variant === "active" && "bg-gray12 text-gray1 -mx-1 px-1 rounded-[4px]",
+        variant === "blocked" && "text-gray9"
       )}
     >
       {value.toFixed(1)}

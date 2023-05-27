@@ -17,6 +17,7 @@ type SyntaxState = {
   path: IPath;
 } & DragGroupState;
 
+// Assumes path starts with an M command followed by an A command
 export function ArcSandbox({
   path,
   state,
@@ -26,15 +27,14 @@ export function ArcSandbox({
   set: (state: Partial<SyntaxState>) => void;
 }) {
   const { getRelative } = useSvgContext();
-  const move = path.atAbsolute<"M">(0);
   const arc = path.atAbsolute<"A">(1);
   const { cx, cy } = getArcCenter(arc);
 
   const isActive = React.useCallback(
     (prop: string) => {
-      return active?.includes(`${arc.id}.${prop}`);
+      return active?.includes(`1.${prop}`);
     },
-    [active, arc.id]
+    [active]
   );
 
   React.useEffect(() => {
@@ -73,7 +73,7 @@ export function ArcSandbox({
         <g className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}>
           <DragButton
             {...getDragHandlers({
-              id: [`${arc.id}.rx`],
+              id: ["1.rx"],
               state,
               set,
             })}
@@ -101,7 +101,7 @@ export function ArcSandbox({
         <g className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}>
           <DragButton
             {...getDragHandlers({
-              id: [`${arc.id}.ry`],
+              id: ["1.ry"],
               state,
               set,
             })}
@@ -151,7 +151,7 @@ export function ArcSandbox({
         cx={arc.x0}
         cy={arc.y0}
         {...getDragHandlers({
-          id: [`${move.id}.x`, `${move.id}.y`],
+          id: ["0.x", "0.y"],
           state,
           set,
         })}
@@ -163,7 +163,7 @@ export function ArcSandbox({
         cx={arc.x}
         cy={arc.y}
         {...getDragHandlers({
-          id: [`${arc.id}.x`, `${arc.id}.y`],
+          id: ["1.x", "1.y"],
           state,
           set,
         })}
