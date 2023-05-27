@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
-import { Command, Path } from "../lib/path";
+import { Command, parsePath, Path } from "../lib/path";
 import { useStateContext } from "../components/state-context";
 
 const mapCodeToHint = {
@@ -41,18 +41,24 @@ export const CommandListFromSource = ({ source }: { source: string }) => {
 };
 
 export const CommandList = ({
-  path,
-  onChange,
+  path: initialPath,
+  onChange = () => {},
   collapseAfter,
   active,
   indices = [],
 }: {
-  path: Path;
+  path: Path | string;
   active?: string[];
-  onChange: (state: { index: number; expanded: boolean }) => void;
+  onChange?: (state: { index: number; expanded: boolean }) => void;
   collapseAfter?: number;
   indices?: number[];
 }) => {
+  const path = React.useMemo(() => {
+    if (typeof initialPath === "string") {
+      return parsePath(initialPath);
+    }
+    return initialPath;
+  }, [initialPath]);
   const [index, setIndex] = React.useState(null);
   const [expanded, setExpanded] = React.useState(false);
   const _commands = expanded
@@ -198,8 +204,14 @@ const CommandText = ({
             value={command.xAxisRotation}
             active={isActive(command.id, "xAxisRotation")}
           />
-          <span>{command.largeArc ? 1 : 0}</span>
-          <span>{command.sweep ? 1 : 0}</span>
+          <Highlight
+            value={command.largeArc ? 1 : 0}
+            active={isActive(command.id, "largeArc")}
+          />
+          <Highlight
+            value={command.sweep ? 1 : 0}
+            active={isActive(command.id, "sweep")}
+          />
           <Highlight value={command.x} active={isActive(command.id, "x")} />
           <Highlight value={command.y} active={isActive(command.id, "y")} />
         </span>

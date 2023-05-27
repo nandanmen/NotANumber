@@ -1,6 +1,6 @@
 # Arcs
 
-The arc, or `A` command, is the last of the SVG path commands we'll be looking at and, in my opinion, the least intuitive to use.
+Last but certainly not least is the `A` or arc command.
 
 The arc command lets you draw a **section of an ellipse** using the following (admittedly confusing) syntax:
 
@@ -18,33 +18,27 @@ We'll dive into what each of these values means in a moment, but first, try to c
 
 ## How Arcs Are Formed
 
-**An arc is a portion of an ellipse.**
+<CommandListFromSource source="ellipse" />
 
-You use the `rx` and `ry` values to control the ellipse's size, and the `x` and `y` values to control where the arc ends on the canvas.
+Let's talk about the first and last pairs of the arc command: `(rx,ry)` and `(x,y)`. These points, along with the initial cursor position, determine the ellipse that the arc is drawn on.
 
----
+To draw an arc, **the browser will take these three points and tries to find an ellipse that "fits"** — that is, an ellipse with radii `rx` and `ry` and with both of the points on its circumference.
 
-The arc command works by taking the following values:
+Try changing the radius of the arc or the position of the endpoint in the sandbox. Notice that the ellipse will change to always fit the two points and the provided radii.
 
-- The initial cursor position;
-- The `rx` and `ry` values;
-- The `x` and `y` values;
-
-And then finding an ellipse that "matches" the given values — that is, an ellipse with both of the arc's points on its circumference and with radius `rx` and `ry`.
-
-**Try changing the radius of the arc or the position of the endpoint in the sandbox**. Notice that the ellipse will change to always fit the two points and the provided radii.
+> This `(x,y)` pair is what confused me when I first learned the arc command. Intuitively, I would've thought that I'd need an angle to draw an arc, not an endpoint!
 
 ---
 
-What happens when there _isn't_ a match?
-
-We can make that happen by making the diameter smaller than the distance between the arc's points. **Try reducing the `rx` value to anything less than ten** and see what happens.
+Of course, it's not always possible to find a matching ellipse. What happens in that case? In the sandbox, you can make this happen by **reducing the radii of the ellipse or moving the endpoint farther away from the start point**.
 
 Notice that when the ellipse isn't big enough to fit the arc's points, the arc isn't affected — it still follows the ellipse's curve. This suggests that the ellipse is implicitly _scaled_ to fit the arc!
 
 ---
 
 ## X-Axis Rotation
+
+<CommandListFromSource source="rotation" />
 
 Let's look at the next argument, `x-axis-rotation`. As you might expect, this value rotates the ellipse around its x (or horizontal) axis.
 
@@ -54,15 +48,19 @@ Let's look at the next argument, `x-axis-rotation`. As you might expect, this va
 
 ## Large Arc and Sweep Flags
 
-For any given pair of points, there are actually _four_ arcs that can be drawn between them. The `large-arc` and `sweep` flags control which of these four arcs are drawn.
+<CommandListFromSource source="flags" />
 
-Try toggling the flags here and try to see if you can figure out what each of the flags means:
+The next two arguments may look like numbers, but they're actually _flags_ — that is, they can only be `0` or `1`. While their official names are "large arc flag" and "sweep flag" respectively, **I prefer to call them the large arc and _clockwise_ flags instead**.
+
+In the ellipse section, we said that the browser tries to find an ellipse that fits the arc's points and then draws the curve on that ellipse. What I _didn't_ mention was that there will always be **four possible curves** that can be drawn between any pair of points!
+
+The large arc and clockwise (sweep) flags control which of these four curves is ultimately drawn.
 
 ---
 
-Did you catch it? Let's dig into this.
-
 Out of the four arcs that can be drawn between two points, two of the arcs are drawn _clockwise_ while the other two are drawn _counterclockwise_. **The `sweep` flag controls the direction the arc is drawn, with `0` meaning counterclockwise.**
+
+> This is why I prefer to call the sweep flag the _clockwise_ flag; I don't even know what `sweep` is supposed to mean!
 
 ---
 
