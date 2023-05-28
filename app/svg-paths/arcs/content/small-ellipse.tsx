@@ -1,3 +1,5 @@
+import { animate, easeInOut } from "popmotion";
+import { Text } from "app/svg-paths/components/path-visualizer";
 import { useStateContext } from "app/svg-paths/components/state-context";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import {
@@ -18,9 +20,9 @@ export const initialState = {
   path,
 };
 
-function Ellipse() {
+function SmallEllipse() {
   const { getRelative } = useSvgContext();
-  const { data, set } = useStateContext<SyntaxState>("ellipse");
+  const { data, set } = useStateContext<SyntaxState>("small-ellipse");
   const { path } = data;
   const arc = path.atAbsolute<"A">(1);
   const { cx, cy } = getArcCenter(arc);
@@ -48,10 +50,31 @@ function Ellipse() {
           {arc.rx.toFixed(1)}
         </Tooltip>
       )}
+      <g>
+        <Text
+          x="5"
+          y="2"
+          onClick={() => {
+            set({ active: ["1.rx"] });
+            animate({
+              from: arc.rx,
+              to: 6.5,
+              ease: easeInOut,
+              duration: 1500,
+              onUpdate: (rx) => {
+                set({ path: path.set(1, { rx }) });
+              },
+              onComplete: () => set({ active: [] }),
+            });
+          }}
+        >
+          Click me
+        </Text>
+      </g>
     </>
   );
 }
 
 export const page = {
-  children: <Ellipse />,
+  children: <SmallEllipse />,
 };

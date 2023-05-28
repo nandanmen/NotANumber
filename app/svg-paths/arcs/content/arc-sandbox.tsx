@@ -8,7 +8,7 @@ import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
 import { Path } from "app/svg-paths/components/svg/path";
-import { getArcCenter } from "app/svg-paths/components/utils";
+import { getArcCenter, getScale } from "app/svg-paths/components/utils";
 import { type Path as IPath } from "app/svg-paths/lib/path";
 import { DragGroupState, getDragHandlers } from "./drag-group";
 import { clsx } from "clsx";
@@ -58,17 +58,20 @@ export function ArcSandbox({
   };
   const tempPath = getTempPath();
 
+  const scale = getScale(arc.x0, arc.y0, cx, cy, arc.rx, arc.ry);
   return (
     <g>
       <motion.g animate={{ opacity: tempPath ? 0.2 : 1 }}>
-        <ellipse
-          className="stroke-gray10 fill-none"
-          strokeWidth={getRelative(0.5)}
-          cx={cx}
-          cy={cy}
-          rx={arc.rx}
-          ry={arc.ry}
-        />
+        <g className="stroke-gray10 fill-none" strokeWidth={getRelative(0.5)}>
+          <ellipse
+            cx={cx}
+            cy={cy}
+            rx={arc.rx * scale}
+            ry={arc.ry * scale}
+            className="stroke-gray8"
+          />
+          <ellipse cx={cx} cy={cy} rx={arc.rx} ry={arc.ry} />
+        </g>
         <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} />
         <g className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}>
           <DragButton

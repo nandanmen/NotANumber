@@ -123,3 +123,17 @@ export function getArcCenter({
 
   return outputObj;
 }
+
+export function getScale(
+  p: number,
+  q: number,
+  h: number,
+  k: number,
+  rx: number,
+  ry: number
+) {
+  const a = (p - h) ** 2 / rx ** 2;
+  const b = (q - k) ** 2 / ry ** 2;
+  const s = a + b;
+  return Math.sqrt(s);
+}

@@ -6,6 +6,7 @@ import { StateProvider } from "../components/state-context";
 import { ActiveComponent, VisualWrapper } from "../components/visual-wrapper";
 import * as syntax from "./content/syntax";
 import * as ellipse from "./content/ellipse";
+import * as smallEllipse from "./content/small-ellipse";
 import { CommandListFromSource } from "./command-list";
 import { createPath, parsePath } from "app/svg-paths/lib/path";
 
@@ -18,6 +19,7 @@ export function Content({ content, length }) {
       initial={{
         syntax: syntax.initialState,
         ellipse: ellipse.initialState,
+        "small-ellipse": smallEllipse.initialState,
         rotation: {
           path: slice,
           active: ["0.xAxisRotation"],
@@ -34,7 +36,7 @@ export function Content({ content, length }) {
         components={{ CommandListFromSource }}
       >
         <ActiveComponent components={[syntax.page]} />
-        <VisualWrapper components={[null, ellipse.page]} />
+        <VisualWrapper components={[null, ellipse.page, smallEllipse.page]} />
       </MDX>
     </StateProvider>
   );

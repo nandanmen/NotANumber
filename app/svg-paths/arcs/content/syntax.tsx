@@ -91,11 +91,10 @@ function PropButton({
   onClick?: () => void;
 }) {
   const {
-    data: { path, state },
+    data: { state },
     set,
   } = useStateContext<SyntaxState>("syntax");
-  const arc = path.at<"A">(1);
-  const toKey = (prop: keyof Command<"A">) => `${arc.id}.${prop}`;
+  const toKey = (prop: keyof Command<"A">) => `1.${prop}`;
   return (
     <motion.button
       className="py-2 -mx-3 px-3 hover:bg-gray6 rounded-md"
