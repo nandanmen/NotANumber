@@ -7,9 +7,13 @@ import {
 import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
-import { Path } from "app/svg-paths/components/svg/path";
+import { Path as BasePath } from "app/svg-paths/components/svg/path";
 import { getArcCenter, getScale } from "app/svg-paths/components/utils";
-import { type Path as IPath } from "app/svg-paths/lib/path";
+import {
+  AbsoluteCommand,
+  Command,
+  type Path as IPath,
+} from "app/svg-paths/lib/path";
 import { DragGroupState, getDragHandlers } from "./drag-group";
 import { clsx } from "clsx";
 
@@ -17,18 +21,31 @@ type SyntaxState = {
   path: IPath;
 } & DragGroupState;
 
-// Assumes path starts with an M command followed by an A command
-export function ArcSandbox({
+const ArcSandboxContext = React.createContext<{
+  path: IPath;
+  tempPath: IPath | null;
+  isActive: (prop: string) => boolean;
+  state: SyntaxState["state"];
+  setArc: (arc: Partial<Command<"A">>) => void;
+  arc: AbsoluteCommand<"A">;
+  set: (state: Partial<SyntaxState>) => void;
+}>(null);
+
+const useArcSandboxContext = () => {
+  return React.useContext(ArcSandboxContext);
+};
+
+function Root({
   path,
   state,
   active,
   set,
+  children,
 }: SyntaxState & {
   set: (state: Partial<SyntaxState>) => void;
+  children: React.ReactNode;
 }) {
-  const { getRelative } = useSvgContext();
   const arc = path.atAbsolute<"A">(1);
-  const { cx, cy } = getArcCenter(arc);
 
   const isActive = React.useCallback(
     (prop: string) => {
@@ -58,123 +75,270 @@ export function ArcSandbox({
   };
   const tempPath = getTempPath();
 
+  const setArc = React.useCallback(
+    (arc: Partial<Command<"A">>) => {
+      set({ path: path.set(1, arc) });
+    },
+    [set, path]
+  );
+
+  return (
+    <ArcSandboxContext.Provider
+      value={{
+        path,
+        tempPath,
+        isActive,
+        setArc,
+        arc,
+        state,
+        set,
+      }}
+    >
+      {children}
+    </ArcSandboxContext.Provider>
+  );
+}
+
+export function Background({ children }: { children: React.ReactNode }) {
+  const { tempPath } = useArcSandboxContext();
+  return (
+    <motion.g animate={{ opacity: tempPath ? 0.2 : 1 }}>{children}</motion.g>
+  );
+}
+
+export function ScaledEllipse(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["ellipse"]>
+) {
+  const { getRelative } = useSvgContext();
+  const { arc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
   const scale = getScale(arc.x0, arc.y0, cx, cy, arc.rx, arc.ry);
   return (
-    <g>
-      <motion.g animate={{ opacity: tempPath ? 0.2 : 1 }}>
-        <g className="stroke-gray10 fill-none" strokeWidth={getRelative(0.5)}>
-          <ellipse
-            cx={cx}
-            cy={cy}
-            rx={arc.rx * scale}
-            ry={arc.ry * scale}
-            className="stroke-gray8"
-          />
-          <ellipse cx={cx} cy={cy} rx={arc.rx} ry={arc.ry} />
-        </g>
-        <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} />
-        <g className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}>
-          <DragButton
-            {...getDragHandlers({
-              id: ["1.rx"],
-              state,
-              set,
-            })}
-            onPan={({ dx }) => {
-              set({ path: path.set(1, { rx: arc.rx + dx * 0.75 }) });
-            }}
-          >
-            <rect
-              className={clsx(!isActive("rx") && "fill-gray3 stroke-gray8")}
-              strokeWidth={getRelative(0.25)}
-              height={getRelative(4)}
-              width={getRelative(8)}
-              rx={getRelative(1)}
-              x={cx + arc.rx / 2 - getRelative(4)}
-              y={cy - getRelative(2)}
-            />
-            <DragX
-              x={cx + arc.rx / 2 - getRelative(4)}
-              y={cy - getRelative(4)}
-              size={getRelative(8)}
-            />
-          </DragButton>
-        </g>
-        <Line x1={cx} y1={cy} x2={cx} y2={cy + arc.ry} />
-        <g className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}>
-          <DragButton
-            {...getDragHandlers({
-              id: ["1.ry"],
-              state,
-              set,
-            })}
-            onPan={({ dy }) => {
-              set({ path: path.set(1, { ry: arc.ry + dy * 0.75 }) });
-            }}
-          >
-            <rect
-              className={clsx(!isActive("ry") && "fill-gray3 stroke-gray8")}
-              strokeWidth={getRelative(0.25)}
-              width={getRelative(4)}
-              height={getRelative(8)}
-              rx={getRelative(1)}
-              x={cx - getRelative(2)}
-              y={cy + arc.ry / 2 - getRelative(4)}
-            />
-            <DragY
-              x={cx - getRelative(4)}
-              y={cy + arc.ry / 2 - getRelative(4)}
-              size={getRelative(8)}
-            />
-          </DragButton>
-        </g>
-        <Circle cx={cx} cy={cy} />
-      </motion.g>
-      {tempPath && (
-        <Path
-          className="stroke-gray10 fill-none"
-          d={tempPath.toPathString()}
-          strokeDasharray={`${getRelative(3)} ${getRelative(1.5)}`}
-          animate={{
-            strokeDashoffset: -9,
-          }}
-          initial={{
-            strokeDashoffset: 0,
-          }}
-          transition={{
-            type: "tween",
-            ease: "linear",
-            duration: 5,
-            repeat: Infinity,
-          }}
+    <motion.ellipse
+      cx={cx}
+      cy={cy}
+      rx={arc.rx * scale}
+      ry={arc.ry * scale}
+      className="stroke-gray8 fill-none"
+      strokeWidth={getRelative(0.5)}
+      {...props}
+    />
+  );
+}
+
+export function Ellipse(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["ellipse"]>
+) {
+  const { getRelative } = useSvgContext();
+  const { arc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return (
+    <motion.ellipse
+      cx={cx}
+      cy={cy}
+      rx={arc.rx}
+      ry={arc.ry}
+      className="stroke-gray10 fill-none"
+      strokeWidth={getRelative(0.5)}
+      {...props}
+    />
+  );
+}
+
+export function XAxis(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["line"]>
+) {
+  const { arc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} />;
+}
+
+export function XAxisDragHandle(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["g"]>
+) {
+  const { getRelative } = useSvgContext();
+  const { isActive, state, set, arc, setArc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return (
+    <g className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}>
+      <DragButton
+        {...getDragHandlers({
+          id: ["1.rx"],
+          state,
+          set,
+        })}
+        onPan={({ dx }) => {
+          setArc({ rx: arc.rx + dx * 0.75 });
+        }}
+      >
+        <rect
+          className={clsx(!isActive("rx") && "fill-gray3 stroke-gray8")}
+          strokeWidth={getRelative(0.25)}
+          height={getRelative(4)}
+          width={getRelative(8)}
+          rx={getRelative(1)}
+          x={cx + arc.rx / 2 - getRelative(4)}
+          y={cy - getRelative(2)}
         />
-      )}
-      <Path d={path.toPathString()} />
-      <DraggableEndpoint
-        cx={arc.x0}
-        cy={arc.y0}
-        {...getDragHandlers({
-          id: ["0.x", "0.y"],
-          state,
-          set,
-        })}
-        onPan={(x, y) => {
-          set({ path: path.setAbsolute(0, { x, y }) });
-        }}
-      />
-      <DraggableEndpoint
-        cx={arc.x}
-        cy={arc.y}
-        {...getDragHandlers({
-          id: ["1.x", "1.y"],
-          state,
-          set,
-        })}
-        onPan={(x, y) => {
-          set({ path: path.setAbsolute(1, { x, y }) });
-        }}
-      />
+        <DragX
+          x={cx + arc.rx / 2 - getRelative(4)}
+          y={cy - getRelative(4)}
+          size={getRelative(8)}
+        />
+      </DragButton>
     </g>
+  );
+}
+
+export function YAxis(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["line"]>
+) {
+  const { arc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return <Line x1={cx} y1={cy} x2={cx} y2={cy + arc.ry} />;
+}
+
+export function YAxisDragHandle(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["g"]>
+) {
+  const { getRelative } = useSvgContext();
+  const { isActive, state, set, arc, setArc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return (
+    <g className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}>
+      <DragButton
+        {...getDragHandlers({
+          id: ["1.ry"],
+          state,
+          set,
+        })}
+        onPan={({ dy }) => {
+          setArc({ ry: arc.ry + dy * 0.75 });
+        }}
+      >
+        <rect
+          className={clsx(!isActive("ry") && "fill-gray3 stroke-gray8")}
+          strokeWidth={getRelative(0.25)}
+          width={getRelative(4)}
+          height={getRelative(8)}
+          rx={getRelative(1)}
+          x={cx - getRelative(2)}
+          y={cy + arc.ry / 2 - getRelative(4)}
+        />
+        <DragY
+          x={cx - getRelative(4)}
+          y={cy + arc.ry / 2 - getRelative(4)}
+          size={getRelative(8)}
+        />
+      </DragButton>
+    </g>
+  );
+}
+
+export function Center(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["circle"]>
+) {
+  const { arc } = useArcSandboxContext();
+  const { cx, cy } = getArcCenter(arc);
+  return <Circle cx={cx} cy={cy} {...props} />;
+}
+
+export function TempPath(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["path"]>
+) {
+  const { getRelative } = useSvgContext();
+  const { tempPath } = useArcSandboxContext();
+  if (!tempPath) return null;
+  return (
+    <BasePath
+      className="stroke-gray10 fill-none"
+      d={tempPath.toPathString()}
+      strokeDasharray={`${getRelative(3)} ${getRelative(1.5)}`}
+      animate={{
+        strokeDashoffset: -9,
+      }}
+      initial={{
+        strokeDashoffset: 0,
+      }}
+      transition={{
+        type: "tween",
+        ease: "linear",
+        duration: 5,
+        repeat: Infinity,
+      }}
+      {...props}
+    />
+  );
+}
+
+export function Path(
+  props: React.ComponentPropsWithoutRef<(typeof motion)["path"]>
+) {
+  const { path } = useArcSandboxContext();
+  return <BasePath d={path.toPathString()} {...props} />;
+}
+
+export function Origin() {
+  const { arc, state, set, path } = useArcSandboxContext();
+  return (
+    <DraggableEndpoint
+      cx={arc.x0}
+      cy={arc.y0}
+      {...getDragHandlers({
+        id: ["0.x", "0.y"],
+        state,
+        set,
+      })}
+      onPan={(x, y) => {
+        set({ path: path.setAbsolute(0, { x, y }) });
+      }}
+    />
+  );
+}
+
+export function Endpoint() {
+  const { arc, state, set, path } = useArcSandboxContext();
+  return (
+    <DraggableEndpoint
+      cx={arc.x}
+      cy={arc.y}
+      {...getDragHandlers({
+        id: ["1.x", "1.y"],
+        state,
+        set,
+      })}
+      onPan={(x, y) => {
+        set({ path: path.setAbsolute(1, { x, y }) });
+      }}
+    />
+  );
+}
+
+// Assumes path starts with an M command followed by an A command
+export function ArcSandbox({
+  path,
+  state,
+  active,
+  set,
+}: SyntaxState & {
+  set: (state: Partial<SyntaxState>) => void;
+}) {
+  return (
+    <Root path={path} state={state} active={active} set={set}>
+      <Background>
+        <ScaledEllipse />
+        <Ellipse />
+        <XAxis />
+        <XAxisDragHandle />
+        <YAxis />
+        <YAxisDragHandle />
+        <Center />
+      </Background>
+      <TempPath />
+      <Path />
+      <Origin />
+      <Endpoint />
+    </Root>
   );
 }
 
