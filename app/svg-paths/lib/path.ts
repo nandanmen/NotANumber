@@ -100,7 +100,11 @@ export function createPath(commands: Command[]): Path {
     >(index: number) {
       const command = absolute[index];
       if (command.code === "A") {
-        const { cx, cy } = getArcCenter(command as AbsoluteCommand<"A">);
+        const cmd = command as AbsoluteCommand<"A">;
+        const { cx, cy } = getArcCenter({
+          ...cmd,
+          xAxisRotation: cmd.xAxisRotation * (Math.PI / 180),
+        });
         return { ...command, cx, cy } as unknown as ReturnType;
       }
       return command as ReturnType;

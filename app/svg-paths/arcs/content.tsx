@@ -7,6 +7,7 @@ import { ActiveComponent, VisualWrapper } from "../components/visual-wrapper";
 import * as syntax from "./content/syntax";
 import * as ellipse from "./content/ellipse";
 import * as smallEllipse from "./content/small-ellipse";
+import * as rotation from "./content/rotation";
 import { CommandListFromSource, CommandText } from "./command-list";
 import { createPath, parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
@@ -22,6 +23,7 @@ export function Content({ content, length }) {
         syntax: syntax.initialState,
         ellipse: ellipse.initialState,
         "small-ellipse": smallEllipse.initialState,
+        "x-rotation": rotation.initialState,
         rotation: {
           path: slice,
           active: ["0.xAxisRotation"],
@@ -38,7 +40,9 @@ export function Content({ content, length }) {
         components={{ CommandListFromSource, ShrinkArcButton }}
       >
         <ActiveComponent components={[syntax.page]} />
-        <VisualWrapper components={[null, ellipse.page, smallEllipse.page]} />
+        <VisualWrapper
+          components={[null, ellipse.page, smallEllipse.page, rotation.page]}
+        />
       </MDX>
     </StateProvider>
   );

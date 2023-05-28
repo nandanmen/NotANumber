@@ -8,7 +8,7 @@ import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
 import { Path as BasePath } from "app/svg-paths/components/svg/path";
-import { getScale } from "app/svg-paths/components/utils";
+import { getArcCenter, getScale } from "app/svg-paths/components/utils";
 import type {
   AbsoluteArcCommand,
   Command,
@@ -112,16 +112,33 @@ export function ScaledEllipse(
   const { getRelative } = useSvgContext();
   const { arc } = useArcSandboxContext();
   const scale = getScale(arc.x0, arc.y0, arc.cx, arc.cy, arc.rx, arc.ry);
+
+  const dx = arc.x - arc.x0;
+  const dy = arc.y - arc.y0;
+  const midX = arc.x0 + dx / 2;
+  const midY = arc.y0 + dy / 2;
+  const isScaled =
+    midX.toFixed(3) === arc.cx.toFixed(3) ||
+    midY.toFixed(3) === arc.cy.toFixed(3);
+
+  if (!isScaled) return null;
   return (
-    <motion.ellipse
-      cx={arc.cx}
-      cy={arc.cy}
-      rx={arc.rx * scale}
-      ry={arc.ry * scale}
-      className="stroke-gray8 fill-none"
-      strokeWidth={getRelative(0.5)}
-      {...props}
-    />
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
+    >
+      <motion.ellipse
+        cx={arc.cx}
+        cy={arc.cy}
+        rx={arc.rx * scale}
+        ry={arc.ry * scale}
+        className="stroke-gray8 fill-none"
+        strokeWidth={getRelative(0.5)}
+        {...props}
+      />
+    </g>
   );
 }
 
@@ -131,15 +148,22 @@ export function Ellipse(
   const { getRelative } = useSvgContext();
   const { arc } = useArcSandboxContext();
   return (
-    <motion.ellipse
-      cx={arc.cx}
-      cy={arc.cy}
-      rx={arc.rx}
-      ry={arc.ry}
-      className="stroke-gray10 fill-none"
-      strokeWidth={getRelative(0.5)}
-      {...props}
-    />
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
+    >
+      <motion.ellipse
+        cx={arc.cx}
+        cy={arc.cy}
+        rx={arc.rx}
+        ry={arc.ry}
+        className="stroke-gray10 fill-none"
+        strokeWidth={getRelative(0.5)}
+        {...props}
+      />
+    </g>
   );
 }
 
@@ -148,7 +172,20 @@ export function XAxis(
 ) {
   const { arc } = useArcSandboxContext();
   return (
-    <Line x1={arc.cx} y1={arc.cy} x2={arc.cx + arc.rx} y2={arc.cy} {...props} />
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
+    >
+      <Line
+        x1={arc.cx}
+        y1={arc.cy}
+        x2={arc.cx + arc.rx}
+        y2={arc.cy}
+        {...props}
+      />
+    </g>
   );
 }
 
@@ -158,36 +195,43 @@ export function XAxisDragHandle(
   const { getRelative } = useSvgContext();
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
   return (
-    <motion.g
-      className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}
-      {...props}
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
     >
-      <DragButton
-        {...getDragHandlers({
-          id: ["1.rx"],
-          state,
-          set,
-        })}
-        onPan={({ dx }) => {
-          setArc({ rx: arc.rx + dx * 0.75 });
-        }}
+      <motion.g
+        className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}
+        {...props}
       >
-        <rect
-          className={clsx(!isActive("rx") && "fill-gray3 stroke-gray8")}
-          strokeWidth={getRelative(0.25)}
-          height={getRelative(4)}
-          width={getRelative(8)}
-          rx={getRelative(1)}
-          x={arc.cx + arc.rx / 2 - getRelative(4)}
-          y={arc.cy - getRelative(2)}
-        />
-        <DragX
-          x={arc.cx + arc.rx / 2 - getRelative(4)}
-          y={arc.cy - getRelative(4)}
-          size={getRelative(8)}
-        />
-      </DragButton>
-    </motion.g>
+        <DragButton
+          {...getDragHandlers({
+            id: ["1.rx"],
+            state,
+            set,
+          })}
+          onPan={({ dx }) => {
+            setArc({ rx: arc.rx + dx * 0.75 });
+          }}
+        >
+          <rect
+            className={clsx(!isActive("rx") && "fill-gray3 stroke-gray8")}
+            strokeWidth={getRelative(0.25)}
+            height={getRelative(4)}
+            width={getRelative(8)}
+            rx={getRelative(1)}
+            x={arc.cx + arc.rx / 2 - getRelative(4)}
+            y={arc.cy - getRelative(2)}
+          />
+          <DragX
+            x={arc.cx + arc.rx / 2 - getRelative(4)}
+            y={arc.cy - getRelative(4)}
+            size={getRelative(8)}
+          />
+        </DragButton>
+      </motion.g>
+    </g>
   );
 }
 
@@ -196,7 +240,20 @@ export function YAxis(
 ) {
   const { arc } = useArcSandboxContext();
   return (
-    <Line x1={arc.cx} y1={arc.cy} x2={arc.cx} y2={arc.cy + arc.ry} {...props} />
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
+    >
+      <Line
+        x1={arc.cx}
+        y1={arc.cy}
+        x2={arc.cx}
+        y2={arc.cy + arc.ry}
+        {...props}
+      />
+    </g>
   );
 }
 
@@ -206,36 +263,43 @@ export function YAxisDragHandle(
   const { getRelative } = useSvgContext();
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
   return (
-    <motion.g
-      className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}
-      {...props}
+    <g
+      style={{
+        transform: `rotate(${arc.xAxisRotation}deg)`,
+        transformOrigin: `${arc.cx}px ${arc.cy}px`,
+      }}
     >
-      <DragButton
-        {...getDragHandlers({
-          id: ["1.ry"],
-          state,
-          set,
-        })}
-        onPan={({ dy }) => {
-          setArc({ ry: arc.ry + dy * 0.75 });
-        }}
+      <motion.g
+        className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}
+        {...props}
       >
-        <rect
-          className={clsx(!isActive("ry") && "fill-gray3 stroke-gray8")}
-          strokeWidth={getRelative(0.25)}
-          width={getRelative(4)}
-          height={getRelative(8)}
-          rx={getRelative(1)}
-          x={arc.cx - getRelative(2)}
-          y={arc.cy + arc.ry / 2 - getRelative(4)}
-        />
-        <DragY
-          x={arc.cx - getRelative(4)}
-          y={arc.cy + arc.ry / 2 - getRelative(4)}
-          size={getRelative(8)}
-        />
-      </DragButton>
-    </motion.g>
+        <DragButton
+          {...getDragHandlers({
+            id: ["1.ry"],
+            state,
+            set,
+          })}
+          onPan={({ dy }) => {
+            setArc({ ry: arc.ry + dy * 0.75 });
+          }}
+        >
+          <rect
+            className={clsx(!isActive("ry") && "fill-gray3 stroke-gray8")}
+            strokeWidth={getRelative(0.25)}
+            width={getRelative(4)}
+            height={getRelative(8)}
+            rx={getRelative(1)}
+            x={arc.cx - getRelative(2)}
+            y={arc.cy + arc.ry / 2 - getRelative(4)}
+          />
+          <DragY
+            x={arc.cx - getRelative(4)}
+            y={arc.cy + arc.ry / 2 - getRelative(4)}
+            size={getRelative(8)}
+          />
+        </DragButton>
+      </motion.g>
+    </g>
   );
 }
 
@@ -315,6 +379,12 @@ export function Endpoint() {
       }}
     />
   );
+}
+
+export function RotationAxis() {
+  const { size } = useSvgContext();
+  const { arc } = useArcSandboxContext();
+  return <Line x1="0" y1={arc.cy} x2={size} y2={arc.cy} dashed />;
 }
 
 // Assumes path starts with an M command followed by an A command
