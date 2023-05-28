@@ -1,3 +1,4 @@
+import { Ripple } from "app/svg-paths/components/ripple";
 import { useStateContext } from "app/svg-paths/components/state-context";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import {
@@ -6,7 +7,7 @@ import {
 } from "app/svg-paths/components/svg/tooltip";
 import { getArcCenter } from "app/svg-paths/components/utils";
 import { parsePath } from "app/svg-paths/lib/path";
-import { ArcSandbox } from "./arc-sandbox";
+import * as Arc from "./arc-sandbox";
 import { createInitialState } from "./drag-group";
 import { SyntaxState } from "./types";
 
@@ -31,7 +32,47 @@ function Ellipse() {
 
   return (
     <>
-      <ArcSandbox {...data} set={set} />
+      <Arc.Root {...data} set={set}>
+        <Arc.Ellipse
+          animate={{ pathLength: 1 }}
+          initial={{ pathLength: 0 }}
+          transition={{ type: "spring", duration: 2, delay: 0.4 }}
+        />
+        <Ripple cx={cx} cy={cy} delay={0.4} color="fill-gray10">
+          <Arc.Center />
+        </Ripple>
+        <Arc.XAxis
+          animate={{ pathLength: 1 }}
+          initial={{ pathLength: 0 }}
+          transition={{ type: "spring", duration: 2, delay: 0.4 }}
+        />
+        <Arc.XAxisDragHandle
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        />
+        <Arc.YAxis
+          animate={{ pathLength: 1 }}
+          initial={{ pathLength: 0 }}
+          transition={{ type: "spring", duration: 2, delay: 0.4 }}
+        />
+        <Arc.YAxisDragHandle
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        />
+        <Arc.Path
+          animate={{ pathLength: 1 }}
+          initial={{ pathLength: 0 }}
+          transition={{ type: "spring", duration: 2, delay: 1.2 }}
+        />
+        <Ripple cx={arc.x0} cy={arc.y0}>
+          <Arc.Origin />
+        </Ripple>
+        <Ripple cx={arc.x} cy={arc.y} delay={0.2}>
+          <Arc.Endpoint />
+        </Ripple>
+      </Arc.Root>
       {isActive(0, "x", "y") && (
         <CoordinatesTooltip x={arc.x0} y={arc.y0} placement="top" />
       )}

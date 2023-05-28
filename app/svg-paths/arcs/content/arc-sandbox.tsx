@@ -35,7 +35,7 @@ const useArcSandboxContext = () => {
   return React.useContext(ArcSandboxContext);
 };
 
-function Root({
+export function Root({
   path,
   state,
   active,
@@ -150,7 +150,7 @@ export function XAxis(
 ) {
   const { arc } = useArcSandboxContext();
   const { cx, cy } = getArcCenter(arc);
-  return <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} />;
+  return <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} {...props} />;
 }
 
 export function XAxisDragHandle(
@@ -160,7 +160,10 @@ export function XAxisDragHandle(
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
   const { cx, cy } = getArcCenter(arc);
   return (
-    <g className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}>
+    <motion.g
+      className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}
+      {...props}
+    >
       <DragButton
         {...getDragHandlers({
           id: ["1.rx"],
@@ -186,7 +189,7 @@ export function XAxisDragHandle(
           size={getRelative(8)}
         />
       </DragButton>
-    </g>
+    </motion.g>
   );
 }
 
@@ -195,7 +198,7 @@ export function YAxis(
 ) {
   const { arc } = useArcSandboxContext();
   const { cx, cy } = getArcCenter(arc);
-  return <Line x1={cx} y1={cy} x2={cx} y2={cy + arc.ry} />;
+  return <Line x1={cx} y1={cy} x2={cx} y2={cy + arc.ry} {...props} />;
 }
 
 export function YAxisDragHandle(
@@ -205,7 +208,10 @@ export function YAxisDragHandle(
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
   const { cx, cy } = getArcCenter(arc);
   return (
-    <g className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}>
+    <motion.g
+      className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}
+      {...props}
+    >
       <DragButton
         {...getDragHandlers({
           id: ["1.ry"],
@@ -231,7 +237,7 @@ export function YAxisDragHandle(
           size={getRelative(8)}
         />
       </DragButton>
-    </g>
+    </motion.g>
   );
 }
 
