@@ -12,6 +12,7 @@ import { CommandListFromSource, CommandText } from "./command-list";
 import { createPath, parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
+import { Slider } from "./slider";
 
 const parsed = parsePath("M 5 5 A 10.0 7.5 0.0 0 1 20.0 15.0");
 const slice = createPath(parsed.commands.slice(1));
@@ -33,7 +34,7 @@ export function Content({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ CommandListFromSource, ShrinkArcButton }}
+        components={{ CommandListFromSource, ShrinkArcButton, RotationSlider }}
       >
         <ActiveComponent components={[syntax.page]} />
         <VisualWrapper
@@ -41,6 +42,23 @@ export function Content({ content, length }) {
         />
       </MDX>
     </StateProvider>
+  );
+}
+
+function RotationSlider() {
+  const {
+    data: { path },
+    set,
+  } = useStateContext<{ path: Path }>("rotation");
+  const arc = path.atAbsolute<"A">(1);
+  return (
+    <Slider
+      value={[arc.xAxisRotation]}
+      onValueChange={([rotation]) => {
+        set({ path: path.set(1, { xAxisRotation: rotation }) });
+      }}
+      step={0.5}
+    />
   );
 }
 
