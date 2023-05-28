@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
-import { Command, parsePath, Path } from "../lib/path";
+import { Command, createPath, parsePath, Path } from "../lib/path";
 import { useStateContext } from "../components/state-context";
 
 const mapCodeToHint = {
@@ -31,7 +31,7 @@ type CommandKey = `${number}.${string}`;
 
 export const CommandListFromSource = ({ source }: { source: string }) => {
   const {
-    data: { path, active, blocklist },
+    data: { path, active, blocklist, slice },
     set,
   } = useStateContext<{
     path: Path;
@@ -39,6 +39,7 @@ export const CommandListFromSource = ({ source }: { source: string }) => {
     expanded: boolean;
     active?: CommandKey[];
     blocklist?: CommandKey[];
+    slice?: [number, number];
   }>(source);
   return (
     <CommandList
@@ -46,6 +47,7 @@ export const CommandListFromSource = ({ source }: { source: string }) => {
       blocklist={blocklist}
       path={path}
       onChange={set}
+      slice={slice}
     />
   );
 };
@@ -57,6 +59,7 @@ export const CommandList = ({
   active,
   highlight = [],
   blocklist = [],
+  slice = [0, Infinity],
 }: {
   path: Path | string;
   active?: CommandKey[];
@@ -64,6 +67,7 @@ export const CommandList = ({
   collapseAfter?: number;
   highlight?: number[];
   blocklist?: CommandKey[];
+  slice?: [number] | [number, number];
 }) => {
   const path = React.useMemo(() => {
     if (typeof initialPath === "string") {
@@ -73,9 +77,12 @@ export const CommandList = ({
   }, [initialPath]);
   const [index, setIndex] = React.useState(null);
   const [expanded, setExpanded] = React.useState(false);
+
+  const [start, end = Infinity] = slice;
+  const pathSlice = createPath(path.commands.slice(start, end));
   const _commands = expanded
-    ? path.commands
-    : path.commands.slice(0, collapseAfter);
+    ? pathSlice.commands
+    : pathSlice.commands.slice(0, collapseAfter);
 
   React.useEffect(() => {
     onChange({ index, expanded });
@@ -89,17 +96,17 @@ export const CommandList = ({
             key={command.id}
             className={clsx(
               "py-1 flex justify-between items-center group hover:bg-gray5",
-              highlight.includes(i)
+              highlight.includes(i + start)
                 ? "bg-gray6 border-gray8 border-l-4 px-3"
                 : "px-4"
             )}
-            onHoverStart={() => setIndex(i)}
+            onHoverStart={() => setIndex(i + start)}
             onHoverEnd={() => setIndex(null)}
           >
             <span className="flex gap-[1ch]">
               <span>{command.code}</span>
               <CommandText
-                index={i}
+                index={i + start}
                 command={command}
                 active={active}
                 blocked={blocklist}
@@ -207,6 +214,7 @@ export const CommandText = ({
       );
     case "A":
     case "a":
+      console.log(command);
       return (
         <>
           <Highlight value={command.rx} variant={getVariant("rx")} />

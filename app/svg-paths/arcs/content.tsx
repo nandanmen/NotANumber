@@ -23,11 +23,7 @@ export function Content({ content, length }) {
         syntax: syntax.initialState,
         ellipse: ellipse.initialState,
         "small-ellipse": smallEllipse.initialState,
-        "x-rotation": rotation.initialState,
-        rotation: {
-          path: slice,
-          active: ["0.xAxisRotation"],
-        },
+        rotation: rotation.initialState,
         flags: {
           path: slice,
           active: ["0.largeArc", "0.sweep"],

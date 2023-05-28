@@ -16,6 +16,7 @@ import type {
 } from "app/svg-paths/lib/path";
 import { DragGroupState, getDragHandlers } from "./drag-group";
 import { clsx } from "clsx";
+import { Text } from "app/svg-paths/components/path-visualizer";
 
 type SyntaxState = {
   path: IPath;
@@ -383,9 +384,67 @@ export function Endpoint() {
 
 export function RotationAxis() {
   const { size } = useSvgContext();
-  const { arc } = useArcSandboxContext();
-  return <Line x1="0" y1={arc.cy} x2={size} y2={arc.cy} dashed />;
+  const { arc, isActive } = useArcSandboxContext();
+  return (
+    <Line
+      x1="0"
+      y1={arc.cy}
+      x2={size}
+      y2={arc.cy}
+      dashed
+      animate={{
+        opacity: isActive("xAxisRotation") ? 1 : 0,
+      }}
+    />
+  );
 }
+
+export function Angle({ radius = 15 }) {
+  const { getRelative } = useSvgContext();
+  const r = getRelative(radius);
+  const { arc, isActive } = useArcSandboxContext();
+  const { x: endX, y: endY } = toCartesian(arc.xAxisRotation, r);
+  return (
+    <motion.g
+      animate={{
+        opacity: isActive("xAxisRotation") ? 1 : 0,
+      }}
+    >
+      <Circle size="small" cx={arc.cx + r} cy={arc.cy} />
+      <Circle size="small" cx={arc.cx + endX} cy={arc.cy + endY} />
+      <Path
+        className="stroke-gray10 fill-none"
+        strokeWidth={getRelative(0.5)}
+        d={`M ${arc.cx + r} ${arc.cy} A ${r} ${r} 0 0 1 ${arc.cx + endX} ${
+          arc.cy + endY
+        }`}
+      />
+    </motion.g>
+  );
+}
+
+export function AngleText({ radius = 15 }) {
+  const { getRelative } = useSvgContext();
+  const r = getRelative(radius);
+  const { arc, isActive } = useArcSandboxContext();
+  const { x: endX, y: endY } = toCartesian(arc.xAxisRotation / 2, r);
+  return (
+    <motion.g
+      animate={{
+        opacity: isActive("xAxisRotation") ? 1 : 0,
+      }}
+    >
+      <Text x={arc.cx + endX} y={arc.cy + endY}>
+        {arc.xAxisRotation.toFixed(1)}°
+      </Text>
+    </motion.g>
+  );
+}
+
+const toCartesian = (angle: number, radius: number) => ({
+  x: radius * Math.cos(angle * (Math.PI / 180)),
+  y: radius * Math.sin(angle * (Math.PI / 180)),
+});
 
 // Assumes path starts with an M command followed by an A command
 export function ArcSandbox({

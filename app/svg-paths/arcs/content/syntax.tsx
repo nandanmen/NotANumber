@@ -7,7 +7,7 @@ import { createInitialState } from "./drag-group";
 import { ArcSandbox } from "./arc-sandbox";
 import { SyntaxState } from "./types";
 
-const path = parsePath("M 3 10 A 10 7.5 30 0 0 20 15");
+const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 15");
 
 function ArcSyntax() {
   const {
