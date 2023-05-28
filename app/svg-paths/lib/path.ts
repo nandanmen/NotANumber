@@ -6,6 +6,7 @@ import {
   makeAbsolute,
 } from "svg-path-parser";
 import { v4 } from "uuid";
+import { getArcCenter } from "../components/utils";
 
 export type CommandCode = BaseCommand["code"];
 
@@ -24,13 +25,18 @@ export type AbsoluteCommand<
   toPathSection(): string;
 };
 
+export type AbsoluteArcCommand = AbsoluteCommand<"A"> & {
+  cx: number;
+  cy: number;
+};
+
 export type Path = {
   commands: Command[];
   absolute: AbsoluteCommand[];
   at<Code extends CommandCode>(index: number): Command<Code>;
   atAbsolute<Code extends AbsoluteCommandCode>(
     index: number
-  ): AbsoluteCommand<Code>;
+  ): Code extends "A" ? AbsoluteArcCommand : AbsoluteCommand<Code>;
 
   /**
    * Returns the value at the given ID. An ID is of the format <index>.<key>.
@@ -86,8 +92,18 @@ export function createPath(commands: Command[]): Path {
     at<Code extends CommandCode>(index: number) {
       return commands[index] as Command<Code>;
     },
-    atAbsolute<Code extends AbsoluteCommandCode>(index: number) {
-      return absolute[index] as AbsoluteCommand<Code>;
+    atAbsolute<
+      Code extends AbsoluteCommandCode,
+      ReturnType extends AbsoluteCommand = Code extends "A"
+        ? AbsoluteArcCommand
+        : AbsoluteCommand<Code>
+    >(index: number) {
+      const command = absolute[index];
+      if (command.code === "A") {
+        const { cx, cy } = getArcCenter(command as AbsoluteCommand<"A">);
+        return { ...command, cx, cy } as unknown as ReturnType;
+      }
+      return command as ReturnType;
     },
     set<Code extends CommandCode>(index: number, args: Partial<Command<Code>>) {
       return createPath(

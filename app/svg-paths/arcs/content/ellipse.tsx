@@ -5,7 +5,6 @@ import {
   CoordinatesTooltip,
   Tooltip,
 } from "app/svg-paths/components/svg/tooltip";
-import { getArcCenter } from "app/svg-paths/components/utils";
 import { parsePath } from "app/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";
 import { createInitialState } from "./drag-group";
@@ -24,7 +23,6 @@ function Ellipse() {
   const { data, set } = useStateContext<SyntaxState>("ellipse");
   const { path } = data;
   const arc = path.atAbsolute<"A">(1);
-  const { cx, cy } = getArcCenter(arc);
 
   const isActive = (index: number, ...props: string[]) => {
     return props.some((prop) => data.active?.includes(`${index}.${prop}`));
@@ -38,7 +36,7 @@ function Ellipse() {
           initial={{ pathLength: 0 }}
           transition={{ type: "spring", duration: 2, delay: 0.4 }}
         />
-        <Ripple cx={cx} cy={cy} delay={0.4} color="fill-gray10">
+        <Ripple cx={arc.cx} cy={arc.cy} delay={0.4} color="fill-gray10">
           <Arc.Center />
         </Ripple>
         <Arc.XAxis
@@ -80,12 +78,20 @@ function Ellipse() {
         <CoordinatesTooltip x={arc.x} y={arc.y} placement="bottom" />
       )}
       {isActive(1, "ry") && (
-        <Tooltip x={cx - getRelative(1)} y={cy + arc.ry / 2} placement="left">
+        <Tooltip
+          x={arc.cx - getRelative(1)}
+          y={arc.cy + arc.ry / 2}
+          placement="left"
+        >
           {arc.ry.toFixed(1)}
         </Tooltip>
       )}
       {isActive(1, "rx") && (
-        <Tooltip y={cy - getRelative(1)} x={cx + arc.rx / 2} placement="top">
+        <Tooltip
+          y={arc.cy - getRelative(1)}
+          x={arc.cx + arc.rx / 2}
+          placement="top"
+        >
           {arc.rx.toFixed(1)}
         </Tooltip>
       )}

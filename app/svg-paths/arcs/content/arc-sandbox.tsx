@@ -8,11 +8,11 @@ import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
 import { Path as BasePath } from "app/svg-paths/components/svg/path";
-import { getArcCenter, getScale } from "app/svg-paths/components/utils";
-import {
-  AbsoluteCommand,
+import { getScale } from "app/svg-paths/components/utils";
+import type {
+  AbsoluteArcCommand,
   Command,
-  type Path as IPath,
+  Path as IPath,
 } from "app/svg-paths/lib/path";
 import { DragGroupState, getDragHandlers } from "./drag-group";
 import { clsx } from "clsx";
@@ -27,7 +27,7 @@ const ArcSandboxContext = React.createContext<{
   isActive: (prop: string) => boolean;
   state: SyntaxState["state"];
   setArc: (arc: Partial<Command<"A">>) => void;
-  arc: AbsoluteCommand<"A">;
+  arc: AbsoluteArcCommand;
   set: (state: Partial<SyntaxState>) => void;
 }>(null);
 
@@ -111,12 +111,11 @@ export function ScaledEllipse(
 ) {
   const { getRelative } = useSvgContext();
   const { arc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
-  const scale = getScale(arc.x0, arc.y0, cx, cy, arc.rx, arc.ry);
+  const scale = getScale(arc.x0, arc.y0, arc.cx, arc.cy, arc.rx, arc.ry);
   return (
     <motion.ellipse
-      cx={cx}
-      cy={cy}
+      cx={arc.cx}
+      cy={arc.cy}
       rx={arc.rx * scale}
       ry={arc.ry * scale}
       className="stroke-gray8 fill-none"
@@ -131,11 +130,10 @@ export function Ellipse(
 ) {
   const { getRelative } = useSvgContext();
   const { arc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
   return (
     <motion.ellipse
-      cx={cx}
-      cy={cy}
+      cx={arc.cx}
+      cy={arc.cy}
       rx={arc.rx}
       ry={arc.ry}
       className="stroke-gray10 fill-none"
@@ -149,8 +147,9 @@ export function XAxis(
   props: React.ComponentPropsWithoutRef<(typeof motion)["line"]>
 ) {
   const { arc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
-  return <Line x1={cx} y1={cy} x2={cx + arc.rx} y2={cy} {...props} />;
+  return (
+    <Line x1={arc.cx} y1={arc.cy} x2={arc.cx + arc.rx} y2={arc.cy} {...props} />
+  );
 }
 
 export function XAxisDragHandle(
@@ -158,7 +157,6 @@ export function XAxisDragHandle(
 ) {
   const { getRelative } = useSvgContext();
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
   return (
     <motion.g
       className={clsx(isActive("rx") ? "text-gray1" : "text-gray10")}
@@ -180,12 +178,12 @@ export function XAxisDragHandle(
           height={getRelative(4)}
           width={getRelative(8)}
           rx={getRelative(1)}
-          x={cx + arc.rx / 2 - getRelative(4)}
-          y={cy - getRelative(2)}
+          x={arc.cx + arc.rx / 2 - getRelative(4)}
+          y={arc.cy - getRelative(2)}
         />
         <DragX
-          x={cx + arc.rx / 2 - getRelative(4)}
-          y={cy - getRelative(4)}
+          x={arc.cx + arc.rx / 2 - getRelative(4)}
+          y={arc.cy - getRelative(4)}
           size={getRelative(8)}
         />
       </DragButton>
@@ -197,8 +195,9 @@ export function YAxis(
   props: React.ComponentPropsWithoutRef<(typeof motion)["line"]>
 ) {
   const { arc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
-  return <Line x1={cx} y1={cy} x2={cx} y2={cy + arc.ry} {...props} />;
+  return (
+    <Line x1={arc.cx} y1={arc.cy} x2={arc.cx} y2={arc.cy + arc.ry} {...props} />
+  );
 }
 
 export function YAxisDragHandle(
@@ -206,7 +205,6 @@ export function YAxisDragHandle(
 ) {
   const { getRelative } = useSvgContext();
   const { isActive, state, set, arc, setArc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
   return (
     <motion.g
       className={clsx(isActive("ry") ? "text-gray1" : "text-gray10")}
@@ -228,12 +226,12 @@ export function YAxisDragHandle(
           width={getRelative(4)}
           height={getRelative(8)}
           rx={getRelative(1)}
-          x={cx - getRelative(2)}
-          y={cy + arc.ry / 2 - getRelative(4)}
+          x={arc.cx - getRelative(2)}
+          y={arc.cy + arc.ry / 2 - getRelative(4)}
         />
         <DragY
-          x={cx - getRelative(4)}
-          y={cy + arc.ry / 2 - getRelative(4)}
+          x={arc.cx - getRelative(4)}
+          y={arc.cy + arc.ry / 2 - getRelative(4)}
           size={getRelative(8)}
         />
       </DragButton>
@@ -245,8 +243,7 @@ export function Center(
   props: React.ComponentPropsWithoutRef<(typeof motion)["circle"]>
 ) {
   const { arc } = useArcSandboxContext();
-  const { cx, cy } = getArcCenter(arc);
-  return <Circle cx={cx} cy={cy} {...props} />;
+  return <Circle cx={arc.cx} cy={arc.cy} {...props} />;
 }
 
 export function TempPath(
