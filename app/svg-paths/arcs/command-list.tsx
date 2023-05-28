@@ -138,7 +138,7 @@ export const CommandList = ({
   );
 };
 
-const CommandText = ({
+export const CommandText = ({
   command,
   index,
   blocked,

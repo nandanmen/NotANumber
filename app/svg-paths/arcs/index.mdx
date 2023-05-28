@@ -30,9 +30,13 @@ Try changing the radius of the arc or the position of the endpoint in the sandbo
 
 ---
 
-Of course, it's not always possible to find a matching ellipse. What happens in that case? In the sandbox, you can make this happen by **reducing the radii of the ellipse or moving the endpoint farther away from the start point**.
+Of course, it's not always possible to find a matching ellipse. What happens in that case? Click the "Shrink Arc" button below and let's find out:
 
-Notice that when the ellipse isn't big enough to fit the arc's points, the arc isn't affected — it still follows the ellipse's curve. This suggests that the ellipse is implicitly _scaled_ to fit the arc!
+<ShrinkArcButton />
+
+Notice that when the ellipse isn't big enough to fit the arc's points, the arc isn't affected — it still follows the ellipse's curve. **This suggests that the ellipse is implicitly _scaled_ to fit the arc!**
+
+In the playground, this "scaled" ellipse is shown in light gray.
 
 ---
 
@@ -40,9 +44,9 @@ Notice that when the ellipse isn't big enough to fit the arc's points, the arc i
 
 <CommandListFromSource source="rotation" />
 
-Let's look at the next argument, `x-axis-rotation`. As you might expect, this value rotates the ellipse around its x (or horizontal) axis.
+The next argument, `x-axis-rotation`, is thankfully not as tricky. As you might expect, this value rotates the ellipse around its `x`, or horizontal, axis.
 
-**Try changing the third argument of the arc command and notice how the ellipse rotates around.**
+The best way to get a feel of this argument is to play around with it, so try changing the value in the sandbox to see how it affects the arc.
 
 ---
 
