@@ -17,7 +17,8 @@ import { PracticeQuestionEditor } from "./path-practice";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
-  h2: (props) => <h1 className="text-2xl font-bold" {...props} />,
+  h2: (props) => <h2 className="text-2xl font-bold" {...props} />,
+  h3: (props) => <h3 className="text-xl font-bold" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
     <pre

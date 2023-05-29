@@ -214,7 +214,6 @@ export const CommandText = ({
       );
     case "A":
     case "a":
-      console.log(command);
       return (
         <>
           <Highlight value={command.rx} variant={getVariant("rx")} />

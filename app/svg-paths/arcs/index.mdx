@@ -64,13 +64,29 @@ The large arc and clockwise (sweep) flags control which of these four curves is 
 
 ---
 
-Out of the four arcs that can be drawn between two points, two of the arcs are drawn _clockwise_ while the other two are drawn _counterclockwise_. **The `sweep` flag controls the direction the arc is drawn, with `0` meaning counterclockwise.**
+### Sweep
 
-> This is why I prefer to call the sweep flag the _clockwise_ flag; I don't even know what `sweep` is supposed to mean!
+Out of the four arcs that can be drawn between two points, two of the arcs are drawn **clockwise**:
 
 ---
 
-Once you've picked a direction, there are still two arcs left — one that's smaller than a semicircle, and one that's larger. **The `large-arc` flag controls which of these arcs is drawn, with `0` meaning the smaller arc.**
+While the other two are drawn **counterclockwise**:
+
+---
+
+The `sweep` flag controls which of these two directions is drawn, with `0` meaning the arc is drawn _counterclockwise_. This is why I prefer to call the sweep flag the clockwise flag!
+
+Try toggling the sweep flag below and notice how the arc goes from counterclockwise to clockwise:
+
+<ToggleFlagButton />
+
+---
+
+### Large Arc
+
+Once you've picked a direction, you still have two arcs to choose from, with one arc being larger than the other. The `large-arc` flag lets you pick one of these arcs, with `0` meaning the smaller arc is picked.
+
+> When the ellipse happens to be a perfect circle (i.e. when `rx == ry`), then the large arc flag has no effect.
 
 ---
 

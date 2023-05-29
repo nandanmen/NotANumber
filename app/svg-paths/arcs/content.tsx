@@ -8,14 +8,12 @@ import * as syntax from "./content/syntax";
 import * as ellipse from "./content/ellipse";
 import * as smallEllipse from "./content/small-ellipse";
 import * as rotation from "./content/rotation";
+import * as flags from "./content/flags";
 import { CommandListFromSource, CommandText } from "./command-list";
-import { createPath, parsePath, Path } from "app/svg-paths/lib/path";
+import type { Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
 import { Slider } from "./slider";
-
-const parsed = parsePath("M 5 5 A 10.0 7.5 0.0 0 1 20.0 15.0");
-const slice = createPath(parsed.commands.slice(1));
 
 export function Content({ content, length }) {
   return (
@@ -25,20 +23,31 @@ export function Content({ content, length }) {
         ellipse: ellipse.initialState,
         "small-ellipse": smallEllipse.initialState,
         rotation: rotation.initialState,
-        flags: {
-          path: slice,
-          active: ["0.largeArc", "0.sweep"],
-        },
+        flags: flags.initialState,
       }}
     >
       <MDX
         content={content}
         numSections={length}
-        components={{ CommandListFromSource, ShrinkArcButton, RotationSlider }}
+        components={{
+          CommandListFromSource,
+          ShrinkArcButton,
+          ToggleFlagButton,
+          RotationSlider,
+        }}
       >
         <ActiveComponent components={[syntax.page]} />
         <VisualWrapper
-          components={[null, ellipse.page, smallEllipse.page, rotation.page]}
+          components={[
+            null,
+            ellipse.page,
+            smallEllipse.page,
+            rotation.page,
+            flags.page,
+            flags.page,
+            flags.page,
+            flags.page,
+          ]}
         />
       </MDX>
     </StateProvider>
@@ -59,6 +68,33 @@ function RotationSlider() {
       }}
       step={0.5}
     />
+  );
+}
+
+function ToggleFlagButton() {
+  const {
+    data: { path },
+    set,
+  } = useStateContext<{ path: Path }>("flags");
+  return (
+    <div className="flex justify-between gap-2">
+      <div className="bg-gray1 py-2 px-3 border border-gray8 rounded-md w-full relative">
+        <code className="flex gap-[1ch]">
+          <span>A</span>
+          <CommandText command={path.at(1)} index={1} active={["1.sweep"]} />
+        </code>
+      </div>
+      <Button
+        className="shrink-0"
+        onClick={() => {
+          set({
+            path: path.set(1, { sweep: !path.atAbsolute<"A">(1).sweep }),
+          });
+        }}
+      >
+        Toggle
+      </Button>
+    </div>
   );
 }
 
