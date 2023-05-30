@@ -19,6 +19,7 @@ export const initialState = {
 function Flags() {
   const { index } = useIndexContext();
   const { data } = useStateContext<{ path: IPath }>("flags");
+  const arc = data.path.atAbsolute<"A">(1);
   return (
     <>
       <Path
@@ -69,7 +70,20 @@ function Flags() {
           <ArrowPath d="M 7 7 A 8 8 0 1 0 18 18" delay={0.3} />
         </>
       )}
-      {index === 7 && <Path d={data.path.toPathString()} />}
+      {index === 7 && <SweepToggle arc={arc} />}
+      {index === 8 && (
+        <Path
+          animate={{
+            d: arc.largeArc
+              ? `M 7 7 C -4 15.5 11 28.5 18 18`
+              : `M 7 7 C 2.8 15 11 22 18 18`,
+          }}
+          transition={{
+            type: "spring",
+            duration: 1,
+          }}
+        />
+      )}
       <Ripple cx={7} cy={7}>
         <Circle cx={7} cy={7} variant="point" />
       </Ripple>
@@ -77,6 +91,22 @@ function Flags() {
         <Circle cx={18} cy={18} variant="point" />
       </Ripple>
     </>
+  );
+}
+
+function SweepToggle({ arc }) {
+  return (
+    <Path
+      animate={{
+        d: arc.sweep
+          ? `M 7 7 C 15 2.8 22 11 18 18`
+          : `M 7 7 C 2.8 15 11 22 18 18`,
+      }}
+      transition={{
+        type: "spring",
+        duration: 1,
+      }}
+    />
   );
 }
 

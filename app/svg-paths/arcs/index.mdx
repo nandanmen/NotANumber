@@ -78,22 +78,19 @@ The `sweep` flag controls which of these two directions is drawn, with `0` meani
 
 Try toggling the sweep flag below and notice how the arc goes from counterclockwise to clockwise:
 
-<ToggleFlagButton />
+<ToggleFlagButton prop="sweep" />
 
 ---
 
 ### Large Arc
 
-Once you've picked a direction, you still have two arcs to choose from, with one arc being larger than the other. The `large-arc` flag lets you pick one of these arcs, with `0` meaning the smaller arc is picked.
+The sweep flag alone isn't enough though — we still have two arcs remaining to choose from! This is where the `large-arc` flag comes in.
+
+<ToggleFlagButton prop="largeArc" />
+
+Notice that, out of the two remaining arcs, one of them is larger than the other. When the `large-arc` flag is `0`, the smaller arc is drawn; toggling the flag to `1` will draw the larger arc instead.
 
 > When the ellipse happens to be a perfect circle (i.e. when `rx == ry`), then the large arc flag has no effect.
-
----
-
-In short:
-
-- `sweep` controls the direction of the arc, with `0` meaning the arc is drawn counterclockwise;
-- `large-arc` controls the size of the chosen arc, with `0` meaning the smaller arc is picked.
 
 ---
 
@@ -115,17 +112,4 @@ You can play around with the different fields in the sandbox to get a better fee
 
 Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
 
-```
-M 10 20
-c -10 -1 -10 -14 0 -15
-q 6 -1 8 5
-c 7 0 7 10 0 10
-m -1.0 -2
-v 6
-m -2.0 -4.5
-v 6
-m -2.0 -6
-v 6
-m -2.0 -7.5
-v 6
-```
+<PracticeQuestionEditor />

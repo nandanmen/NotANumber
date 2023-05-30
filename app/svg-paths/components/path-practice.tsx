@@ -58,7 +58,7 @@ export function PracticeQuestion() {
         strokeWidth={getRelative(2)}
         className="stroke-gray8"
         fill="none"
-        d={toPathString(commands)}
+        d={path}
       />
       <PathPractice value={value} />
       {showAnswer && <PathList commands={commands} index={hoverIndex} />}

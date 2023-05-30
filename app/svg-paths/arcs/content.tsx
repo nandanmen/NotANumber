@@ -14,6 +14,10 @@ import type { Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
 import { Slider } from "./slider";
+import {
+  getInitialPracticeQuestionState,
+  PracticeQuestion,
+} from "../components/path-practice";
 
 export function Content({ content, length }) {
   return (
@@ -24,6 +28,12 @@ export function Content({ content, length }) {
         "small-ellipse": smallEllipse.initialState,
         rotation: rotation.initialState,
         flags: flags.initialState,
+        ...getInitialPracticeQuestionState([
+          "M 7 7",
+          "A 8 8 0 0 0 18 18",
+          "M 7 7",
+          "A 8 8 0 1 0 18 18",
+        ]),
       }}
     >
       <MDX
@@ -36,7 +46,21 @@ export function Content({ content, length }) {
           RotationSlider,
         }}
       >
-        <ActiveComponent components={[syntax.page]} />
+        <ActiveComponent
+          components={[
+            syntax.page,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            syntax.page,
+            null,
+          ]}
+        />
         <VisualWrapper
           components={[
             null,
@@ -47,6 +71,11 @@ export function Content({ content, length }) {
             flags.page,
             flags.page,
             flags.page,
+            flags.page,
+            null,
+            {
+              children: <PracticeQuestion />,
+            },
           ]}
         />
       </MDX>
@@ -71,7 +100,7 @@ function RotationSlider() {
   );
 }
 
-function ToggleFlagButton() {
+function ToggleFlagButton({ prop }: { prop: "largeArc" | "sweep" }) {
   const {
     data: { path },
     set,
@@ -81,14 +110,14 @@ function ToggleFlagButton() {
       <div className="bg-gray1 py-2 px-3 border border-gray8 rounded-md w-full relative">
         <code className="flex gap-[1ch]">
           <span>A</span>
-          <CommandText command={path.at(1)} index={1} active={["1.sweep"]} />
+          <CommandText command={path.at(1)} index={1} active={[`1.${prop}`]} />
         </code>
       </div>
       <Button
         className="shrink-0"
         onClick={() => {
           set({
-            path: path.set(1, { sweep: !path.atAbsolute<"A">(1).sweep }),
+            path: path.set(1, { [prop]: !path.atAbsolute<"A">(1)[prop] }),
           });
         }}
       >
