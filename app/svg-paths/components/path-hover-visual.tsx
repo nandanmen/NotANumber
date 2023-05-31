@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Command } from "../utils";
+import { AbsoluteCommand } from "../lib/path";
 import { PathSection, PathSectionPoint } from "./path-visualizer";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
@@ -9,7 +9,7 @@ export function PathHoverVisual({
   commands,
 }: {
   id: string;
-  commands: Command[];
+  commands: AbsoluteCommand[];
 }) {
   const { data } = useStateContext<{ index: number } | null>(id);
   return <PathList commands={commands} index={data?.index} />;
@@ -19,7 +19,7 @@ export function PathList({
   commands,
   index,
 }: {
-  commands: Command[];
+  commands: AbsoluteCommand[];
   index: number | null;
 }) {
   const { useRelativeMotionValue } = useSvgContext();

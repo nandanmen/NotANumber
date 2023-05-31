@@ -10,7 +10,7 @@ import * as smallEllipse from "./content/small-ellipse";
 import * as rotation from "./content/rotation";
 import * as flags from "./content/flags";
 import { CommandListFromSource, CommandText } from "./command-list";
-import type { Path } from "app/svg-paths/lib/path";
+import { parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
 import { Slider } from "./slider";
@@ -18,6 +18,10 @@ import {
   getInitialPracticeQuestionState,
   PracticeQuestion,
 } from "../components/path-practice";
+
+const practicePath = parsePath(
+  "M 3 15 q 1.5 -2 1.5 -5 q 0 -2 1.5 -4 M 8 4 a 8 8 0 0 1 12 6 q 0.5 4 -2 9 M 13 21 q 1.5 -2 2 -5 M 16 12 v -1 a 4 4 0 0 0 -8 0 q 0 4 -2.5 7 M 8.5 20 q 3 -3 3.5 -9"
+);
 
 export function Content({ content, length }) {
   return (
@@ -28,12 +32,7 @@ export function Content({ content, length }) {
         "small-ellipse": smallEllipse.initialState,
         rotation: rotation.initialState,
         flags: flags.initialState,
-        ...getInitialPracticeQuestionState([
-          "M 7 7",
-          "A 8 8 0 0 0 18 18",
-          "M 7 7",
-          "A 8 8 0 1 0 18 18",
-        ]),
+        ...getInitialPracticeQuestionState(practicePath),
       }}
     >
       <MDX

@@ -1,4 +1,6 @@
 import React from "react";
+import { CommandListFromSource } from "../arcs/command-list";
+import type { Path as IPath } from "../lib/path";
 import { type Command, parsePath, toPathString } from "../utils";
 import { Button } from "./button";
 import { CommandHighlight } from "./command-highlight";
@@ -7,23 +9,24 @@ import { PathList } from "./path-hover-visual";
 import { PathVisualizer } from "./path-visualizer";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
+import { Path } from "./svg/path";
 
 const PRACTICE_QUESTION_KEY = "practiceQuestion";
 
 export type PracticeQuestionState = {
-  commands: string[];
+  path: IPath;
   showAnswer: boolean;
   value: string;
-  hoverIndex: number | null;
+  index: number | null;
 };
 
-export function getInitialPracticeQuestionState(commands: string[]) {
+export function getInitialPracticeQuestionState(path: IPath) {
   return {
     [PRACTICE_QUESTION_KEY]: {
-      commands,
+      path,
       showAnswer: false,
       value: "",
-      hoverIndex: null,
+      index: null,
     },
   };
 }
@@ -38,30 +41,24 @@ export function PathPractice({ value }: { value: string }) {
     } catch {}
   }, [value]);
 
-  return <PathVisualizer path={path} />;
+  return <Path d={value} />;
 }
 
 export function PracticeQuestion() {
   const {
-    data: { commands: question, showAnswer, value, hoverIndex },
+    data: { path, showAnswer, value, index },
   } = useStateContext<PracticeQuestionState>(PRACTICE_QUESTION_KEY);
   const { getRelative } = useSvgContext();
-
-  const path = question.join(" ");
-  const commands = React.useMemo(() => {
-    return parsePath(path);
-  }, [path]);
-
   return (
     <g>
-      <path
+      <Path
         strokeWidth={getRelative(2)}
         className="stroke-gray8"
         fill="none"
-        d={path}
+        d={path.toPathString()}
       />
       <PathPractice value={value} />
-      {showAnswer && <PathList commands={commands} index={hoverIndex} />}
+      {showAnswer && <PathList commands={path.absolute} index={index} />}
     </g>
   );
 }
@@ -69,7 +66,7 @@ export function PracticeQuestion() {
 // This component is imported into MDX
 export function PracticeQuestionEditor() {
   const {
-    data: { commands, showAnswer },
+    data: { showAnswer },
     set,
   } = useStateContext<PracticeQuestionState>(PRACTICE_QUESTION_KEY);
   return (
@@ -78,12 +75,7 @@ export function PracticeQuestionEditor() {
       <Button onClick={() => set({ showAnswer: !showAnswer })}>
         {showAnswer ? "Hide Answer" : "Reveal Answer"}
       </Button>
-      {showAnswer && (
-        <CommandHighlight
-          commands={commands}
-          onIndexChange={(index) => set({ hoverIndex: index })}
-        />
-      )}
+      {showAnswer && <CommandListFromSource source={PRACTICE_QUESTION_KEY} />}
     </div>
   );
 }
