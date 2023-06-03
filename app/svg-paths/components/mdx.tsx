@@ -62,8 +62,8 @@ export const MDX = ({
   const pathName = usePathname();
   return (
     <IndexProvider numSections={numSections}>
-      <article className="border-r border-gray8 leading-7 w-[68ch] max-w-[50vw]">
-        <header className="px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
+      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-[100vw] max-w-[68ch] lg:max-w-[50vw]">
+        <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>
           </h1>
@@ -86,14 +86,14 @@ export const MDX = ({
             </a>
           </div>
         </header>
-        {prefix && <div className="p-16 pb-8 -mb-16">{prefix}</div>}
+        {prefix && <div className="p-8 lg:p-16 pb-8 -mb-16">{prefix}</div>}
         <MDXRemote
           {...content}
           components={{ ...baseComponents, ...components }}
         />
         <Footer />
       </article>
-      <div className="h-screen sticky top-0 flex flex-col">
+      <div className="hidden h-screen sticky top-0 lg:flex flex-col">
         <header className="p-8">
           <nav>
             <ul className="flex">
@@ -183,7 +183,7 @@ const Footer = () => {
   const prev = sections[pathIndex - 1];
   const next = sections[pathIndex + 1];
   return (
-    <footer className="px-16 pb-8 flex text-gray11">
+    <footer className="px-8 lg:px-16 pb-8 flex text-gray11">
       {prev && (
         <Link
           href={toHref(prev)}

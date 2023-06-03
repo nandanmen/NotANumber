@@ -108,6 +108,7 @@ function PropButton({
 }
 
 export const page = {
+  svg: false,
   children: (
     <>
       <Svg>

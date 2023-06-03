@@ -3,7 +3,7 @@
 import React from "react";
 import { MDX } from "../components/mdx";
 import { StateProvider, useStateContext } from "../components/state-context";
-import { ActiveComponent, VisualWrapper } from "../components/visual-wrapper";
+import { VisualWrapper } from "../components/visual-wrapper";
 import * as syntax from "./content/syntax";
 import * as ellipse from "./content/ellipse";
 import * as smallEllipse from "./content/small-ellipse";
@@ -45,24 +45,9 @@ export function Content({ content, length }) {
           RotationSlider,
         }}
       >
-        <ActiveComponent
-          components={[
-            syntax.page,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            syntax.page,
-            null,
-          ]}
-        />
         <VisualWrapper
           components={[
-            null,
+            syntax.page,
             ellipse.page,
             smallEllipse.page,
             rotation.page,
@@ -71,7 +56,7 @@ export function Content({ content, length }) {
             flags.page,
             flags.page,
             flags.page,
-            null,
+            syntax.page,
             {
               children: <PracticeQuestion />,
             },

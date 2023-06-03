@@ -1,26 +1,18 @@
 import { useIndexContext } from "./index-provider";
 import { type Config, Svg } from "./svg";
 
-export type VisualWrapperComponents = Array<{
+export type Page = {
   children: React.ReactNode;
   svg?:
+    | false
     | number
     | {
         size?: number;
         config?: Partial<Config>;
       };
-}>;
+};
 
-export function ActiveComponent({
-  components,
-}: {
-  components: VisualWrapperComponents;
-}) {
-  const { index } = useIndexContext();
-  const component = components[index];
-  if (!component) return null;
-  return <>{component.children}</>;
-}
+export type VisualWrapperComponents = Page[];
 
 export function VisualWrapper({
   components,
@@ -32,6 +24,8 @@ export function VisualWrapper({
   if (!component) return <Svg size={25} />;
 
   const { children, svg = 25 } = component;
+  if (!svg) return <>{children}</>;
+
   let props = svg;
   if (typeof props === "number") props = { size: props };
   return <Svg {...props}>{children}</Svg>;

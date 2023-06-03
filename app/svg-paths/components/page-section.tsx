@@ -37,7 +37,7 @@ export function PageSection({
   return (
     <section
       ref={ref}
-      className="p-16 pb-32 min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute before:right-0 before:top-0 before:w-1/4 first-of-type:before:hidden"
+      className="p-8 py-16 lg:p-16 lg:pb-32 max-w-[100vw] lg:min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute lg:before:right-0 before:left-0 before:top-0 before:w-1/4 first-of-type:before:hidden"
     >
       {children}
     </section>

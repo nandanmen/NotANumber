@@ -9,7 +9,7 @@ import {
   Text,
 } from "../components/path-visualizer";
 import { Svg, useSvgContext } from "../components/svg";
-import { heart } from "../index/index";
+import { heart } from "../index/heart";
 import { useIndexContext } from "../components/index-provider";
 import { Tooltip } from "../components/svg/tooltip";
 import { parsePath, type Command } from "../utils";

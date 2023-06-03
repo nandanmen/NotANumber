@@ -3,9 +3,7 @@
 import { useIndexContext } from "../components/index-provider";
 import { PathVisualizer } from "../components/path-visualizer";
 import { Svg } from "../components/svg";
-
-const phone =
-  "M 22 17 v 3 a 2 2 0 0 1 -2 2 a 20 20 0 0 1 -18 -18 A 2 2 0 0 1 4 2 h 3 a 2 2 0 0 1 2 2 a 13 13 0 0 0 1 3 a 2 2 0 0 1 -1 2 L 8 10 a 16 16 0 0 0 6 6 l 1 -1 a 2 2 0 0 1 2 -1 a 13 13 0 0 0 3 1 A 2 2 0 0 1 22 17 Z";
+import type { Page } from "../components/visual-wrapper";
 
 export const heart = `M11.995 7.23319
 C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
@@ -22,7 +20,7 @@ const mapIndexToType = {
   3: "curve",
 };
 
-export function Index() {
+function Heart() {
   const { index } = useIndexContext();
   return (
     <Svg size={25}>
@@ -30,3 +28,8 @@ export function Index() {
     </Svg>
   );
 }
+
+export const page: Page = {
+  svg: false,
+  children: <Heart />,
+};
