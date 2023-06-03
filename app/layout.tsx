@@ -1,4 +1,10 @@
-import { Nunito, PT_Mono, Shantell_Sans } from "next/font/google";
+import {
+  JetBrains_Mono,
+  Nunito,
+  PT_Mono,
+  Shantell_Sans,
+  Source_Code_Pro,
+} from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -14,7 +20,7 @@ const sans = Nunito({
   subsets: ["latin"],
 });
 
-const mono = PT_Mono({
+const mono = Source_Code_Pro({
   weight: ["400"],
   variable: "--font-mono",
   subsets: ["latin"],
@@ -56,7 +62,7 @@ export default function RootLayout({
           serif.variable,
           mono.variable,
           draw.variable,
-          "font-sans"
+          "font-sans antialiased"
         )}
       >
         {children}

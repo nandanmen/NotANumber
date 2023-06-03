@@ -51,11 +51,13 @@ export const MDX = ({
   numSections,
   components,
   children,
+  prefix,
 }: {
   content: MDXRemoteSerializeResult;
   numSections: number;
   components?: Record<string, (props: unknown) => JSX.Element>;
   children?: React.ReactNode;
+  prefix?: React.ReactNode;
 }) => {
   const pathName = usePathname();
   return (
@@ -84,6 +86,7 @@ export const MDX = ({
             </a>
           </div>
         </header>
+        {prefix && <div className="p-16 pb-8 -mb-16">{prefix}</div>}
         <MDXRemote
           {...content}
           components={{ ...baseComponents, ...components }}
