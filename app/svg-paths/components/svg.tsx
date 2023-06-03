@@ -59,11 +59,15 @@ const range = (end: number, start = 0, skip = 1) => {
 export function Svg({
   size = 25,
   config = defaultConfig,
+  width = "auto",
+  height = "100%",
   children,
 }: {
   size?: number;
   children?: React.ReactNode;
   config?: Partial<Config>;
+  width?: string;
+  height?: string;
 }) {
   const sizeMotion = useMotionValue(size);
 
@@ -110,7 +114,7 @@ export function Svg({
   }, [size, sizeMotion]);
 
   return (
-    <motion.svg width="auto" height="100%" viewBox={viewBox} data-svg>
+    <motion.svg width={width} height={height} viewBox={viewBox} data-svg>
       <SvgContext.Provider
         value={{
           size,

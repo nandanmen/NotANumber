@@ -1,14 +1,17 @@
 "use client";
 
 import React from "react";
+import { Button } from "../components/button";
 import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";
+import { initialState, useStateContext } from "./state";
 import * as heart from "./heart";
+import * as square from "./square";
 
 export function Content({ content, length }) {
   return (
-    <StateProvider initial={{}}>
+    <StateProvider initial={initialState}>
       <MDX
         content={content}
         numSections={length}
@@ -27,11 +30,30 @@ export function Content({ content, length }) {
             </p>
           </>
         }
+        components={{ SquareToggle, Square: square.Square }}
       >
         <VisualWrapper
-          components={[heart.page, heart.page, heart.page, heart.page]}
+          components={[
+            heart.page,
+            square.page,
+            heart.page,
+            heart.page,
+            heart.page,
+          ]}
         />
       </MDX>
     </StateProvider>
+  );
+}
+
+function SquareToggle() {
+  const { data, set } = useStateContext("intro");
+  return (
+    <Button
+      className="w-1/3 lg:w-full font-semibold py-2"
+      onClick={() => set({ toggled: !data.toggled })}
+    >
+      {data.toggled ? "Straigthen!" : "Bend!"}
+    </Button>
   );
 }

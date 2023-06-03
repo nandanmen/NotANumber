@@ -14,6 +14,8 @@ import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { CommandHighlight } from "./command-highlight";
 import { PracticeQuestionEditor } from "./path-practice";
+import { Svg } from "./svg";
+import styles from "./page-section.module.css";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
@@ -35,6 +37,7 @@ const baseComponents = {
   PathEditor,
   CommandHighlight,
   PracticeQuestionEditor,
+  Svg,
 };
 
 const sections = [
@@ -62,7 +65,7 @@ export const MDX = ({
   const pathName = usePathname();
   return (
     <IndexProvider numSections={numSections}>
-      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-[100vw] max-w-[68ch] lg:max-w-[50vw]">
+      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-[100vw] lg:max-w-[50vw]">
         <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>
@@ -86,7 +89,16 @@ export const MDX = ({
             </a>
           </div>
         </header>
-        {prefix && <div className="p-8 lg:p-16 pb-8 -mb-16">{prefix}</div>}
+        {prefix && (
+          <div
+            className={clsx(
+              "p-8 lg:p-16 lg:pb-8 -mb-16 grid grid-cols-[min(100%,60ch)_1fr]",
+              styles.section
+            )}
+          >
+            {prefix}
+          </div>
+        )}
         <MDXRemote
           {...content}
           components={{ ...baseComponents, ...components }}

@@ -1,5 +1,7 @@
 import React from "react";
+import { clsx } from "clsx";
 import { useIndexContext } from "./index-provider";
+import styles from "./page-section.module.css";
 
 const isVisible = (element: HTMLElement) => {
   const { top } = element.getBoundingClientRect();
@@ -37,7 +39,12 @@ export function PageSection({
   return (
     <section
       ref={ref}
-      className="p-8 py-16 lg:p-16 lg:pb-32 max-w-[100vw] lg:min-h-[50vh] space-y-[1.5em] relative before:h-px before:border-gray8 before:border-t before:border-dashed before:absolute lg:before:right-0 before:left-0 before:top-0 before:w-1/4 first-of-type:before:hidden"
+      className={clsx(
+        styles.section,
+        "p-8 py-16 lg:p-16 lg:pb-32 max-w-[100vw] lg:min-h-[50vh] space-y-[1.5em] relative",
+        "grid grid-cols-[min(100%,60ch)_1fr] lg:block",
+        "before:border-gray8 before:border-t before:border-dashed before:absolute lg:before:right-0 before:left-0 before:top-0 before:w-1/4 first-of-type:before:hidden before:h-px"
+      )}
     >
       {children}
     </section>

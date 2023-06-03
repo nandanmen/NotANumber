@@ -1,0 +1,15 @@
+.section > * {
+  grid-column: 1;
+}
+
+.section > figure,
+.section > svg {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: theme(screens.lg)) {
+  .section > figure,
+  .section > svg {
+    display: none;
+  }
+}

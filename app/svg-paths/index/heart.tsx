@@ -2,7 +2,6 @@
 
 import { useIndexContext } from "../components/index-provider";
 import { PathVisualizer } from "../components/path-visualizer";
-import { Svg } from "../components/svg";
 import type { Page } from "../components/visual-wrapper";
 
 export const heart = `M11.995 7.23319
@@ -22,14 +21,10 @@ const mapIndexToType = {
 
 function Heart() {
   const { index } = useIndexContext();
-  return (
-    <Svg size={25}>
-      <PathVisualizer path={heart} type={mapIndexToType[index]} />
-    </Svg>
-  );
+  return <PathVisualizer path={heart} type={mapIndexToType[index]} />;
 }
 
 export const page: Page = {
-  svg: false,
+  svg: 25,
   children: <Heart />,
 };

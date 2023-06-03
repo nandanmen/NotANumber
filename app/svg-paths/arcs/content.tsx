@@ -13,7 +13,7 @@ import { CommandListFromSource, CommandText } from "./command-list";
 import { parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
-import { Slider } from "./slider";
+import { Slider } from "../components/slider";
 import {
   getInitialPracticeQuestionState,
   PracticeQuestion,
