@@ -8,6 +8,8 @@ import { VisualWrapper } from "../components/visual-wrapper";
 import { initialState, useStateContext } from "./state";
 import * as heart from "./heart";
 import * as square from "./square";
+import * as commands from "./commands";
+import { Slider } from "../components/slider";
 
 export function Content({ content, length }) {
   return (
@@ -30,13 +32,18 @@ export function Content({ content, length }) {
             </p>
           </>
         }
-        components={{ SquareToggle, Square: square.Square }}
+        components={{
+          SquareToggle,
+          CommandSlider,
+          Square: square.Square,
+          Commands: commands.Commands,
+        }}
       >
         <VisualWrapper
           components={[
             heart.page,
             square.page,
-            heart.page,
+            commands.page,
             heart.page,
             heart.page,
           ]}
@@ -55,5 +62,27 @@ function SquareToggle() {
     >
       {data.toggled ? "Straigthen!" : "Bend!"}
     </Button>
+  );
+}
+
+function CommandSlider() {
+  const {
+    data: { path, index },
+    set,
+  } = useStateContext("commands");
+  return (
+    <div className="flex items-center gap-2">
+      <Button>Play</Button>
+      <Slider
+        value={[index === null ? 0 : index + 1]}
+        onValueChange={([i]) =>
+          set({
+            index: i ? i - 1 : null,
+          })
+        }
+        min={0}
+        max={path.commands.length}
+      />
+    </div>
   );
 }

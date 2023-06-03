@@ -9,7 +9,7 @@ import * as ellipse from "./content/ellipse";
 import * as smallEllipse from "./content/small-ellipse";
 import * as rotation from "./content/rotation";
 import * as flags from "./content/flags";
-import { CommandListFromSource, CommandText } from "./command-list";
+import { CommandListFromSource, CommandText } from "../components/command-list";
 import { parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";

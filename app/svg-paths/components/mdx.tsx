@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { CommandHighlight } from "./command-highlight";
+import { CommandListFromSource } from "./command-list";
 import { PracticeQuestionEditor } from "./path-practice";
 import { Svg } from "./svg";
 import styles from "./page-section.module.css";
@@ -38,6 +39,7 @@ const baseComponents = {
   CommandHighlight,
   PracticeQuestionEditor,
   Svg,
+  CommandListFromSource,
 };
 
 const sections = [
@@ -65,7 +67,7 @@ export const MDX = ({
   const pathName = usePathname();
   return (
     <IndexProvider numSections={numSections}>
-      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-[100vw] lg:max-w-[50vw]">
+      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-full lg:max-w-[50vw]">
         <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>

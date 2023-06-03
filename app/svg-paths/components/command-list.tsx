@@ -2,7 +2,7 @@ import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { Command, createPath, parsePath, Path } from "../lib/path";
-import { useStateContext } from "../components/state-context";
+import { useStateContext } from "./state-context";
 
 const mapCodeToHint = {
   M: "move",
@@ -29,27 +29,18 @@ const mapCodeToHint = {
 
 type CommandKey = `${number}.${string}`;
 
+type StateType = {
+  path: Path;
+  index?: number;
+  expanded?: boolean;
+  active?: CommandKey[];
+  blocklist?: CommandKey[];
+  slice?: [number, number];
+};
+
 export const CommandListFromSource = ({ source }: { source: string }) => {
-  const {
-    data: { path, active, blocklist, slice },
-    set,
-  } = useStateContext<{
-    path: Path;
-    index: number;
-    expanded: boolean;
-    active?: CommandKey[];
-    blocklist?: CommandKey[];
-    slice?: [number, number];
-  }>(source);
-  return (
-    <CommandList
-      active={active}
-      blocklist={blocklist}
-      path={path}
-      onChange={set}
-      slice={slice}
-    />
-  );
+  const { data, set } = useStateContext<Record<string, StateType>>()(source);
+  return <CommandList {...data} onChange={set} />;
 };
 
 export const CommandList = ({
@@ -57,13 +48,17 @@ export const CommandList = ({
   onChange = () => {},
   collapseAfter,
   active,
+  index = null,
+  expanded = false,
   highlight = [],
   blocklist = [],
   slice = [0, Infinity],
 }: {
   path: Path | string;
   active?: CommandKey[];
-  onChange?: (state: { index: number; expanded: boolean }) => void;
+  index?: number | null;
+  expanded?: boolean;
+  onChange?: (state: Partial<StateType>) => void;
   collapseAfter?: number;
   highlight?: number[];
   blocklist?: CommandKey[];
@@ -75,18 +70,12 @@ export const CommandList = ({
     }
     return initialPath;
   }, [initialPath]);
-  const [index, setIndex] = React.useState(null);
-  const [expanded, setExpanded] = React.useState(false);
 
   const [start, end = Infinity] = slice;
   const pathSlice = createPath(path.commands.slice(start, end));
   const _commands = expanded
     ? pathSlice.commands
     : pathSlice.commands.slice(0, collapseAfter);
-
-  React.useEffect(() => {
-    onChange({ index, expanded });
-  }, [onChange, index, expanded]);
 
   return (
     <ol className="border py-3 border-gray8 bg-gray3 rounded-md font-mono relative overflow-hidden">
@@ -95,13 +84,14 @@ export const CommandList = ({
           <motion.li
             key={command.id}
             className={clsx(
-              "py-1 flex justify-between items-center group hover:bg-gray5",
+              "py-1 flex justify-between items-center",
+              index === i + start && "bg-gray5",
               highlight.includes(i + start)
                 ? "bg-gray6 border-gray8 border-l-4 px-3"
                 : "px-4"
             )}
-            onHoverStart={() => setIndex(i + start)}
-            onHoverEnd={() => setIndex(null)}
+            onHoverStart={() => onChange({ index: i + start })}
+            onHoverEnd={() => onChange({ index: null })}
           >
             <span className="flex gap-[1ch]">
               <span>{command.code}</span>
@@ -112,9 +102,11 @@ export const CommandList = ({
                 blocked={blocklist}
               />
             </span>
-            <span className="text-sm text-gray11 hidden group-hover:inline">
-              {mapCodeToHint[command.code]}
-            </span>
+            {index === i + start && (
+              <span className="text-sm text-gray11">
+                {mapCodeToHint[command.code]}
+              </span>
+            )}
           </motion.li>
         );
       })}
@@ -130,7 +122,7 @@ export const CommandList = ({
       )}
       {collapseAfter && (
         <motion.button
-          onClick={() => setExpanded(!expanded)}
+          onClick={() => onChange({ expanded: !expanded })}
           className="absolute bottom-0 right-0 p-2 block"
           animate={{
             rotate: expanded ? 180 : 0,

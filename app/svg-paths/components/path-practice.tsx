@@ -1,5 +1,5 @@
 import React from "react";
-import { CommandListFromSource } from "../arcs/command-list";
+import { CommandListFromSource } from "./command-list";
 import type { Path as IPath } from "../lib/path";
 import { type Command, parsePath, toPathString } from "../utils";
 import { Button } from "./button";

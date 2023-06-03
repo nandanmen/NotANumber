@@ -8,7 +8,7 @@ You see, understanding this attribute's inner workings ended up being a huge boo
 
 <SquareToggle />
 
-<Svg>
+<Svg width="100%">
   <Square />
 </Svg>
 
@@ -22,14 +22,13 @@ Let's get started!
 
 While the `d` attribute may look like some magical incantation, it's actually a **series of commands** that tell the browser how the path should be drawn. This is a bit more obvious if we clean up the `d` attribute a little bit:
 
-```
-M 20 20
-v 20
-m 30 0
-v -20
-M 10 50
-Q 40 70 65 50
-```
+<CommandSlider />
+
+<CommandListFromSource source="commands" />
+
+<Svg>
+  <Commands />
+</Svg>
 
 To draw the path, the browser executes these commands sequentially, each command drawing a little "subsection" of the path.
 
