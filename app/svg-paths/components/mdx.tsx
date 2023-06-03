@@ -22,7 +22,7 @@ const baseComponents = {
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
     <pre
-      className="border border-gray8 bg-gray3 px-4 py-3 rounded-md"
+      className="border border-gray8 bg-gray3 px-4 py-3 rounded-md overflow-x-auto"
       {...props}
     />
   ),
@@ -103,7 +103,7 @@ export const MDX = ({
                   <li
                     key={section}
                     className={clsx(
-                      "capitalize rounded-md py-1 px-2",
+                      "capitalize rounded-md py-1 px-2 font-semibold",
                       href === pathName ? "bg-gray7" : "text-gray10"
                     )}
                   >

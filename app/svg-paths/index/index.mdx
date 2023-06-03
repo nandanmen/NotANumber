@@ -1,18 +1,4 @@
-If you're also like me, you might've glossed over these elements in the past, assuming they're nothing more than the output of your designer's favorite vector graphics editor.
-
-Of course, the humble `<path>` deserves a _little_ more credit than that. When I first sat down to learn about it, I felt I had unlocked a whole new side of front-end development—one that I've always thought was too scary and complex to understand.
-
-This guide is a complete, interactive deep-dive into the `<path>` element and its commands. As we learn more about the `<path>` element, you'll have a chance to apply your learnings by tracing over some fun shapes.
-
-I hope you enjoy reading this as much as I enjoyed writing it!
-
----
-
-## The d Attribute
-
-Just like how mitochondria is the powerhouse of the cell, the `d` attribute is the powerhouse of the `<path>` element. While it often looks like a bunch of random letters and numbers, the `d` attribute is actually a series of commands that tell the browser how to draw the path.
-
-Here's the same `d` attribute from earlier, but with some spaces added to make it easier to read:
+While this attribute may look like some magical incantation, it's actually a **series of commands** that tell the browser how to draw the path. This is a bit more obvious if we clean up the `d` attribute a little bit:
 
 ```
 M 20 20
@@ -23,24 +9,22 @@ M 10 50
 Q 40 70 65 50
 ```
 
-All path commands follow the same format:
+You see, all path commands follow the same basic syntax:
 
 - A **letter code** indicating the command type, and;
 - A series of **numbers** indicating the command's parameters.
 
-The letter can be uppercase or lowercase, with a lowercase letter indicating the command uses _relative_ coordinates.
-
-For example, you can think of the `M 20 20` command as a function call that looks like this:
+In some ways, you can think of them as a function call, where the letter code is the function name and the numbers are the function's arguments:
 
 ```js
 M({ x: 20, y: 20, relative: false });
 ```
 
----
-
 Commands are grouped into three different types:
 
-**Cursor commands**, which move the path's internal cursor without drawing a line or a curve;
+---
+
+**Cursor commands**, which move the path's _internal cursor_ without drawing a line or a curve;
 
 ```
 M 20 20

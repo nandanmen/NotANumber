@@ -1,10 +1,4 @@
-import {
-  JetBrains_Mono,
-  Nunito,
-  PT_Mono,
-  Shantell_Sans,
-  Source_Code_Pro,
-} from "next/font/google";
+import { Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -15,33 +9,31 @@ export const metadata = {
 };
 
 const sans = Nunito({
-  weight: ["400", "700"],
+  weight: ["400", "600", "700"],
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const mono = Source_Code_Pro({
-  weight: ["400"],
+const mono = localFont({
+  src: [
+    {
+      path: "./fonts/intelone-mono/regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   variable: "--font-mono",
-  subsets: ["latin"],
-});
-
-const draw = Shantell_Sans({
-  weight: ["400", "700"],
-  style: "normal",
-  variable: "--font-draw",
-  subsets: ["latin"],
 });
 
 const serif = localFont({
   src: [
     {
-      path: "./fonts/pp-editorial-new/PPEditorialNew-Regular.woff2",
+      path: "./fonts/pp-editorial-new/regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/pp-editorial-new/PPEditorialNew-Bold.woff2",
+      path: "./fonts/pp-editorial-new/bold.woff2",
       weight: "700",
       style: "normal",
     },
@@ -61,7 +53,6 @@ export default function RootLayout({
           sans.variable,
           serif.variable,
           mono.variable,
-          draw.variable,
           "font-sans antialiased"
         )}
       >
