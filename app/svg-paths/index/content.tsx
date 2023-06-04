@@ -9,7 +9,9 @@ import { initialState, useStateContext } from "./state";
 import * as heart from "./heart";
 import * as square from "./square";
 import * as commands from "./commands";
+import * as absolute from "./absolute";
 import { Slider } from "../components/slider";
+import useInterval from "@use-it/interval";
 
 export function Content({ content, length }) {
   return (
@@ -37,15 +39,20 @@ export function Content({ content, length }) {
           CommandSlider,
           Square: square.Square,
           Commands: commands.Commands,
+          Absolute: absolute.Absolute,
+          Heart: heart.Heart,
         }}
       >
         <VisualWrapper
           components={[
-            heart.page,
+            heart.page(),
             square.page,
             commands.page,
-            heart.page,
-            heart.page,
+            absolute.page,
+            heart.page("cursor"),
+            heart.page("line"),
+            heart.page("curve"),
+            heart.page(),
           ]}
         />
       </MDX>
@@ -66,13 +73,34 @@ function SquareToggle() {
 }
 
 function CommandSlider() {
+  const [isPlaying, setIsPlaying] = React.useState(false);
   const {
     data: { path, index },
     set,
   } = useStateContext("commands");
+
+  useInterval(
+    () => {
+      if (index === path.commands.length - 1) {
+        return setIsPlaying(false);
+      }
+      set({
+        index: index === null ? 0 : index + 1,
+      });
+    },
+    isPlaying ? 500 : null
+  );
+
+  const play = () => {
+    if (index === path.commands.length - 1) {
+      set({ index: null });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <div className="flex items-center gap-2">
-      <Button>Play</Button>
+      <Button onClick={play}>{isPlaying ? "Pause" : "Play"}</Button>
       <Slider
         value={[index === null ? 0 : index + 1]}
         onValueChange={([i]) =>

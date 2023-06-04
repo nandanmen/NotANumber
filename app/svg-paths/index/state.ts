@@ -18,6 +18,11 @@ export const initialState = {
     path: parsePath(heart),
     index: null,
   },
+  absolute: {
+    path: parsePath("M 10 10 L 5 5 M 10 10 l 5 5"),
+    index: null,
+    highlight: [1, 3],
+  },
 };
 
 export const useStateContext = <Key extends keyof typeof initialState>(

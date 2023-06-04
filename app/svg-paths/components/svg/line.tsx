@@ -7,10 +7,12 @@ type LineVariant = "primary" | "secondary" | "current";
 export function Line({
   variant = "primary",
   dashed = false,
+  size = "base",
   ...props
 }: {
   variant?: LineVariant;
   dashed?: boolean;
+  size?: "base" | "xl";
 } & React.ComponentPropsWithoutRef<(typeof motion)["line"]>) {
   const { useRelativeMotionValue } = useSvgContext();
   const dashedValue = useRelativeMotionValue(1);
@@ -19,10 +21,14 @@ export function Line({
     secondary: "stroke-gray8",
     current: "stroke-current",
   };
+  const mapSizeToWidth = {
+    base: 0.5,
+    xl: 1.25,
+  };
   return (
     <motion.line
       className={mapVariantToStroke[variant]}
-      strokeWidth={useRelativeMotionValue(0.5)}
+      strokeWidth={useRelativeMotionValue(mapSizeToWidth[size])}
       strokeDasharray={dashed && dashedValue}
       {...props}
     />

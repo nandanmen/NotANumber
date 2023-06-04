@@ -1,6 +1,5 @@
 "use client";
 
-import { useIndexContext } from "../components/index-provider";
 import { PathVisualizer } from "../components/path-visualizer";
 import type { Page } from "../components/visual-wrapper";
 
@@ -13,18 +12,15 @@ C19.7498 10.6312 19.5253 8.13046 17.6779 6.65972
 C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
 Z`;
 
-const mapIndexToType = {
-  1: "cursor",
-  2: "line",
-  3: "curve",
-};
+type HeartType = "cursor" | "line" | "curve";
 
-function Heart() {
-  const { index } = useIndexContext();
-  return <PathVisualizer path={heart} type={mapIndexToType[index]} />;
+export function Heart({ type }: { type?: HeartType }) {
+  return <PathVisualizer path={heart} type={type} />;
 }
 
-export const page: Page = {
-  svg: 25,
-  children: <Heart />,
+export const page = (type?: HeartType): Page => {
+  return {
+    svg: 25,
+    children: <Heart type={type} />,
+  };
 };

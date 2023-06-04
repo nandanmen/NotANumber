@@ -22,32 +22,45 @@ Let's get started!
 
 While the `d` attribute may look like some magical incantation, it's actually a **series of commands** that tell the browser how the path should be drawn. This is a bit more obvious if we clean up the `d` attribute a little bit:
 
-<CommandSlider />
-
 <CommandListFromSource source="commands" />
+
+To draw the path, the browser executes these commands sequentially, each command drawing a little "subsection" of the path.
+
+<CommandSlider />
 
 <Svg>
   <Commands />
 </Svg>
 
-To draw the path, the browser executes these commands sequentially, each command drawing a little "subsection" of the path.
+All path commands follow the same basic syntax — a single-letter code followed by a series of numbers. The letter code identifies the command type, while the numbers act as the command's parameters.
 
----
-
-You see, all path commands follow the same basic syntax:
-
-- A **letter code** indicating the command type, and;
-- A series of **numbers** indicating the command's parameters.
-
-In some ways, you can think of them as a function call, where the letter code is the function name and the numbers are the function's arguments:
+In some ways, you can think of the commands as function calls, where the letter code is the function name and the numbers are the function's arguments:
 
 ```js
-M({ x: 20, y: 20, relative: false });
+M(12, 7.2);
 ```
 
-Commands are grouped into three different types:
+---
+
+## Absolute and Relative Commands
+
+The command code can either be **uppercase** or **lowercase**. Uppercase commands are absolute, meaning their parameters are relative to the origin point `(0, 0)`, while lowercase commands are relative, meaning their parameters are relative to the _previous_ command's endpoint.
+
+Consider the following commands:
+
+<CommandListFromSource source="absolute" />
+
+Here, we have two lines that start at the same point, `(10, 10)`, with the same arguments, `5 5`.
+
+<Svg size={20}>
+  <Absolute />
+</Svg>
+
+Notice how the line made with the uppercase `L` command ended up at `(5, 5)` while the line made with the lowercase `l` command ended up at `(15, 15)`.
 
 ---
+
+## Command Types
 
 **Cursor commands**, which move the path's _internal cursor_ without drawing a line or a curve;
 
@@ -56,6 +69,10 @@ M 20 20
 m 30 0
 M 10 50
 ```
+
+<Svg>
+  <Heart type="cursor" />
+</Svg>
 
 ---
 
@@ -66,6 +83,10 @@ v 20
 v -20
 ```
 
+<Svg>
+  <Heart type="line" />
+</Svg>
+
 ---
 
 And **curve commands**, which draw a curve from the cursor's current position to another position, using control points to determine its "curvy"-ness.
@@ -73,6 +94,10 @@ And **curve commands**, which draw a curve from the cursor's current position to
 ```
 Q 40 70 65 50
 ```
+
+<Svg>
+  <Heart type="curve" />
+</Svg>
 
 ---
 
