@@ -1,12 +1,10 @@
 import React from "react";
 import { CommandListFromSource } from "./command-list";
 import type { Path as IPath } from "../lib/path";
-import { type Command, parsePath, toPathString } from "../utils";
+import { type Command, parsePath } from "../utils";
 import { Button } from "./button";
-import { CommandHighlight } from "./command-highlight";
 import { PathEditor } from "./path-editor";
 import { PathList } from "./path-hover-visual";
-import { PathVisualizer } from "./path-visualizer";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
 import { Path } from "./svg/path";
@@ -47,7 +45,9 @@ export function PathPractice({ value }: { value: string }) {
 export function PracticeQuestion() {
   const {
     data: { path, showAnswer, value, index },
-  } = useStateContext<PracticeQuestionState>(PRACTICE_QUESTION_KEY);
+  } = useStateContext<Record<string, PracticeQuestionState>>()(
+    PRACTICE_QUESTION_KEY
+  );
   const { getRelative } = useSvgContext();
   return (
     <g>
@@ -68,7 +68,9 @@ export function PracticeQuestionEditor() {
   const {
     data: { showAnswer },
     set,
-  } = useStateContext<PracticeQuestionState>(PRACTICE_QUESTION_KEY);
+  } = useStateContext<Record<string, PracticeQuestionState>>()(
+    PRACTICE_QUESTION_KEY
+  );
   return (
     <div className="space-y-2">
       <PathEditor id={PRACTICE_QUESTION_KEY} placeholder="M 5 10" />

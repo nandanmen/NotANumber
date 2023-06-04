@@ -13,7 +13,7 @@ import { heart } from "../index/heart";
 import { useIndexContext } from "../components/index-provider";
 import { Tooltip } from "../components/svg/tooltip";
 import { parsePath, type Command } from "../utils";
-import { useStateContext } from "../components/state-context";
+import { useStateContext } from "./state";
 import { useDebouncedCallback } from "use-debounce";
 import {
   ArrowLeft,
@@ -188,14 +188,8 @@ const Corner = () => {
 // --
 
 const AbsoluteRelative = () => {
-  const { data: absolute, set: setAbsolute } = useStateContext<{
-    x: number;
-    y: number;
-  }>("absolute");
-  const { data: relative, set: setRelative } = useStateContext<{
-    x: number;
-    y: number;
-  }>("relative");
+  const { data: absolute, set: setAbsolute } = useStateContext("absolute");
+  const { data: relative, set: setRelative } = useStateContext("relative");
 
   const absoluteCommand = React.useMemo(() => {
     return parsePath(`M ${absolute.x} ${absolute.y} L 10 15`);

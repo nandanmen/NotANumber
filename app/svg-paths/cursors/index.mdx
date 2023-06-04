@@ -6,11 +6,6 @@ At the heart of all SVG paths is the **cursor**. All path commands _use_ the cur
 
 Consider this little corner, defined with the following commands:
 
-<CommandHighlight
-  id="command-list-corner"
-  commands={["M 5 5", "v 5", "L 10 15", "h 5"]}
-/>
-
 The cursor always starts at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
 
 - `M 10 10` moves the cursor to `(10, 10)`.
@@ -49,18 +44,6 @@ m <dx> <dy>
 ```
 
 These are useful when you want to draw paths that aren't connected to one another:
-
-<CommandHighlight
-  id="command-list-move"
-  commands={[
-    "M 5 8",
-    "q 2 2 0 4",
-    "m 3 -6",
-    "q 4 4 0 8",
-    "m 3 -10",
-    "q 4 6 0 12",
-  ]}
-/>
 
 ---
 

@@ -13,7 +13,7 @@ export const InteractiveCommand = ({ id, template }) => {
   const {
     data: { x, y },
     set,
-  } = useStateContext<{ x: number; y: number }>(id);
+  } = useStateContext<Record<string, { x: number; y: number }>>()(id);
   return (
     <div className="flex justify-between bg-gray3 border border-gray8 rounded-md p-1 items-center">
       <p className="ml-2">
