@@ -3,7 +3,7 @@ import { useIndexContext } from "app/svg-paths/components/index-provider";
 import { Ripple } from "app/svg-paths/components/ripple";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Path } from "app/svg-paths/components/svg/path";
-import { parsePath, type Path as IPath } from "app/svg-paths/lib/path";
+import { parsePath } from "app/svg-paths/lib/path";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import { useStateContext } from "../state";

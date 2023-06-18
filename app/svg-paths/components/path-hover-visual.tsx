@@ -11,7 +11,8 @@ export function PathHoverVisual({
   id: string;
   commands: AbsoluteCommand[];
 }) {
-  const { data } = useStateContext<{ index: number } | null>(id);
+  const { data } =
+    useStateContext<Record<string, { index: number } | null>>()(id);
   return <PathList commands={commands} index={data?.index} />;
 }
 
