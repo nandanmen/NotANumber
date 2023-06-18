@@ -18,6 +18,9 @@ module.exports = {
         mono: "var(--font-mono)",
         sans: "var(--font-sans)",
       },
+      screens: {
+        coffee: "1370px",
+      },
     },
   },
   plugins: [],

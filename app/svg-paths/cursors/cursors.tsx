@@ -74,7 +74,7 @@ const usePathAnimation = (
   };
 };
 
-const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
+export const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
   const { index, play, playing } = usePathAnimation(commands);
   const currentCommand = commands[index];
   return (

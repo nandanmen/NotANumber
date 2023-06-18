@@ -2,17 +2,26 @@
 
 At the heart of all SVG paths is the **cursor**. All path commands _use_ the cursor to determine where to start drawing from, and all path commands _move_ the cursor to ensure the following command starts from the correct position.
 
+<figure>
+  <CursorOverview />
+</figure>
+
 ---
 
 Consider this little corner, defined with the following commands:
 
-The cursor always starts at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
+<CommandListFromSource source="corner" />
 
-- `M 10 10` moves the cursor to `(10, 10)`.
-- `L 20 10` draws a line from `(10, 10)` to `(20, 10)`, and moves the cursor to `(20, 10)`.
-- `v 10` draws a line from `(20, 10)` to `(20, 20)`, and moves the cursor to `(20, 20)`.
+Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
+
+- `M 5 5` moves the cursor to `(5, 5)`;
+- `v 5` draws a vertical line of length 5, moving the cursor to `(5, 10)`;
+- `L 10 15` draws a line to `(10, 15)`, moving the cursor to `(10, 15)`;
+- `h 5` draws a horizontal line of length 5, moving the cursor to `(15, 15)`.
 
 ---
+
+Generally speaking, the cursor will end up wherever the current path "section" finishes. This makes sense because, most of the time, you want your path sections to be connected to one another.
 
 By checking if the command is **absolute** or **relative**, we can determine how the cursor will be moved after the command is executed:
 

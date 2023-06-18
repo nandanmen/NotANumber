@@ -67,7 +67,7 @@ export const MDX = ({
   const pathName = usePathname();
   return (
     <IndexProvider numSections={numSections}>
-      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[68ch] w-full lg:max-w-[50vw]">
+      <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[55ch] xl:w-[68ch] w-full lg:max-w-[50vw]">
         <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>
@@ -94,7 +94,7 @@ export const MDX = ({
         {prefix && (
           <div
             className={clsx(
-              "p-8 lg:p-16 lg:pb-8 -mb-16 grid grid-cols-[min(100%,60ch)_1fr]",
+              "p-8 lg:p-16 lg:pb-8 grid grid-cols-[1fr_min(100%,60ch)_1fr]",
               styles.section
             )}
           >
@@ -117,7 +117,7 @@ export const MDX = ({
                   <li
                     key={section}
                     className={clsx(
-                      "capitalize rounded-md py-1 px-2 font-semibold",
+                      "capitalize rounded-md py-1 px-2 font-semibold h-fit",
                       href === pathName ? "bg-gray7" : "text-gray10"
                     )}
                   >
@@ -125,7 +125,7 @@ export const MDX = ({
                   </li>
                 );
               })}
-              <li className="ml-auto bg-green6 rounded-md py-1 px-2">
+              <li className="ml-auto text-gray11 rounded-md py-1 px-2 h-fit">
                 <motion.a
                   className="flex items-center text-sm font-bold gap-1"
                   href="https://ko-fi.com/nandafyi"
@@ -138,7 +138,7 @@ export const MDX = ({
                   }}
                 >
                   <CoffeeIcon />
-                  <span>Buy me a coffee</span>
+                  <span className="hidden coffee:block">Buy me a coffee</span>
                 </motion.a>
               </li>
             </ul>
@@ -197,7 +197,7 @@ const Footer = () => {
   const prev = sections[pathIndex - 1];
   const next = sections[pathIndex + 1];
   return (
-    <footer className="px-8 lg:px-16 pb-8 flex text-gray11">
+    <footer className="w-[calc(60ch+theme(space.8)*2)] px-8 max-w-[100vw] mx-auto lg:px-16 mb-32 flex text-gray11">
       {prev && (
         <Link
           href={toHref(prev)}

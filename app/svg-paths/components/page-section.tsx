@@ -41,11 +41,11 @@ export function PageSection({
       ref={ref}
       className={clsx(
         styles.section,
-        "p-8 py-16 lg:p-16 lg:pb-32 max-w-[100vw] lg:min-h-[50vh] gap-y-6 lg:space-y-[1.5em] relative",
-        "grid grid-cols-[min(100%,60ch)_1fr] lg:block",
-        "before:border-gray8 before:border-t before:border-dashed before:absolute lg:before:right-0 before:left-0 before:top-0 before:w-1/4 first-of-type:before:hidden before:h-px"
+        "p-8 pb-16 pt-0 lg:px-16 lg:pb-32 max-w-[100vw] lg:min-h-[50vh] gap-y-6 lg:space-y-[1.5em] relative group",
+        "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
       )}
     >
+      <hr className="border-gray8 mb-10 lg:mb-16 lg:w-1/3 group-first-of-type:hidden" />
       {children}
     </section>
   );

@@ -35,15 +35,7 @@ export function Content({ content, length }) {
           ty: 15,
         },
         ...getInitialPracticeQuestionState([
-          "M 5 17",
-          "Q 10 8 15 17",
-          "M 10 12.5",
-          "Q 15 5 20 12.5",
-          "M 5 5",
-          "v 15",
-          "h 15",
-          "v -15",
-          "z",
+          "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z",
         ]),
       }}
     >

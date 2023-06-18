@@ -49,9 +49,6 @@ export function Content({ content, length }) {
             square.page,
             commands.page,
             absolute.page,
-            heart.page("cursor"),
-            heart.page("line"),
-            heart.page("curve"),
             heart.page(),
           ]}
         />

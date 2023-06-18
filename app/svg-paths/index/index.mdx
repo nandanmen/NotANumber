@@ -52,7 +52,7 @@ Consider the following commands:
 
 Here, we have two lines that start at the same point, `(10, 10)`, with the same arguments, `5 5`.
 
-<Svg size={20}>
+<Svg size={14} config={{ pan: { x: 3, y: 3 } }}>
   <Absolute />
 </Svg>
 
@@ -60,45 +60,11 @@ Notice how the line made with the uppercase `L` command ended up at `(5, 5)` whi
 
 ---
 
-## Command Types
+To summarize:
 
-**Cursor commands**, which move the path's _internal cursor_ without drawing a line or a curve;
+- The `d` attribute in a `<path>` element is a series of commands;
+- Paths are drawn by executing the commands sequentially;
+- Commands start with a single-letter code followed by one or more numbers;
+- Uppercase commands are absolute, while lowercase commands are relative.
 
-```
-M 20 20
-m 30 0
-M 10 50
-```
-
-<Svg>
-  <Heart type="cursor" />
-</Svg>
-
----
-
-**Line commands**, which draw a straight line from the cursor's current position to another position;
-
-```
-v 20
-v -20
-```
-
-<Svg>
-  <Heart type="line" />
-</Svg>
-
----
-
-And **curve commands**, which draw a curve from the cursor's current position to another position, using control points to determine its "curvy"-ness.
-
-```
-Q 40 70 65 50
-```
-
-<Svg>
-  <Heart type="curve" />
-</Svg>
-
----
-
-Of course, this is by no means an exhaustive list. There are many more commands than the ones you see here. Let's take a look at them, shall we?
+I think that's enough talk about commands as a whole for now. Let's dive into the different types of commands!

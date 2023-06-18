@@ -3,6 +3,9 @@ import { getInitialPracticeQuestionState } from "../components/path-practice";
 import { parsePath } from "../lib/path";
 
 export const initialState = {
+  corner: {
+    path: parsePath("M 5 5 v 5 L 10 15 h 5"),
+  },
   absolute: { x: 5, y: 5 },
   relative: { x: 15, y: 5 },
   ...getInitialPracticeQuestionState(
