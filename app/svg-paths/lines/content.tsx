@@ -4,19 +4,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
-import { StateProvider, useStateContext } from "../components/state-context";
+import { StateProvider } from "../components/state-context";
 import { useIndexContext } from "../components/index-provider";
 import { Svg, useSvgContext } from "../components/svg";
 import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
-import { parsePath } from "../utils";
+import { parsePath } from "../lib/path";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { HeartCommands, ClosePathToggle } from "./components";
-import {
-  getInitialPracticeQuestionState,
-  PracticeQuestion,
-} from "../components/path-practice";
+import { PracticeQuestion } from "../components/path-practice";
 import { Path } from "../components/path";
+import { initialState, useStateContext } from "./state";
 
 const mapIndexToSize = [
   20,
@@ -30,28 +28,7 @@ const mapIndexToSize = [
 
 export function LinesContent({ content, length }) {
   return (
-    <StateProvider
-      initial={{
-        L: { x: 15, y: 10 },
-        l: { x: 15, y: 10 },
-        z: { active: false },
-        ...getInitialPracticeQuestionState([
-          "M 5 10",
-          "l 2.5 -5",
-          "h 10",
-          "l 2.5 5",
-          "h -12.5",
-          "v 10",
-          "h 5",
-          "v -5",
-          "h -2.5",
-          "v 5",
-          "h 7.5",
-          "v -10",
-          "z",
-        ]),
-      }}
-    >
+    <StateProvider initial={initialState}>
       <MDX
         content={content}
         numSections={length}
@@ -68,7 +45,7 @@ const commands = parsePath("M 13 5 h -6 V 15 H 13 M 7 10 h 4");
 const mapIndexToComponent = [
   <Line index={0} />,
   <Line index={1} />,
-  <PathHoverVisual commands={commands} id="command-list-lines" />,
+  <PathHoverVisual commands={[]} id="command-list-lines" />,
   <ZExample />,
   <HeartPath />,
   <Heart />,
@@ -110,15 +87,15 @@ function LineVisuals() {
 }
 
 function Line({ index }) {
-  const { data: absolute } = useStateContext<{ x: number; y: number }>("L");
-  const { data: relative } = useStateContext<{ x: number; y: number }>("l");
+  const { data: absolute } = useStateContext("L");
+  const { data: relative } = useStateContext("l");
 
   const absolutePath = React.useMemo(() => {
-    return parsePath(`M 5 5 L ${absolute.x} ${absolute.y}`);
+    return `M 5 5 L ${absolute.x} ${absolute.y}`;
   }, [absolute.x, absolute.y]);
 
   const relativePath = React.useMemo(() => {
-    return parsePath(`M 5 5 l ${relative.x} ${relative.y}`);
+    return `M 5 5 l ${relative.x} ${relative.y}`;
   }, [relative.x, relative.y]);
 
   return (
@@ -154,7 +131,7 @@ ${withZ ? "Z" : ""}`}
 
 function Heart() {
   const { useRelativeMotionValue } = useSvgContext();
-  const { data } = useStateContext<{ active: boolean }>("z");
+  const { data } = useStateContext("z");
   return (
     <>
       <HeartPath withZ={data.active} strokeWidth={0.3} />

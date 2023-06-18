@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useStateContext } from "../components/state-context";
 import { Button } from "../components/button";
+import { useStateContext } from "./state";
 
 export function HeartCommands() {
   return (
@@ -23,7 +23,7 @@ export function HeartCommands() {
 }
 
 export function ClosePathToggle() {
-  const { data, set } = useStateContext<{ active: boolean }>("z");
+  const { data, set } = useStateContext("z");
   return (
     <div className="space-y-2">
       <Button onClick={() => set({ active: !data.active })}>Toggle Z</Button>

@@ -287,7 +287,7 @@ const commands = parsePath(
 const MoveCommand = () => {
   return (
     <Svg size={20}>
-      <PathHoverVisual id="command-list-move" commands={commands} />
+      <PathHoverVisual id="command-list-move" commands={[]} />
     </Svg>
   );
 };
