@@ -198,7 +198,7 @@ const Footer = () => {
   const prev = sections[pathIndex - 1];
   const next = sections[pathIndex + 1];
   return (
-    <footer className="w-[calc(60ch+theme(space.8)*2)] px-8 max-w-[100vw] mx-auto lg:px-16 mb-32 flex text-gray11">
+    <footer className="w-[calc(60ch+theme(space.8)*2)] px-8 max-w-[100vw] mx-auto lg:px-16 mb-32 lg:mb-16 flex text-gray11">
       {prev && (
         <Link
           href={toHref(prev)}

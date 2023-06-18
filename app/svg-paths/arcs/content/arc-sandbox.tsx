@@ -8,7 +8,7 @@ import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
 import { Path as BasePath } from "app/svg-paths/components/svg/path";
-import { getArcCenter, getScale } from "app/svg-paths/components/utils";
+import { getScale } from "app/svg-paths/components/utils";
 import type {
   AbsoluteArcCommand,
   Command,

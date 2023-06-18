@@ -4,9 +4,9 @@ import { Ripple } from "app/svg-paths/components/ripple";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Path } from "app/svg-paths/components/svg/path";
 import { parsePath, type Path as IPath } from "app/svg-paths/lib/path";
-import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useSvgContext } from "app/svg-paths/components/svg";
-import { useStateContext } from "app/svg-paths/components/state-context";
+import { useStateContext } from "../state";
 
 const path = parsePath("M 7 7 A 8 8 0 0 0 18 18");
 
@@ -18,7 +18,7 @@ export const initialState = {
 
 function Flags() {
   const { index } = useIndexContext();
-  const { data } = useStateContext<{ path: IPath }>("flags");
+  const { data } = useStateContext("flags");
   const arc = data.path.atAbsolute<"A">(1);
   return (
     <>

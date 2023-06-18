@@ -1,34 +1,23 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useStateContext } from "app/svg-paths/components/state-context";
+import { useStateContext } from "../state";
 import { Svg } from "app/svg-paths/components/svg";
-import { Command, parsePath } from "app/svg-paths/lib/path";
-import { createInitialState } from "./drag-group";
+import { Command } from "app/svg-paths/lib/path";
 import { ArcSandbox } from "./arc-sandbox";
-import { SyntaxState } from "./types";
-
-const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 15");
 
 function ArcSyntax() {
   const {
     data: { path, state, active },
     set,
-  } = useStateContext<SyntaxState>("syntax");
+  } = useStateContext("syntax");
   return <ArcSandbox path={path} state={state} active={active} set={set} />;
 }
-
-export const initialState = {
-  ...createInitialState(),
-  index: null,
-  expanded: false,
-  path,
-};
 
 function CommandView() {
   const {
     data: { path },
     set,
-  } = useStateContext<SyntaxState>("syntax");
+  } = useStateContext("syntax");
   const arc = path.at<"A">(1);
   return (
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2">
@@ -93,7 +82,7 @@ function PropButton({
   const {
     data: { state },
     set,
-  } = useStateContext<SyntaxState>("syntax");
+  } = useStateContext("syntax");
   const toKey = (prop: keyof Command<"A">) => `1.${prop}`;
   return (
     <motion.button

@@ -1,5 +1,5 @@
 import { Ripple } from "app/svg-paths/components/ripple";
-import { useStateContext } from "app/svg-paths/components/state-context";
+import { useStateContext } from "../state";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import {
   CoordinatesTooltip,
@@ -8,7 +8,6 @@ import {
 import { parsePath } from "app/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";
 import { createInitialState } from "./drag-group";
-import { SyntaxState } from "./types";
 
 const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 17");
 
@@ -20,7 +19,7 @@ export const initialState = {
 
 function Ellipse() {
   const { getRelative } = useSvgContext();
-  const { data, set } = useStateContext<SyntaxState>("ellipse");
+  const { data, set } = useStateContext("ellipse");
   const { path } = data;
   const arc = path.atAbsolute<"A">(1);
 

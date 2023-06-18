@@ -2,7 +2,7 @@
 
 import React from "react";
 import { MDX } from "../components/mdx";
-import { StateProvider, useStateContext } from "../components/state-context";
+import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";
 import * as syntax from "./content/syntax";
 import * as ellipse from "./content/ellipse";
@@ -10,31 +10,15 @@ import * as smallEllipse from "./content/small-ellipse";
 import * as rotation from "./content/rotation";
 import * as flags from "./content/flags";
 import { CommandListFromSource, CommandText } from "../components/command-list";
-import { parsePath, Path } from "app/svg-paths/lib/path";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
 import { Slider } from "../components/slider";
-import {
-  getInitialPracticeQuestionState,
-  PracticeQuestion,
-} from "../components/path-practice";
-
-const practicePath = parsePath(
-  "M 3 15 q 1.5 -2 1.5 -5 q 0 -2 1.5 -4 M 8 4 a 8 8 0 0 1 12 6 q 0.5 4 -2 9 M 13 21 q 1.5 -2 2 -5 M 16 12 v -1 a 4 4 0 0 0 -8 0 q 0 4 -2.5 7 M 8.5 20 q 3 -3 3.5 -9"
-);
+import { PracticeQuestion } from "../components/path-practice";
+import { initialState, useStateContext } from "./state";
 
 export function Content({ content, length }) {
   return (
-    <StateProvider
-      initial={{
-        syntax: syntax.initialState,
-        ellipse: ellipse.initialState,
-        "small-ellipse": smallEllipse.initialState,
-        rotation: rotation.initialState,
-        flags: flags.initialState,
-        ...getInitialPracticeQuestionState(practicePath),
-      }}
-    >
+    <StateProvider initial={initialState}>
       <MDX
         content={content}
         numSections={length}
@@ -71,7 +55,7 @@ function RotationSlider() {
   const {
     data: { path },
     set,
-  } = useStateContext<{ path: Path }>("rotation");
+  } = useStateContext("rotation");
   const arc = path.atAbsolute<"A">(1);
   return (
     <Slider
@@ -88,7 +72,7 @@ function ToggleFlagButton({ prop }: { prop: "largeArc" | "sweep" }) {
   const {
     data: { path },
     set,
-  } = useStateContext<{ path: Path }>("flags");
+  } = useStateContext("flags");
   return (
     <div className="flex justify-between gap-2">
       <div className="bg-gray1 py-2 px-3 border border-gray8 rounded-md w-full relative">
@@ -115,7 +99,7 @@ function ShrinkArcButton() {
   const {
     data: { path },
     set,
-  } = useStateContext<{ path: Path }>("small-ellipse");
+  } = useStateContext("small-ellipse");
   return (
     <div className="flex justify-between gap-2">
       <div className="bg-gray1 py-2 px-3 border border-gray8 rounded-md w-full relative">

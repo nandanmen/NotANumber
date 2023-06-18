@@ -1,4 +1,4 @@
-import { useStateContext } from "app/svg-paths/components/state-context";
+import { useStateContext } from "../state";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import { Tooltip } from "app/svg-paths/components/svg/tooltip";
 import { parsePath } from "app/svg-paths/lib/path";
@@ -11,12 +11,12 @@ export const initialState = { path };
 
 function SmallEllipse() {
   const { getRelative } = useSvgContext();
-  const { data, set } = useStateContext<SyntaxState>("small-ellipse");
+  const { data, set } = useStateContext("small-ellipse");
   const { path } = data;
   const arc = path.atAbsolute<"A">(1);
   return (
     <>
-      <Arc.Root {...data} set={set}>
+      <Arc.Root {...(data as SyntaxState)} set={set}>
         <Arc.ScaledEllipse />
         <Arc.Ellipse />
         <Arc.XAxis />

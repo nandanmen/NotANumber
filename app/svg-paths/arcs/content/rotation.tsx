@@ -1,6 +1,4 @@
-import { useStateContext } from "app/svg-paths/components/state-context";
-import { useSvgContext } from "app/svg-paths/components/svg";
-import { Tooltip } from "app/svg-paths/components/svg/tooltip";
+import { useStateContext } from "../state";
 import { parsePath } from "app/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";
 import { SyntaxState } from "./types";
@@ -14,13 +12,10 @@ export const initialState = {
 };
 
 function Rotation() {
-  const { getRelative } = useSvgContext();
-  const { data, set } = useStateContext<SyntaxState>("rotation");
-  const { path } = data;
-  const arc = path.atAbsolute<"A">(1);
+  const { data, set } = useStateContext("rotation");
   return (
     <>
-      <Arc.Root {...data} set={set}>
+      <Arc.Root {...(data as unknown as SyntaxState)} set={set}>
         <Arc.ScaledEllipse />
         <Arc.Ellipse />
         <Arc.XAxis />
