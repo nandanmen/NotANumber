@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
-import { CommandHighlight } from "./command-highlight";
 import { CommandListFromSource, CommandList } from "./command-list";
 import { PracticeQuestionEditor } from "./path-practice";
 import { Svg } from "./svg";
@@ -36,7 +35,6 @@ const baseComponents = {
   PageSection,
   InteractiveCommand,
   PathEditor,
-  CommandHighlight,
   PracticeQuestionEditor,
   Svg,
   CommandListFromSource,
