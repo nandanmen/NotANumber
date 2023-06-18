@@ -1,11 +1,9 @@
-import { useStateContext } from "../components/state-context";
+import { useStateContext } from "./state";
 
 export function RoundedCornerCommands() {
   const {
     data: { x1, y1, x, y },
-  } = useStateContext<{ x1: number; y1: number; x: number; y: number }>(
-    "curve"
-  );
+  } = useStateContext("curve");
   return (
     <ol className="border border-gray8 bg-gray3 px-4 py-3 rounded-md font-mono">
       <li>M 5 5</li>
@@ -21,14 +19,7 @@ export function RoundedCornerCommands() {
 export function TCommandList() {
   const {
     data: { x1, y1, x, y, tx, ty },
-  } = useStateContext<{
-    x1: number;
-    y1: number;
-    x: number;
-    y: number;
-    tx: number;
-    ty: number;
-  }>("chain");
+  } = useStateContext("chain");
   return (
     <ol className="border border-gray8 bg-gray3 px-4 py-3 rounded-md font-mono">
       <li>

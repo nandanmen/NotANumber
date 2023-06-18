@@ -1,12 +1,9 @@
-import {
-  createInitialState,
-  DragGroupState,
-} from "app/svg-paths/components/drag-group";
-import { useStateContext } from "../../components/state-context";
+import { createInitialState } from "app/svg-paths/components/drag-group";
+import { useStateContext } from "../state";
 import { CubicPlayground } from "./cubic-playground";
 
 function Syntax() {
-  const { data, set } = useStateContext<DragGroupState>("syntax");
+  const { data, set } = useStateContext("syntax");
   return <CubicPlayground {...data} set={set} tooltip />;
 }
 

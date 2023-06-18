@@ -45,7 +45,7 @@ export function CubicPlayground({
       />
       <circle fill="currentColor" r={getRelative(1)} cx={5} cy={13} />
       {props.map(({ x, y, on }, index) => {
-        return <DraggableEndpoint key={index} cx={x} cy={y} on={on} />;
+        return <DraggableEndpoint key={index} cx={x} cy={y} />;
       })}
       {tooltip && (
         <>

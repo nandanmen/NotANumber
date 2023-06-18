@@ -4,8 +4,8 @@ Quadratic curves are great, but as we saw in the previous section, they can be p
 
 This pill shape, for example, doesn't look quite right using quadratic curves:
 
-<CommandHighlight
-  commands={["M 5 5", "h 5", "q 5 2.5 0 5", "h -5", "q -5 -2.5 0 -5", "z"]}
+<CommandList
+  path={"M 5 5 h 5 q 5 2.5 0 5 h -5 q -5 -2.5 0 -5 z"}
   indices={[2, 4]}
 />
 
@@ -13,8 +13,8 @@ This pill shape, for example, doesn't look quite right using quadratic curves:
 
 But if we change the quadratic curves to cubic curves instead, we get a much smoother pill shape:
 
-<CommandHighlight
-  commands={["M 5 5", "h 5", "c 4 0 4 5 0 5", "h -5", "c -4 0 -4 -5 0 -5", "z"]}
+<CommandList
+  path={"M 5 5 h 5 c 4 0 4 5 0 5 h -5 c -4 0 -4 -5 0 -5 z"}
   indices={[2, 4]}
 />
 
@@ -57,8 +57,6 @@ S x2 y2 x y
 ```
 
 Here, we use the `S` command to create a hot air balloon shape:
-
-<ChainExample />
 
 ---
 

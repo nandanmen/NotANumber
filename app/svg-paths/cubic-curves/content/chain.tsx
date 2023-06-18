@@ -5,11 +5,10 @@ import {
   Command,
   useEditablePath,
 } from "app/svg-paths/utils";
-import { useStateContext } from "app/svg-paths/components/state-context";
+import { useStateContext } from "../state";
 import {
   createInitialState,
   DragGroup,
-  DragGroupState,
 } from "app/svg-paths/components/drag-group";
 import { Line } from "app/svg-paths/components/svg/line";
 import { Path } from "app/svg-paths/components/svg/path";
@@ -34,8 +33,8 @@ export const initialState = createInitialState(initialPoints);
 function Chain() {
   const {
     data: { index, expanded },
-  } = useStateContext<{ index: number | null; expanded: boolean }>("chain");
-  const { data } = useStateContext<DragGroupState>("chainDrag");
+  } = useStateContext("chain");
+  const { data } = useStateContext("chainDrag");
 
   const [c0, c1, s1, s2] = data.points;
   const path = useEditablePath(balloon);

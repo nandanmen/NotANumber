@@ -1,12 +1,11 @@
 import React from "react";
-import { DragGroupState } from "app/svg-paths/components/drag-group";
 import { clsx } from "clsx";
-import { useStateContext } from "../../components/state-context";
+import { useStateContext } from "../state";
 
 export const SyntaxExample = () => {
   const {
     data: { points, active },
-  } = useStateContext<DragGroupState>("syntax");
+  } = useStateContext("syntax");
   return (
     <p className="border border-gray8 bg-gray3 px-4 py-3 rounded-md font-mono relative overflow-hidden flex gap-[1ch]">
       <span className="text-gray10">M 5 13</span>

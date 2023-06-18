@@ -65,7 +65,8 @@ export function getDragPoints({
 }
 
 export function DragGroup({ source }: { source: string }) {
-  const { data, set } = useStateContext<DragGroupState>(source);
+  const { data, set } =
+    useStateContext<Record<string, DragGroupState>>()(source);
   const props = getDragPoints({
     points: data.points,
     state: data.state,
@@ -74,7 +75,7 @@ export function DragGroup({ source }: { source: string }) {
   return (
     <>
       {props.map(({ x, y, on }, index) => {
-        return <DraggableEndpoint key={index} cx={x} cy={y} on={on} />;
+        return <DraggableEndpoint key={index} cx={x} cy={y} />;
       })}
     </>
   );

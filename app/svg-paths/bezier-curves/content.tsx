@@ -4,41 +4,19 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
 import { PathVisualizer, Text, toPath } from "../components/path-visualizer";
-import { StateProvider, useStateContext } from "../components/state-context";
+import { StateProvider } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { VisualWrapper } from "../components/visual-wrapper";
 import { parsePath } from "../utils";
 import { RoundedCornerCommands, TCommandList } from "./components";
-import {
-  getInitialPracticeQuestionState,
-  PracticeQuestion,
-} from "../components/path-practice";
+import { PracticeQuestion } from "../components/path-practice";
 import { DraggableEndpoint } from "../components/draggable-endpoint";
+import { initialState, useStateContext } from "./state";
 
 export function Content({ content, length }) {
   return (
-    <StateProvider
-      initial={{
-        curve: {
-          x1: 5,
-          y1: 15,
-          x: 15,
-          y: 15,
-        },
-        chain: {
-          x1: 5,
-          y1: 10,
-          x: 10,
-          y: 10,
-          tx: 15,
-          ty: 15,
-        },
-        ...getInitialPracticeQuestionState([
-          "M 5 17 Q 10 8 15 17 M 10 12.5 Q 15 5 20 12.5 M 5 5 v 15 h 15 v -15 z",
-        ]),
-      }}
-    >
+    <StateProvider initial={initialState}>
       <MDX
         content={content}
         numSections={length}
@@ -203,12 +181,7 @@ function RoundedCorner() {
   const {
     data: { x1, y1, x, y },
     set,
-  } = useStateContext<{
-    x1: number;
-    y1: number;
-    x: number;
-    y: number;
-  }>("curve");
+  } = useStateContext("curve");
   const { useRelativeMotionValue } = useSvgContext();
   return (
     <g>
@@ -291,14 +264,7 @@ const getPerpendicular = (x0: number, y0: number, x1: number, y1: number) => {
 function Chain() {
   const id = React.useId();
 
-  const { data, set } = useStateContext<{
-    x1: number;
-    y1: number;
-    x: number;
-    y: number;
-    tx: number;
-    ty: number;
-  }>("chain");
+  const { data, set } = useStateContext("chain");
   const { useRelativeMotionValue } = useSvgContext();
 
   const { x: tx, y: ty } = getReflection(data.x1, data.y1, data.x, data.y);
