@@ -1,7 +1,8 @@
 import { useStateContext } from "./state-context";
 
 export const PathEditor = ({ id, placeholder = "" }) => {
-  const { data, set } = useStateContext<{ value: string } | undefined>(id);
+  const { data, set } =
+    useStateContext<Record<string, { value: string } | undefined>>()(id);
   const value = data?.value || "";
   return (
     <div className="relative">
