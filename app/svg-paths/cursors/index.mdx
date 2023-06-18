@@ -2,7 +2,7 @@
 
 At the heart of all SVG paths is the **cursor**. All path commands _use_ the cursor to determine where to start drawing from, and all path commands _move_ the cursor to ensure the following command starts from the correct position.
 
-<figure>
+<figure className="relative">
   <CursorOverview />
 </figure>
 
@@ -11,6 +11,10 @@ At the heart of all SVG paths is the **cursor**. All path commands _use_ the cur
 Consider this little corner, defined with the following commands:
 
 <CommandListFromSource source="corner" />
+
+<figure className="relative">
+  <Corner />
+</figure>
 
 Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
 
@@ -23,7 +27,7 @@ Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then
 
 Generally speaking, the cursor will end up wherever the current path "section" finishes. This makes sense because, most of the time, you want your path sections to be connected to one another.
 
-By checking if the command is **absolute** or **relative**, we can determine how the cursor will be moved after the command is executed:
+Where the current path section ends up depends on whether the command is **absolute** or **relative** (which, if you recall, depends on whether the command code is uppercase or lowercase).
 
 For **absolute commands**, the cursor will end up at the command's `x` and `y` values. For example, `L 10 15` will move the cursor to `(10, 15)` _regardless_ of where the cursor is currently at.
 
@@ -31,6 +35,8 @@ For **absolute commands**, the cursor will end up at the command's `x` and `y` v
   id="absolute"
   template={({ x, y }) => `M ${x.toFixed(1)} ${y.toFixed(1)} L 10 15`}
 />
+
+---
 
 For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(15, 5)`, then `l 10 15` will move the cursor to `(25, 20)`.
 
@@ -61,3 +67,5 @@ These are useful when you want to draw paths that aren't connected to one anothe
 Using the `M` and/or `m` commands, **move the cursor to the points shown on the canvas**.
 
 <PracticeQuestionEditor />
+
+<Practice />

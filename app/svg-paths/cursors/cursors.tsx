@@ -117,7 +117,7 @@ const CursorPoint = (props: CursorPointProps) => {
 
 const corner = parsePath("M 5 5 v 5 L 10 15 h 5");
 
-const Corner = () => {
+export const Corner = () => {
   const [showText, setShowText] = React.useState(false);
   const { index, play, next, prev, playing } = usePathAnimation(corner, {
     onComplete: () => setShowText(true),
@@ -302,7 +302,7 @@ const points = [
   [20, 0],
 ];
 
-const Practice = () => {
+export const Practice = () => {
   return (
     <Svg size={20}>
       {points.map(([x, y], index) => {
