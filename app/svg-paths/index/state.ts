@@ -10,13 +10,16 @@ C19.7498 10.6312 19.5253 8.13046 17.6779 6.65972
 C15.8305 5.18899 13.4446 5.60999 11.995 7.23319
 Z`;
 
+const heartPath = parsePath(heart);
+
 export const initialState = {
   intro: {
     toggled: false,
   },
   commands: {
-    path: parsePath(heart),
+    path: heartPath,
     index: null,
+    maxIndex: heartPath.commands.length,
   },
   absolute: {
     path: parsePath("M 10 10 L 5 5 M 10 10 l 5 5"),

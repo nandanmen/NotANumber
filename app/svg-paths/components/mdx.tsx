@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { CommandListFromSource, CommandList } from "./command-list";
+import { PlaySlider, PlaySliderFromSource } from "./play-slider";
 import { PracticeQuestionEditor } from "./path-practice";
 import { Svg } from "./svg";
 import styles from "./page-section.module.css";
@@ -39,6 +40,8 @@ const baseComponents = {
   Svg,
   CommandListFromSource,
   CommandList,
+  PlaySlider,
+  PlaySliderFromSource,
 };
 
 const sections = [

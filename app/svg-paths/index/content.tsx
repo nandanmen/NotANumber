@@ -10,8 +10,6 @@ import * as heart from "./heart";
 import * as square from "./square";
 import * as commands from "./commands";
 import * as absolute from "./absolute";
-import { Slider } from "../components/slider";
-import useInterval from "@use-it/interval";
 
 export function Content({ content, length }) {
   return (
@@ -36,7 +34,6 @@ export function Content({ content, length }) {
         }
         components={{
           SquareToggle,
-          CommandSlider,
           Square: square.Square,
           Commands: commands.Commands,
           Absolute: absolute.Absolute,
@@ -66,48 +63,5 @@ function SquareToggle() {
     >
       {data.toggled ? "Straigthen!" : "Bend!"}
     </Button>
-  );
-}
-
-function CommandSlider() {
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const {
-    data: { path, index },
-    set,
-  } = useStateContext("commands");
-
-  useInterval(
-    () => {
-      if (index === path.commands.length - 1) {
-        return setIsPlaying(false);
-      }
-      set({
-        index: index === null ? 0 : index + 1,
-      });
-    },
-    isPlaying ? 500 : null
-  );
-
-  const play = () => {
-    if (index === path.commands.length - 1) {
-      set({ index: null });
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <Button onClick={play}>{isPlaying ? "Pause" : "Play"}</Button>
-      <Slider
-        value={[index === null ? 0 : index + 1]}
-        onValueChange={([i]) =>
-          set({
-            index: i ? i - 1 : null,
-          })
-        }
-        min={0}
-        max={path.commands.length}
-      />
-    </div>
   );
 }
