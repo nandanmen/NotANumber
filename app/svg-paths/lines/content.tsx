@@ -126,8 +126,10 @@ function AbsoluteLine({ placeholder = false }) {
 }
 
 function RelativeLine() {
+  const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
   const { data: relativeData, set: setRelative } = useStateContext("relative");
   const relative = relativeData.path.atAbsolute<"L">(1);
+  const absolute = absoluteData.path.atAbsolute<"L">(1);
   return (
     <g>
       <g className="text-gray10">
@@ -169,13 +171,23 @@ function RelativeLine() {
         {...getDragHandlers({
           id: ["1.x", "1.y"],
           state: relativeData.state,
-          set: setRelative,
+          set: (data) => {
+            setRelative(data);
+            setAbsolute(data);
+          },
         })}
         onPan={(x, y) => {
           setRelative({ path: relativeData.path.setAbsolute(1, { x, y }) });
+          setAbsolute({
+            path: absoluteData.path.setAbsolute(1, {
+              x: x - relative.x0,
+              y: y - relative.y0,
+            }),
+          });
         }}
       />
       <CoordinatesTooltip x={relative.x} y={relative.y} />
+      <CoordinatesTooltip x={absolute.x} y={absolute.y} />
     </g>
   );
 }
