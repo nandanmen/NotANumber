@@ -55,10 +55,9 @@ export const Tooltip = ({
   return (
     <motion.g
       className="text-gray1"
+      transform={`translate(${_placement.x}, ${_placement.y})`}
       animate={{
         opacity: box ? 1 : 0,
-        x: _placement.x,
-        y: _placement.y,
       }}
       transition={{ type: false }}
     >

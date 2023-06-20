@@ -7,7 +7,7 @@ import {
 } from "app/svg-paths/components/svg/tooltip";
 import { parsePath } from "app/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";
-import { createInitialState } from "./drag-group";
+import { createInitialState } from "../../components/svg/drag-group";
 
 const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 17");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { useInterval } from "~/lib/use-interval";
 import {
@@ -75,26 +75,18 @@ const usePathAnimation = (
 };
 
 export const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
-  const { index, play, playing } = usePathAnimation(commands);
+  const {
+    data: { index },
+  } = useStateContext("intro");
   const currentCommand = commands[index];
   return (
-    <>
-      <Svg size={size}>
-        <PathVisualizer path={commands} index={index} />
-        <CursorPoint
-          animate={{ x: currentCommand.x, y: currentCommand.y }}
-          transition={{ type: "spring", bounce: 0 }}
-        />
-      </Svg>
-      <Controls>
-        <button
-          className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
-          onClick={play}
-        >
-          {playing ? <Pause /> : <Play />}
-        </button>
-      </Controls>
-    </>
+    <Svg size={size}>
+      <PathVisualizer path={commands} index={index} />
+      <CursorPoint
+        animate={{ x: currentCommand?.x, y: currentCommand?.y }}
+        transition={{ type: "spring", bounce: 0.2 }}
+      />
+    </Svg>
   );
 };
 
@@ -118,70 +110,51 @@ const CursorPoint = (props: CursorPointProps) => {
 const corner = parsePath("M 5 5 v 5 L 10 15 h 5");
 
 export const Corner = () => {
-  const [showText, setShowText] = React.useState(false);
-  const { index, play, next, prev, playing } = usePathAnimation(corner, {
-    onComplete: () => setShowText(true),
-  });
-  const currentCommand = corner[index];
-
+  const {
+    data: { path, index, maxIndex },
+  } = useStateContext("corner");
+  const currentCommand = path.at[index];
+  const showText = index === maxIndex - 1;
   return (
-    <>
-      <Svg size={20}>
-        <PathVisualizer path={corner} index={index} helpers={false} />
-        <CursorPoint
-          animate={{ x: currentCommand.x, y: currentCommand.y }}
-          transition={{ type: "spring", bounce: 0 }}
-        />
-        {showText && (
-          <motion.g animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-            <Text x="3.5" y="2">
-              M 5 5
-            </Text>
-            <Text x="6" y="7.5">
-              v 5
-            </Text>
-            <Text x="8.5" y="12">
-              L 10 15
-            </Text>
-            <Text x="12.5" y="14.5">
-              h 5
-            </Text>
-            <Tooltip x={5} y={5}>
-              (5, 5)
-            </Tooltip>
-            <Tooltip x={15} y={15}>
-              (15, 15)
-            </Tooltip>
-            <Tooltip x={5} y={10} placement="left">
-              (5, 10)
-            </Tooltip>
-            <Tooltip x={10} y={15} placement="bottom">
-              (10, 15)
-            </Tooltip>
-          </motion.g>
-        )}
-      </Svg>
-      <Controls>
-        <button
-          className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
-          onClick={play}
+    <Svg size={20}>
+      <PathVisualizer path={corner} index={index} helpers={false} />
+      <CursorPoint
+        animate={{ x: currentCommand?.x, y: currentCommand?.y }}
+        transition={{ type: "spring", bounce: 0.2 }}
+      />
+      {showText && (
+        <motion.g
+          animate={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
+          transition={{ delay: 0.5 }}
         >
-          {playing ? <Pause /> : <Play />}
-        </button>
-        <button
-          className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
-          onClick={prev}
-        >
-          <ArrowLeft />
-        </button>
-        <button
-          className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
-          onClick={next}
-        >
-          <ArrowRight />
-        </button>
-      </Controls>
-    </>
+          <Text x="3.5" y="2">
+            M 5 5
+          </Text>
+          <Text x="6" y="7.5">
+            v 5
+          </Text>
+          <Text x="8.5" y="12">
+            L 10 15
+          </Text>
+          <Text x="12.5" y="14.5">
+            h 5
+          </Text>
+          <Tooltip x={5} y={5}>
+            (5, 5)
+          </Tooltip>
+          <Tooltip x={15} y={15}>
+            (15, 15)
+          </Tooltip>
+          <Tooltip x={5} y={10} placement="left">
+            (5, 10)
+          </Tooltip>
+          <Tooltip x={10} y={15} placement="bottom">
+            (10, 15)
+          </Tooltip>
+        </motion.g>
+      )}
+    </Svg>
   );
 };
 

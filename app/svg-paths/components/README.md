@@ -142,3 +142,20 @@ path.toPathString(); // prints M 10 10 l 10 10
 ---
 
 The tricky thing about making an API for dragging is that dragging really only cares about points (i.e. numbers) and not commands.
+
+---
+
+Part of getting this app across the finish line is to rip apart all of the path visualizer stuff now that the data structure makes a bit more sense.
+
+When i made this initially, i was treating paths as a sequence of commands parsed with the `parseSvg` utility from the `svg-path-parser` package. This was fine up until I had to make changes to the package, so I wrapped my own path with a bunch of other methods that in my opinion makes more sense.
+
+The problem is this path isn't immediately compatible with the svg-path-parser stuff, so now the path visualizer doesn't really work the way that it should. I need to address this before it launches because the website doesn't actually build as it is today.
+
+THe other breaking change that i did was to have literally everything live in the global state provider context. the main reasoning here was that i want the text to be interactive to whatever is shown on the right, and because the markup lives on completely separate trees, i need to put everything in "almost" global context.
+
+this architecture hoenstly makes a lot more sense for me - everything in the code should be dealing with the path object that is stored in global context - no more dealing with strings. the only poart of the codebase that deals with strings should be the top level one where we initialize the path object (i.e. in the global state context).
+
+these are my main goals for tomorrow (or next time im working on this):
+
+- [ ] rip out path visualizer. i think its' too complex as it is and is an abstraction that's honestly really hard to work with. the new path visualizer should be visually equivalent but use the new path object.
+

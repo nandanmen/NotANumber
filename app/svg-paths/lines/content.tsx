@@ -5,7 +5,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
-import { useIndexContext } from "../components/index-provider";
 import { Svg, useSvgContext } from "../components/svg";
 import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
 import { parsePath } from "../lib/path";
@@ -13,8 +12,14 @@ import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { HeartCommands, ClosePathToggle } from "./components";
 import { PracticeQuestion } from "../components/path-practice";
-import { Path } from "../components/path";
 import { initialState, useStateContext } from "./state";
+import { VisualWrapper } from "../components/visual-wrapper";
+import { Path } from "../components/svg/path";
+import { DraggableEndpoint } from "../components/draggable-endpoint";
+import { getDragHandlers } from "../components/svg/drag-group";
+import { Circle } from "../components/svg/circle";
+import clsx from "clsx";
+import { Line } from "../components/svg/line";
 
 const mapIndexToSize = [
   20,
@@ -34,7 +39,22 @@ export function LinesContent({ content, length }) {
         numSections={length}
         components={{ HeartCommands, ClosePathToggle }}
       >
-        <LineVisuals />
+        <VisualWrapper
+          components={[
+            {
+              svg: 20,
+              children: <AbsoluteLine />,
+            },
+            {
+              children: (
+                <>
+                  <AbsoluteLine placeholder />
+                  <RelativeLine />
+                </>
+              ),
+            },
+          ]}
+        />
       </MDX>
     </StateProvider>
   );
@@ -76,39 +96,87 @@ function ZExample() {
   );
 }
 
-function LineVisuals() {
-  const { index } = useIndexContext();
-  const children = mapIndexToComponent[index];
-  if (!children) return <Svg size={25} />;
-
-  let props: any = mapIndexToSize[index];
-  if (typeof props === "number") props = { size: props };
-  return <Svg {...props}>{children}</Svg>;
-}
-
-function Line({ index }) {
-  const { data: absolute } = useStateContext("L");
-  const { data: relative } = useStateContext("l");
-
-  const absolutePath = React.useMemo(() => {
-    return `M 5 5 L ${absolute.x} ${absolute.y}`;
-  }, [absolute.x, absolute.y]);
-
-  const relativePath = React.useMemo(() => {
-    return `M 5 5 l ${relative.x} ${relative.y}`;
-  }, [relative.x, relative.y]);
+function AbsoluteLine({ placeholder = false }) {
+  const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
+  const absolute = absoluteData.path.atAbsolute<"L">(1);
 
   return (
-    <>
-      <PathVisualizer path={absolutePath} />
-      <CoordinatesTooltip x={absolute.x} y={absolute.y} />
-      {index && (
-        <>
-          <PathVisualizer path={relativePath} />
-          <CoordinatesTooltip x={5 + relative.x} y={5 + relative.y} />
-        </>
+    <g className={clsx(placeholder && "text-gray10")}>
+      <Path d={absoluteData.path.toPathString()} />
+      <Circle variant="cursor" cx={absolute.x0} cy={absolute.y0} />
+      {placeholder ? (
+        <Circle variant="point" cx={absolute.x} cy={absolute.y} />
+      ) : (
+        <DraggableEndpoint
+          cx={absolute.x}
+          cy={absolute.y}
+          {...getDragHandlers({
+            id: ["1.x", "1.y"],
+            state: absoluteData.state,
+            set: setAbsolute,
+          })}
+          onPan={(x, y) => {
+            setAbsolute({ path: absoluteData.path.setAbsolute(1, { x, y }) });
+          }}
+        />
       )}
-    </>
+      <CoordinatesTooltip x={absolute.x} y={absolute.y} />
+    </g>
+  );
+}
+
+function RelativeLine() {
+  const { data: relativeData, set: setRelative } = useStateContext("relative");
+  const relative = relativeData.path.atAbsolute<"L">(1);
+  return (
+    <g>
+      <g className="text-gray10">
+        <Line
+          x1={relative.x0}
+          y1={relative.y0}
+          x2={relative.x0}
+          y2={relative.y}
+        />
+        <Line
+          x1={relative.x0}
+          y1={relative.y}
+          x2={relative.x}
+          y2={relative.y}
+        />
+        <Circle
+          variant="cursor"
+          cx={relative.x0}
+          cy={relative.y}
+          size="small"
+        />
+        <Text y={relative.y} x={(relative.x - relative.x0) / 2 + relative.x0}>
+          {(relative.x - relative.x0).toFixed(1)}
+        </Text>
+        <Text x={relative.x0} y={(relative.y - relative.y0) / 2 + relative.y0}>
+          {(relative.y - relative.y0).toFixed(1)}
+        </Text>
+      </g>
+      <Path
+        d={relativeData.path.toPathString()}
+        animate={{ pathLength: 1 }}
+        initial={{ pathLength: 0 }}
+        transition={{ type: "spring", duration: 1 }}
+      />
+      <Circle variant="cursor" cx={relative.x0} cy={relative.y0} />
+      <DraggableEndpoint
+        cx={relative.x}
+        cy={relative.y}
+        {...getDragHandlers({
+          id: ["1.x", "1.y"],
+          state: relativeData.state,
+          set: setRelative,
+        })}
+        onPan={(x, y) => {
+          setRelative({ path: relativeData.path.setAbsolute(1, { x, y }) });
+        }}
+      />
+      <CoordinatesTooltip x={relative.x} y={relative.y} />
+    </g>
   );
 }
 

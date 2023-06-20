@@ -14,7 +14,10 @@ import type {
   Command,
   Path as IPath,
 } from "app/svg-paths/lib/path";
-import { DragGroupState, getDragHandlers } from "./drag-group";
+import {
+  DragGroupState,
+  getDragHandlers,
+} from "../../components/svg/drag-group";
 import { clsx } from "clsx";
 import { Text } from "app/svg-paths/components/path-visualizer";
 

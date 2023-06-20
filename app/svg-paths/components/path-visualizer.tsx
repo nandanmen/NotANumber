@@ -4,7 +4,12 @@ import React from "react";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
 import { motion } from "framer-motion";
-import { parsePath, type Command } from "../utils";
+import {
+  createPath,
+  parsePath,
+  Path,
+  type AbsoluteCommand as Command,
+} from "../lib/path";
 
 export const toPath = (command: Command) => {
   const {
@@ -47,7 +52,7 @@ const mapCodeToType = (code: Command["code"]): CommandType => {
 };
 
 const PathContext = React.createContext<{
-  commands: Command[];
+  path: Path;
 }>(null);
 
 export function usePathContext() {
@@ -61,18 +66,18 @@ export function PathVisualizer({
   helpers = true,
   placeholder = false,
 }: {
-  path: string | Command[];
+  path: string | Path;
   index?: number;
   type?: CommandType;
   helpers?: boolean;
   placeholder?: boolean;
 }) {
-  const commands = React.useMemo(() => {
-    if (Array.isArray(path)) return path;
-    return parsePath(path);
+  const _path = React.useMemo(() => {
+    if (typeof path === "string") return parsePath(path);
+    return path;
   }, [path]);
 
-  const activeCommands = commands.filter((command, i) => {
+  const activeCommands = _path.absolute.filter((command, i) => {
     if (!type && typeof index !== "number") return true;
     if (typeof index === "number") return i <= index;
     return mapCodeToType(command.code) === type;
@@ -82,7 +87,7 @@ export function PathVisualizer({
     return (
       <PathContext.Provider
         value={{
-          commands,
+          path: _path,
         }}
       >
         <g className="text-gray8">
@@ -96,7 +101,7 @@ export function PathVisualizer({
     <g>
       <PathContext.Provider
         value={{
-          commands,
+          path: _path,
         }}
       >
         <g className="text-gray8">
@@ -105,7 +110,7 @@ export function PathVisualizer({
       </PathContext.Provider>
       <PathContext.Provider
         value={{
-          commands: activeCommands,
+          path: createPath(activeCommands),
         }}
       >
         <g>

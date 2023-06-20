@@ -6,33 +6,13 @@ We've seen a bit of line commands in the last section, but we'll cover them in f
 
 The most generic of them is the `L` command, which draws a line to a specific `(x, y)` coordinate:
 
-<InteractiveCommand
-  id="L"
-  template={({ x, y }) => (
-    <span>
-      <span className="text-gray10">M 5 5</span>
-      <span>
-        L {x.toFixed(1)} {y.toFixed(1)}
-      </span>
-    </span>
-  )}
-/>
+<CommandListFromSource source="absolute" />
 
 ---
 
 Just like how the `m` command moves the cursor relative to its current position, the lowercase `l` command draws a line relative to the current cursor position:
 
-<InteractiveCommand
-  id="l"
-  template={({ x, y }) => (
-    <span>
-      <span className="text-gray10">M 5 5</span>
-      <span>
-        l {x.toFixed(1)} {y.toFixed(1)}
-      </span>
-    </span>
-  )}
-/>
+<CommandListFromSource source="relative" />
 
 ---
 
