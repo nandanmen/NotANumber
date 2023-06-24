@@ -98,6 +98,8 @@ function ZExample() {
 
 function AbsoluteLine({ placeholder = false }) {
   const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
+  const { data: relativeData, set: setRelative } = useStateContext("relative");
+  const relative = relativeData.path.atAbsolute<"L">(1);
   const absolute = absoluteData.path.atAbsolute<"L">(1);
 
   return (
@@ -117,6 +119,7 @@ function AbsoluteLine({ placeholder = false }) {
           })}
           onPan={(x, y) => {
             setAbsolute({ path: absoluteData.path.setAbsolute(1, { x, y }) });
+            setRelative({ path: relativeData.path.set(1, { x, y }) });
           }}
         />
       )}
@@ -171,10 +174,7 @@ function RelativeLine() {
         {...getDragHandlers({
           id: ["1.x", "1.y"],
           state: relativeData.state,
-          set: (data) => {
-            setRelative(data);
-            setAbsolute(data);
-          },
+          set: setRelative,
         })}
         onPan={(x, y) => {
           setRelative({ path: relativeData.path.setAbsolute(1, { x, y }) });
