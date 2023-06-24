@@ -1,19 +1,13 @@
 import { motion } from "framer-motion";
-import { AbsoluteCommand } from "../lib/path";
+import { AbsoluteCommand, type Path } from "../lib/path";
 import { PathSection, PathSectionPoint } from "./path-visualizer";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
 
-export function PathHoverVisual({
-  id,
-  commands,
-}: {
-  id: string;
-  commands: AbsoluteCommand[];
-}) {
+export function PathHoverVisual({ source }: { source: string }) {
   const { data } =
-    useStateContext<Record<string, { index: number } | null>>()(id);
-  return <PathList commands={commands} index={data?.index} />;
+    useStateContext<Record<string, { path: Path; index?: number }>>()(source);
+  return <PathList commands={data.path.absolute} index={data.index} />;
 }
 
 export function PathList({
@@ -21,7 +15,7 @@ export function PathList({
   index,
 }: {
   commands: AbsoluteCommand[];
-  index: number | null;
+  index?: number;
 }) {
   const { useRelativeMotionValue } = useSvgContext();
   const isHovering = typeof index === "number";

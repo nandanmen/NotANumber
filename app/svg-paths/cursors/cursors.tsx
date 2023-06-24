@@ -9,7 +9,6 @@ import {
 } from "../components/path-visualizer";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip, Tooltip } from "../components/svg/tooltip";
-import { parsePath } from "../utils";
 import { useStateContext } from "./state";
 import { useDebouncedCallback } from "use-debounce";
 import { PathHoverVisual } from "../components/path-hover-visual";
@@ -246,16 +245,6 @@ const AbsoluteRelative = ({ showRelative = false }) => {
 
 // --
 
-const commands = parsePath(
-  "M 5 8 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"
-);
-
-const MoveCommand = () => {
-  return <PathHoverVisual id="command-list-move" commands={[]} />;
-};
-
-// --
-
 const points = [
   [0, 5],
   [5, 15],
@@ -305,7 +294,7 @@ export function Cursors() {
         },
         {
           svg: 20,
-          children: <MoveCommand />,
+          children: <PathHoverVisual source="move" />,
         },
         {
           svg: 20,
