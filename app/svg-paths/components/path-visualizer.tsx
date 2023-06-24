@@ -4,12 +4,7 @@ import React from "react";
 import { useSvgContext } from "./svg";
 import { getArcCenter } from "./utils";
 import { motion } from "framer-motion";
-import {
-  createPath,
-  parsePath,
-  Path,
-  type AbsoluteCommand as Command,
-} from "../lib/path";
+import { parsePath, type Command } from "../utils";
 
 export const toPath = (command: Command) => {
   const {
@@ -52,7 +47,7 @@ const mapCodeToType = (code: Command["code"]): CommandType => {
 };
 
 const PathContext = React.createContext<{
-  path: Path;
+  commands: Command[];
 }>(null);
 
 export function usePathContext() {
@@ -66,18 +61,18 @@ export function PathVisualizer({
   helpers = true,
   placeholder = false,
 }: {
-  path: string | Path;
+  path: string | Command[];
   index?: number;
   type?: CommandType;
   helpers?: boolean;
   placeholder?: boolean;
 }) {
-  const _path = React.useMemo(() => {
+  const _commands = React.useMemo(() => {
     if (typeof path === "string") return parsePath(path);
     return path;
   }, [path]);
 
-  const activeCommands = _path.absolute.filter((command, i) => {
+  const activeCommands = _commands.filter((command, i) => {
     if (!type && typeof index !== "number") return true;
     if (typeof index === "number") return i <= index;
     return mapCodeToType(command.code) === type;
@@ -87,7 +82,7 @@ export function PathVisualizer({
     return (
       <PathContext.Provider
         value={{
-          path: _path,
+          commands: _commands,
         }}
       >
         <g className="text-gray8">
@@ -101,7 +96,7 @@ export function PathVisualizer({
     <g>
       <PathContext.Provider
         value={{
-          path: _path,
+          commands: _commands,
         }}
       >
         <g className="text-gray8">
@@ -110,7 +105,7 @@ export function PathVisualizer({
       </PathContext.Provider>
       <PathContext.Provider
         value={{
-          path: createPath(activeCommands),
+          commands: activeCommands,
         }}
       >
         <g>
