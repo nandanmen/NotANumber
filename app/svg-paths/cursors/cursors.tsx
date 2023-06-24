@@ -1,92 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { useInterval } from "~/lib/use-interval";
 import {
   AnimatedEndpoint,
   PathVisualizer,
   Text,
 } from "../components/path-visualizer";
-import { Svg, useSvgContext } from "../components/svg";
-import { heart } from "../index/heart";
-import { useIndexContext } from "../components/index-provider";
+import { useSvgContext } from "../components/svg";
 import { Tooltip } from "../components/svg/tooltip";
-import { parsePath, type Command } from "../utils";
+import { parsePath } from "../utils";
 import { useStateContext } from "./state";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Pause,
-  Play,
-  Refresh,
-} from "../components/icons";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { PracticeQuestion } from "../components/path-practice";
+import { VisualWrapper } from "../components/visual-wrapper";
 
-const Controls = ({ children }) => {
-  return (
-    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1">
-      {children}
-    </div>
-  );
-};
-
-const heartCommands = parsePath(heart);
-
-const usePathAnimation = (
-  commands: Command[],
-  { onComplete }: { onComplete?: () => void } = {}
-) => {
-  const [playing, setPlaying] = React.useState(true);
-  const [index, setIndex] = React.useState(0);
-
-  useInterval(
-    () => {
-      if (playing) {
-        if (index === commands.length - 1) {
-          setPlaying(false);
-          onComplete?.();
-          return;
-        }
-        setIndex(index + 1);
-      }
-    },
-    {
-      delay: playing ? 600 : null,
-    }
-  );
-
-  const play = React.useCallback(() => {
-    if (index === commands.length - 1) {
-      setIndex(0);
-    }
-    setPlaying(true);
-  }, [index, commands]);
-
-  return {
-    index,
-    play,
-    playing,
-    next: () => setIndex(Math.min(commands.length - 1, index + 1)),
-    prev: () => setIndex(Math.max(0, index - 1)),
-  };
-};
-
-export const CursorOverview = ({ commands = heartCommands, size = 25 }) => {
+export const CursorOverview = () => {
   const {
-    data: { index },
+    data: { path, index },
   } = useStateContext("intro");
-  const currentCommand = commands[index];
+  const currentCommand = index === null ? null : path.atAbsolute(index);
   return (
-    <Svg size={size}>
-      <PathVisualizer path={commands} index={index} />
+    <>
+      <PathVisualizer
+        path={path.absolute}
+        index={index}
+        placeholder={index === null}
+      />
       <CursorPoint
         animate={{ x: currentCommand?.x, y: currentCommand?.y }}
         transition={{ type: "spring", bounce: 0.2 }}
       />
-    </Svg>
+    </>
   );
 };
 
@@ -96,7 +42,7 @@ const CursorPoint = (props: CursorPointProps) => {
   const { getRelative } = useSvgContext();
   return (
     <motion.g {...props}>
-      <motion.circle
+      <circle
         r={getRelative(1.3)}
         className="fill-blue9 stroke-current"
         strokeWidth={getRelative(0.6)}
@@ -107,17 +53,20 @@ const CursorPoint = (props: CursorPointProps) => {
 
 // --
 
-const corner = parsePath("M 5 5 v 5 L 10 15 h 5");
-
 export const Corner = () => {
   const {
     data: { path, index, maxIndex },
   } = useStateContext("corner");
-  const currentCommand = path.at[index];
+  const currentCommand = index === null ? null : path.atAbsolute(index);
   const showText = index === maxIndex - 1;
   return (
-    <Svg size={20}>
-      <PathVisualizer path={corner} index={index} helpers={false} />
+    <>
+      <PathVisualizer
+        path={path.absolute}
+        index={index}
+        helpers={false}
+        placeholder={index === null}
+      />
       <CursorPoint
         animate={{ x: currentCommand?.x, y: currentCommand?.y }}
         transition={{ type: "spring", bounce: 0.2 }}
@@ -154,7 +103,7 @@ export const Corner = () => {
           </Tooltip>
         </motion.g>
       )}
-    </Svg>
+    </>
   );
 };
 
@@ -210,43 +159,30 @@ const AbsoluteRelative = () => {
 
   return (
     <>
-      <Svg size={30}>
-        <PathVisualizer path={absoluteCommand} />
-        <PathVisualizer path={relativeCommand} />
-        <Tooltip x={absolute.x} y={absolute.y} placement="top">
-          ({absolute.x.toFixed(1)}, {absolute.y.toFixed(1)})
-        </Tooltip>
-        <Tooltip x={relative.x} y={relative.y} placement="top">
-          ({relative.x.toFixed(1)}, {relative.y.toFixed(1)})
-        </Tooltip>
-        <Tooltip x={10} y={15} placement="bottom">
-          (10, 15)
-        </Tooltip>
-        <Tooltip x={relative.x + 10} y={relative.y + 15} placement="bottom">
-          ({(relative.x + 10).toFixed(1)}, {(relative.y + 15).toFixed(1)})
-        </Tooltip>
-        <CursorPoint
-          style={{ x: absolute.x, y: absolute.y }}
-          animate={absoluteControls}
-          transition={{ type: "spring", bounce: 0 }}
-        />
-        <CursorPoint
-          style={{ x: relative.x, y: relative.y }}
-          animate={relativeControls}
-          transition={{ type: "spring", bounce: 0 }}
-        />
-      </Svg>
-      <Controls>
-        <button
-          className="bg-gray2 p-2 rounded-xl shadow-md border border-gray8"
-          onClick={() => {
-            setRelative({ x: 15, y: 5 });
-            setAbsolute({ x: 5, y: 5 });
-          }}
-        >
-          <Refresh />
-        </button>
-      </Controls>
+      <PathVisualizer path={absoluteCommand} />
+      <PathVisualizer path={relativeCommand} />
+      <Tooltip x={absolute.x} y={absolute.y} placement="top">
+        ({absolute.x.toFixed(1)}, {absolute.y.toFixed(1)})
+      </Tooltip>
+      <Tooltip x={relative.x} y={relative.y} placement="top">
+        ({relative.x.toFixed(1)}, {relative.y.toFixed(1)})
+      </Tooltip>
+      <Tooltip x={10} y={15} placement="bottom">
+        (10, 15)
+      </Tooltip>
+      <Tooltip x={relative.x + 10} y={relative.y + 15} placement="bottom">
+        ({(relative.x + 10).toFixed(1)}, {(relative.y + 15).toFixed(1)})
+      </Tooltip>
+      <CursorPoint
+        style={{ x: absolute.x, y: absolute.y }}
+        animate={absoluteControls}
+        transition={{ type: "spring", bounce: 0 }}
+      />
+      <CursorPoint
+        style={{ x: relative.x, y: relative.y }}
+        animate={relativeControls}
+        transition={{ type: "spring", bounce: 0 }}
+      />
     </>
   );
 };
@@ -258,11 +194,7 @@ const commands = parsePath(
 );
 
 const MoveCommand = () => {
-  return (
-    <Svg size={20}>
-      <PathHoverVisual id="command-list-move" commands={[]} />
-    </Svg>
-  );
+  return <PathHoverVisual id="command-list-move" commands={[]} />;
 };
 
 // --
@@ -277,7 +209,7 @@ const points = [
 
 export const Practice = () => {
   return (
-    <Svg size={20}>
+    <>
       {points.map(([x, y], index) => {
         return (
           <AnimatedEndpoint
@@ -289,23 +221,36 @@ export const Practice = () => {
         );
       })}
       <PracticeQuestion />
-    </Svg>
+    </>
   );
 };
 
 // --
 
-const mapIndexToComponent = [
-  CursorOverview,
-  Corner,
-  AbsoluteRelative,
-  MoveCommand,
-  Practice,
-];
-
 export function Cursors() {
-  const { index } = useIndexContext();
-  const Component = mapIndexToComponent[index];
-  if (!Component) return null;
-  return <Component />;
+  return (
+    <VisualWrapper
+      components={[
+        {
+          children: <CursorOverview />,
+        },
+        {
+          svg: 20,
+          children: <Corner />,
+        },
+        {
+          svg: 30,
+          children: <AbsoluteRelative />,
+        },
+        {
+          svg: 20,
+          children: <MoveCommand />,
+        },
+        {
+          svg: 20,
+          children: <Practice />,
+        },
+      ]}
+    />
+  );
 }

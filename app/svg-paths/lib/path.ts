@@ -21,6 +21,7 @@ export type AbsoluteCommand<
   Code extends AbsoluteCommandCode = AbsoluteCommandCode
 > = Extract<CommandMadeAbsolute, { code: Code }> & {
   id: string;
+  source: Command<Code>;
   toPathString(): string;
   toPathSection(): string;
 };
@@ -175,9 +176,10 @@ function createAbsolute(commands: Command[]): AbsoluteCommand[] {
   const copy = produce(commands, (draft) => {
     makeAbsolute(draft);
   }) as AbsoluteCommand[];
-  return copy.map((command) => {
+  return copy.map((command, index) => {
     return {
       ...command,
+      source: commands[index],
       toPathString: () => commandToString(command),
       toPathSection: () => toPathSection(command, copy),
     };

@@ -4,9 +4,9 @@ At the heart of all SVG paths is the **cursor**. All path commands _use_ the cur
 
 <PlaySliderFromSource source="intro" />
 
-<figure className="relative">
+<Svg>
   <CursorOverview />
-</figure>
+</Svg>
 
 ---
 
@@ -16,9 +16,9 @@ Consider this little corner, defined with the following commands:
 
 <PlaySliderFromSource source="corner" />
 
-<figure className="relative">
+<Svg size={20}>
   <Corner />
-</figure>
+</Svg>
 
 Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
 
@@ -72,4 +72,6 @@ Using the `M` and/or `m` commands, **move the cursor to the points shown on the 
 
 <PracticeQuestionEditor />
 
-<Practice />
+<Svg>
+  <Practice />
+</Svg>

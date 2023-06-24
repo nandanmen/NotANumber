@@ -17,6 +17,7 @@ const cornerPath = parsePath("M 5 5 v 5 L 10 15 h 5");
 
 export const initialState = {
   intro: {
+    path: heartPath,
     index: null,
     maxIndex: heartPath.commands.length,
   },
