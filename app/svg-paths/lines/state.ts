@@ -12,6 +12,12 @@ export const initialState = {
     path: parsePath("M 5 5 l 15 10"),
     ...createInitialState(),
   },
+  vertical: {
+    path: parsePath("M 13 5 h -6 V 15 H 13 M 7 10 h 4"),
+  },
+  closePath: {
+    path: parsePath("M 10 5 l -5 10 h 10 Z"),
+  },
   z: { active: false },
   ...getInitialPracticeQuestionState(
     parsePath(

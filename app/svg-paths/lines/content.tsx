@@ -5,9 +5,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
-import { Svg, useSvgContext } from "../components/svg";
-import { Endpoint, PathVisualizer, Text } from "../components/path-visualizer";
-import { parsePath } from "../lib/path";
+import { useSvgContext } from "../components/svg";
+import { Endpoint, Text } from "../components/path-visualizer";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { HeartCommands, ClosePathToggle } from "./components";
@@ -20,16 +19,6 @@ import { getDragHandlers } from "../components/svg/drag-group";
 import { Circle } from "../components/svg/circle";
 import clsx from "clsx";
 import { Line } from "../components/svg/line";
-
-const mapIndexToSize = [
-  20,
-  25,
-  20,
-  20,
-  25,
-  { size: 10, config: { pan: { x: 7, y: 3 } } },
-  25,
-];
 
 export function LinesContent({ content, length }) {
   return (
@@ -53,6 +42,28 @@ export function LinesContent({ content, length }) {
                 </>
               ),
             },
+            {
+              svg: 20,
+              children: <PathHoverVisual source="vertical" />,
+            },
+            {
+              svg: 20,
+              children: <ZExample />,
+            },
+            {
+              svg: 24,
+              children: <HeartPath />,
+            },
+            {
+              svg: {
+                size: 10,
+                config: { pan: { x: 7, y: 3 } },
+              },
+              children: <Heart />,
+            },
+            {
+              children: <PracticeQuestion />,
+            },
           ]}
         />
       </MDX>
@@ -60,20 +71,12 @@ export function LinesContent({ content, length }) {
   );
 }
 
-const commands = parsePath("M 13 5 h -6 V 15 H 13 M 7 10 h 4");
-
-const mapIndexToComponent = [
-  <ZExample />,
-  <HeartPath />,
-  <Heart />,
-  <PracticeQuestion />,
-];
-
 function ZExample() {
+  const { data } = useStateContext("closePath");
   const { useRelativeMotionValue } = useSvgContext();
   return (
     <g>
-      <PathVisualizer path="M 10 5 l -5 10 h 10 Z" helpers={false} />
+      <Path d={data.path.toPathString()} />
       <motion.line
         x1="15"
         y1="15"
@@ -191,7 +194,6 @@ function RelativeLine() {
 function HeartPath({ withZ = false, ...props }) {
   return (
     <Path
-      className="stroke-current"
       d={`M11.995 7.23319
 C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
 C4.4959 8.14609 4.2403 10.6312 5.66654 12.3892

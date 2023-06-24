@@ -20,7 +20,7 @@ Just like how the `m` command moves the cursor relative to its current position,
 
 You can draw lines in specific directions using the `H` and `V` commands. `H` draws a horizontal line while `V` draws a vertical line:
 
-<CommandList path={"M 13 5 h -6 V 15 H 13 M 7 10 h 4"} />
+<CommandListFromSource source="vertical" />
 
 `H` and `V` also have lowercase versions, which use relative coordinates instead (just like the `l` command we just saw).
 
@@ -34,12 +34,7 @@ The last type of line command is the **close path command** `Z`. This command dr
 
 This means instead of explicitly using a line command to close a shape, you can accomplish the same thing by using `Z`:
 
-```
-M 10 5
-l -5 10
-h 10
-Z
-```
+<CommandListFromSource source="closePath" />
 
 ---
 
