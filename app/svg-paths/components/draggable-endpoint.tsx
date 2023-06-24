@@ -14,7 +14,7 @@ export type EndpointEventHandlers = {
 export function useSvgPanHandler() {
   const { size } = useSvgContext();
   return React.useCallback(
-    (info: PanInfo, evt: PointerEvent) => {
+    (info: PanInfo, evt?: PointerEvent) => {
       const target = evt.target as SVGElement;
       const svg = target.closest("svg");
       const box = svg.querySelector("[data-x-axis-lines]");

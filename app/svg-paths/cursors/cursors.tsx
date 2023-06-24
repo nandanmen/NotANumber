@@ -293,7 +293,7 @@ export function Cursors() {
           children: <AbsoluteRelative showRelative />,
         },
         {
-          svg: 20,
+          svg: 15,
           children: <PathHoverVisual source="move" />,
         },
         {

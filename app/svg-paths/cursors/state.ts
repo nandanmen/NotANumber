@@ -36,7 +36,7 @@ export const initialState = {
     ...createInitialState(),
   },
   move: {
-    path: parsePath("M 5 8 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"),
+    path: parsePath("M 3 5.5 q 2 2 0 4 m 3 -6 q 4 4 0 8 m 3 -10 q 4 6 0 12"),
   },
   ...getInitialPracticeQuestionState(
     parsePath("M 0 5 m 5 10 m 5 -5 m 5 0 m 5 -10")
