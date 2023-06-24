@@ -17,7 +17,7 @@ export function useSvgPanHandler() {
     (info: PanInfo, evt?: PointerEvent) => {
       const target = evt.target as SVGElement;
       const svg = target.closest("svg");
-      const box = svg.querySelector("[data-x-axis-lines]");
+      const box = svg.querySelector("[data-svg-grid]");
       const { width, x, y } = box.getBoundingClientRect();
       const relativeX = info.point.x - x;
       const relativeY = info.point.y - y - document.documentElement.scrollTop;

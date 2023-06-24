@@ -69,6 +69,8 @@ export function Svg({
   width?: string;
   height?: string;
 }) {
+  const thinGridPattern = React.useId();
+  const gridPattern = React.useId();
   const sizeMotion = useMotionValue(size);
 
   const _config = { ...defaultConfig, ...config };
@@ -129,8 +131,66 @@ export function Svg({
           },
         }}
       >
-        <AxesLines />
+        <defs>
+          <pattern
+            id={thinGridPattern}
+            patternUnits="userSpaceOnUse"
+            width="1"
+            height="1"
+          >
+            <motion.line
+              x1="1"
+              y1="0"
+              x2="1"
+              y2="1"
+              className="stroke-gray7"
+              strokeWidth={useRelativeMotionValue(0.25)}
+            />
+            <motion.line
+              x1="0"
+              y1="1"
+              x2="1"
+              y2="1"
+              className="stroke-gray7"
+              strokeWidth={useRelativeMotionValue(0.25)}
+            />
+          </pattern>
+          <pattern
+            id={gridPattern}
+            patternUnits="userSpaceOnUse"
+            width="5"
+            height="5"
+          >
+            <rect width="5" height="5" fill={`url(#${thinGridPattern})`} />
+            <motion.line
+              x1="5"
+              y1="0"
+              x2="5"
+              y2="5"
+              className="stroke-gray7"
+              strokeWidth={useRelativeMotionValue(0.5)}
+            />
+            <motion.line
+              x1="0"
+              y1="5"
+              x2="5"
+              y2="5"
+              className="stroke-gray7"
+              strokeWidth={useRelativeMotionValue(0.5)}
+            />
+          </pattern>
+        </defs>
         <AxesLabels />
+        <motion.rect
+          data-svg-grid
+          x={config.pan.x}
+          y={config.pan.y}
+          width={size}
+          height={size}
+          className="stroke-gray7"
+          strokeWidth={useRelativeMotionValue(0.25)}
+          fill={`url(#${gridPattern})`}
+        />
         {children}
       </SvgContext.Provider>
     </motion.svg>
@@ -187,48 +247,6 @@ function AxesLabels() {
             >
               {y}
             </motion.text>
-          );
-        })}
-      </g>
-    </g>
-  );
-}
-
-function AxesLines() {
-  const { size, useRelativeMotionValue, config } = useSvgContext();
-  const { x: panX, y: panY } = config.pan;
-  const cols = range(size + panX, panX);
-  const rows = range(size + panY, panY);
-  const stroke = useRelativeMotionValue(0.1);
-  const highlightedStroke = useRelativeMotionValue(0.25);
-  const isHighlighted = (xOrY: number) => xOrY % 5 === 0;
-  return (
-    <g className="stroke-gray7">
-      <g data-x-axis-lines>
-        {cols.map((x) => {
-          return (
-            <motion.line
-              key={x}
-              strokeWidth={isHighlighted(x) ? highlightedStroke : stroke}
-              x1={x}
-              x2={x}
-              y1={panY}
-              y2={size + panY}
-            />
-          );
-        })}
-      </g>
-      <g data-y-axis-lines>
-        {rows.map((y) => {
-          return (
-            <motion.line
-              key={y}
-              strokeWidth={isHighlighted(y) ? highlightedStroke : stroke}
-              y1={y}
-              y2={y}
-              x1={panX}
-              x2={size + panX}
-            />
           );
         })}
       </g>
