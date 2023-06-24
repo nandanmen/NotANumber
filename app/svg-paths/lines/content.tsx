@@ -63,8 +63,6 @@ export function LinesContent({ content, length }) {
 const commands = parsePath("M 13 5 h -6 V 15 H 13 M 7 10 h 4");
 
 const mapIndexToComponent = [
-  <Line index={0} />,
-  <Line index={1} />,
   <PathHoverVisual commands={[]} id="command-list-lines" />,
   <ZExample />,
   <HeartPath />,
