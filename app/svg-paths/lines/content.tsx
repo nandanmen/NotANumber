@@ -97,7 +97,6 @@ function ZExample() {
 function AbsoluteLine({ placeholder = false }) {
   const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
   const { data: relativeData, set: setRelative } = useStateContext("relative");
-  const relative = relativeData.path.atAbsolute<"L">(1);
   const absolute = absoluteData.path.atAbsolute<"L">(1);
 
   return (

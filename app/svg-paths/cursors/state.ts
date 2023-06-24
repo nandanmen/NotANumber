@@ -1,6 +1,7 @@
 import { useStateContext as useStateContextBase } from "../components/state-context";
 import { getInitialPracticeQuestionState } from "../components/path-practice";
 import { parsePath } from "../lib/path";
+import { createInitialState } from "../components/svg/drag-group";
 
 const heart = `M11.995 7.23319
 C10.5455 5.60999 8.12832 5.17335 6.31215 6.65972
@@ -26,8 +27,14 @@ export const initialState = {
     index: null,
     maxIndex: cornerPath.commands.length,
   },
-  absolute: { x: 5, y: 5 },
-  relative: { x: 15, y: 5 },
+  absolute: {
+    path: parsePath("M 5 5 L 10 15"),
+    ...createInitialState(),
+  },
+  relative: {
+    path: parsePath("M 15 5 l 10 15"),
+    ...createInitialState(),
+  },
   ...getInitialPracticeQuestionState(
     parsePath("M 0 5 m 5 10 m 5 -5 m 5 0 m 5 -10")
   ),

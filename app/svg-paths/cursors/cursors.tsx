@@ -8,13 +8,18 @@ import {
   Text,
 } from "../components/path-visualizer";
 import { useSvgContext } from "../components/svg";
-import { Tooltip } from "../components/svg/tooltip";
+import { CoordinatesTooltip, Tooltip } from "../components/svg/tooltip";
 import { parsePath } from "../utils";
 import { useStateContext } from "./state";
 import { useDebouncedCallback } from "use-debounce";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { PracticeQuestion } from "../components/path-practice";
 import { VisualWrapper } from "../components/visual-wrapper";
+import { DraggableEndpoint } from "../components/draggable-endpoint";
+import { getDragHandlers } from "../components/svg/drag-group";
+import { Path } from "../components/svg/path";
+import { Circle } from "../components/svg/circle";
+import { Line } from "../components/svg/line";
 
 export const CursorOverview = () => {
   const {
@@ -109,80 +114,132 @@ export const Corner = () => {
 
 // --
 
-const AbsoluteRelative = () => {
-  const { data: absolute, set: setAbsolute } = useStateContext("absolute");
-  const { data: relative, set: setRelative } = useStateContext("relative");
+const AbsoluteRelative = ({ showRelative = false }) => {
+  const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
+  const { data: relativeData, set: setRelative } = useStateContext("relative");
 
-  const absoluteCommand = React.useMemo(() => {
-    return parsePath(`M ${absolute.x} ${absolute.y} L 10 15`);
-  }, [absolute.x, absolute.y]);
-
-  const relativeCommand = React.useMemo(() => {
-    return parsePath(`M ${relative.x} ${relative.y} l 10 15`);
-  }, [relative.x, relative.y]);
+  const absolute = absoluteData.path.atAbsolute<"L">(1);
+  const relative = relativeData.path.atAbsolute<"L">(1);
 
   const absoluteControls = useAnimationControls();
   const animateAbsolute = useDebouncedCallback(() => {
     absoluteControls.start({
-      x: 10,
-      y: 15,
+      x: absolute.x,
+      y: absolute.y,
     });
   }, 1000);
 
   React.useEffect(() => {
     absoluteControls.start({
-      x: absolute.x,
-      y: absolute.y,
+      x: absolute.x0,
+      y: absolute.y0,
       transition: { type: false },
     });
     animateAbsolute();
-  }, [absoluteControls, animateAbsolute, absolute.x, absolute.y]);
+  }, [absoluteControls, animateAbsolute, absolute.x0, absolute.y0]);
 
   const relativeControls = useAnimationControls();
-  const animateRelative = useDebouncedCallback((x: number, y: number) => {
+  const animateRelative = useDebouncedCallback(() => {
     relativeControls.start({
-      x: x + 10,
-      y: y + 15,
+      x: relative.x,
+      y: relative.y,
     });
   }, 1000);
-
   React.useEffect(() => {
-    const x = relative.x;
-    const y = relative.y;
-    relativeControls.start({
-      x,
-      y,
-      transition: { type: false },
-    });
-    animateRelative(x, y);
-  }, [relativeControls, animateRelative, relative.x, relative.y]);
+    if (showRelative) {
+      relativeControls.start({
+        x: relative.x0,
+        y: relative.y0,
+        transition: { type: false },
+      });
+      animateRelative();
+    }
+  }, [
+    relativeControls,
+    animateRelative,
+    relative.x0,
+    relative.y0,
+    showRelative,
+  ]);
 
   return (
     <>
-      <PathVisualizer path={absoluteCommand} />
-      <PathVisualizer path={relativeCommand} />
-      <Tooltip x={absolute.x} y={absolute.y} placement="top">
-        ({absolute.x.toFixed(1)}, {absolute.y.toFixed(1)})
-      </Tooltip>
-      <Tooltip x={relative.x} y={relative.y} placement="top">
-        ({relative.x.toFixed(1)}, {relative.y.toFixed(1)})
-      </Tooltip>
-      <Tooltip x={10} y={15} placement="bottom">
-        (10, 15)
-      </Tooltip>
-      <Tooltip x={relative.x + 10} y={relative.y + 15} placement="bottom">
-        ({(relative.x + 10).toFixed(1)}, {(relative.y + 15).toFixed(1)})
-      </Tooltip>
+      <g>
+        <Path d={absoluteData.path.toPathString()} />
+        <DraggableEndpoint
+          cx={absolute.x0}
+          cy={absolute.y0}
+          {...getDragHandlers({
+            id: ["0.x", "0.y"],
+            state: absoluteData.state,
+            set: setAbsolute,
+          })}
+          onPan={(x, y) => {
+            setAbsolute({ path: absoluteData.path.setAbsolute(0, { x, y }) });
+          }}
+        />
+        <Circle variant="cursor" cx={absolute.x} cy={absolute.y} />
+      </g>
+      <CoordinatesTooltip x={absolute.x0} y={absolute.y0} placement="top" />
+      <CoordinatesTooltip x={absolute.x} y={absolute.y} placement="bottom" />
       <CursorPoint
-        style={{ x: absolute.x, y: absolute.y }}
+        style={{ x: absolute.x0, y: absolute.y0 }}
         animate={absoluteControls}
         transition={{ type: "spring", bounce: 0 }}
       />
-      <CursorPoint
-        style={{ x: relative.x, y: relative.y }}
-        animate={relativeControls}
-        transition={{ type: "spring", bounce: 0 }}
-      />
+      {showRelative && (
+        <g>
+          <Line
+            x1={relative.x0}
+            y1={relative.y0}
+            x2={relative.x0}
+            y2={relative.y}
+          />
+          <Line
+            x1={relative.x0}
+            y1={relative.y}
+            x2={relative.x}
+            y2={relative.y}
+          />
+          <Circle
+            variant="cursor"
+            cx={relative.x0}
+            cy={relative.y}
+            className="fill-gray10"
+          />
+          <Text x={relative.x0} y={relative.y0 + relative.source.y / 2}>
+            {relative.source.y.toFixed(1)}
+          </Text>
+          <Text y={relative.y} x={relative.x0 + relative.source.x / 2}>
+            {relative.source.x.toFixed(1)}
+          </Text>
+          <Path d={relativeData.path.toPathString()} />
+          <DraggableEndpoint
+            cx={relative.x0}
+            cy={relative.y0}
+            {...getDragHandlers({
+              id: ["0.x", "0.y"],
+              state: relativeData.state,
+              set: setRelative,
+            })}
+            onPan={(x, y) => {
+              setRelative({ path: relativeData.path.setAbsolute(0, { x, y }) });
+            }}
+          />
+          <Circle variant="cursor" cx={relative.x} cy={relative.y} />
+          <CoordinatesTooltip x={relative.x0} y={relative.y0} placement="top" />
+          <CoordinatesTooltip
+            x={relative.x}
+            y={relative.y}
+            placement="bottom"
+          />
+          <CursorPoint
+            style={{ x: relative.x0, y: relative.y0 }}
+            animate={relativeControls}
+            transition={{ type: "spring", bounce: 0 }}
+          />
+        </g>
+      )}
     </>
   );
 };
@@ -239,8 +296,12 @@ export function Cursors() {
           children: <Corner />,
         },
         {
-          svg: 30,
+          svg: 20,
           children: <AbsoluteRelative />,
+        },
+        {
+          svg: 30,
+          children: <AbsoluteRelative showRelative />,
         },
         {
           svg: 20,
