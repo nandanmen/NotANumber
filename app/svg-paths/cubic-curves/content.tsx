@@ -4,7 +4,6 @@ import React from "react";
 import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";
-import { SyntaxExample } from "./components/syntax-example";
 import { PracticeQuestion } from "../components/path-practice";
 import * as syntax from "./content/syntax";
 import * as curveGeneral from "./content/curve-general";
@@ -18,7 +17,7 @@ export function Content({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ SyntaxExample }}
+        components={{ ...pill.components }}
       >
         <VisualWrapper
           components={[

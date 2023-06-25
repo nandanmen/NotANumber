@@ -1,11 +1,14 @@
 import { useStateContext as useStateContextBase } from "../components/state-context";
 import { getInitialPracticeQuestionState } from "../components/path-practice";
 import { parsePath } from "../lib/path";
-import * as syntax from "./content/syntax";
 import * as chain from "./content/chain";
+import { createInitialState } from "../components/svg/drag-group";
 
 export const initialState = {
-  syntax: syntax.initialState,
+  syntax: {
+    path: parsePath("M 5 13 C 0 5 20 5 15 13"),
+    ...createInitialState(),
+  },
   chain: {
     index: null,
     expanded: false,

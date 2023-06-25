@@ -96,6 +96,8 @@ function Pill({ quadratic = false }) {
   );
 }
 
+export const components = { Pill };
+
 export const pages = [
   {
     children: <Pill />,

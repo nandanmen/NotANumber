@@ -6,8 +6,12 @@ This pill shape, for example, doesn't look quite right using quadratic curves:
 
 <CommandList
   path={"M 5 5 h 5 q 5 2.5 0 5 h -5 q -5 -2.5 0 -5 z"}
-  indices={[2, 4]}
+  highlight={[2, 4]}
 />
+
+<Svg size={15}>
+  <Pill quadratic />
+</Svg>
 
 ---
 
@@ -15,8 +19,12 @@ But if we change the quadratic curves to cubic curves instead, we get a much smo
 
 <CommandList
   path={"M 5 5 h 5 c 4 0 4 5 0 5 h -5 c -4 0 -4 -5 0 -5 z"}
-  indices={[2, 4]}
+  highlight={[2, 4]}
 />
+
+<Svg size={15}>
+  <Pill />
+</Svg>
 
 We were able to make the curve look better because we had an extra control point to work with.
 
@@ -32,7 +40,7 @@ C x1 y1 x2 y2 x y
 
 For example:
 
-<SyntaxExample />
+<CommandListFromSource source="syntax" />
 
 Notice that the command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
 
