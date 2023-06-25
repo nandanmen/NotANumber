@@ -39,6 +39,8 @@ function CurveGeneral() {
   );
 }
 
+export const components = { CurveGeneral };
+
 export const page = {
   children: <CurveGeneral />,
   svg: 20,

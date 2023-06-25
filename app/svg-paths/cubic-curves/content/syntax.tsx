@@ -18,6 +18,8 @@ function Syntax() {
   );
 }
 
+export const components = { Syntax };
+
 export const page = {
   children: <Syntax />,
   svg: 20,

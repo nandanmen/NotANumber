@@ -13,6 +13,8 @@ const basket =
 
 const curveIndices = [1, 2, 3];
 
+export const components = { Chain };
+
 function Chain() {
   const {
     data: { path, index, expanded, state },

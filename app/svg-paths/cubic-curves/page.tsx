@@ -1,5 +1,4 @@
 import { serialize } from "next-mdx-remote/serialize";
-import { MDX } from "../components/mdx";
 import { readPage } from "../lib/fs";
 import { Content } from "./content";
 

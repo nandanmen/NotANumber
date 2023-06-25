@@ -17,7 +17,13 @@ export function Content({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ ...pill.components }}
+        components={{
+          ...pill.components,
+          ...syntax.components,
+          ...chain.components,
+          ...curveGeneral.components,
+          PracticeQuestion,
+        }}
       >
         <VisualWrapper
           components={[
