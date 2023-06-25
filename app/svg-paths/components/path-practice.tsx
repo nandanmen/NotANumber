@@ -8,6 +8,7 @@ import { PathList } from "./path-hover-visual";
 import { useStateContext } from "./state-context";
 import { useSvgContext } from "./svg";
 import { Path } from "./svg/path";
+import { PathVisualizer } from "./path-visualizer";
 
 const PRACTICE_QUESTION_KEY = "practiceQuestion";
 
@@ -39,7 +40,7 @@ export function PathPractice({ value }: { value: string }) {
     } catch {}
   }, [value]);
 
-  return <Path d={value} />;
+  return <PathVisualizer path={path} />;
 }
 
 export function PracticeQuestion() {
