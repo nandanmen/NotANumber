@@ -16,6 +16,8 @@ export const initialState = {
   path,
 };
 
+export const components = { Flags };
+
 function Flags() {
   const { index } = useIndexContext();
   const { data } = useStateContext("flags");

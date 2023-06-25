@@ -17,6 +17,8 @@ export const initialState = {
   path,
 };
 
+export const components = { Ellipse };
+
 function Ellipse() {
   const { getRelative } = useSvgContext();
   const { data, set } = useStateContext("ellipse");

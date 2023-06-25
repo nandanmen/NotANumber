@@ -9,6 +9,8 @@ const path = parsePath("M 3 10 A 10 7.5 0 0 0 20 17");
 
 export const initialState = { path };
 
+export const components = { SmallEllipse };
+
 function SmallEllipse() {
   const { getRelative } = useSvgContext();
   const { data, set } = useStateContext("small-ellipse");

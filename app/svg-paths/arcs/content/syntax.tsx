@@ -96,6 +96,8 @@ function PropButton({
   );
 }
 
+export const components = { ArcSyntax };
+
 export const page = {
   svg: false,
   children: (

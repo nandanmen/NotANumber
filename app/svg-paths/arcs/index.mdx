@@ -14,6 +14,10 @@ As an example, the arc that you see here is drawn using the following commands:
 
 We'll dive into what each of these values means in a moment, but first, try to change the controls in the sandbox to get a feel for how the arc command works.
 
+<Svg>
+  <ArcSyntax />
+</Svg>
+
 ---
 
 ## How Arcs Are Formed
@@ -24,6 +28,10 @@ Let's talk about the first and last pairs of the arc command: `(rx,ry)` and `(x,
 
 To draw an arc, **the browser will take these three points and tries to find an ellipse that "fits"** — that is, an ellipse with radii `rx` and `ry` and with both of the points on its circumference.
 
+<Svg>
+  <Ellipse />
+</Svg>
+
 Try changing the radius of the arc or the position of the endpoint in the sandbox. Notice that the ellipse will change to always fit the two points and the provided radii.
 
 > This `(x,y)` pair is what confused me when I first learned the arc command. Intuitively, I would've thought that I'd need an angle to draw an arc, not an endpoint!
@@ -33,6 +41,10 @@ Try changing the radius of the arc or the position of the endpoint in the sandbo
 Of course, it's not always possible to find a matching ellipse. What happens in that case? Click the "Shrink Arc" button below and let's find out:
 
 <ShrinkArcButton />
+
+<Svg>
+  <SmallEllipse />
+</Svg>
 
 Notice that when the ellipse isn't big enough to fit the arc's points, the arc isn't affected — it still follows the ellipse's curve. **This suggests that the ellipse is implicitly _scaled_ to fit the arc!**
 
@@ -48,6 +60,10 @@ The next argument, `x-axis-rotation`, is thankfully not as tricky. As you might 
 
 <RotationSlider />
 
+<Svg>
+  <Rotation />
+</Svg>
+
 The best way to get a feel of this argument is to play around with it, so try changing the value above to see how it affects the arc.
 
 ---
@@ -60,6 +76,10 @@ The next two arguments may look like numbers, but they're actually _flags_ — t
 
 In the ellipse section, we said that the browser tries to find an ellipse that fits the arc's points and then draws the curve on that ellipse. What I _didn't_ mention was that there will always be **four possible curves** that can be drawn between any pair of points!
 
+<Svg>
+  <Flags />
+</Svg>
+
 The large arc and clockwise (sweep) flags control which of these four curves is ultimately drawn.
 
 ---
@@ -68,9 +88,17 @@ The large arc and clockwise (sweep) flags control which of these four curves is 
 
 Out of the four arcs that can be drawn between two points, two of the arcs are drawn **clockwise**:
 
+<Svg>
+  <Flags />
+</Svg>
+
 ---
 
 While the other two are drawn **counterclockwise**:
+
+<Svg>
+  <Flags />
+</Svg>
 
 ---
 
@@ -80,6 +108,10 @@ Try toggling the sweep flag below and notice how the arc goes from counterclockw
 
 <ToggleFlagButton prop="sweep" />
 
+<Svg>
+  <Flags />
+</Svg>
+
 ---
 
 ### Large Arc
@@ -87,6 +119,10 @@ Try toggling the sweep flag below and notice how the arc goes from counterclockw
 The sweep flag alone isn't enough though — we still have two arcs remaining to choose from! This is where the `large-arc` flag comes in.
 
 <ToggleFlagButton prop="largeArc" />
+
+<Svg>
+  <Flags />
+</Svg>
 
 Notice that, out of the two remaining arcs, one of them is larger than the other. When the `large-arc` flag is `0`, the smaller arc is drawn; toggling the flag to `1` will draw the larger arc instead.
 
@@ -115,5 +151,9 @@ And with that, we've covered all of the commands in the SVG path syntax! As a fi
 Remember — there's no right answer here, as long as the path ends up looking like how we want it to!
 
 > Credit where credit is due: this icon is a trace of the fingerprint icon from [heroicons](https://heroicons.com/) with fewer commands and more rounded numbers.
+
+<Svg>
+  <PracticeQuestion />
+</Svg>
 
 <PracticeQuestionEditor />

@@ -9,7 +9,7 @@ import * as ellipse from "./content/ellipse";
 import * as smallEllipse from "./content/small-ellipse";
 import * as rotation from "./content/rotation";
 import * as flags from "./content/flags";
-import { CommandListFromSource, CommandText } from "../components/command-list";
+import { CommandText } from "../components/command-list";
 import { Button } from "../components/button";
 import { animate } from "popmotion";
 import { Slider } from "../components/slider";
@@ -23,10 +23,15 @@ export function Content({ content, length }) {
         content={content}
         numSections={length}
         components={{
-          CommandListFromSource,
           ShrinkArcButton,
           ToggleFlagButton,
           RotationSlider,
+          ...syntax.components,
+          ...ellipse.components,
+          ...smallEllipse.components,
+          ...rotation.components,
+          ...flags.components,
+          PracticeQuestion,
         }}
       >
         <VisualWrapper

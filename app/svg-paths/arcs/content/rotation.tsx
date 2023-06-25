@@ -11,6 +11,8 @@ export const initialState = {
   path,
 };
 
+export const components = { Rotation };
+
 function Rotation() {
   const { data, set } = useStateContext("rotation");
   return (
