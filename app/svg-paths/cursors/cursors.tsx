@@ -113,7 +113,7 @@ export const Corner = () => {
 
 // --
 
-const AbsoluteRelative = ({ showRelative = false }) => {
+export const AbsoluteRelative = ({ showRelative = false }) => {
   const { data: absoluteData, set: setAbsolute } = useStateContext("absolute");
   const { data: relativeData, set: setRelative } = useStateContext("relative");
 

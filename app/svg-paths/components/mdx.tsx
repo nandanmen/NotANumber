@@ -16,6 +16,7 @@ import { CommandListFromSource, CommandList } from "./command-list";
 import { PlaySlider, PlaySliderFromSource } from "./play-slider";
 import { PracticeQuestionEditor } from "./path-practice";
 import { Svg } from "./svg";
+import { PathHoverVisual } from "./path-hover-visual";
 import styles from "./page-section.module.css";
 
 const baseComponents = {
@@ -42,6 +43,7 @@ const baseComponents = {
   CommandList,
   PlaySlider,
   PlaySliderFromSource,
+  PathHoverVisual,
 };
 
 const sections = [
