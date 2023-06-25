@@ -29,14 +29,19 @@ const mapCodeToHint = {
 
 type CommandKey = `${number}.${string}`;
 
-type StateType = {
-  path: Path;
-  index?: number;
-  expanded?: boolean;
+type CommandListProps = {
+  path: Path | string;
   active?: CommandKey[];
+  index?: number | null;
+  expanded?: boolean;
+  onChange?: (state: Partial<StateType>) => void;
+  collapseAfter?: number;
+  highlight?: number[];
   blocklist?: CommandKey[];
-  slice?: [number, number];
+  slice?: [number] | [number, number];
 };
+
+type StateType = Omit<CommandListProps, "onChange">;
 
 export const CommandListFromSource = ({ source }: { source: string }) => {
   const { data, set } = useStateContext<Record<string, StateType>>()(source);
