@@ -26,7 +26,16 @@ export function LinesContent({ content, length }) {
       <MDX
         content={content}
         numSections={length}
-        components={{ HeartCommands, ClosePathToggle }}
+        components={{
+          HeartCommands,
+          ClosePathToggle,
+          AbsoluteLine,
+          RelativeLine,
+          ZExample,
+          HeartPath,
+          Heart,
+          PracticeQuestion,
+        }}
       >
         <VisualWrapper
           components={[
