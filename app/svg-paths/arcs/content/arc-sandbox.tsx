@@ -496,8 +496,8 @@ function DragButton({
   const handlePan = useSvgPanHandler();
   return (
     <motion.g
-      onPan={(_, info) => {
-        onPan(handlePan(info));
+      onPan={(evt, info) => {
+        onPan(handlePan(info, evt));
       }}
       {...props}
     />
