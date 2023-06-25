@@ -1,21 +1,19 @@
 import { useStateContext as useStateContextBase } from "../components/state-context";
 import { getInitialPracticeQuestionState } from "../components/path-practice";
 import { parsePath } from "../lib/path";
+import { createInitialState } from "../components/svg/drag-group";
 
 export const initialState = {
+  intro: parsePath(
+    "M 5 5 q 5 -3 10 0 M 5 10 c 5 -3 5 3 10 0 M 5 15 a 5 3 0 0 0 10 0"
+  ),
   curve: {
-    x1: 5,
-    y1: 15,
-    x: 15,
-    y: 15,
+    path: parsePath("M 5 0 v 5 Q 5 15 15 15 h 5"),
+    ...createInitialState(),
   },
   chain: {
-    x1: 5,
-    y1: 10,
-    x: 10,
-    y: 10,
-    tx: 15,
-    ty: 15,
+    path: parsePath("M 5 5 Q 5 10 10 10 T 15 15"),
+    ...createInitialState(),
   },
   ...getInitialPracticeQuestionState(
     parsePath(

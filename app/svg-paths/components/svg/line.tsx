@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useSvgContext } from "../svg";
 
-type LineVariant = "primary" | "secondary" | "current";
+type LineVariant = "primary" | "secondary" | "current" | "none";
 
 export function Line({
   variant = "primary",
@@ -20,6 +20,7 @@ export function Line({
     primary: "stroke-gray10",
     secondary: "stroke-gray8",
     current: "stroke-current",
+    none: undefined,
   };
   const mapSizeToWidth = {
     base: 0.5,

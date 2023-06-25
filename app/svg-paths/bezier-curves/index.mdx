@@ -4,6 +4,10 @@ Let's be honest. You wouldn't be reaching for SVG paths if you only wanted to dr
 
 The true power of SVG paths comes from being able to draw curves. So let's talk about curve commands! There are three types of curves you can draw using SVG paths: **quadratic bezier curves**, **cubic bezier curves**, and **arcs**.
 
+<Svg size={20}>
+  <CurveTypes />
+</Svg>
+
 We'll divide these conversations into three parts, starting with quadratic bezier curves first.
 
 ---
@@ -13,6 +17,10 @@ We'll divide these conversations into three parts, starting with quadratic bezie
 A bezier curve is a curve that is defined by a series of points known as **control points**. SVG paths support two types of bezier curves — **quadratic** bezier curves, which have one control point, and **cubic** bezier curves, which have two control points.
 
 **The more control points a curve has, the more complex the curve can be.** Try moving the points in the playground and notice that the cubic bezier curve (the bottom curve) has a lot more freedom in its shape when compared to the quadratic curve (the top curve).
+
+<Svg size={20}>
+  <CurvePlayground />
+</Svg>
 
 ---
 
@@ -28,7 +36,11 @@ Q controlX controlY endX endY
 
 This curve, for example, creates a rounded corner:
 
-<RoundedCornerCommands />
+<CommandListFromSource source="curve" />
+
+<Svg size={20}>
+  <RoundedCorner />
+</Svg>
 
 ---
 
@@ -43,9 +55,13 @@ Q 15 10 15 15
 
 While this works just fine, there _is_ an easier way — **using the `T` command**:
 
-<TCommandList />
+<CommandListFromSource source="chain" />
 
 The `T` command will draw a new quadratic curve using the _reflection_ of the previous curve's control point. Try changing the control point of the first curve and notice how it changes the second curve.
+
+<Svg size={20}>
+  <Chain />
+</Svg>
 
 > Of course, this approach will only work if the reflection point is indeed the point that you're looking for - if it's not, you'll still have to use the full `Q` command.
 
@@ -54,6 +70,10 @@ The `T` command will draw a new quadratic curve using the _reflection_ of the pr
 ## Practice
 
 Using all of the commands we've looked at so far (cursor, line, and quadratic curve), trace over this little picture frame icon:
+
+<Svg>
+  <PracticeQuestion />
+</Svg>
 
 (As a little bonus, try rounding the frame!)
 
