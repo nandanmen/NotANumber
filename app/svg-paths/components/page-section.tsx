@@ -45,7 +45,7 @@ export function PageSection({
         "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block first-of-type:-mt-16"
       )}
     >
-      <hr className="border-gray8 border-dashed mb-10 lg:mb-16 lg:w-1/3 group-first-of-type:hidden" />
+      <hr className="border-gray8 border-dashed mb-10 lg:mb-16 group-first-of-type:hidden" />
       {children}
     </section>
   );

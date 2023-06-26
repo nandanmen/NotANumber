@@ -2,9 +2,12 @@
 
 import React from "react";
 import { useSvgContext } from "./svg";
-import { getArcCenter } from "./utils";
 import { motion } from "framer-motion";
-import { parsePath, type Command } from "../utils";
+import {
+  AbsoluteArcCommand,
+  AbsoluteCommand as Command,
+  parsePath,
+} from "../lib/path";
 
 export const toPath = (command: Command) => {
   const {
@@ -68,7 +71,7 @@ export function PathVisualizer({
   placeholder?: boolean;
 }) {
   const _commands = React.useMemo(() => {
-    if (typeof path === "string") return parsePath(path);
+    if (typeof path === "string") return parsePath(path).absolute;
     return path;
   }, [path]);
 
@@ -279,10 +282,10 @@ const Arcs = () => {
   const { commands } = usePathContext();
   return (
     <g strokeWidth={getRelative(0.5)} className="stroke-gray10">
-      {commands.map((command, index) => {
+      {commands.map((command) => {
         switch (command.code) {
           case "A": {
-            const { cx, cy } = getArcCenter(command);
+            const { cx, cy } = command as AbsoluteArcCommand;
             return (
               <g>
                 <ellipse
@@ -327,7 +330,7 @@ const Lines = () => {
   const { commands } = usePathContext();
   return (
     <g strokeWidth={getRelative(0.5)} className="stroke-gray10">
-      {commands.map((command, index) => {
+      {commands.map((command) => {
         switch (command.code) {
           case "M": {
             return (

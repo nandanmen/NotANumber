@@ -1,7 +1,6 @@
 import React from "react";
 import { CommandListFromSource } from "./command-list";
-import type { Path as IPath } from "../lib/path";
-import { type Command, parsePath } from "../utils";
+import { AbsoluteCommand, parsePath, Path as IPath } from "../lib/path";
 import { Button } from "./button";
 import { PathEditor } from "./path-editor";
 import { PathList } from "./path-hover-visual";
@@ -19,9 +18,12 @@ export type PracticeQuestionState = {
   index: number | null;
 };
 
-export function getInitialPracticeQuestionState(path: IPath) {
+export function getInitialPracticeQuestionState(
+  path: IPath,
+  key = PRACTICE_QUESTION_KEY
+) {
   return {
-    [PRACTICE_QUESTION_KEY]: {
+    [key]: {
       path,
       showAnswer: false,
       value: "",
@@ -31,24 +33,26 @@ export function getInitialPracticeQuestionState(path: IPath) {
 }
 
 export function PathPractice({ value }: { value: string }) {
-  const [path, setPath] = React.useState<Command[]>([]);
+  const [path, setPath] = React.useState<AbsoluteCommand[]>([]);
 
   React.useEffect(() => {
     try {
       const parsed = parsePath(value);
-      setPath(parsed);
+      setPath(parsed.absolute);
     } catch {}
   }, [value]);
 
   return <PathVisualizer path={path} />;
 }
 
-export function PracticeQuestion() {
+export function PracticeQuestion({
+  questionKey = PRACTICE_QUESTION_KEY,
+}: {
+  questionKey?: string;
+}) {
   const {
     data: { path, showAnswer, value, index },
-  } = useStateContext<Record<string, PracticeQuestionState>>()(
-    PRACTICE_QUESTION_KEY
-  );
+  } = useStateContext<Record<string, PracticeQuestionState>>()(questionKey);
   const { getRelative } = useSvgContext();
   return (
     <g>
@@ -65,20 +69,22 @@ export function PracticeQuestion() {
 }
 
 // This component is imported into MDX
-export function PracticeQuestionEditor() {
+export function PracticeQuestionEditor({
+  questionKey = PRACTICE_QUESTION_KEY,
+}: {
+  questionKey?: string;
+}) {
   const {
     data: { showAnswer },
     set,
-  } = useStateContext<Record<string, PracticeQuestionState>>()(
-    PRACTICE_QUESTION_KEY
-  );
+  } = useStateContext<Record<string, PracticeQuestionState>>()(questionKey);
   return (
-    <div className="space-y-2">
-      <PathEditor id={PRACTICE_QUESTION_KEY} placeholder="M 5 10" />
+    <div className="space-y-4">
+      <PathEditor id={questionKey} placeholder="M 5 10" />
       <Button onClick={() => set({ showAnswer: !showAnswer })}>
         {showAnswer ? "Hide Answer" : "Reveal Answer"}
       </Button>
-      {showAnswer && <CommandListFromSource source={PRACTICE_QUESTION_KEY} />}
+      {showAnswer && <CommandListFromSource source={questionKey} />}
     </div>
   );
 }

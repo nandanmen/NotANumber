@@ -99,16 +99,7 @@ export function createPath(commands: Command[]): Path {
         ? AbsoluteArcCommand
         : AbsoluteCommand<Code>
     >(index: number) {
-      const command = absolute[index];
-      if (command.code === "A") {
-        const cmd = command as AbsoluteCommand<"A">;
-        const { cx, cy } = getArcCenter({
-          ...cmd,
-          xAxisRotation: cmd.xAxisRotation * (Math.PI / 180),
-        });
-        return { ...command, cx, cy } as unknown as ReturnType;
-      }
-      return command as ReturnType;
+      return absolute[index] as ReturnType;
     },
     set<Code extends CommandCode>(index: number, args: Partial<Command<Code>>) {
       return createPath(
@@ -177,6 +168,21 @@ function createAbsolute(commands: Command[]): AbsoluteCommand[] {
     makeAbsolute(draft);
   }) as AbsoluteCommand[];
   return copy.map((command, index) => {
+    if (command.code === "A") {
+      const cmd = command as AbsoluteCommand<"A">;
+      const { cx, cy } = getArcCenter({
+        ...cmd,
+        xAxisRotation: cmd.xAxisRotation * (Math.PI / 180),
+      });
+      return {
+        ...command,
+        cx,
+        cy,
+        source: commands[index],
+        toPathString: () => commandToString(command),
+        toPathSection: () => toPathSection(command, copy),
+      };
+    }
     return {
       ...command,
       source: commands[index],

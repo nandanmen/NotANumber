@@ -5,7 +5,7 @@ export const PathEditor = ({ id, placeholder = "" }) => {
     useStateContext<Record<string, { value: string } | undefined>>()(id);
   const value = data?.value || "";
   return (
-    <div className="relative">
+    <div className="relative flex">
       <span className="absolute top-2 right-2 text-gray10">
         <EditIcon />
       </span>

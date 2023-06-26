@@ -14,7 +14,7 @@ import { FaGithub, FaTwitter } from "react-icons/fa";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { CommandListFromSource, CommandList } from "./command-list";
 import { PlaySlider, PlaySliderFromSource } from "./play-slider";
-import { PracticeQuestionEditor } from "./path-practice";
+import { PracticeQuestionEditor, PracticeQuestion } from "./path-practice";
 import { Svg } from "./svg";
 import { PathHoverVisual } from "./path-hover-visual";
 import styles from "./page-section.module.css";
@@ -31,6 +31,13 @@ const baseComponents = {
     />
   ),
   ul: (props) => <ul className="list-disc ml-4" {...props} />,
+  a: (props) => (
+    <a
+      className="underline underline-offset-2 text-gray11 hover:text-blue10"
+      target="_blank"
+      {...props}
+    />
+  ),
   blockquote: (props) => (
     <blockquote className="bg-gray7 rounded-md px-4 py-3" {...props} />
   ),
@@ -38,6 +45,7 @@ const baseComponents = {
   InteractiveCommand,
   PathEditor,
   PracticeQuestionEditor,
+  PracticeQuestion,
   Svg,
   CommandListFromSource,
   CommandList,
@@ -53,6 +61,7 @@ const sections = [
   "bezier curves",
   "cubic curves",
   "arcs",
+  "challenge",
 ];
 
 export const MDX = ({
