@@ -120,10 +120,10 @@ export const MDX = ({
         />
         <Footer />
       </article>
-      <div className="hidden h-screen sticky top-0 lg:flex flex-col">
-        <header className="p-8">
-          <nav>
-            <ul className="flex">
+      <div className="hidden h-screen sticky top-0 lg:flex flex-col overflow-hidden">
+        <header className="p-8 w-full">
+          <nav className="flex">
+            <ul className="flex overflow-x-auto">
               {sections.map((section) => {
                 const href = toHref(section);
                 return (
@@ -138,23 +138,23 @@ export const MDX = ({
                   </li>
                 );
               })}
-              <li className="ml-auto text-gray11 rounded-md py-1 px-2 h-fit">
-                <motion.a
-                  className="flex items-center text-sm font-bold gap-1"
-                  href="https://ko-fi.com/nandafyi"
-                  target="_blank"
-                  rel="noreferrer"
-                  whileHover="hover"
-                  initial="idle"
-                  transition={{
-                    staggerChildren: 0.1,
-                  }}
-                >
-                  <CoffeeIcon />
-                  <span className="hidden coffee:block">Buy me a coffee</span>
-                </motion.a>
-              </li>
             </ul>
+            <div className="ml-auto text-gray11 rounded-md py-1 px-2 h-fit shrink-0">
+              <motion.a
+                className="flex items-center text-sm font-bold gap-1"
+                href="https://ko-fi.com/nandafyi"
+                target="_blank"
+                rel="noreferrer"
+                whileHover="hover"
+                initial="idle"
+                transition={{
+                  staggerChildren: 0.1,
+                }}
+              >
+                <CoffeeIcon />
+                <span className="hidden coffee:block">Buy me a coffee</span>
+              </motion.a>
+            </div>
           </nav>
         </header>
         <div className="flex items-center justify-center w-full h-full pb-4 pl-4 select-none">
