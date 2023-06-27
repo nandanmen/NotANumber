@@ -6,6 +6,9 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDir: true,
   },
+  images: {
+    domains: ["avatars.githubusercontent.com"],
+  },
   async redirects() {
     return [
       {

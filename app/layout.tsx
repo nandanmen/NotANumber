@@ -1,7 +1,9 @@
+import { getServerSession } from "next-auth/next";
 import { Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
+import { AuthProvider } from "./svg-paths/provider";
 
 export const metadata = {
   title: "Next.js",
@@ -56,7 +58,7 @@ export default function RootLayout({
           "font-sans antialiased"
         )}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
