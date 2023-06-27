@@ -18,6 +18,10 @@ import { PracticeQuestionEditor, PracticeQuestion } from "./path-practice";
 import { Svg } from "./svg";
 import { PathHoverVisual } from "./path-hover-visual";
 import styles from "./page-section.module.css";
+import { useSession } from "../provider";
+import Image from "next/image";
+import { signOut } from "next-auth/react";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const baseComponents = {
   h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
@@ -78,14 +82,15 @@ export const MDX = ({
   prefix?: React.ReactNode;
 }) => {
   const pathName = usePathname();
+  const session = useSession();
   return (
     <IndexProvider numSections={numSections}>
       <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[55ch] xl:w-[68ch] w-full lg:max-w-[50vw]">
-        <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex justify-between items-center z-50 text-gray11 bg-gray4">
+        <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex items-center z-50 text-gray11 bg-gray4">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>
           </h1>
-          <div className="flex text-xl gap-2">
+          <motion.div className="flex text-xl gap-2 ml-auto" layout>
             <a
               className="hover:text-blue9"
               href="https://twitter.com/nandafyi"
@@ -102,7 +107,31 @@ export const MDX = ({
             >
               <FaGithub />
             </a>
-          </div>
+          </motion.div>
+          {session?.user && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <motion.button
+                  className="shrink-0 ml-4"
+                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
+                >
+                  <Image
+                    width="24"
+                    height="24"
+                    className="rounded-full"
+                    src={session.user.image}
+                    alt={session.user.username}
+                  />
+                </motion.button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <button className="w-full py-1" onClick={() => signOut()}>
+                  Sign out
+                </button>
+              </PopoverContent>
+            </Popover>
+          )}
         </header>
         {prefix && (
           <div

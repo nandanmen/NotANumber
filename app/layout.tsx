@@ -1,4 +1,3 @@
-import { getServerSession } from "next-auth/next";
 import { Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";

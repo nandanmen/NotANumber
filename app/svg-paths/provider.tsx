@@ -16,7 +16,7 @@ interface Session {
 
 const AuthContext = React.createContext<Session | undefined>(null);
 
-export const useSession = () => {
+export const useSession = (): Session | undefined => {
   return React.useContext(AuthContext);
 };
 

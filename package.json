@@ -19,6 +19,7 @@
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-dialog": "^1.0.2",
+    "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-slider": "^1.0.0",
     "@stitches/react": "^1.2.8",
     "@use-it/interval": "^1.0.0",
