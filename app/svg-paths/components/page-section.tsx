@@ -7,6 +7,9 @@ import { useSession } from "../provider";
 import Image from "next/image";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { motion } from "framer-motion";
+import useSWR from "swr";
+import { usePathname } from "next/navigation";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -46,55 +49,77 @@ export function PageSection({
   }, [index, set]);
 
   return (
-    <section className="first-of-type:-mt-16 group first-of-type:pt-16 relative px-8 pb-8 max-w-[100vw] lg:px-16 flex flex-col">
+    <section className="first-of-type:-mt-16 group first-of-type:pt-16 relative px-8 pb-8 max-w-[100vw] lg:px-16 flex flex-col justify-between gap-16">
       <div
         ref={ref}
         className={clsx(
           styles.section,
           "gap-y-6 lg:space-y-[1.5em] lg:min-h-[50vh]",
-          "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block mb-16"
+          "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
         )}
       >
         <hr className="border-gray8 border-dashed mb-10 lg:mb-16 group-first-of-type:hidden" />
         {children}
       </div>
-      <CommentsList />
+      <CommentsList index={index} />
     </section>
   );
 }
 
-const comments = [
-  {
-    id: "1",
-    author_username: "johndoe",
-    author_picture: "https://avatars.githubusercontent.com/u/31267630?v=4",
-    content: "This is a comment",
-    created_at: "2021-10-01T00:00:00.000Z",
-  },
-  {
-    id: "2",
-    author_username: "johndoe",
-    author_picture: "https://avatars.githubusercontent.com/u/31267630?v=4",
-    content: "This is a comment",
-    created_at: "2021-10-01T00:00:00.000Z",
-  },
-];
+const useLocation = (index: number) => {
+  const path = usePathname();
+  const match = path.split("/svg-paths/")[1];
+  if (!match) return `index/${index}`;
+  return `${match}/${index}`;
+};
 
-function CommentsList() {
+type Comment = {
+  id: string;
+  location: string;
+  author: {
+    username: string;
+    picture: string;
+  };
+  content: string;
+  created_at: string;
+};
+
+function CommentsList({ index }) {
   const session = useSession();
+  const location = useLocation(index);
   const [showComments, setShowComments] = React.useState(false);
-
+  const { data } = useSWR<Comment[]>(
+    `/api/comments?location=${encodeURIComponent(location)}`,
+    (url) => {
+      return fetch(url).then((res) => res.json());
+    }
+  );
   return (
-    <div className="relative mt-auto max-w-[60ch] w-full mx-auto">
+    <motion.div
+      animate={{ opacity: data ? 1 : 0 }}
+      initial={{ opacity: 0 }}
+      className="relative max-w-[60ch] w-full mx-auto"
+    >
       <button
         className="text-sm text-gray11 font-semibold"
         onClick={() => setShowComments(!showComments)}
       >
-        Comments
+        Comments {data?.length ? `(${data.length})` : ""}
       </button>
       {showComments && (
-        <ul className="divide-y divide-gray6 bg-gray3 rounded-md border border-gray6">
-          {comments.map((comment) => {
+        <motion.ul
+          className="divide-y divide-gray6 bg-gray3 rounded-md border border-gray8"
+          animate={{ scale: 1, opacity: 1 }}
+          initial={{ scale: 0.96, opacity: 0 }}
+          exit={{ scale: 0.96, opacity: 0 }}
+          style={{ originX: 0, originY: 0 }}
+          transition={{
+            type: "spring",
+            bounce: 0,
+            duration: 0.15,
+          }}
+        >
+          {data?.map((comment) => {
             return (
               <li key={comment.id} className="p-4 space-y-1">
                 <header className="flex gap-2 items-center">
@@ -102,10 +127,10 @@ function CommentsList() {
                     width="24"
                     height="24"
                     className="rounded-full shrink-0"
-                    src={comment.author_picture}
-                    alt={comment.author_username}
+                    src={comment.author.picture}
+                    alt={comment.author.username}
                   />
-                  <p className="font-bold">{comment.author_username}</p>
+                  <p className="font-bold">{comment.author.username}</p>
                   <p className="text-sm text-gray11">
                     {timeAgo.format(new Date(comment.created_at))}
                   </p>
@@ -126,9 +151,9 @@ function CommentsList() {
               </button>
             )}
           </li>
-        </ul>
+        </motion.ul>
       )}
-    </div>
+    </motion.div>
   );
 }
 

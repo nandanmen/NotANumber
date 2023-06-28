@@ -18,18 +18,23 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, account, user }) => {
       if (user) {
         // @ts-ignore
         token.picture = user.avatar;
         // @ts-ignore
         token.username = user.username;
       }
+      if (account) {
+        token.access_token = account.access_token;
+      }
       return token;
     },
     session: async ({ session, token }) => {
       // @ts-ignore
       session.user.username = token.username;
+      // @ts-ignore
+      session.access_token = token.access_token;
       return session;
     },
   },
