@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
 import { AuthProvider } from "./svg-paths/provider";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "Next.js",
@@ -58,6 +59,7 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>{children}</AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
