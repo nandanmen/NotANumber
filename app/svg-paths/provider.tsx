@@ -12,6 +12,7 @@ interface User {
 interface Session {
   user: User;
   expires: string;
+  access_token: string;
 }
 
 const AuthContext = React.createContext<Session | undefined>(null);

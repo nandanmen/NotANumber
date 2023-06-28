@@ -8,7 +8,7 @@ import Image from "next/image";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { motion } from "framer-motion";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { usePathname } from "next/navigation";
 
 TimeAgo.addDefaultLocale(en);
@@ -18,6 +18,31 @@ const timeAgo = new TimeAgo("en-US");
 const isVisible = (element: HTMLElement) => {
   const { top } = element.getBoundingClientRect();
   return top < window.innerHeight / 2;
+};
+
+const Spinner = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 4.75V6.25"></path>
+      <path d="M17.1266 6.87347L16.0659 7.93413"></path>
+      <path d="M19.25 12L17.75 12"></path>
+      <path d="M17.1266 17.1265L16.0659 16.0659"></path>
+      <path d="M12 17.75V19.25"></path>
+      <path d="M7.9342 16.0659L6.87354 17.1265"></path>
+      <path d="M6.25 12L4.75 12"></path>
+      <path d="M7.9342 7.93413L6.87354 6.87347"></path>
+    </svg>
+  );
 };
 
 export function PageSection({
@@ -69,8 +94,8 @@ export function PageSection({
 const useLocation = (index: number) => {
   const path = usePathname();
   const match = path.split("/svg-paths/")[1];
-  if (!match) return `index/${index}`;
-  return `${match}/${index}`;
+  if (!match) return `index-${index}`;
+  return `${match}-${index}`;
 };
 
 type Comment = {
@@ -121,19 +146,32 @@ function CommentsList({ index }) {
         >
           {data?.map((comment) => {
             return (
-              <li key={comment.id} className="p-4 space-y-1">
+              <li
+                key={comment.id}
+                className={clsx(
+                  "p-4 space-y-1",
+                  comment.id === "optimistic" && "text-gray10"
+                )}
+              >
                 <header className="flex gap-2 items-center">
-                  <Image
-                    width="24"
-                    height="24"
-                    className="rounded-full shrink-0"
-                    src={comment.author.picture}
-                    alt={comment.author.username}
-                  />
+                  <div className="w-6 h-6 bg-gray10 rounded-full shrink-0">
+                    <Image
+                      width="24"
+                      height="24"
+                      className="rounded-full"
+                      src={comment.author.picture}
+                      alt={comment.author.username}
+                    />
+                  </div>
                   <p className="font-bold">{comment.author.username}</p>
                   <p className="text-sm text-gray11">
                     {timeAgo.format(new Date(comment.created_at))}
                   </p>
+                  {comment.id === "optimistic" && (
+                    <div className="ml-auto animate-spin">
+                      <Spinner />
+                    </div>
+                  )}
                 </header>
                 <p>{comment.content}</p>
               </li>
@@ -141,7 +179,7 @@ function CommentsList({ index }) {
           })}
           <li className="p-4 space-y-2">
             {session?.user ? (
-              <AddCommentForm user={session.user} />
+              <AddCommentForm user={session.user} location={location} />
             ) : (
               <button
                 className="py-1 px-2 bg-gray12 text-gray1 font-semibold text-sm rounded-md"
@@ -157,7 +195,9 @@ function CommentsList({ index }) {
   );
 }
 
-function AddCommentForm({ user }) {
+function AddCommentForm({ user, location }) {
+  const session = useSession();
+  const { mutate } = useSWRConfig();
   return (
     <>
       <header className="flex gap-2 items-center">
@@ -170,11 +210,47 @@ function AddCommentForm({ user }) {
         />
         <p className="font-bold">{user.username}</p>
       </header>
-      <form className="gap-2 flex flex-col items-end">
-        <textarea
-          className="w-full block bg-gray4 border-gray6 border rounded-[4px] p-2 min-h-[100px]"
-          placeholder="Add your comment here..."
-        />
+      <form
+        className="gap-2 flex flex-col items-end"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const content = e.currentTarget.elements.namedItem(
+            "content"
+          ) as HTMLTextAreaElement;
+          mutate(
+            `/api/comments?location=${encodeURIComponent(location)}`,
+            fetch("/api/comments", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${session?.access_token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ location, content: content.value }),
+            }).then((res) => res.json()),
+            {
+              optimisticData: (comments: Comment[]) => [
+                ...comments,
+                {
+                  id: "optimistic",
+                  location,
+                  content: content.value,
+                  created_at: new Date().toISOString(),
+                  author: { username: user.username, picture: user.image },
+                },
+              ],
+              rollbackOnError: true,
+            }
+          );
+        }}
+      >
+        <label className="w-full block">
+          <span className="sr-only">Comment</span>
+          <textarea
+            className="w-full block bg-gray4 border-gray6 border rounded-[4px] p-2 min-h-[100px]"
+            placeholder="Add your comment here..."
+            name="content"
+          />
+        </label>
         <button
           type="submit"
           className="text-gray1 bg-gray12 font-semibold text-sm px-2 py-1 rounded-md"

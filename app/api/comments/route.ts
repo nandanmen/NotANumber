@@ -15,6 +15,8 @@ type Author = {
   picture: string;
 };
 
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   const octokit = new Octokit();
 
@@ -24,7 +26,7 @@ export async function GET(request: NextRequest) {
   }
 
   const { rows } =
-    await sql<Comment>`select * from comments where location = ${location}`;
+    await sql<Comment>`select * from comments where location = ${location} order by created_at`;
   const authors: Author[] = await Promise.all(
     getAuthors(rows).map(async (username) => {
       const user = await octokit.request("GET /users/{username}", {
@@ -53,3 +55,34 @@ const getAuthors = (rows: Comment[]): string[] => {
   rows.forEach((row) => authors.add(row.author));
   return Array.from(authors);
 };
+
+export async function POST(request: NextRequest) {
+  const { location, content } = await request.json();
+
+  const octokit = new Octokit({
+    auth: request.headers.get("authorization"),
+  });
+  const user = await octokit.request("GET /user");
+
+  if (user.status !== 200 || !user.data.login) {
+    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+  }
+
+  if (!location || !content) {
+    return NextResponse.json(
+      { error: "Missing location or content" },
+      { status: 400 }
+    );
+  }
+
+  await sql<Comment>`
+    insert into comments (location, author, content)
+    values (${location}, ${user.data.login}, ${content})
+    returning *
+  `;
+
+  const newComments =
+    await sql<Comment>`select * from comments where location = ${location} order by created_at`;
+
+  return NextResponse.json(newComments.rows, { status: 201 });
+}
