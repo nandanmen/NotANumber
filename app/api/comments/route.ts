@@ -17,9 +17,21 @@ type Author = {
 
 export const revalidate = 0;
 
-export async function GET(request: NextRequest) {
-  const octokit = new Octokit();
+async function getAvatar(username: string): Promise<string> {
+  const response = await fetch(`https://api.github.com/users/${username}`, {
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+      Accept: "application/vnd.github+json",
+    },
+    next: {
+      revalidate: 60 * 60 * 24, // 1 day
+    },
+  });
+  const data = await response.json();
+  return data.avatar_url;
+}
 
+export async function GET(request: NextRequest) {
   const location = new URL(request.url).searchParams.get("location");
   if (!location) {
     return NextResponse.json({ error: "Missing location" }, { status: 400 });
@@ -29,15 +41,9 @@ export async function GET(request: NextRequest) {
     await sql<Comment>`select * from comments where location = ${location} order by created_at`;
   const authors: Author[] = await Promise.all(
     getAuthors(rows).map(async (username) => {
-      const user = await octokit.request("GET /users/{username}", {
-        username,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      });
       return {
         username,
-        picture: user.data.avatar_url,
+        picture: await getAvatar(username),
       };
     })
   );

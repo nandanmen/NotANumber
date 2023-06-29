@@ -74,18 +74,17 @@ export function PageSection({
   }, [index, set]);
 
   return (
-    <section className="first-of-type:-mt-16 group first-of-type:pt-16 relative px-8 pb-8 max-w-[100vw] lg:px-16 flex flex-col justify-between gap-16">
-      <div
-        ref={ref}
-        className={clsx(
-          styles.section,
-          "gap-y-6 lg:space-y-[1.5em] lg:min-h-[50vh]",
-          "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
-        )}
-      >
-        <hr className="border-gray8 border-dashed mb-10 lg:mb-16 group-first-of-type:hidden" />
-        {children}
-      </div>
+    <section
+      ref={ref}
+      className={clsx(
+        styles.section,
+        "first-of-type:-mt-16 group first-of-type:pt-16 relative px-8 pb-8 max-w-[100vw] lg:px-16",
+        "gap-y-6 lg:space-y-[1.5em] lg:min-h-[50vh]",
+        "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
+      )}
+    >
+      <hr className="border-gray8 border-dashed mb-10 lg:mb-16 group-first-of-type:hidden" />
+      {children}
       <CommentsList index={index} />
     </section>
   );
