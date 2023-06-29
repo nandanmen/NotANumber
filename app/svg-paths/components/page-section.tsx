@@ -217,6 +217,8 @@ function AddCommentForm({ user, location }) {
           const content = e.currentTarget.elements.namedItem(
             "content"
           ) as HTMLTextAreaElement;
+          const value = content.value;
+          e.currentTarget.reset();
           mutate(
             `/api/comments?location=${encodeURIComponent(location)}`,
             fetch("/api/comments", {
@@ -225,7 +227,7 @@ function AddCommentForm({ user, location }) {
                 Authorization: `Bearer ${session?.access_token}`,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ location, content: content.value }),
+              body: JSON.stringify({ location, content: value }),
             }).then((res) => res.json()),
             {
               optimisticData: (comments: Comment[]) => [
@@ -233,7 +235,7 @@ function AddCommentForm({ user, location }) {
                 {
                   id: "optimistic",
                   location,
-                  content: content.value,
+                  content: value,
                   created_at: new Date().toISOString(),
                   author: { username: user.username, picture: user.image },
                 },
