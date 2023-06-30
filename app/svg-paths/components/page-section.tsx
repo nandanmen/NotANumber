@@ -78,7 +78,7 @@ export function PageSection({
       ref={ref}
       className={clsx(
         styles.section,
-        "first-of-type:-mt-16 group first-of-type:pt-16 relative px-8 pb-8 max-w-[100vw] lg:px-16",
+        "group relative px-8 pb-8 max-w-[100vw] lg:px-16",
         "gap-y-6 lg:space-y-[1.5em] lg:min-h-[50vh]",
         "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
       )}

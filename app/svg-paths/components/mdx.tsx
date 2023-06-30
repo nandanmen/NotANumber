@@ -24,7 +24,7 @@ import { signOut } from "next-auth/react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const baseComponents = {
-  h1: (props) => <h1 className="text-3xl font-bold mb-8" {...props} />,
+  h1: (props) => <h1 className="text-3xl font-bold" {...props} />,
   h2: (props) => <h2 className="text-2xl font-bold" {...props} />,
   h3: (props) => <h3 className="text-xl font-bold" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
@@ -86,7 +86,7 @@ export const MDX = ({
   return (
     <IndexProvider numSections={numSections}>
       <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[55ch] xl:w-[68ch] w-full lg:max-w-[50vw]">
-        <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex items-center z-50 text-gray11 bg-gray4">
+        <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex items-center z-50 text-gray11 bg-gray4 mb-8">
           <h1 className="font-serif text-xl  hover:text-blue9">
             <Link href="/">NaN</Link>
           </h1>
@@ -137,7 +137,8 @@ export const MDX = ({
           <div
             className={clsx(
               "p-8 lg:p-16 lg:pb-8 grid grid-cols-[1fr_min(100%,60ch)_1fr]",
-              styles.section
+              styles.section,
+              styles.prefix
             )}
           >
             {prefix}
@@ -148,6 +149,26 @@ export const MDX = ({
           components={{ ...baseComponents, ...components }}
         />
         <Footer />
+        <nav className="fixed lg:hidden bottom-0 w-[100vw] overflow-x-auto p-8 bg-gray4">
+          <ul className="flex w-fit md:mx-auto">
+            {sections.map((section) => {
+              const href = toHref(section);
+              return (
+                <li
+                  key={section}
+                  className={clsx(
+                    "capitalize rounded-md py-1 px-2 font-semibold h-fit leading-none relative",
+                    href === pathName
+                      ? "before:absolute before:top-full before:left-2 before:right-2 before:h-[2px] before:bg-current"
+                      : "text-gray10"
+                  )}
+                >
+                  <Link href={href}>{section}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       </article>
       <div className="hidden h-screen sticky top-0 lg:flex flex-col overflow-hidden">
         <header className="p-8 w-full">
