@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
 import { useSvgContext } from "../components/svg";
-import { Endpoint, Text } from "../components/path-visualizer";
+import { Endpoint } from "../components/path-visualizer";
 import { CoordinatesTooltip } from "../components/svg/tooltip";
 import { PathHoverVisual } from "../components/path-hover-visual";
 import { HeartCommands, ClosePathToggle } from "./components";
@@ -19,6 +19,7 @@ import { getDragHandlers } from "../components/svg/drag-group";
 import { Circle } from "../components/svg/circle";
 import clsx from "clsx";
 import { Line } from "../components/svg/line";
+import { Text } from "../components/svg/text";
 
 export function LinesContent({ content, length }) {
   return (

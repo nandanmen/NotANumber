@@ -9,6 +9,7 @@ import {
   useMotionValue,
   useTransform,
 } from "framer-motion";
+import { useMediaQuery } from "./hooks/use-media-query";
 
 const getRelativeFunction = (size: number) => (value: number) => {
   return (value / 100) * size;
@@ -69,6 +70,8 @@ export function Svg({
   width?: string;
   height?: string;
 }) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   const thinGridPattern = React.useId();
   const gridPattern = React.useId();
   const sizeMotion = useMotionValue(size);
@@ -79,7 +82,7 @@ export function Svg({
   const panY = useMotionValue(_config.pan.y);
 
   const useRelativeMotionValue = getRelativeMotionValueHook(sizeMotion);
-  const padding = useRelativeMotionValue(_config.padding);
+  const padding = useRelativeMotionValue(isMobile ? 10 : _config.padding);
   const realSize = useTransform(
     [sizeMotion, padding],
     ([s, p]: [number, number]) => s + p + p / 2
@@ -200,8 +203,9 @@ export function Svg({
 const GAP = 5;
 
 function AxesLabels() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { size, useRelativeMotionValue, panX, panY, config } = useSvgContext();
-  const fontSize = useRelativeMotionValue(2);
+  const fontSize = useRelativeMotionValue(isMobile ? 4 : 2);
   const offset = useRelativeMotionValue(-4);
   const offsetX = useTransform(
     [offset, panX],

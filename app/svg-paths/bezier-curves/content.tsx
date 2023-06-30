@@ -17,6 +17,7 @@ import { Circle } from "../components/svg/circle";
 import { Line } from "../components/svg/line";
 import { Text } from "../components/svg/text";
 import { getDragHandlers } from "../components/svg/drag-group";
+import { useMediaQuery } from "../components/hooks/use-media-query";
 
 export function Content({ content, length }) {
   return (
@@ -122,6 +123,7 @@ function Arc({ command }: { command: AbsoluteArcCommand }) {
 
 function CurvePlayground() {
   const [showDrag, setShowDrag] = React.useState(true);
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { getRelative } = useSvgContext();
   return (
     <>
@@ -135,7 +137,7 @@ function CurvePlayground() {
           path="M 5 13 c 5 -3 5 3 10 0"
           onChange={() => setShowDrag(false)}
         />
-        {showDrag && (
+        {showDrag && !isMobile && (
           <motion.g
             variants={{
               active: { y: 0, opacity: 1 },

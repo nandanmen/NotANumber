@@ -7,6 +7,7 @@ import {
 import { useSvgContext } from "app/svg-paths/components/svg";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
+import { Text } from "app/svg-paths/components/svg/text";
 import { Path as BasePath } from "app/svg-paths/components/svg/path";
 import { getScale } from "app/svg-paths/components/utils";
 import type {
@@ -19,7 +20,6 @@ import {
   getDragHandlers,
 } from "../../components/svg/drag-group";
 import { clsx } from "clsx";
-import { Text } from "app/svg-paths/components/path-visualizer";
 
 type SyntaxState = {
   path: IPath;

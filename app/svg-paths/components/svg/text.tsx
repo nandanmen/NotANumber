@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import { useMediaQuery } from "../hooks/use-media-query";
 import { useSvgContext } from "../svg";
 
 type TextProps = Omit<React.ComponentPropsWithoutRef<"text">, "fontSize"> & {
@@ -20,8 +21,9 @@ export const Text = ({
   variant,
   ...props
 }: TextProps) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { getRelative } = useSvgContext();
-  const _fontSize = getRelative(fontSize);
+  const _fontSize = getRelative(isMobile ? fontSize * 2 : fontSize);
   return (
     <g
       fontSize={_fontSize}

@@ -5,7 +5,6 @@ import { motion, useAnimationControls } from "framer-motion";
 import {
   AnimatedEndpoint,
   PathVisualizer,
-  Text,
 } from "../components/path-visualizer";
 import { useSvgContext } from "../components/svg";
 import { CoordinatesTooltip, Tooltip } from "../components/svg/tooltip";
@@ -19,6 +18,7 @@ import { getDragHandlers } from "../components/svg/drag-group";
 import { Path } from "../components/svg/path";
 import { Circle } from "../components/svg/circle";
 import { Line } from "../components/svg/line";
+import { Text } from "../components/svg/text";
 
 export const CursorOverview = () => {
   const {

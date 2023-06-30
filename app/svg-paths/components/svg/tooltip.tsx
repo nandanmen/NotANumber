@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useSvgContext } from "../svg";
+import { useMediaQuery } from "../hooks/use-media-query";
 
 type TooltipProps = {
   x: number;
@@ -27,6 +28,8 @@ export const Tooltip = ({
   placement = "right",
   children,
 }: TooltipProps) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   const textRef = React.useRef<SVGTextElement>(null);
   const [box, setBox] = React.useState<DOMRect>();
   const { getRelative } = useSvgContext();
@@ -81,7 +84,7 @@ export const Tooltip = ({
         ref={textRef}
         x={_placement.text.x}
         y={_placement.text.y}
-        fontSize={getRelative(1.8)}
+        fontSize={getRelative(isMobile ? 3.6 : 1.8)}
         textAnchor="middle"
         alignmentBaseline="middle"
         className="fill-current font-mono"

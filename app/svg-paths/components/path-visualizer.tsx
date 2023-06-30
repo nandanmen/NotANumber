@@ -8,6 +8,7 @@ import {
   AbsoluteCommand as Command,
   parsePath,
 } from "../lib/path";
+import { Text } from "./svg/text";
 
 export const toPath = (command: Command) => {
   const {
@@ -409,32 +410,6 @@ const Lines = () => {
           }
         }
       })}
-    </g>
-  );
-};
-
-export const Text = ({
-  children,
-  fontSize = 2,
-  font = "font-mono",
-  ...props
-}) => {
-  const { getRelative } = useSvgContext();
-  const _fontSize = getRelative(fontSize);
-  return (
-    <g
-      fontSize={_fontSize}
-      textAnchor="middle"
-      dominantBaseline="middle"
-      fontWeight="bold"
-      className={font}
-    >
-      <text strokeWidth={getRelative(0.5)} className="stroke-gray4" {...props}>
-        {children}
-      </text>
-      <text className="fill-gray10 stroke-none" {...props}>
-        {children}
-      </text>
     </g>
   );
 };
