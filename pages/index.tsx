@@ -15,8 +15,19 @@ import { Debugger } from "~/components/home/Debugger";
 import { SlidingWindow } from "~/components/home/SlidingWindow";
 import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { DynamicIsland } from "~/components/MobileNavIsland";
+import { SvgPaths } from "~/components/home/SvgPaths";
 
 const posts = [
+  {
+    post: {
+      slug: "svg-paths",
+      title: "A Deep Dive Into SVG Path Commands",
+      description:
+        "SVG paths are a powerful tool for creating complex shapes. In this post, we'll take a look at how they work and how to use them in React.",
+      editedAt: "2023-07-02",
+    },
+    children: <SvgPaths />,
+  },
   {
     post: {
       slug: "keys-in-framer-motion",

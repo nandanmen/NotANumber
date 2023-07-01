@@ -8,6 +8,7 @@ type TooltipProps = {
   y: number;
   placement?: "top" | "bottom" | "left" | "right";
   children: React.ReactNode;
+  fontSize?: number;
 };
 
 export function CoordinatesTooltip({
@@ -26,6 +27,7 @@ export const Tooltip = ({
   x,
   y,
   placement = "right",
+  fontSize,
   children,
 }: TooltipProps) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -44,6 +46,7 @@ export const Tooltip = ({
   const boxHeight = box?.height || 0;
   const width = boxWidth + getRelative(2);
   const height = boxHeight + getRelative(2);
+  const _fontSize = fontSize || isMobile ? 3.6 : 1.8;
 
   const _placement = usePlacement({
     x,
@@ -84,10 +87,9 @@ export const Tooltip = ({
         ref={textRef}
         x={_placement.text.x}
         y={_placement.text.y}
-        fontSize={getRelative(isMobile ? 3.6 : 1.8)}
+        fontSize={_fontSize}
         textAnchor="middle"
         alignmentBaseline="middle"
-        className="fill-current font-mono"
       >
         {children}
       </text>

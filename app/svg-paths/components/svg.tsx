@@ -62,14 +62,17 @@ export function Svg({
   config = defaultConfig,
   width = "auto",
   height = "100%",
+  grid = true,
   children,
+  ...props
 }: {
   size?: number;
   children?: React.ReactNode;
   config?: Partial<Config>;
   width?: string;
   height?: string;
-}) {
+  grid?: boolean;
+} & React.ComponentPropsWithoutRef<(typeof motion)["svg"]>) {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const thinGridPattern = React.useId();
@@ -119,7 +122,13 @@ export function Svg({
   }, [size, sizeMotion]);
 
   return (
-    <motion.svg width={width} height={height} viewBox={viewBox} data-svg>
+    <motion.svg
+      width={width}
+      height={height}
+      viewBox={viewBox}
+      data-svg
+      {...props}
+    >
       <SvgContext.Provider
         value={{
           size,
@@ -134,66 +143,68 @@ export function Svg({
           },
         }}
       >
-        <defs>
-          <pattern
-            id={thinGridPattern}
-            patternUnits="userSpaceOnUse"
-            width="1"
-            height="1"
-          >
-            <motion.line
-              x1="1"
-              y1="0"
-              x2="1"
-              y2="1"
-              className="stroke-gray7"
-              strokeWidth={useRelativeMotionValue(0.25)}
-            />
-            <motion.line
-              x1="0"
-              y1="1"
-              x2="1"
-              y2="1"
-              className="stroke-gray7"
-              strokeWidth={useRelativeMotionValue(0.25)}
-            />
-          </pattern>
-          <pattern
-            id={gridPattern}
-            patternUnits="userSpaceOnUse"
-            width="5"
-            height="5"
-          >
-            <rect width="5" height="5" fill={`url(#${thinGridPattern})`} />
-            <motion.line
-              x1="5"
-              y1="0"
-              x2="5"
-              y2="5"
-              className="stroke-gray7"
-              strokeWidth={useRelativeMotionValue(0.5)}
-            />
-            <motion.line
-              x1="0"
-              y1="5"
-              x2="5"
-              y2="5"
-              className="stroke-gray7"
-              strokeWidth={useRelativeMotionValue(0.5)}
-            />
-          </pattern>
-        </defs>
-        <AxesLabels />
-        <motion.rect
-          data-svg-grid
-          x={config.pan.x}
-          y={config.pan.y}
-          width={size}
-          height={size}
-          className="stroke-gray7"
-          strokeWidth={useRelativeMotionValue(0.25)}
-          fill={`url(#${gridPattern})`}
-        />
+        <g style={{ opacity: grid ? 1 : 0 }}>
+          <defs>
+            <pattern
+              id={thinGridPattern}
+              patternUnits="userSpaceOnUse"
+              width="1"
+              height="1"
+            >
+              <motion.line
+                x1="1"
+                y1="0"
+                x2="1"
+                y2="1"
+                className="stroke-gray7"
+                strokeWidth={useRelativeMotionValue(0.25)}
+              />
+              <motion.line
+                x1="0"
+                y1="1"
+                x2="1"
+                y2="1"
+                className="stroke-gray7"
+                strokeWidth={useRelativeMotionValue(0.25)}
+              />
+            </pattern>
+            <pattern
+              id={gridPattern}
+              patternUnits="userSpaceOnUse"
+              width="5"
+              height="5"
+            >
+              <rect width="5" height="5" fill={`url(#${thinGridPattern})`} />
+              <motion.line
+                x1="5"
+                y1="0"
+                x2="5"
+                y2="5"
+                className="stroke-gray7"
+                strokeWidth={useRelativeMotionValue(0.5)}
+              />
+              <motion.line
+                x1="0"
+                y1="5"
+                x2="5"
+                y2="5"
+                className="stroke-gray7"
+                strokeWidth={useRelativeMotionValue(0.5)}
+              />
+            </pattern>
+          </defs>
+          <AxesLabels />
+          <motion.rect
+            data-svg-grid
+            x={config.pan.x}
+            y={config.pan.y}
+            width={size}
+            height={size}
+            className="stroke-gray7"
+            strokeWidth={useRelativeMotionValue(0.25)}
+            fill={`url(#${gridPattern})`}
+          />
+        </g>
         {children}
       </SvgContext.Provider>
     </motion.svg>

@@ -136,7 +136,7 @@ export const MDX = ({
         {prefix && (
           <div
             className={clsx(
-              "p-8 lg:p-16 lg:pb-8 grid grid-cols-[1fr_min(100%,60ch)_1fr]",
+              "p-8 lg:p-16 lg:py-0 grid grid-cols-[1fr_min(100%,60ch)_1fr]",
               styles.section,
               styles.prefix
             )}
