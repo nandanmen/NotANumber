@@ -65,7 +65,11 @@ export function Content({ content, length }) {
         }, {}),
       }}
     >
-      <MDX content={content} numSections={length} components={{ Editor }}>
+      <MDX
+        content={content}
+        numSections={length}
+        components={{ Editor, IconList }}
+      >
         <VisualWrapper
           components={[
             { children: <PathAnimation /> },

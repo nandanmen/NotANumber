@@ -149,7 +149,7 @@ export const MDX = ({
           components={{ ...baseComponents, ...components }}
         />
         <Footer />
-        <nav className="fixed lg:hidden bottom-0 w-[100vw] overflow-x-auto p-8 bg-gray4">
+        <nav className="fixed lg:hidden bottom-0 w-[100vw] overflow-x-auto px-8 py-4 bg-gray4/70 border-t border-gray6 backdrop-blur-md">
           <ul className="flex w-fit md:mx-auto">
             {sections.map((section) => {
               const href = toHref(section);
