@@ -16,56 +16,40 @@ import { VisualWrapper } from "../components/visual-wrapper";
 import { parsePath } from "../lib/path";
 import { Path } from "../components/svg/path";
 import { Circle } from "../components/svg/circle";
-import { Svg, useSvgContext } from "../components/svg";
+import { useSvgContext } from "../components/svg";
 
 const questions = [
   {
-    path: "M2.5 2.49982L9 20.4998L12.5 12.4998L20.5 8.99982L2.5 2.49982Z",
+    path: "M 4.5 4.5 l 18 6.5 l -8 3.5 l -3.5 8 z",
     name: "cursor",
-    x: 2,
-    y: 2,
   },
   {
-    path: "M17 5L21 9L17 13M21 9H3V18H12",
+    path: "M 18 5 l 4 4 l -4 4 m 4 -4 h -18 v 9 h 9",
     name: "arrow",
-    x: 1,
-    y: 0,
   },
   {
-    path: "M 10.5 3.1 A 9 9 0 1 0 20.9 13.4 A 8 8 0 0 1 10.5 3.1 Z",
+    path: "M 11 3.5 a 9 9 0 1 0 10.5 10.5 a 8 8 0 0 1 -10.5 -10.5 z",
     name: "moon",
-    x: 0.5,
-    y: 0.5,
   },
   {
-    path: "M 2 13 h 20 C 21 1 3 1 2 13 Z M 12 2 V 4 M 12 14 v 4 a 2 2 0 0 1 -2 2 a 2 2 0 0 1 -2 -2",
+    path: "M 3 14 h 20 c -1 -12 -19 -12 -20 0 z m 10 -11 v 2 m 0 10 v 4 a 2 2 0 0 1 -2 2 a 2 2 0 0 1 -2 -2",
     name: "umbrella",
-    x: 1,
-    y: 1,
   },
   {
-    path: "M14 16.0341C13.3267 17.8 11.7891 19.0341 10 19.0341C8.21087 19.0341 6.67327 17.8 6 16.0341M18 16.0341L16.793 6.98149C16.339 3.57682 13.4348 1.03412 10 1.03412C6.56521 1.03412 3.66097 3.57682 3.20702 6.98148L2 16.0341H18Z",
+    path: "M 4.5 18.5 l 1.5 -10 c 1 -7 12 -7 13 0 l 1.5 10 z m 12 0 c -2 4 -6 4 -8 0",
     name: "bell",
-    x: 2.5,
-    y: 2.5,
   },
   {
-    path: "M11.9695 7.40912V11.4091L14.4695 13.9091M1.96948 4.65912L4.96948 1.65912M21.9695 4.65912L18.9695 1.65912 M21 11.4 a 9 9 0 0 0 -18 0 a 9 9 0 0 0 18 0 z",
+    path: "M 13 8.5 v 4 l 2.5 2.5 m -12.5 -9.5 l 3 -3 m 14 0 l 3 3 m -1 7 a 9 9 0 0 0 -18 0 a 9 9 0 0 0 18 0 z",
     name: "clock",
-    x: 1,
-    y: 1,
   },
   {
-    path: "M17.9695 4.7052L9.96948 1.9552L1.96948 4.7052V10.8675C1.96948 15.84 5.96948 17.9552 9.96948 20.1131C13.9695 17.9552 17.9695 15.84 17.9695 10.8675V4.7052Z",
+    path: "M 4.5 6 v 7 c 0 5 4 7 8 8.5 c 4 -1.5 8 -3.5 8 -8.5 v -7 l -8 -2.5 z",
     name: "shield",
-    x: 2.5,
-    y: 1.5,
   },
   {
-    path: "M 2 8 C 7 -1.2 17 -1.2 22 8 C 17 17.2 7 17.2 2 8 Z M 9 8 a 3 3 0 0 0 6 0 a 3 3 0 0 0 -6 0 z",
+    path: "M 3 12.5 c 5 -9.2 15 -9.2 20 0 c -5 9.2 -15 9.2 -20 0 z m 7 0 a 3 3 0 0 0 6 0 a 3 3 0 0 0 -6 0 z",
     name: "eye",
-    x: 1,
-    y: 4.5,
   },
 ];
 
@@ -85,14 +69,10 @@ export function Content({ content, length }) {
         <VisualWrapper
           components={[
             { children: <PathAnimation /> },
-            { children: <IconList />, svg: false },
-            ...questions.map(({ name, x, y }) => {
+            { children: <IconList />, svg: 20 },
+            ...questions.map(({ name }) => {
               return {
-                children: (
-                  <g transform={`translate(${x}, ${y})`}>
-                    <PracticeQuestion questionKey={name} />
-                  </g>
-                ),
+                children: <PracticeQuestion questionKey={name} />,
               };
             }),
           ]}
@@ -104,25 +84,39 @@ export function Content({ content, length }) {
 
 function IconList() {
   return (
-    <>
-      <Svg />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid grid-cols-[repeat(4,200px)] gap-8">
-        {questions.map(({ path, name }) => {
-          return (
-            <div key={name}>
-              <svg width="200" viewBox="0 0 25 25">
-                <path
-                  d={path}
-                  fill="none"
-                  strokeWidth="1"
-                  stroke="currentColor"
-                />
-              </svg>
-            </div>
-          );
-        })}
-      </div>
-    </>
+    <motion.g
+      transform="translate(0, 5)"
+      animate="active"
+      initial="hidden"
+      transition={{ staggerChildren: 0.1 }}
+    >
+      {questions.map(({ path, name }, index) => {
+        return (
+          <svg
+            key={name}
+            x={(index * 5) % 20}
+            y={index > 3 ? 5 : 0}
+            viewBox="0 0 25 25"
+            width="5"
+            height="5"
+          >
+            <motion.path
+              variants={{
+                hidden: { opacity: 0, scale: 0.96 },
+                active: { opacity: 1, scale: 1 },
+              }}
+              transition={{
+                duration: 0.3,
+              }}
+              d={path}
+              fill="none"
+              strokeWidth="1"
+              stroke="currentColor"
+            />
+          </svg>
+        );
+      })}
+    </motion.g>
   );
 }
 

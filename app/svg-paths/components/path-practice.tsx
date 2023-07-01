@@ -46,8 +46,12 @@ export function PathPractice({ value }: { value: string }) {
 }
 
 export function PracticeQuestion({
+  x,
+  y,
   questionKey = PRACTICE_QUESTION_KEY,
 }: {
+  x?: number;
+  y?: number;
   questionKey?: string;
 }) {
   const {
@@ -56,12 +60,14 @@ export function PracticeQuestion({
   const { getRelative } = useSvgContext();
   return (
     <g>
-      <Path
-        strokeWidth={getRelative(2)}
-        className="stroke-gray8"
-        fill="none"
-        d={path.toPathString()}
-      />
+      <g transform={`translate(${x}, ${y})`}>
+        <Path
+          strokeWidth={getRelative(2)}
+          className="stroke-gray8"
+          fill="none"
+          d={path.toPathString()}
+        />
+      </g>
       <PathPractice value={value} />
       {showAnswer && <PathList commands={path.absolute} index={index} />}
     </g>
