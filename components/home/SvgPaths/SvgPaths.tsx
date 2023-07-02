@@ -81,6 +81,7 @@ const Circle = styled("circle", {
 const Text = styled("text", {
   fontFamily: "$mono",
   fontSize: 4,
+  fill: "$gray12",
 });
 
 const Line = styled("line", {
@@ -108,7 +109,6 @@ const Path = styled("path", {
   strokeWidth: 2,
 });
 
-const TEXT_WIDTH = 3;
 const TEXT_SIZE = 5;
 
 const Rect = styled("rect", {
