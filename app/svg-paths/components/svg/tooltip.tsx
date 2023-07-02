@@ -46,7 +46,7 @@ export const Tooltip = ({
   const boxHeight = box?.height || 0;
   const width = boxWidth + getRelative(2);
   const height = boxHeight + getRelative(2);
-  const _fontSize = fontSize || isMobile ? 3.6 : 1.8;
+  const _fontSize = fontSize || getRelative(isMobile ? 3.6 : 1.8);
 
   const _placement = usePlacement({
     x,
@@ -90,6 +90,7 @@ export const Tooltip = ({
         fontSize={_fontSize}
         textAnchor="middle"
         alignmentBaseline="middle"
+        className="fill-current font-mono"
       >
         {children}
       </text>
