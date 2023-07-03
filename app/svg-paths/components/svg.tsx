@@ -35,6 +35,7 @@ const SvgContext = React.createContext<{
   useRelativeMotionValue: (value: number) => MotionValue<number>;
   panX: MotionValue<number>;
   panY: MotionValue<number>;
+  container: SVGSVGElement;
 }>(null);
 
 export const useSvgContext = () => {
@@ -75,6 +76,7 @@ export function Svg({
 } & React.ComponentPropsWithoutRef<(typeof motion)["svg"]>) {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const containerRef = React.useRef();
   const thinGridPattern = React.useId();
   const gridPattern = React.useId();
   const sizeMotion = useMotionValue(size);
@@ -136,6 +138,7 @@ export function Svg({
           getRelative,
           panX,
           panY,
+          container: containerRef.current,
           useRelativeMotionValue: (value: number) => {
             return useTransform(sizeMotion, (s) => {
               return (value / 100) * s;
@@ -196,6 +199,7 @@ export function Svg({
           <AxesLabels />
           <motion.rect
             data-svg-grid
+            ref={containerRef}
             x={config.pan.x}
             y={config.pan.y}
             width={size}
