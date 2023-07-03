@@ -23,8 +23,8 @@ const posts = [
       slug: "svg-paths",
       title: "A Deep Dive Into SVG Path Commands",
       description:
-        "SVG paths are a powerful tool for creating complex shapes. In this post, we'll take a look at how they work and how to use them in React.",
-      editedAt: "2023-07-02",
+        "The mystical d attribute in SVG paths is actually a series of small commands. In this guide, we'll take a look at each path command and how we can use them to draw icons.",
+      editedAt: "2023-07-04",
     },
     children: <SvgPaths />,
   },

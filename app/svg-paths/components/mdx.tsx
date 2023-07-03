@@ -101,7 +101,7 @@ export const MDX = ({
             </a>
             <a
               className="hover:text-blue9"
-              href="https://twitter.com/nandafyi"
+              href="https://github.com/narendrasss/NotANumber"
               target="_blank"
               rel="noreferrer"
             >
