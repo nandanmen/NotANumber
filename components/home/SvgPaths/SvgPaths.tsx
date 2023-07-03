@@ -2,7 +2,6 @@ import React from "react";
 import { VisualWrapper } from "../shared";
 import { darkTheme, styled } from "~/stitches.config";
 import { Svg } from "app/svg-paths/components/svg";
-import { Tooltip } from "app/svg-paths/components/svg/tooltip";
 
 const PADDING = 4;
 
