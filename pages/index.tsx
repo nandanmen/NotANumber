@@ -15,8 +15,19 @@ import { Debugger } from "~/components/home/Debugger";
 import { SlidingWindow } from "~/components/home/SlidingWindow";
 import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { DynamicIsland } from "~/components/MobileNavIsland";
+import { SvgPaths } from "~/components/home/SvgPaths";
 
 const posts = [
+  {
+    post: {
+      slug: "svg-paths",
+      title: "A Deep Dive Into SVG Path Commands",
+      description:
+        "The mystical d attribute in SVG paths is actually a series of small commands. In this guide, we'll take a look at each path command and how we can use them to draw icons.",
+      editedAt: "2023-07-04",
+    },
+    children: <SvgPaths />,
+  },
   {
     post: {
       slug: "keys-in-framer-motion",

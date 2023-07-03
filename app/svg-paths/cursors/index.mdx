@@ -1,0 +1,85 @@
+# Cursors
+
+At the heart of all SVG paths is the **cursor**. All path commands _use_ the cursor to determine where to start drawing from, and all path commands _move_ the cursor to ensure the following command starts from the correct position.
+
+<PlaySliderFromSource source="intro" />
+
+<Svg>
+  <CursorOverview />
+</Svg>
+
+---
+
+Consider this little corner, defined with the following commands:
+
+<CommandListFromSource source="corner" />
+
+<Svg size={20}>
+  <Corner />
+</Svg>
+
+<PlaySliderFromSource source="corner" />
+
+Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then, the three commands change the cursor as follows:
+
+- `M 5 5` moves the cursor to `(5, 5)`;
+- `v 5` draws a vertical line of length 5, moving the cursor to `(5, 10)`;
+- `L 10 15` draws a line to `(10, 15)`, moving the cursor to `(10, 15)`;
+- `h 5` draws a horizontal line of length 5, moving the cursor to `(15, 15)`.
+
+---
+
+Generally speaking, the cursor will end up wherever the current path "section" finishes - after all, you want your path sections to be connected to one another most of the time.
+
+Where the current path section ends depends on whether the command is **absolute** or **relative** (which, if you recall, depends on whether the command code is uppercase or lowercase).
+
+For **absolute commands**, the cursor will end up at the command's `x` and `y` values. For example, `L 10 15` will move the cursor to `(10, 15)` _regardless_ of where the cursor is currently at.
+
+<CommandListFromSource source="absolute" />
+
+<Svg size={20}>
+  <AbsoluteRelative />
+</Svg>
+
+---
+
+For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(15, 5)`, then `l 10 15` will move the cursor to `(25, 20)`.
+
+<CommandListFromSource source="relative" />
+
+<Svg size={30}>
+  <AbsoluteRelative showRelative />
+</Svg>
+
+Remember: commands written with an uppercase letter are **absolute** commands, while commands written with a lowercase letter are **relative** commands.
+
+---
+
+## Move Command
+
+There is a special command that _only_ moves the cursor without drawing anything. This command is called the **move command** and is denoted with the `M` (or `m`) code:
+
+```
+M <x> <y>
+m <dx> <dy>
+```
+
+These are useful when you want to draw paths that aren't connected to one another:
+
+<CommandListFromSource source="move" />
+
+<Svg size={15}>
+  <PathHoverVisual source="move" />
+</Svg>
+
+---
+
+## Practice
+
+Using the `M` and/or `m` commands, **move the cursor to the points shown on the canvas**.
+
+<Svg size={20}>
+  <Practice />
+</Svg>
+
+<PracticeQuestionEditor />

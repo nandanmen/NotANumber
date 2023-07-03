@@ -1,0 +1,93 @@
+# Curves II: Cubic Curves
+
+Quadratic curves are great, but as we saw in the previous section, they can be pretty limiting — there are only so many shapes you can make with only one control point!
+
+This pill shape, for example, doesn't look quite right using quadratic curves:
+
+<CommandList
+  path={"M 5 5 h 5 q 5 2.5 0 5 h -5 q -5 -2.5 0 -5 z"}
+  highlight={[2, 4]}
+/>
+
+<Svg size={15}>
+  <Pill quadratic />
+</Svg>
+
+---
+
+But if we change the quadratic curves to cubic curves instead, we get a much smoother pill shape:
+
+<CommandList
+  path={"M 5 5 h 5 c 4 0 4 5 0 5 h -5 c -4 0 -4 -5 0 -5 z"}
+  highlight={[2, 4]}
+/>
+
+<Svg size={15}>
+  <Pill />
+</Svg>
+
+We were able to make the curve look better because we had an extra control point to work with.
+
+---
+
+## Syntax
+
+We saw the cubic curve syntax just now but here it is more formally. To draw a cubic curve, we use the `C` command:
+
+```
+C x1 y1 x2 y2 x y
+```
+
+For example:
+
+<CommandListFromSource source="syntax" />
+
+<Svg size={20}>
+  <Syntax />
+</Svg>
+
+Notice that the command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
+
+---
+
+You can kind of think of the cubic curve as a "generalization" of the quadratic curve — every quadratic curve can be represented as a cubic curve by putting the control points in the right place.
+
+**Try moving the control points in the sandbox so the bezier curve lines up with the quadratic curve behind it.**
+
+<Svg size={20}>
+  <CurveGeneral />
+</Svg>
+
+> Interestingly, the point where the two curves line up is _not_ when the two control points are in the same place!
+
+---
+
+## Multiple Bezier Curves
+
+Just like how quadratic curves can use the `T` command to chain two quadratic curves together, cubic curves can use the `S` command to chain two cubic curves together.
+
+The syntax, as you might expect, is the same as the `T` command but with an extra pair of coordinates for the second control point:
+
+```
+S x2 y2 x y
+```
+
+Here, we use the `S` command to create a hot air balloon shape:
+
+<CommandListFromSource source="chain" />
+
+<Svg size={15}>
+  <Chain />
+</Svg>
+
+---
+
+## Practice
+
+Using _both_ curve commands and the other commands we've seen, trace over this rainy cloud:
+
+<Svg>
+  <PracticeQuestion />
+</Svg>
+
+<PracticeQuestionEditor />

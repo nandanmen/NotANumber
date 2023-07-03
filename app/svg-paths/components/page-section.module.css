@@ -1,0 +1,19 @@
+.section > * {
+  grid-column: 2;
+}
+
+.section > figure,
+.section > svg {
+  grid-column: 1 / -1;
+}
+
+.prefix + .section:first-of-type {
+  padding-top: 0;
+}
+
+@media (min-width: theme(screens.lg)) {
+  .section > figure,
+  .section > svg {
+    display: none;
+  }
+}

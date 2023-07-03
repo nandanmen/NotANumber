@@ -7,7 +7,7 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ["tdzetyetdwbxwkrrdmvi.supabase.co"],
+    domains: ["avatars.githubusercontent.com"],
   },
   async redirects() {
     return [

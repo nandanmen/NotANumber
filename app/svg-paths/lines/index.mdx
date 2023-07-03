@@ -1,0 +1,94 @@
+# Lines
+
+Now that we know all about cursors, let's start drawing stuff.
+
+We've seen a bit of line commands in the last section, but we'll cover them in full here. As you might expect, the line commands let you draw **straight lines**.
+
+The most generic of them is the `L` command, which draws a line to a specific `(x, y)` coordinate:
+
+<CommandListFromSource source="absolute" />
+
+<Svg size={20}>
+  <AbsoluteLine />
+</Svg>
+
+---
+
+Just like how the `m` command moves the cursor relative to its current position, the lowercase `l` command draws a line relative to the current cursor position:
+
+<CommandListFromSource source="relative" />
+
+<Svg>
+  <AbsoluteLine placeholder />
+  <RelativeLine />
+</Svg>
+
+---
+
+## Vertical and Horizontal Lines
+
+You can draw lines in specific directions using the `H` and `V` commands. `H` draws a horizontal line while `V` draws a vertical line:
+
+<CommandListFromSource source="vertical" />
+
+<Svg size={20}>
+  <PathHoverVisual source="vertical" />
+</Svg>
+
+`H` and `V` also have lowercase versions, which use relative coordinates instead (just like the `l` command we just saw).
+
+> This will be the last time I explicitly mention the lowercase relative version of the commands. For the rest of this guide, assume that all commands have a relative variant!
+
+---
+
+## The Close Path Command
+
+The last type of line command is the **close path command** `Z`. This command draws a straight line from the current cursor position to the start of the path.
+
+This means instead of explicitly using a line command to close a shape, you can accomplish the same thing by using `Z`:
+
+<CommandListFromSource source="closePath" />
+
+<Svg size={20}>
+  <ZExample />
+</Svg>
+
+> Funny enough, `Z` does have a relative lowercase version, but since it doesn't take any arguments, it's not functionally different from the uppercase version.
+
+---
+
+One cool thing about `Z` is that it will "close" your path, even if the cursor is already back at the start of the path. Consider this heart shape for example:
+
+<HeartCommands />
+
+Notice that the heart begins and ends at the same point (highlighted above). This means there's no need for the `Z` command, right?
+
+<Svg size={24}>
+  <HeartPath />
+</Svg>
+
+---
+
+This heart just has one small problem. If we zoom in to the middle of the heart, we find this awkward corner where the start and end curves meet.
+
+We can make this point look smoother by adding the `Z` command to the end of the path:
+
+<Svg size={10} config={{ pan: { x: 7, y: 3 } }}>
+  <Heart />
+</Svg>
+
+<ClosePathToggle />
+
+While using `Z` here doesn't add any new lines, it does tell the browser that the path is "closed", allowing it to draw the path correctly.
+
+---
+
+## Practice
+
+Trace over this house using all of the commands we've seen so far (including the cursor commands from the last section):
+
+<Svg>
+  <PracticeQuestion />
+</Svg>
+
+<PracticeQuestionEditor />

@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.inline-code:not(pre > code) {
+  @apply bg-gray7 px-1 text-sm;
+}

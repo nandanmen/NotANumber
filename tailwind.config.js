@@ -1,8 +1,8 @@
-const { gray, blue, green, red, yellow } = require("@radix-ui/colors");
+const { gray, blue, green, red, yellow, cyan } = require("@radix-ui/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
+  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
@@ -11,11 +11,14 @@ module.exports = {
         ...green,
         ...red,
         ...yellow,
+        ...cyan,
       },
       fontFamily: {
-        serif: `PP Editorial New, ui-serif, Georgia, serif`,
-        mono: `JetBrains Mono, ui-monospace, Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace`,
-        sans: `Nunito, system-ui, -apple-system, sans-serif`,
+        serif: "var(--font-serif)",
+        sans: "var(--font-sans)",
+      },
+      screens: {
+        coffee: "1370px",
       },
     },
   },
