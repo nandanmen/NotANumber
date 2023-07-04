@@ -61,7 +61,7 @@ function SquareToggle() {
       className="w-1/3 lg:w-full font-semibold py-2"
       onClick={() => set({ toggled: !data.toggled })}
     >
-      {data.toggled ? "Straigthen!" : "Bend!"}
+      {data.toggled ? "Straighten!" : "Bend!"}
     </Button>
   );
 }
