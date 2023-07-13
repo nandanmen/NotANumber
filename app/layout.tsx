@@ -55,7 +55,7 @@ export default function RootLayout({
           sans.variable,
           serif.variable,
           mono.variable,
-          "font-sans antialiased"
+          "font-sans antialiased bg-gray4"
         )}
       >
         <AuthProvider>{children}</AuthProvider>
