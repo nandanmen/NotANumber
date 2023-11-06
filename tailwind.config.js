@@ -12,10 +12,13 @@ module.exports = {
         ...red,
         ...yellow,
         ...cyan,
+        background: "#f9f6e7",
+        highlight: "#2628c1",
       },
       fontFamily: {
         serif: "var(--font-serif)",
-        sans: "var(--font-sans)",
+        sans: "Geist",
+        title: "PP Pangaia",
       },
       screens: {
         coffee: "1370px",
