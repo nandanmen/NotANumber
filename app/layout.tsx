@@ -52,7 +52,6 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={clsx(
-          sans.variable,
           serif.variable,
           mono.variable,
           "font-sans antialiased bg-gray4"
