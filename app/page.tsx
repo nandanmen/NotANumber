@@ -10,7 +10,8 @@ import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { SvgPaths } from "~/components/home/SvgPaths";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useId, useState } from "react";
+import clsx from "clsx";
 
 const posts = [
   {
@@ -84,6 +85,52 @@ const posts = [
   },
 ];
 
+function StripePattern({
+  size = 8,
+  ...props
+}: {
+  size?: number;
+} & React.ComponentPropsWithoutRef<"pattern">) {
+  return (
+    <defs>
+      <pattern
+        viewBox="0 0 10 10"
+        width={size}
+        height={size}
+        patternUnits="userSpaceOnUse"
+        {...props}
+      >
+        <line
+          x1="0"
+          y1="10"
+          x2="10"
+          y2="0"
+          stroke="currentColor"
+          vectorEffect="non-scaling-stroke"
+        />
+      </pattern>
+    </defs>
+  );
+}
+
+function BackgroundStripes({
+  className,
+  patternProps,
+}: {
+  className?: string;
+  patternProps?: React.ComponentPropsWithoutRef<"pattern">;
+}) {
+  const id = useId();
+  return (
+    <div className={clsx("absolute inset-0 text-gray6", className)}>
+      <svg width="100%" height="100%">
+        <StripePattern id={id} {...patternProps} />
+        <rect width="100%" height="100%" fill={`url(#${id})`} />
+      </svg>
+    </div>
+  );
+}
+
 function Post({
   post,
   onHover,
@@ -92,25 +139,43 @@ function Post({
   onHover?: () => void;
 }) {
   return (
-    <motion.li className="p-10 max-w-[50ch]" onHoverStart={onHover}>
-      <h1 className="font-serif text-4xl mb-4 leading-[1.3]">
+    <motion.li className="p-10 grid grid-cols-3" onHoverStart={onHover}>
+      <h1 className="font-serif text-3xl mb-4 leading-[1.3]">
         <Balancer>{post.post.title}</Balancer>
       </h1>
-      <p>{post.post.description}</p>
-      <div className="flex justify-between items-center mt-4">
-        <p className="text-gray11 text-sm">
+      <p className="ml-4">{post.post.description}</p>
+      <div className="flex items-center gap-4">
+        <p className="text-gray11 text-sm grow text-center">
           {new Intl.DateTimeFormat("en-US", {
             month: "long",
             year: "numeric",
             day: "numeric",
           }).format(new Date(post.post.editedAt))}
         </p>
-        <Link
+        <Link href={post.post.slug}>
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M13.75 6.75L19.25 12L13.75 17.25"
+            ></path>
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M19 12H4.75"
+            ></path>
+          </svg>
+        </Link>
+        {/* <Link
           href={post.post.slug}
           className="text-sm bg-gray12 text-gray1 rounded-full font-medium px-3 py-1.5"
         >
           Read more
-        </Link>
+        </Link> */}
       </div>
     </motion.li>
   );
@@ -118,50 +183,28 @@ function Post({
 
 export default function HomePage() {
   const [activePost, setActivePost] = useState(0);
-  const currentVisual = posts[activePost].children;
+  const currentVisual = posts[activePost]?.children;
   return (
-    <div
-      className="grid grid-cols-[min-content_1fr] gap-2 h-screen"
-      // style={{ background: "url(/grid.svg)" }}
-    >
-      <aside className="border-r border-gray8 p-10 bg-gray4">
+    <div className="grid grid-cols-[min-content_1fr_min-content] min-h-screen">
+      <aside className="p-10 border-r border-gray7 sticky h-screen top-0">
         <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
         <p className="leading-relaxed mt-6">
-          Interactive blog posts on computer science and web development, by
-          Nanda Syahrasyad.
+          Interactive blog posts on computer science and
+          <br /> web development by Nanda Syahrasyad.
         </p>
       </aside>
-      <div className="flex gap-2">
-        <ul className="divide-y divide-gray7 divide-dashed bg-gray4 border-x border-gray7 shrink-0 h-screen overflow-y-auto">
-          {posts
-            .filter((_, i) => i % 2 === 0)
-            .map((post, i) => (
-              <Post
-                post={post}
-                key={post.post.slug}
-                onHover={() => setActivePost(i * 2)}
-              />
-            ))}
-        </ul>
-        <ul className="divide-y divide-gray7 divide-dashed bg-gray4 border-x border-gray7 shrink-0 h-screen overflow-y-auto">
-          {posts
-            .filter((_, i) => i % 2 !== 0)
-            .map((post, i) => (
-              <Post
-                post={post}
-                key={post.post.slug}
-                onHover={() => setActivePost(i * 2 + 1)}
-              />
-            ))}
-        </ul>
-        <div
-          style={{ background: "url(/grid.svg)" }}
-          className="w-full h-full border-l border-gray8 overflow-hidden relative"
-        >
-          <div className="aspect-square absolute h-[500px] top-1/2 -translate-y-1/2 right-8">
-            {currentVisual}
-          </div>
-        </div>
+      <ul className="divide-y divide-gray7 divide-dashed bg-gray4">
+        {posts.map((post, i) => (
+          <Post
+            post={post}
+            key={post.post.slug}
+            onHover={() => setActivePost(i)}
+          />
+        ))}
+      </ul>
+      <div className="w-full h-screen sticky top-0 border-l border-gray8 overflow-hidden px-8 flex items-center">
+        <BackgroundStripes />
+        <div className="aspect-square w-[400px]">{currentVisual}</div>
       </div>
     </div>
   );

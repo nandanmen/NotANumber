@@ -15,7 +15,7 @@ module.exports = {
       },
       fontFamily: {
         serif: "var(--font-serif)",
-        sans: "Instagram Sans",
+        sans: "var(--font-sans)",
       },
       screens: {
         coffee: "1370px",

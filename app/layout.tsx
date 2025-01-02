@@ -51,7 +51,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        style={{
+          "--font-sans": "Basier Circle",
+        }}
         className={clsx(
+          // sans.variable,
           serif.variable,
           mono.variable,
           "font-sans antialiased bg-gray4"
