@@ -1,0 +1,45 @@
+.main > aside {
+  border-bottom-width: 1px;
+}
+
+@media screen and (min-width: 1400px) {
+  .main {
+    display: flex;
+  }
+
+  .main > aside {
+    border-bottom-width: 0px;
+    border-right-width: 1px;
+    width: min-content;
+    height: 100vh;
+    position: sticky;
+  }
+
+  .main > ul {
+    flex-grow: 1;
+  }
+}
+
+.post > header {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.post > *:not(:first-child) {
+  margin-top: 1rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .post {
+    display: flex;
+  }
+
+  .post > header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post > *:not(:first-child) {
+    margin-top: 0px;
+  }
+}

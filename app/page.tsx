@@ -9,9 +9,11 @@ import { SlidingWindow } from "~/components/home/SlidingWindow";
 import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { SvgPaths } from "~/components/home/SvgPaths";
 import Balancer from "react-wrap-balancer";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useId, useState } from "react";
 import clsx from "clsx";
+import { FaGithub, FaTwitter } from "react-icons/fa";
+import * as styles from "./page.module.css";
 
 const posts = [
   {
@@ -138,44 +140,86 @@ function Post({
   post: (typeof posts)[number];
   onHover?: () => void;
 }) {
+  const [active, setHovering] = useState(false);
   return (
-    <motion.li className="p-10 grid grid-cols-3" onHoverStart={onHover}>
-      <h1 className="font-serif text-3xl mb-4 leading-[1.3]">
-        <Balancer>{post.post.title}</Balancer>
-      </h1>
-      <p className="ml-4">{post.post.description}</p>
-      <div className="flex items-center gap-4">
-        <p className="text-gray11 text-sm grow text-center">
-          {new Intl.DateTimeFormat("en-US", {
-            month: "long",
-            year: "numeric",
-            day: "numeric",
-          }).format(new Date(post.post.editedAt))}
-        </p>
-        <Link href={post.post.slug}>
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M13.75 6.75L19.25 12L13.75 17.25"
-            ></path>
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M19 12H4.75"
-            ></path>
-          </svg>
-        </Link>
-        {/* <Link
-          href={post.post.slug}
-          className="text-sm bg-gray12 text-gray1 rounded-full font-medium px-3 py-1.5"
+    <motion.li
+      className="relative"
+      onHoverStart={() => {
+        setHovering(true);
+        onHover?.();
+      }}
+      onHoverEnd={() => {
+        setHovering(false);
+      }}
+    >
+      <motion.div
+        animate={{
+          width: active ? 16 : 0,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 26.7,
+          damping: 4.1,
+          mass: 0.2,
+        }}
+        className={clsx(
+          "w-px border border-gray8 border-l-0 absolute -top-px -bottom-px left-full z-10",
+          active ? "bg-gray5" : "bg-gray4"
+        )}
+      />
+      <div
+        className={clsx(
+          styles.post,
+          "p-10 gap-6 relative",
+          active ? "bg-gray5" : "bg-gray4"
+        )}
+      >
+        <header className="basis-[270px] shrink-0 gap-4 z-20">
+          <h1 className="font-serif text-3xl leading-[1.3]">
+            <Balancer>{post.post.title}</Balancer>
+          </h1>
+          <p className="text-gray11 text-sm">
+            {new Intl.DateTimeFormat("en-US", {
+              month: "long",
+              year: "numeric",
+              day: "numeric",
+            }).format(new Date(post.post.editedAt))}
+          </p>
+        </header>
+        <article className="grow">
+          <p className="max-w-[450px]">{post.post.description}</p>
+        </article>
+        <motion.div
+          animate={{
+            x: active ? 16 : 0,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 26.7,
+            damping: 4.1,
+            mass: 0.2,
+          }}
+          className="flex items-center gap-4"
         >
-          Read more
-        </Link> */}
+          <Link href={post.post.slug}>
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M13.75 6.75L19.25 12L13.75 17.25"
+              ></path>
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M19 12H4.75"
+              ></path>
+            </svg>
+          </Link>
+        </motion.div>
       </div>
     </motion.li>
   );
@@ -185,26 +229,75 @@ export default function HomePage() {
   const [activePost, setActivePost] = useState(0);
   const currentVisual = posts[activePost]?.children;
   return (
-    <div className="grid grid-cols-[min-content_1fr_min-content] min-h-screen">
-      <aside className="p-10 border-r border-gray7 sticky h-screen top-0">
-        <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
-        <p className="leading-relaxed mt-6">
-          Interactive blog posts on computer science and
-          <br /> web development by Nanda Syahrasyad.
-        </p>
-      </aside>
-      <ul className="divide-y divide-gray7 divide-dashed bg-gray4">
-        {posts.map((post, i) => (
-          <Post
-            post={post}
-            key={post.post.slug}
-            onHover={() => setActivePost(i)}
-          />
-        ))}
-      </ul>
-      <div className="w-full h-screen sticky top-0 border-l border-gray8 overflow-hidden px-8 flex items-center">
+    <div className="min-h-screen flex">
+      <div className={clsx(styles.main)}>
+        <aside className="p-10 border-gray7 top-0 flex flex-col gap-6">
+          <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
+          <p className="leading-relaxed">
+            <Balancer>
+              Interactive blog posts on computer science and web development by{" "}
+              <a
+                className="underline underline-offset-2"
+                href="https://twitter.com/nandafyi"
+              >
+                Nanda Syahrasyad.
+              </a>
+            </Balancer>
+          </p>
+          <button className="text-sm font-medium rounded-full bg-gray12 text-gray1 px-3 py-1.5 w-fit">
+            Subscribe
+          </button>
+          <footer className="mt-auto flex justify-between items-end text-gray11">
+            <div className="flex items-center gap-3">
+              <a
+                href="https://github.com/nandanmen"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaGithub />
+              </a>
+              <a
+                href="https://twitter.com/nandafyi"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaTwitter />
+              </a>
+            </div>
+            <p className="text-xs text-gray10 font-mono">
+              © 2021 - {new Date().getFullYear()}
+            </p>
+          </footer>
+        </aside>
+        <ul className="divide-y divide-gray7 divide-dashed bg-gray4">
+          {posts.map((post, i) => (
+            <Post
+              post={post}
+              key={post.post.slug}
+              onHover={() => setActivePost(i)}
+            />
+          ))}
+        </ul>
+      </div>
+      <div className="h-screen sticky top-0 overflow-hidden px-8 flex items-center justify-center shrink-0 basis-[400px] grow">
         <BackgroundStripes />
-        <div className="aspect-square w-[400px]">{currentVisual}</div>
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={activePost}
+            className="aspect-square w-full max-w-[550px]"
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            initial={{ y: 100, opacity: 0, filter: "blur(10px)" }}
+            exit={{ y: -100, opacity: 0, filter: "blur(10px)" }}
+            transition={{
+              type: "spring",
+              stiffness: 26.7,
+              damping: 4.1,
+              mass: 0.2,
+            }}
+          >
+            {currentVisual}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
