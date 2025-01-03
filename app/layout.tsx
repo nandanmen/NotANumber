@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import "./styles.css";
 import { AuthProvider } from "./svg-paths/provider";
 import { Analytics } from "@vercel/analytics/react";
+import { CSSProperties } from "react";
 
 export const metadata = {
   title: "Next.js",
@@ -53,7 +54,7 @@ export default function RootLayout({
       <body
         style={{
           "--font-sans": "Basier Circle",
-        }}
+        } as CSSProperties}
         className={clsx(
           // sans.variable,
           serif.variable,
