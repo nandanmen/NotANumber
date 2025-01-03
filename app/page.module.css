@@ -18,6 +18,10 @@
   .main > ul {
     flex-grow: 1;
   }
+
+  .main > aside > div {
+    display: none;
+  }
 }
 
 .post > header {

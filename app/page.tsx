@@ -205,18 +205,18 @@ function Post({
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M13.75 6.75L19.25 12L13.75 17.25"
-              ></path>
+              />
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M19 12H4.75"
-              ></path>
+              />
             </svg>
           </Link>
         </motion.div>
@@ -231,7 +231,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex">
       <div className={clsx(styles.main)}>
-        <aside className="p-10 border-gray7 top-0 flex flex-col gap-6">
+        <aside className="p-10 border-b border-gray7 top-0 flex flex-col gap-6 relative">
+          <div className="absolute top-0 bottom-0 left-full w-px bg-gray8 z-10" />
           <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
           <p className="leading-relaxed">
             <Balancer>
