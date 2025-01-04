@@ -14,8 +14,19 @@ import { useId, useState } from "react";
 import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import * as styles from "./page.module.css";
+import { BackgroundStripes } from "~/components/stripe-pattern";
 
 const posts = [
+  {
+    post: {
+      slug: "build-a-database",
+      title: "Build Your Own Database",
+      description:
+        "How would you reinvent the database? In this post, we'll build a key-value database from the ground up.",
+      editedAt: "2025-01-03",
+    },
+    children: null,
+  },
   {
     post: {
       slug: "svg-paths",
@@ -86,52 +97,6 @@ const posts = [
     children: <SlidingWindow />,
   },
 ];
-
-function StripePattern({
-  size = 8,
-  ...props
-}: {
-  size?: number;
-} & React.ComponentPropsWithoutRef<"pattern">) {
-  return (
-    <defs>
-      <pattern
-        viewBox="0 0 10 10"
-        width={size}
-        height={size}
-        patternUnits="userSpaceOnUse"
-        {...props}
-      >
-        <line
-          x1="0"
-          y1="10"
-          x2="10"
-          y2="0"
-          stroke="currentColor"
-          vectorEffect="non-scaling-stroke"
-        />
-      </pattern>
-    </defs>
-  );
-}
-
-function BackgroundStripes({
-  className,
-  patternProps,
-}: {
-  className?: string;
-  patternProps?: React.ComponentPropsWithoutRef<"pattern">;
-}) {
-  const id = useId();
-  return (
-    <div className={clsx("absolute inset-0 text-gray6", className)}>
-      <svg width="100%" height="100%">
-        <StripePattern id={id} {...patternProps} />
-        <rect width="100%" height="100%" fill={`url(#${id})`} />
-      </svg>
-    </div>
-  );
-}
 
 function Post({
   post,
