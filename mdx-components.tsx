@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import { Annotation } from "./components/mdx/annotation";
 import { InlineNote, Note } from "./components/mdx/note";
+import { CodeBlock } from "./components/mdx/code-block";
 import { OrderedList } from "./components/OrderedList";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -11,12 +12,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h3: (props) => <h3 className="text-xl font-medium" {...props} />,
     strong: (props) => <strong className="font-medium" {...props} />,
     code: (props) => <code className="inline-code" {...props} />,
-    pre: (props) => (
-      <pre
-        className="border border-gray8 bg-gray3 p-4 rounded-md overflow-x-auto text-sm"
-        {...props}
-      />
-    ),
+    pre: CodeBlock,
     ul: (props) => <ul className="list-disc pl-4" {...props} />,
     ol: OrderedList,
     hr: () => (
