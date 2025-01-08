@@ -1,5 +1,6 @@
-import React from "react";
+"use client";
 
+import React from "react";
 import { styled } from "~/stitches.config";
 
 export function OrderedList({ children }: { children: React.ReactNode }) {

@@ -19,7 +19,7 @@ module.exports = {
       fontFamily: {
         serif: "var(--font-serif)",
         sans: "var(--font-sans)",
-        mono: "Input",
+        mono: "Input Mono",
         handwriting: "var(--font-handwriting)",
       },
       screens: {

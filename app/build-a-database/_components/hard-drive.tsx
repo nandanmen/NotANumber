@@ -1,10 +1,12 @@
+"use client";
+
 import {
   motion,
   useAnimationControls,
   useMotionValue,
   animate,
 } from "framer-motion";
-import React from "react";
+import React, { Fragment } from "react";
 import { Slider } from "~/components/Slider";
 import { range } from "~/lib/utils";
 import { styled } from "~/stitches.config";
@@ -107,9 +109,8 @@ export const HardDrive = () => {
                   const r = getRadius(i);
                   const numArcs = Math.floor((2 * Math.PI * r) / ARC_LENGTH);
                   return (
-                    <>
+                    <Fragment key={r}>
                       <motion.circle
-                        key={r}
                         variants={{
                           visible: { r },
                           hidden: { r: 0 },
@@ -140,7 +141,7 @@ export const HardDrive = () => {
                           />
                         );
                       })}
-                    </>
+                    </Fragment>
                   );
                 })}
               </motion.g>

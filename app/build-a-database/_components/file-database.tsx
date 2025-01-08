@@ -1,6 +1,6 @@
 import React from "react";
 import { LayoutGroup, motion } from "framer-motion";
-import { styled, darkTheme } from "~/stitches.config";
+import { styled } from "~/stitches.config";
 import { type DatabaseRecord } from "./database";
 
 export type Record = {
@@ -14,7 +14,8 @@ type FileDatabaseProps = {
   records: Record[];
   highlighted?: number;
   recordAnimation?: boolean;
-} & React.ComponentPropsWithoutRef<typeof Page>;
+  children?: React.ReactNode;
+};
 
 export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   const recordsWithKey = records
@@ -116,7 +117,10 @@ export const RecordText = ({
 }: RecordTextProps) => {
   return (
     <RecordWrapper {...props}>
-      <motion.span className="font-medium" layout={animate && "position"}>
+      <motion.span
+        className="font-medium"
+        layout={animate ? "position" : false}
+      >
         {String(dbKey).padStart(3, "0")}:
       </motion.span>
       <motion.span>{dbValue}</motion.span>

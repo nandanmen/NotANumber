@@ -1,10 +1,5 @@
----
-title: "Build Your Own Database"
-blurb: "How would you reinvent the database?"
-description: "How would you reinvent the database?"
-publishedAt: "2022-11-15"
-editedAt: "2022-11-22"
----
+import { AppendOnlyFile } from './_components/append-only-file'
+import { HardDrive } from './_components/hard-drive'
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -32,13 +27,107 @@ The typical way to store any kind of data in a computer is to _use a file_. When
 
 <AppendOnlyFile mode={["add", "update", "delete"]} />
 
-While this makes sense, it doesn't actually work that well in practice. For starters, it's rather complex—for every key we want to update or delete, we have to:
+This approach has two main issues:
 
-1. Search for the key in the file;
-2. Either replace or delete the key-value pair;
-3. _Move_ the position of every following record to fit the new record.
+1. **Finding an entry is slow**—as we saw with the `db get` command, we potentially need to loop through the entire database to find the record that we want.
+2. **Updating a record in-place means potentially moving all the records that come after it.** A file, in reality, is a continuous string of bytes. If we want to make a record longer, we have to move all of the records that come after it to make room:
 
-Step 3 in particular is problematic because it's painfully _slow_. To understand why, we'll need to take a detour into **how computers store data**.
+This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
+
+---
+
+### Append-Only Files
+
+One way to work around the update problem is to **only append to the file**. This means that we can only add new records to the end of the file, never update or delete existing ones.
+
+With this approach, updates are treated the same as inserts—just add a new record to the end of the file:
+
+<AppendOnlyFile mode={["add", "update"]} />
+
+But now we have another problem—there are duplicate keys in the file!
+
+To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
+
+```
+search with duplicates example
+```
+
+To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
+
+<AppendOnlyFile mode={["add", "delete"]} />
+
+And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
+
+### File Troubles
+
+This implementation is nowhere near perfect, however. Right now, there are two major issues:
+
+1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
+2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
+
+How can we fix these problems?
+
+---
+
+## Keeping Files Small
+
+Let's start with the first:
+
+{/* <ProblemStatement> */}
+
+**How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
+
+{/* </ProblemStatement> */}
+
+Take a look at our database here after a few updates and deletes:
+
+Notice that our database file contains six records, but only two are active—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+
+---
+
+### First Attempt at Compaction
+
+One thing we can do is to periodically copy over all the "active" records to a new file:
+
+{/* <SingleFileCompaction /> */}
+
+Notice that because we're working on a new file, the existing one can still accept new records, like the keys `014` and `006` in the above animation.
+
+Wait a second. Those new records were added to the old file but weren't copied to the new one! What should we do? We _could_ rerun the compaction process, but what if new records come in during _that_ process?
+
+Hmm, let's take a step back. **Maybe there's another way to organize the data?**
+
+---
+
+### Splitting to Segments
+
+Both of these files contain up-to-date values for keys `12` and `18`, so what if we delete the values in one of the files?
+
+Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
+
+Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_.
+
+Try clicking on "Add" twice to add two new records, and notice what happens:
+
+{/* <Segments /> */}
+
+We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
+
+{/* <SegmentCompaction /> */}
+
+"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records (as shown in the bottom-most segment above).
+
+Once the compaction is complete, we can safely delete the old segments.
+
+---
+
+### Adapting to Segments
+
+We'll need to change our search algorithm a bit to account for segments. Instead of searching through a file, we'll need to search through segments, starting with the newest segment first:
+
+```
+segment search example
+```
 
 ---
 
@@ -76,117 +165,6 @@ It's perfectly possible to create a database using only variables in code, but i
 In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
 
 ---
-
-### How HDDs Work
-
-Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
-
-<HardDrive />
-
-**A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
-
-To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
-
-<HardDrive />
-
-Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
-
----
-
-### Your access patterns matter
-
-Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
-
-{/* <Callout label="Why is appending to a file faster?"> */}
-
-A disk in a hard drive is divided into _tracks_, with each track divided into _sectors_. Each sector is a fixed size, and the hard drive can only read or write data in whole sectors using a _disk head_.
-
-When the hard disk reads or writes data, it needs to move the disk head to the specific sector. Moving the disk head is much slower than simply reading or writing data, so we want to minimize the number of times the disk head is moved.
-
-When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
-
-{/* </Callout> */}
-
----
-
-Since we're limiting ourselves to only appending to a file, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
-
-<AppendOnlyFile mode={["add", "update"]} />
-
-But now we have another problem—there are duplicate keys in the file! To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
-
-```
-search with duplicates example
-```
-
-To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
-
-{/* <AppendOnlyFile mode={["add", "delete"]} /> */}
-
-And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
-
-### File Troubles
-
-This implementation is nowhere near perfect, however; in fact, there are two major issues:
-
-1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
-2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
-
-How can we fix these problems?
-
-## Keeping Files Small
-
-Let's start with the first:
-
-{/* <ProblemStatement> */}
-
-**How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
-
-{/* </ProblemStatement> */}
-
-Take a look at our database here after a few updates and deletes:
-
-Notice that our database file contains six records, but only two are active—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
-
-### First Attempt at Compaction
-
-One thing we can do is to periodically copy over all the "active" records to a new file:
-
-{/* <SingleFileCompaction /> */}
-
-Notice that because we're working on a new file, the existing one can still accept new records, like the keys `014` and `006` in the above animation.
-
-Wait a second. Those new records were added to the old file but weren't copied to the new one! What should we do? We _could_ rerun the compaction process, but what if new records come in during _that_ process?
-
-Hmm, let's take a step back. **Maybe there's another way to organize the data?**
-
-### Splitting to Segments
-
-Both of these files contain up-to-date values for keys `12` and `18`, so what if we delete the values in one of the files?
-
-Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
-
-Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_.
-
-Try clicking on "Add" twice to add two new records, and notice what happens:
-
-{/* <Segments /> */}
-
-We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
-
-{/* <SegmentCompaction /> */}
-
-"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records (as shown in the bottom-most segment above).
-
-Once the compaction is complete, we can safely delete the old segments.
-
-### Adapting to Segments
-
-We'll need to change our search algorithm a bit to account for segments. Instead of searching through a file, we'll need to search through segments, starting with the newest segment first:
-
-```
-segment search example
-```
 
 ## Your First Index
 
@@ -265,9 +243,11 @@ An index is great because it lets us query our database much faster, but there a
 1. **Keys have to fit in memory**. Since we're using an in-memory hash table as our index, all of the keys in our database must fit in memory. This means there's a limit on the number of keys we can store!
 2. **Range queries are still inefficient**. Our data isn't sorted in any way, so we can't do range queries efficiently. For example, if we wanted to find all the records between the keys `12` and `18`, our index wouldn't help—we'd have to iterate through the entire database!
 
+---
+
 ## Sorted String Tables
 
-Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we'll be able to solve both our problems at once. Let me explain.
+Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we'll be able to solve both our problems at once.
 
 ### Faster Range Queries
 
@@ -307,3 +287,35 @@ The trick is to **sort the data in memory first, _then_ write it to disk**. Ther
   - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
   - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
 - This requires a detour to how hard drives work imo
+
+---
+
+### How HDDs Work
+
+Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
+
+<HardDrive />
+
+**A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
+
+To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
+
+<HardDrive />
+
+Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
+
+---
+
+### Your access patterns matter
+
+Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
+
+{/* <Callout label="Why is appending to a file faster?"> */}
+
+A disk in a hard drive is divided into _tracks_, with each track divided into _sectors_. Each sector is a fixed size, and the hard drive can only read or write data in whole sectors using a _disk head_.
+
+When the hard disk reads or writes data, it needs to move the disk head to the specific sector. Moving the disk head is much slower than simply reading or writing data, so we want to minimize the number of times the disk head is moved.
+
+When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
+
+{/* </Callout> */}

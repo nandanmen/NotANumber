@@ -1,16 +1,14 @@
 import clsx from "clsx";
-import * as fs from "fs/promises";
-import { serialize } from "next-mdx-remote/serialize";
+import { ReactNode } from "react";
 import { BackgroundStripes } from "~/components/stripe-pattern";
-import { Mdx } from "./mdx";
+import Content from "./content.mdx";
 import styles from "./page.module.css";
 
-export default async function BuildADatabasePage() {
-  const source = await fs.readFile(
-    `${process.cwd()}/app/build-a-database/index.mdx`,
-    "utf8"
-  );
-  const content = await serialize(source, { parseFrontmatter: true });
+export default async function BuildADatabasePage({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <>
       <div className="fixed inset-0">
@@ -31,10 +29,10 @@ export default async function BuildADatabasePage() {
         <article className={clsx(styles.article, "p-10")}>
           <header>
             <h1 className="text-[56px] font-serif leading-[1.2]">
-              {content.frontmatter.title}
+              Build Your Own Database
             </h1>
           </header>
-          <Mdx source={content} />
+          {children}
         </article>
       </div>
     </>
