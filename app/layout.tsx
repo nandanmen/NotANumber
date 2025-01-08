@@ -1,4 +1,4 @@
-import { Nunito } from "next/font/google";
+import { Kalam, Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import { clsx } from "clsx";
 import "./styles.css";
@@ -14,6 +14,12 @@ export const metadata = {
 const sans = Nunito({
   weight: ["400", "600", "700"],
   variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const handwriting = Kalam({
+  weight: ["400"],
+  variable: "--font-handwriting",
   subsets: ["latin"],
 });
 
@@ -52,11 +58,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{
-          "--font-sans": "Basier Circle",
-        } as CSSProperties}
+        style={
+          {
+            "--font-sans": "Basier Circle",
+          } as CSSProperties
+        }
         className={clsx(
-          // sans.variable,
+          handwriting.variable,
           serif.variable,
           mono.variable,
           "font-sans antialiased bg-gray4"

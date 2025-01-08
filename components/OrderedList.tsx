@@ -23,7 +23,7 @@ const ListWrapper = styled("ol", {
   counterReset: "counts 0",
 
   "> :not([hidden]) ~ :not([hidden]), ol": {
-    marginTop: "$2",
+    marginTop: "$1",
   },
 });
 
@@ -33,7 +33,7 @@ const ListItem = styled("li", {
 
   "&:before": {
     content: 'counter(counts) ". "', // {count}.
-    paddingRight: "$4",
+    paddingRight: "$3",
     fontFamily: "$mono",
     fontWeight: "500",
     color: "$gray11",

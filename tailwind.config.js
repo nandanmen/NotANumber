@@ -20,6 +20,7 @@ module.exports = {
         serif: "var(--font-serif)",
         sans: "var(--font-sans)",
         mono: "Input",
+        handwriting: "var(--font-handwriting)",
       },
       screens: {
         coffee: "1370px",

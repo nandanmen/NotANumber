@@ -28,9 +28,74 @@ The typical way to store any kind of data in a computer is to _use a file_. When
 
 <AppendOnlyFile mode={["add", "search"]} />
 
-**What about updates and deletes?**
+**What about updates and deletes?** Probably the most intuitive way to go about this is to update the file and then either replace or delete the old key-value pair:
 
-For starters, we could go through the file, find the key, and either replace the value or delete the pair entirely. But it turns out we don't really want to do that—hard drives are (generally speaking) much better at _appending_ to a file than they are at _modifying_ a file.
+<AppendOnlyFile mode={["add", "update", "delete"]} />
+
+While this makes sense, it doesn't actually work that well in practice. For starters, it's rather complex—for every key we want to update or delete, we have to:
+
+1. Search for the key in the file;
+2. Either replace or delete the key-value pair;
+3. _Move_ the position of every following record to fit the new record.
+
+Step 3 in particular is problematic because it's painfully _slow_. To understand why, we'll need to take a detour into **how computers store data**.
+
+---
+
+## How Computers Store Data
+
+Computers can store data in either **volatile** or **non-volatile** memory.
+
+Volatile memory, like [RAM](https://en.wikipedia.org/wiki/Random-access_memory), is really good for _fast, temporary_ storage. When you write variables in your code, they're stored (for the most part) in your computer's RAM:
+
+```js
+const x = 1;
+```
+
+<InlineNote>
+
+Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive) or [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
+
+<Note>
+
+Persistence, in this case, means that the data will still be there even if the program is stopped or the computer is turned off.
+
+</Note>
+
+</InlineNote>
+
+When you write data to a file, that data is stored on your computer's non-volatile memory (usually either an HDD or an SSD):
+
+```js
+import fs from "fs";
+fs.writeFileSync("data.txt", "Hello, world!");
+```
+
+It's perfectly possible to create a database using only variables in code, but it would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
+
+In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
+
+---
+
+### How HDDs Work
+
+Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
+
+<HardDrive />
+
+**A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
+
+To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
+
+<HardDrive />
+
+Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
+
+---
+
+### Your access patterns matter
+
+Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
 
 {/* <Callout label="Why is appending to a file faster?"> */}
 
@@ -41,6 +106,8 @@ When the hard disk reads or writes data, it needs to move the disk head to the s
 When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
 
 {/* </Callout> */}
+
+---
 
 Since we're limiting ourselves to only appending to a file, we have to get a bit creative with updating and deleting pairs. One way to do updates in an append-only file is to treat the update like you're inserting a new key—add it to the end of the file:
 
@@ -233,36 +300,6 @@ The trick is to **sort the data in memory first, _then_ write it to disk**. Ther
   - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
 
 ### Fast Sorts With Balanced Trees
-
-## How Hard Drives Work
-
-Since we want to design data structures that work well with hard drives, let's talk about how hard drives work and how they differ from RAM.
-
-### Hard drives are not byte addressable
-
-If you read my [how arrays work]() post or know a bit about RAM, you'll know that RAM works a lot like an array — you can access individual bytes of data using their address:
-
-```
-RAM visual
-```
-
-Hard drives are different because they're not **byte-addressable** — you can't access individual bytes of data. Instead, you have to read and write entire **blocks** of data at a time:
-
-```
-RAM visual but blocks
-```
-
-These blocks are, comparatively speaking, quite large — most modern hard drives have blocks that are 4KB (4 kilobytes, or 4096 bytes) in size.
-
-### Hard drives are much slower than RAM
-
-- Fast RAM can do ~20GB/s
-- Fast SSDs can do ~3GB/s
-- Fast hard drives can do ~200MB/s
-
-### Your access patterns matter
-
-Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
 
 ## Persisting Trees on Disk
 
