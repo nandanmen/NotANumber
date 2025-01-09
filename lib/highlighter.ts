@@ -5,11 +5,8 @@ const getHighlighter = async () => {
   const theme = await fetch(`/shiki/dark-default.json`).then((res) =>
     res.json()
   );
-  const wasm = await fetch(`/shiki/onig.wasm`).then((res) => res.arrayBuffer());
-  shiki.setWasm(wasm);
-  shiki.setCDN("/shiki/");
   return shiki.getHighlighter({
-    theme,
+    themes: [theme],
     langs: ["js", "ts", "jsx", "tsx", "html"],
   });
 };

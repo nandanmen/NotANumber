@@ -17,16 +17,16 @@ export const SizeDiagram = ({
 }: SizeDiagramProps) => {
   const [width, setWidth] = React.useState(SQUARE_RADIUS * 2);
 
-  const svgRef = React.useRef<SVGSVGElement>();
-  const finalRef = React.useRef<SVGRectElement>();
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  const finalRef = React.useRef<SVGRectElement>(null);
 
   React.useEffect(() => {
     const { width } = svgRef.current.getBoundingClientRect();
     setWidth(width - padding * 2);
   }, [padding]);
 
-  const lineRef = React.useRef<SVGLineElement>();
-  const textRef = React.useRef<SVGTextElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
+  const textRef = React.useRef<SVGTextElement>(null);
 
   const updateRefs = React.useCallback(
     (value: number) => {

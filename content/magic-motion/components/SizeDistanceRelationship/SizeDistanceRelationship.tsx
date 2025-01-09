@@ -14,7 +14,7 @@ const MAX_HEIGHT_DELTA = 60;
 const PADDING = 32;
 
 export const SizeDistanceRelationship = () => {
-  const containerRef = React.useRef<HTMLDivElement>();
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [width, setWidth] = React.useState(BASE_WIDTH);
   const [containerWidth, setContainerWidth] = React.useState(0);
 

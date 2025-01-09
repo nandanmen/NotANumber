@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import type { MDXComponents } from "mdx/types";
 import { Annotation } from "./components/mdx/annotation";
 import { InlineNote, Note } from "./components/mdx/note";

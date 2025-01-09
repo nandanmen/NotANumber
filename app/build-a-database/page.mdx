@@ -81,6 +81,8 @@ Let's start with the first:
 
 Take a look at our database here after a few updates and deletes:
 
+<AppendOnlyFile mode={["add", "search"]} />
+
 Notice that our database file contains six records, but only two are active—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
 
 ---
@@ -128,41 +130,6 @@ We'll need to change our search algorithm a bit to account for segments. Instead
 ```
 segment search example
 ```
-
----
-
-## How Computers Store Data
-
-Computers can store data in either **volatile** or **non-volatile** memory.
-
-Volatile memory, like [RAM](https://en.wikipedia.org/wiki/Random-access_memory), is really good for _fast, temporary_ storage. When you write variables in your code, they're stored (for the most part) in your computer's RAM:
-
-```js
-const x = 1;
-```
-
-<InlineNote>
-
-Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive) or [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
-
-<Note>
-
-Persistence, in this case, means that the data will still be there even if the program is stopped or the computer is turned off.
-
-</Note>
-
-</InlineNote>
-
-When you write data to a file, that data is stored on your computer's non-volatile memory (usually either an HDD or an SSD):
-
-```js
-import fs from "fs";
-fs.writeFileSync("data.txt", "Hello, world!");
-```
-
-It's perfectly possible to create a database using only variables in code, but it would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
-
-In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
 
 ---
 
@@ -287,6 +254,41 @@ The trick is to **sort the data in memory first, _then_ write it to disk**. Ther
   - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
   - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
 - This requires a detour to how hard drives work imo
+
+---
+
+## How Computers Store Data
+
+Computers can store data in either **volatile** or **non-volatile** memory.
+
+Volatile memory, like [RAM](https://en.wikipedia.org/wiki/Random-access_memory), is really good for _fast, temporary_ storage. When you write variables in your code, they're stored (for the most part) in your computer's RAM:
+
+```js
+const x = 1;
+```
+
+<InlineNote>
+
+Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive) or [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
+
+<Note>
+
+Persistence, in this case, means that the data will still be there even if the program is stopped or the computer is turned off.
+
+</Note>
+
+</InlineNote>
+
+When you write data to a file, that data is stored on your computer's non-volatile memory (usually either an HDD or an SSD):
+
+```js
+import fs from "fs";
+fs.writeFileSync("data.txt", "Hello, world!");
+```
+
+It's perfectly possible to create a database using only variables in code, but it would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
+
+In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
 
 ---
 

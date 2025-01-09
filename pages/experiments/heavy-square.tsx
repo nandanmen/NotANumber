@@ -4,7 +4,6 @@ import {
   ExperimentsPage,
   ExperimentWrapper,
 } from "~/components/layout/ExperimentsPage";
-import { Slider } from "~/components/Slider";
 import {
   SvgBackgroundGradient,
   getFillFromId,
@@ -14,7 +13,7 @@ import { ToggleButton } from "~/components/Visualizer";
 
 export default function HeavySquarePage() {
   const id = React.useId();
-  const textRef = React.useRef<SVGTextElement>();
+  const textRef = React.useRef<SVGTextElement>(null);
   const weight = useMotionValue(0);
   const textOffset = useTransform(weight, (w) => 40 + w);
 

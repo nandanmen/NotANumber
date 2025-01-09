@@ -9,7 +9,7 @@ import {
 import { useRelativeMouse } from "../SlidingWindow";
 
 export const FramerMotionKeys = () => {
-  const ref = React.useRef();
+  const ref = React.useRef(null);
   const mouseX = useRelativeMouse(ref);
 
   const x = useTransform(mouseX, [-100, 500], [-5, 5]);

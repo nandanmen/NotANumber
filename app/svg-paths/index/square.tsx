@@ -14,7 +14,7 @@ const squareConfig = {
 export function Square() {
   const id = React.useId();
   const { data } = useStateContext("intro");
-  const textRef = React.useRef<SVGTextElement>();
+  const textRef = React.useRef<SVGTextElement>(null);
   const weight = useMotionValue(0);
   const textOffset = useTransform(weight, (w) => 35 + w);
 

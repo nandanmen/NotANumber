@@ -30,7 +30,7 @@ export const ScaleRulers = ({
   width: MotionValue<number>;
   topLeft?: boolean;
 }) => {
-  const lineRef = React.useRef<SVGLineElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
   const radius = useTransform(width, (width) => width / 2);
 
   const initialWidth = width.get();

@@ -10,7 +10,7 @@ import { FramerMotionKeys } from "~/components/home/FramerMotionKeys";
 import { SvgPaths } from "~/components/home/SvgPaths";
 import Balancer from "react-wrap-balancer";
 import { AnimatePresence, motion } from "framer-motion";
-import { useId, useState } from "react";
+import { useState } from "react";
 import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import * as styles from "./page.module.css";
@@ -134,6 +134,7 @@ function Post({
       />
       <div
         className={clsx(
+          // @ts-ignore
           styles.post,
           "p-10 gap-6 relative",
           active ? "bg-gray5" : "bg-gray4"
@@ -195,7 +196,12 @@ export default function HomePage() {
   const currentVisual = posts[activePost]?.children;
   return (
     <div className="min-h-screen flex">
-      <div className={clsx(styles.main)}>
+      <div
+        className={clsx(
+          // @ts-ignore
+          styles.main
+        )}
+      >
         <aside className="p-10 border-b border-gray7 top-0 flex flex-col gap-6 relative">
           <div className="absolute top-0 bottom-0 left-full w-px bg-gray8 z-10" />
           <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>

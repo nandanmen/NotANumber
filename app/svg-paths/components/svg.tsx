@@ -76,7 +76,7 @@ export function Svg({
 } & React.ComponentPropsWithoutRef<(typeof motion)["svg"]>) {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const containerRef = React.useRef();
+  const containerRef = React.useRef(null);
   const thinGridPattern = React.useId();
   const gridPattern = React.useId();
   const sizeMotion = useMotionValue(size);

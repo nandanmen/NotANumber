@@ -8,7 +8,6 @@ import {
   type DatabaseCommand,
 } from "./database";
 import { FileDatabase } from "./file-database";
-import { BackgroundGrid } from "~/components/stripe-pattern";
 
 const commandArgs = (command: DatabaseCommand) => {
   switch (command.type) {
