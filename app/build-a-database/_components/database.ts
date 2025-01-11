@@ -1,7 +1,12 @@
 import useInterval from "@use-it/interval";
 import { useState } from "react";
+import { nanoid } from "nanoid";
+import { useSearch } from "./use-search";
 
-export type DatabaseRecord = [number, string];
+export type DatabaseRecord = {
+  key: number;
+  value: string;
+};
 
 export type DatabaseCommand =
   | {
@@ -22,50 +27,90 @@ export type DatabaseCommand =
       value: string;
     };
 
-export type SearchState = {
-  key: number | null;
-  currentIndex: number | null;
+type DatabaseProps = {
+  initialRecords?: Omit<DatabaseRecord, "id">[];
+  initialCommands?: DatabaseCommand[];
 };
+
+type SearchArgs =
+  | {
+      key: number;
+      mode: "get" | "delete";
+    }
+  | {
+      key: number;
+      mode: "update";
+      newValue: string;
+    };
 
 export const useFileDatabase = ({
   initialRecords = [],
   initialCommands = [],
-}: {
-  initialRecords?: DatabaseRecord[];
-  initialCommands?: DatabaseCommand[];
-} = {}) => {
+}: DatabaseProps = {}) => {
   const [commands, setCommands] = useState(initialCommands);
-  const [records, setRecords] = useState(initialRecords);
-  const [searchSpeed, setSearchSpeed] = useState(null);
-  const [{ key, currentIndex }, setSearch] = useState<SearchState>({
-    key: null,
-    currentIndex: null,
-  });
 
-  const currentRecord = records[currentIndex];
-  const found = currentRecord && currentRecord[0] === key;
+  const [initialRecordsWithIds] = useState(
+    initialRecords.map((r) => ({ ...r, id: nanoid() }))
+  );
+  const [records, setRecords] = useState<(DatabaseRecord & { id: string })[]>(
+    initialRecordsWithIds
+  );
 
-  useInterval(() => {
-    const currentRecord = records[currentIndex];
-    // Either we found the key or we're out of bounds
-    if (!currentRecord || found) {
-      setSearchSpeed(null);
-      if (found) {
-        setCommands([...commands, { type: "result", value: currentRecord[1] }]);
+  const [searchArgs, setSearchArgs] = useState<SearchArgs | null>(null);
+  const { state, send } = useSearch({
+    onFound: (index) => {
+      const { key, value } = records[index];
+      switch (searchArgs.mode) {
+        case "get":
+          setCommands((c) => [...c, { type: "result", value }]);
+          break;
+        case "update": {
+          setRecords((r) =>
+            r.map((record) =>
+              record.key === key
+                ? {
+                    key,
+                    value: searchArgs.newValue,
+                    id: record.id,
+                  }
+                : record
+            )
+          );
+          break;
+        }
+        case "delete":
+          setRecords((r) => r.filter((record) => record.key !== key));
+          break;
       }
-    } else {
-      setSearch({ key, currentIndex: currentIndex + 1 });
-    }
-  }, searchSpeed);
+    },
+  });
+  const { type, context } = state;
+
+  useInterval(
+    () => {
+      if (type !== "searching") return;
+      const currentRecord = records[context.currentIndex];
+      if (!currentRecord) return send("not-found");
+      const { key } = currentRecord;
+      if (key === searchArgs.key) {
+        return send("found");
+      }
+      send("continue");
+    },
+    type === "searching" ? 500 : null
+  );
+
+  const resetSearch = () => {
+    setSearchArgs(null);
+    send("reset");
+  };
 
   const db = {
     records,
     commands,
     search: {
-      key,
-      currentIndex,
-      found,
-      speed: searchSpeed,
+      ...state,
+      args: searchArgs,
     },
     size() {
       const valuesUnique = {};
@@ -79,23 +124,34 @@ export const useFileDatabase = ({
       ).size;
     },
     set(key: number, value: string) {
-      setSearch({ key: null, currentIndex: null });
+      resetSearch();
       setCommands([...commands, { type: "set", key, value }]);
-      setRecords([...records, [key, value]]);
+      setRecords([...records, { key, value, id: nanoid() }]);
+    },
+    update(key: number, value: string, { mutate = false } = {}) {
+      if (!mutate) return db.set(key, value);
+      setCommands([...commands, { type: "set", key, value }]);
+      setSearchArgs({ key, mode: "update", newValue: value });
+      send("start");
     },
     get(key: number) {
       setCommands([...commands, { type: "get", key }]);
-      setSearch({ key, currentIndex: 0 });
-      setSearchSpeed(500);
+      setSearchArgs({ key, mode: "get" });
+      send("start");
     },
-    delete(key: number) {
-      setSearch({ key: null, currentIndex: null });
+    delete(key: number, { mutate = false } = {}) {
       setCommands([...commands, { type: "delete", key }]);
-      setRecords([...records, [key, "null"]]);
+      if (!mutate) {
+        resetSearch();
+        setRecords([...records, { key, value: null, id: nanoid() }]);
+        return;
+      }
+      setSearchArgs({ key, mode: "delete" });
+      send("start");
     },
     reset() {
-      setSearch({ key: null, currentIndex: null });
-      setRecords(initialRecords);
+      resetSearch();
+      setRecords(initialRecordsWithIds);
       setCommands(initialCommands);
     },
   };

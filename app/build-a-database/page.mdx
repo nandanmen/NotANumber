@@ -23,9 +23,9 @@ The typical way to store any kind of data in a computer is to _use a file_. When
 
 <AppendOnlyFile mode={["add", "search"]} />
 
-**What about updates and deletes?** Probably the most intuitive way to go about this is to update the file and then either replace or delete the old key-value pair:
+**What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
 
-<AppendOnlyFile mode={["add", "update", "delete"]} />
+<AppendOnlyFile mode={["add", "update", "delete"]} mutable />
 
 This approach has two main issues:
 

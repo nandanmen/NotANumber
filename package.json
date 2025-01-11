@@ -41,6 +41,7 @@
     "immer": "^9.0.19",
     "javascript-time-ago": "^2.5.9",
     "mdx-bundler": "^10.0.3",
+    "nanoid": "^5.0.9",
     "next": "^15",
     "next-auth": "^4.22.1",
     "next-mdx-remote": "^4.4.1",

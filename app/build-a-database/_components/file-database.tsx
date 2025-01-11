@@ -19,7 +19,7 @@ type FileDatabaseProps = {
 
 export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   const recordsWithKey = records
-    .filter((_record) => _record.value[0] === record[0])
+    .filter((_record) => _record.value.key === record.key)
     .map((_record) => _record.value);
   return recordsWithKey.at(-1) !== record;
 };
@@ -39,7 +39,7 @@ export const FileDatabase = ({
         {...props}
       >
         {records.map(({ id, value, type, stale }, index) => {
-          const [dbKey, dbValue] = value;
+          const { key: dbKey, value: dbValue } = value;
           return (
             <Record
               key={id ?? `${index}-${dbKey}`}
@@ -123,7 +123,7 @@ export const RecordText = ({
       >
         {String(dbKey).padStart(3, "0")}:
       </motion.span>
-      <motion.span>{dbValue}</motion.span>
+      <motion.span layout={animate ? "position" : false}>{dbValue}</motion.span>
       {children}
     </RecordWrapper>
   );
