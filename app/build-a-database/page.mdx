@@ -1,5 +1,6 @@
 import { AppendOnlyFile } from './_components/append-only-file'
 import { HardDrive } from './_components/hard-drive'
+import { FileResizing } from './_components/file-resizing'
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -31,6 +32,8 @@ This approach has two main issues:
 
 1. **Finding an entry is slow**—as we saw with the `db get` command, we potentially need to loop through the entire database to find the record that we want.
 2. **Updating a record in-place means potentially moving all the records that come after it.** A file, in reality, is a continuous string of bytes. If we want to make a record longer, we have to move all of the records that come after it to make room:
+
+<FileResizing />
 
 This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
 

@@ -143,7 +143,7 @@ export const useFileDatabase = ({
       setCommands([...commands, { type: "delete", key }]);
       if (!mutate) {
         resetSearch();
-        setRecords([...records, { key, value: null, id: nanoid() }]);
+        setRecords([...records, { key, value: "null", id: nanoid() }]);
         return;
       }
       setSearchArgs({ key, mode: "delete" });
