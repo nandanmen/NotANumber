@@ -22,7 +22,7 @@ Databases were made to solve a simple problem: how do you store data persistentl
 
 The typical way to store any kind of data in a computer is to _use a file_. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
-<AppendOnlyFile mode={["add", "search"]} />
+<AppendOnlyFile mode={["add", "search"]} mutable />
 
 **What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
 
@@ -51,9 +51,15 @@ But now we have another problem—there are duplicate keys in the file!
 
 To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
 
-```
-search with duplicates example
-```
+<AppendOnlyFile
+  mode={["search"]}
+  initialCommands={[
+    { type: 'set', key: 1, value: 'Lorem ipsum' },
+    { type: 'set', key: 18, value: 'dolor sit' },
+    { type: 'set', key: 1, value: 'dolor sit' },
+    { type: 'set', key: 10, value: 'adipisching elit.' }
+  ]}
+/>
 
 To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
 
@@ -74,23 +80,30 @@ How can we fix these problems?
 
 ## Keeping Files Small
 
-Let's start with the first:
-
-{/* <ProblemStatement> */}
+<ProblemStatement>
 
 **How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
 
-{/* </ProblemStatement> */}
+</ProblemStatement>
 
 Take a look at our database here after a few updates and deletes:
 
-<AppendOnlyFile mode={["add", "search"]} />
+<AppendOnlyFile
+  initialCommands={[
+    { type: 'set', key: 1, value: 'Lorem ipsum' },
+    { type: 'set', key: 18, value: 'dolor sit' },
+    { type: 'set', key: 7, value: 'adipiscing elit.' },
+    { type: 'delete', key: 7 },
+    { type: 'set', key: 10, value: 'consectetur adipiscing elit.' },
+    { type: 'delete', key: 1 }
+  ]}
+/>
 
-Notice that our database file contains six records, but only two are active—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+Our database file has six entries, but only two represent actual records—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
 
 ---
 
-### First Attempt at Compaction
+### Compaction
 
 One thing we can do is to periodically copy over all the "active" records to a new file:
 
@@ -140,11 +153,11 @@ segment search example
 
 That's one problem solved; on to the next:
 
-{/* <ProblemStatement> */}
+<ProblemStatement>
 
 **How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is slow!
 
-{/* </ProblemStatement> */}
+</ProblemStatement>
 
 What if we use _objects_? That's right, these little guys:
 
@@ -237,11 +250,11 @@ And if we use an index, we can find the first element essentially immediately.
 
 This begs the question though - how do we keep our data sorted without having to sort it every time we add a new record? In other words:
 
-{/* <ProblemStatement> */}
+<ProblemStatement>
 
 **How do we keep our data sorted _and_ append-only?** We can't sort the data every time we add a new record because we'll have to move around old records; and as we've discussed, moving records around is slow on a hard drive.
 
-{/* </ProblemStatement> */}
+</ProblemStatement>
 
 The trick is to **sort the data in memory first, _then_ write it to disk**. There are various ways to keep data sorted in memory, but the most common is to use a **balanced tree**.
 

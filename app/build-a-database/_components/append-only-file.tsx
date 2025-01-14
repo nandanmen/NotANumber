@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { random, randomUnique, texts, pick } from "./utils";
 import {
   useFileDatabase,
-  type DatabaseRecord,
+  type ExecutableDatabaseCommand,
   type DatabaseCommand,
 } from "./database";
 import { FileDatabase } from "./file-database";
@@ -14,28 +14,21 @@ type Mode = "add" | "update" | "delete" | "search";
 
 type AppendOnlyFileProps = {
   mode?: "all" | Mode[];
-  initialRecords?: Array<DatabaseRecord>;
-  initialCommands?: Array<DatabaseCommand>;
+  initialCommands?: Array<ExecutableDatabaseCommand>;
   mutable?: boolean;
 };
 
-const defaultData: DatabaseRecord[] = [
-  { key: 1, value: "Lorem ipsum" },
-  { key: 18, value: "dolor sit" },
+const defaultCommands: ExecutableDatabaseCommand[] = [
+  { type: "set", key: 1, value: "Lorem ipsum" },
+  { type: "set", key: 18, value: "dolor sit" },
 ];
 
 export function AppendOnlyFile({
   mode,
   mutable = false,
-  initialRecords = defaultData,
-  initialCommands = defaultData.map((data) => {
-    return {
-      type: "set",
-      ...data,
-    };
-  }),
+  initialCommands = defaultCommands,
 }: AppendOnlyFileProps) {
-  const db = useFileDatabase({ initialRecords, initialCommands });
+  const db = useFileDatabase({ initialCommands, mutable });
   const { args, context, type } = db.search;
 
   const getRandomKey = () => {
@@ -64,11 +57,11 @@ export function AppendOnlyFile({
 
   const updateRecord = () => {
     const value = texts[random(0, texts.length - 1)];
-    db.update(getRandomKey(), value, { mutate: mutable });
+    db.update(getRandomKey(), value);
   };
 
   const deleteRecord = () => {
-    db.delete(getRandomKey(), { mutate: mutable });
+    db.delete(getRandomKey());
   };
 
   return (
@@ -103,7 +96,7 @@ export function AppendOnlyFile({
             records={db.records.map(({ key, value, id }, index) => {
               let type: "active" | "success" | "base" = "base";
               if (
-                db.search.type === "searching" &&
+                db.search.type !== "idle" &&
                 context?.currentIndex === index
               ) {
                 type = args.key === key ? "success" : "active";

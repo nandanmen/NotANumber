@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 export type SearchAction =
-  | "start"
-  | "found"
-  | "not-found"
-  | "continue"
-  | "reset";
+  | { type: "start" }
+  | { type: "found"; index: number }
+  | { type: "not-found" }
+  | { type: "continue" }
+  | { type: "reset" };
 
 export type SearchState =
   | {
@@ -34,7 +34,7 @@ export const useSearch = ({
   });
 
   const send = (action: SearchAction) => {
-    switch (action) {
+    switch (action.type) {
       case "reset":
         setState({ type: "idle", context: null });
         break;
@@ -52,8 +52,14 @@ export const useSearch = ({
         break;
       case "found":
         if (state.type !== "searching") return;
-        setState({ type: "found", context: state.context });
-        onFound?.(state.context.currentIndex);
+        setState({
+          type: "found",
+          context: {
+            ...state.context,
+            currentIndex: action.index,
+          },
+        });
+        onFound?.(action.index);
         break;
       case "not-found":
         if (state.type !== "searching") return;

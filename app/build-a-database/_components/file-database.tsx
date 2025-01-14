@@ -18,6 +18,7 @@ type FileDatabaseProps = {
 };
 
 export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
+  if (record.value === "null") return true;
   const recordsWithKey = records
     .filter((_record) => _record.value.key === record.key)
     .map((_record) => _record.value);

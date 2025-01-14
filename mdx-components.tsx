@@ -26,5 +26,15 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     InlineNote,
     Note,
     Annotation,
+    ProblemStatement: (props) => {
+      return (
+        <div className="bg-gradient-to-r from-gray6 to-gray4 py-5 -mx-10 px-10 border-l-4 border-gray8 relative space-y-2">
+          <header>
+            <h4 className="font-medium text-gray11">Problem</h4>
+          </header>
+          <div>{props.children}</div>
+        </div>
+      );
+    },
   };
 }
