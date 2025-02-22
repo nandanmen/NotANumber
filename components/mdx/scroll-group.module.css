@@ -1,8 +1,8 @@
 .article {
   display: grid;
-  grid-template-columns: 60ch 1fr;
+  grid-template-columns: 1fr 1fr;
   row-gap: 20px;
-  column-gap: 80px;
+  column-gap: 40px;
   line-height: 1.6;
 }
 

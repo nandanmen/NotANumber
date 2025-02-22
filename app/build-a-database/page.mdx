@@ -16,13 +16,17 @@ Let's find out how they work!
 
 ---
 
+<ScrollGroup>
+
 ## The Humble File
 
 Databases were made to solve a simple problem: how do you store data persistently and efficiently look it up later?
 
 The typical way to store any kind of data in a computer is to _use a file_. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
-<AppendOnlyFile mode={["add", "search"]} mutable />
+<ScrollFigure>
+  <AppendOnlyFile mode={["add", "search"]} mutable />
+</ScrollFigure>
 
 **What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
 
@@ -36,6 +40,8 @@ This approach has two main issues:
 <FileResizing />
 
 This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
+
+</ScrollGroup>
 
 ---
 

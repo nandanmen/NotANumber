@@ -5,6 +5,7 @@ import { Annotation } from "./components/mdx/annotation";
 import { InlineNote, Note } from "./components/mdx/note";
 import { CodeBlock } from "./components/mdx/code-block";
 import { OrderedList } from "./components/OrderedList";
+import { ScrollGroup, ScrollFigure } from "./components/mdx/scroll-group";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -36,5 +37,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </div>
       );
     },
+    ScrollGroup,
+    ScrollFigure,
   };
 }

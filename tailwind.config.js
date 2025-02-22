@@ -16,11 +16,13 @@ module.exports = {
         ...red,
         ...yellow,
         ...cyan,
+        borderStrong: gray.gray8,
+        borderSoft: gray.gray7
       },
       fontFamily: {
         serif: "var(--font-serif)",
         sans: "var(--font-sans)",
-        mono: "Input Mono",
+        mono: "Berkeley Mono, monospace",
         handwriting: "var(--font-handwriting)",
       },
       screens: {
