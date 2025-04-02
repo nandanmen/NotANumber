@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import "./styles.css";
 import { AuthProvider } from "./svg-paths/provider";
 import { Analytics } from "@vercel/analytics/react";
+import { Provider } from "./provider";
 
 export const metadata = {
   title: "Next.js",
@@ -21,12 +22,12 @@ const sans = localFont({
     {
       path: "./fonts/sans/regular.woff2",
       weight: "400",
-      style: 'normal',
+      style: "normal",
     },
     {
       path: "./fonts/sans/regular-italic.woff2",
       weight: "400",
-      style: 'italic'
+      style: "italic",
     },
     {
       path: "./fonts/sans/bold.woff2",
@@ -58,7 +59,6 @@ const sans = localFont({
       weight: "600",
       style: "italic",
     },
-    
   ],
   variable: "--font-sans",
 });
@@ -110,7 +110,9 @@ export default function RootLayout({
           "font-sans antialiased bg-gray4"
         )}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Provider>{children}</Provider>
+        </AuthProvider>
         <Analytics />
       </body>
     </html>

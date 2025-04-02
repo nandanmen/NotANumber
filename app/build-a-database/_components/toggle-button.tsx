@@ -11,7 +11,7 @@ export function ToggleButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="bg-gray3 border border-gray8 flex items-center h-8 px-2.5 rounded-full text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed"
+      className="bg-gray3 border border-borderStrong flex items-center h-8 px-2.5 rounded-full text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed"
     >
       {children}
     </button>
@@ -27,7 +27,7 @@ export function ResetButton({
 }) {
   return (
     <button
-      className="h-8 w-8 rounded-full bg-gray3 flex items-center justify-center border border-gray8 hover:bg-gray4 text-gray11"
+      className="h-8 w-8 rounded-full bg-gray3 flex items-center justify-center border border-borderStrong hover:bg-gray4 text-gray11"
       onClick={onClick}
     >
       <span className="sr-only">{label}</span>

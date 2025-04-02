@@ -17,7 +17,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
         width: "calc(100% + 40px)",
       }}
     >
-      <div className="h-full bg-gray5 rounded-xl p-5">
+      <div className="h-full bg-gray5 rounded-lg p-5 border border-borderSoft">
         <div
           className="sticky"
           style={{

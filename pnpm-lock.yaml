@@ -81,11 +81,14 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       immer:
-        specifier: ^9.0.19
+        specifier: ^9.0.21
         version: 9.0.21
       javascript-time-ago:
         specifier: ^2.5.9
         version: 2.5.11
+      jotai:
+        specifier: ^2.12.1
+        version: 2.12.1(@types/react@19.0.10)(react@19.0.0-rc.1)
       mdx-bundler:
         specifier: ^10.0.3
         version: 10.1.0(acorn@8.14.0)(esbuild@0.24.2)
@@ -2909,6 +2912,18 @@ packages:
 
   jose@4.15.9:
     resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
+
+  jotai@2.12.1:
+    resolution: {integrity: sha512-VUW0nMPYIru5g89tdxwr9ftiVdc/nGV9jvHISN8Ucx+m1vI9dBeHemfqYzEuw5XSkmYjD/MEyApN9k6yrATsZQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   js-string-escape@1.0.1:
     resolution: {integrity: sha512-Smw4xcfIQ5LVjAOuJCvN/zIodzA/BBSsluuoSykP+lUvScIi4U6RJLfwHet5cxFnCswUjISV8oAXaqaJDY3chg==}
@@ -7821,6 +7836,11 @@ snapshots:
   jiti@1.21.7: {}
 
   jose@4.15.9: {}
+
+  jotai@2.12.1(@types/react@19.0.10)(react@19.0.0-rc.1):
+    optionalDependencies:
+      '@types/react': 19.0.10
+      react: 19.0.0-rc.1
 
   js-string-escape@1.0.1: {}
 
