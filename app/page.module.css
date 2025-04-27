@@ -2,6 +2,12 @@
   border-bottom-width: 1px;
 }
 
+.main {
+  max-width: 1450px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 @media screen and (min-width: 1400px) {
   .main {
     display: flex;

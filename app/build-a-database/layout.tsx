@@ -23,7 +23,17 @@ export default async function BuildADatabasePage({
             Subscribe
           </button>
         </header>
-        <div className="grid grid-cols-[1fr_250px]">
+        <div className="grid grid-cols-[250px_1fr]">
+          <aside className="h-[calc(100vh-57px)] sticky top-[57px] flex flex-col text-gray11 p-8 border-r border-borderSoft">
+            <ol className="text-sm space-y-1">
+              <li>Introduction</li>
+              <li>The Humble File</li>
+              <li>Your First Index</li>
+              <li>Sorted String Tables</li>
+              <li>How Hard Drives Work</li>
+              <li>Persisting Trees on Disk</li>
+            </ol>
+          </aside>
           <article className={clsx(styles.article, "p-10")}>
             <header className="my-10 !col-span-2 space-y-2">
               <h1 className="text-[80px] font-serif leading-[1]">
@@ -36,16 +46,6 @@ export default async function BuildADatabasePage({
             </header>
             {children}
           </article>
-          <aside className="h-[calc(100vh-57px)] sticky top-[57px] flex flex-col text-gray11 p-8 border-l border-borderSoft">
-            <ol className="text-sm space-y-1">
-              <li>Introduction</li>
-              <li>The Humble File</li>
-              <li>Your First Index</li>
-              <li>Sorted String Tables</li>
-              <li>How Hard Drives Work</li>
-              <li>Persisting Trees on Disk</li>
-            </ol>
-          </aside>
         </div>
       </div>
     </div>

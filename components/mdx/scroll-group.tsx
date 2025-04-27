@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import styles from "./scroll-group.module.css";
+import { X } from "../icons";
 
 export function ScrollGroup({ children }: { children: React.ReactNode }) {
   return (
@@ -30,30 +31,12 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
       </div>
       <div className="text-gray9">
         <div className="absolute top-0 left-0 -translate-x-2.5 -translate-y-2.5">
-          <XIcon />
+          <X />
         </div>
         <div className="absolute bottom-0 left-0 -translate-x-2.5 translate-y-2.5">
-          <XIcon />
+          <X />
         </div>
       </div>
     </div>
   );
 }
-
-const XIcon = () => {
-  return (
-    <svg
-      width="20"
-      height="20"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="3"
-    >
-      <path d="M17.25 6.75L6.75 17.25" />
-      <path d="M6.75 6.75L17.25 17.25" />
-    </svg>
-  );
-};

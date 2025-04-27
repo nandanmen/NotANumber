@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { clsx } from "clsx";
+import { cn } from "~/lib/cn";
 
 function StripePattern({
   size = 8,
@@ -76,7 +77,7 @@ export function BackgroundStripes({
 }) {
   const id = useId();
   return (
-    <div className={clsx("absolute inset-0 text-gray6", className)}>
+    <div className={cn("absolute inset-0 text-gray6", className)}>
       <svg width="100%" height="100%">
         <StripePattern id={id} {...patternProps} />
         <rect width="100%" height="100%" fill={`url(#${id})`} />
