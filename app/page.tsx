@@ -16,6 +16,8 @@ import framerMagicMotion from './_images/framer-magic-motion.png';
 import framerMotionKeys from './_images/framer-motion-keys.png';
 import svgPaths from './_images/svg-paths.png';
 
+const BASE_PATH = 'https://not-a-number-ek44uhvky-nan-fyi.vercel.app'
+
 const posts = [
   /* {
     post: {
@@ -47,7 +49,7 @@ const posts = [
     image: svgPaths,
   },
   {
-    slug: "keys-in-framer-motion",
+    slug: `${BASE_PATH}/keys-in-framer-motion`,
     title: "The Power of Keys in Framer Motion",
     description:
       "The React key prop is often only used to suppress React warnings, but it's actually a super powerful tool when used together with Framer Motion. In this post, we'll explore how to use it to make some pretty cool animations.",
@@ -55,7 +57,7 @@ const posts = [
     image: framerMotionKeys,
   },
   {
-    slug: "magic-motion",
+    slug: `${BASE_PATH}/magic-motion`,
     title: "Inside Framer's Magic Motion",
     description:
       "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
@@ -63,7 +65,7 @@ const posts = [
     image: framerMagicMotion,
   },
   {
-    slug: "tokenizer",
+    slug: `${BASE_PATH}/tokenizer`,
     title: "Rebuilding Babel: The Tokenizer",
     description:
       "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
