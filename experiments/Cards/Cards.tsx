@@ -206,7 +206,7 @@ const _Card = styled(motion.button, {
   alignItems: "center",
   justifyContent: "center",
   fontSize: "10rem",
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
 
   span: {
     transform: "translateY(8px)",

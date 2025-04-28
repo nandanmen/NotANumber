@@ -256,7 +256,7 @@ const PageWrapper = styled("main", {
 const ContentWrapper = styled("div", {});
 
 const Title = styled("h1", {
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   fontSize: "3rem",
   lineHeight: "$title",
   fontWeight: 500,

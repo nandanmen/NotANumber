@@ -26,7 +26,7 @@ export const Content = styled("div", {
   },
 
   h2: {
-    fontFamily: "$serif",
+    fontFamily: "var(--font-serif)",
   },
 
   "code:not([data-rehype-pretty-code-fragment] code, pre code)": {

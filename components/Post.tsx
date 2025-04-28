@@ -156,7 +156,7 @@ const PostWrapper = styled(motion.li, {
 
 const PostTitle = styled(motion.h1, {
   fontSize: "3.5rem",
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   lineHeight: 1.1,
   fontWeight: 500,
   display: "flex",

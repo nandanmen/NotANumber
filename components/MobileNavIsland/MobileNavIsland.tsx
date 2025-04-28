@@ -274,7 +274,7 @@ export const DynamicIsland = styled("nav", {
 });
 
 const HomeLink = styled("a", {
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   fontWeight: 600,
   height: "100%",
   paddingLeft: "$2",

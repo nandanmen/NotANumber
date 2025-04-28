@@ -6,17 +6,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import clsx from "clsx";
 import { FaGithub, FaTwitter } from "react-icons/fa";
-import { BackgroundStripes } from "~/components/stripe-pattern";
 
-import array from './_images/array.png';
-import debuggerImg from './_images/debugger.png';
-import slidingWindow from './_images/sliding-window.png';
-import tokenizer from './_images/tokenizer.png';
-import framerMagicMotion from './_images/framer-magic-motion.png';
-import framerMotionKeys from './_images/framer-motion-keys.png';
-import svgPaths from './_images/svg-paths.png';
-
-const BASE_PATH = 'https://not-a-number-ek44uhvky-nan-fyi.vercel.app'
+import array from '../_images/array.png';
+import debuggerImg from '../_images/debugger.png';
+import slidingWindow from '../_images/sliding-window.png';
+import tokenizer from '../_images/tokenizer.png';
+import framerMagicMotion from '../_images/framer-magic-motion.png';
+import framerMotionKeys from '../_images/framer-motion-keys.png';
+import svgPaths from '../_images/svg-paths.png';
 
 const posts = [
   /* {
@@ -49,7 +46,7 @@ const posts = [
     image: svgPaths,
   },
   {
-    slug: `${BASE_PATH}/keys-in-framer-motion`,
+    slug: `keys-in-framer-motion`,
     title: "The Power of Keys in Framer Motion",
     description:
       "The React key prop is often only used to suppress React warnings, but it's actually a super powerful tool when used together with Framer Motion. In this post, we'll explore how to use it to make some pretty cool animations.",
@@ -57,7 +54,7 @@ const posts = [
     image: framerMotionKeys,
   },
   {
-    slug: `${BASE_PATH}/magic-motion`,
+    slug: `magic-motion`,
     title: "Inside Framer's Magic Motion",
     description:
       "How does Framer Motion make layout changes look seamless? In this post, we're taking a deep dive into FLIP, the technique used by Framer Motion to animate changes in layout without sacrificing performance.",
@@ -65,7 +62,7 @@ const posts = [
     image: framerMagicMotion,
   },
   {
-    slug: `${BASE_PATH}/tokenizer`,
+    slug: `tokenizer`,
     title: "Rebuilding Babel: The Tokenizer",
     description:
       "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
@@ -190,60 +187,57 @@ function Post({
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex">
-      <BackgroundStripes className="fixed inset-0" />
-      <div
-        className="relative lg:grid grid-cols-[320px_1fr] mx-auto px-4 max-w-[1450px] w-full"
-      >
-        <aside className="p-6 pt-12 lg:p-10 border-gray8 top-0 flex flex-col gap-6 relative bg-gray4 border-x border-b lg:border-b-0 lg:border-r-0 lg:sticky lg:h-screen">
-          <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
-          <div className="md:flex lg:block lg:space-y-6 space-y-6 md:space-y-0 items-center justify-between">
-            <p className="leading-relaxed">
-              <Balancer>
-                Interactive blog posts on computer science and web development by{" "}
-                <a
-                  className="underline underline-offset-2"
-                  href="https://twitter.com/nandafyi"
-                >
-                  Nanda Syahrasyad.
-                </a>
-              </Balancer>
-            </p>
-            <button className="text-sm font-medium rounded-full bg-gray12 text-gray1 px-3 py-1.5 w-fit">
-              Subscribe
-            </button>
-          </div>
-          <footer className="mt-auto flex justify-between items-end text-gray11">
-            <div className="flex items-center gap-3">
+    <div
+      className="lg:grid grid-cols-[320px_1fr]"
+    >
+      <aside className="p-6 pt-12 lg:p-10 border-gray8 top-0 flex flex-col gap-6 relative bg-gray4 border-b lg:border-b-0 lg:border-r-0 lg:sticky lg:h-screen">
+        <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
+        <div className="md:flex lg:block lg:space-y-6 space-y-6 md:space-y-0 items-center justify-between">
+          <p className="leading-relaxed">
+            <Balancer>
+              Interactive blog posts on computer science and web development by{" "}
               <a
-                href="https://github.com/nandanmen"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaGithub />
-              </a>
-              <a
+                className="underline underline-offset-2"
                 href="https://twitter.com/nandafyi"
-                target="_blank"
-                rel="noreferrer"
               >
-                <FaTwitter />
+                Nanda Syahrasyad.
               </a>
-            </div>
-            <p className="text-xs text-gray10 font-mono">
-              © 2021 - {new Date().getFullYear()}
-            </p>
-          </footer>
-        </aside>
-        <ul className="divide-y divide-gray7 divide-dashed bg-gray4 border-x border-gray8">
-          {posts.map((post) => (
-            <Post
-              post={post}
-              key={post.slug}
-            />
-          ))}
-        </ul>
-      </div>
+            </Balancer>
+          </p>
+          <button className="text-sm font-medium rounded-full bg-gray12 text-gray1 px-3 py-1.5 w-fit">
+            Subscribe
+          </button>
+        </div>
+        <footer className="mt-auto flex justify-between items-end text-gray11">
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/nandanmen"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FaGithub />
+            </a>
+            <a
+              href="https://twitter.com/nandafyi"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FaTwitter />
+            </a>
+          </div>
+          <p className="text-xs text-gray10 font-mono">
+            © 2021 - {new Date().getFullYear()}
+          </p>
+        </footer>
+      </aside>
+      <ul className="divide-y divide-gray7 divide-dashed bg-gray4 border-l border-gray8">
+        {posts.map((post) => (
+          <Post
+            post={post}
+            key={post.slug}
+          />
+        ))}
+      </ul>
     </div>
   );
 }

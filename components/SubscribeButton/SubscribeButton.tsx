@@ -191,7 +191,7 @@ const Text = styled("p", {
 });
 
 const Title = styled(Dialog.Title, {
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   fontSize: "2.5rem",
   lineHeight: "$title",
   marginBottom: "$10",

@@ -74,7 +74,7 @@ const ExperimentsList = styled("ul", {
 });
 
 const LinkWrapper = styled("div", {
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   fontSize: "$xl",
 
   a: {
