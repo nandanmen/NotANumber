@@ -27,7 +27,7 @@ export const Counter = ({ withKey = false, children }) => {
             flexWrap: "wrap",
           }}
         >
-          <BlockWrapper>{children}</BlockWrapper>
+          <BlockWrapper className="overflow-x-auto p-4">{children}</BlockWrapper>
           <BlockWrapper css={{ display: "flex", flexDirection: "column" }}>
             <Content
               css={{

@@ -31,7 +31,7 @@ export function PostPage({ content }: { content: Post }) {
     const { frontmatter, headings, slug } = content;
     return (
         <>
-            <header className="px-8 py-3 border-b border-borderSoft sticky top-0 bg-gray4 z-20 text-gray11 flex justify-between items-center">
+            <header className="px-4 md:px-8 py-3 border-b border-borderSoft sticky top-0 bg-gray4 z-20 text-gray11 flex justify-between items-center">
                 <h2 className="font-serif text-2xl">
                     <NextLink href="/">NaN</NextLink>
                 </h2>
@@ -39,7 +39,7 @@ export function PostPage({ content }: { content: Post }) {
                     Subscribe
                 </button>
             </header>
-            <main className="grid grid-cols-[250px_1fr]">
+            <main className="lg:grid grid-cols-[250px_1fr]">
                 <Head>
                     <title>{frontmatter.title}</title>
                     <meta name="description" content={frontmatter.description} />
@@ -60,12 +60,12 @@ export function PostPage({ content }: { content: Post }) {
                         ))}
                     </ul>
                 </Nav>
-                <Article className="p-8" as="article">
+                <Article className="p-4 md:p-8" as="article">
                     <Header>
                         <LastUpdated>
                             {formatter.format(new Date(frontmatter.editedAt))}
                         </LastUpdated>
-                        <Title>
+                        <Title className="text-5xl md:text-6xl">
                             <Balancer>{frontmatter.title}</Balancer>
                         </Title>
                         <Blurb>
@@ -80,7 +80,7 @@ export function PostPage({ content }: { content: Post }) {
                             a: Link as any,
                         }}
                     />
-                    <NewsletterWrapper>
+                    <NewsletterWrapper className="mb-16">
                         <NewsletterForm />
                     </NewsletterWrapper>
                 </Article>
@@ -116,7 +116,6 @@ const Nav = styled("nav", {
 });
 
 const Title = styled("h1", {
-    fontSize: "4rem",
     fontFamily: "var(--font-serif)",
     lineHeight: "$title",
     fontWeight: 500,
