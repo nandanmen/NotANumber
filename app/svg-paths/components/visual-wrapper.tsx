@@ -1,15 +1,17 @@
+'use client'
+
 import { useIndexContext } from "./index-provider";
 import { type Config, Svg } from "./svg";
 
 export type Page = {
   children: React.ReactNode;
   svg?:
-    | false
-    | number
-    | {
-        size?: number;
-        config?: Partial<Config>;
-      };
+  | false
+  | number
+  | {
+    size?: number;
+    config?: Partial<Config>;
+  };
 };
 
 export type VisualWrapperComponents = Page[];

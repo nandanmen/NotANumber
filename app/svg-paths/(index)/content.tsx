@@ -1,21 +1,21 @@
 "use client";
 
-import React from "react";
-import { Button } from "../components/button";
-import { MDX } from "../components/mdx";
-import { StateProvider } from "../components/state-context";
-import { VisualWrapper } from "../components/visual-wrapper";
 import { initialState, useStateContext } from "./state";
-import * as heart from "./heart";
+import { StateProvider } from "../components/state-context";
+import { ContentWrapper } from "../components/content-wrapper";
+import { ReactNode } from "react";
+import { VisualWrapper } from "../components/visual-wrapper";
+import { Heart } from "./heart";
 import * as square from "./square";
 import * as commands from "./commands";
 import * as absolute from "./absolute";
+import { Button } from "../components/button";
 
-export function Content({ content, length }) {
+export function IndexContent({ children, length }: { children: ReactNode, length: number }) {
   return (
     <StateProvider initial={initialState}>
-      <MDX
-        content={content}
+      <ContentWrapper
+        content={children}
         numSections={length}
         prefix={
           <>
@@ -32,29 +32,29 @@ export function Content({ content, length }) {
             </p>
           </>
         }
-        components={{
-          SquareToggle,
-          Square: square.Square,
-          Commands: commands.Commands,
-          Absolute: absolute.Absolute,
-          Heart: heart.Heart,
-        }}
       >
         <VisualWrapper
           components={[
-            heart.page(),
+            {
+              svg: 25,
+              children: <Heart />
+            },
             square.page,
             commands.page,
             absolute.page,
-            heart.page(),
+            {
+              svg: 25,
+              children: <Heart />
+            },
           ]}
         />
-      </MDX>
+      </ContentWrapper>
     </StateProvider>
   );
 }
 
-function SquareToggle() {
+
+export function SquareToggle() {
   const { data, set } = useStateContext("intro");
   return (
     <Button

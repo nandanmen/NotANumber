@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
@@ -50,7 +52,7 @@ export const CommandListFromSource = ({ source }: { source: string }) => {
 
 export const CommandList = ({
   path: initialPath,
-  onChange = () => {},
+  onChange = () => { },
   collapseAfter,
   active,
   index = null,

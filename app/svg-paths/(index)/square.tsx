@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { useStateContext } from "./state";
@@ -75,9 +77,8 @@ const HeavySquare = ({ weight, ...props }) => {
       q ${xOffset} ${-yOffset} ${xOffset + yOffset} ${xOffset - yOffset}
       L ${x + w + (h - r) * Math.sin(angle)} ${y + (h - r) * Math.cos(angle)}
       q ${yOffset} ${xOffset} ${-(xOffset - yOffset)} ${xOffset + yOffset}
-      Q ${mx} ${y + h + weight} ${x + r - (h - r) * Math.sin(angle)} ${
-      y + h * Math.cos(angle)
-    }
+      Q ${mx} ${y + h + weight} ${x + r - (h - r) * Math.sin(angle)} ${y + h * Math.cos(angle)
+      }
       q ${-xOffset} ${-yOffset} ${-(xOffset - yOffset)} ${-(xOffset + yOffset)}
       z
     `;
