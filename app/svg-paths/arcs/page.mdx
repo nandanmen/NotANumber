@@ -1,3 +1,16 @@
+import { PageSection } from "../components/page-section";
+import { PracticeQuestion, PracticeQuestionEditor } from "../components/path-practice";
+import { ShrinkArcButton, ToggleFlagButton, RotationSlider } from "./components";
+import { CommandListFromSource } from "../components/command-list";
+import { Svg } from "../components/svg";
+import { ArcSyntax } from "./content/syntax";
+import { SmallEllipse } from "./content/small-ellipse";
+import { Rotation } from "./content/rotation";
+import { Flags } from "./content/flags";
+import { Ellipse } from "./content/ellipse";
+
+<PageSection index={0}>
+
 # Arcs
 
 Last but certainly not least is the `A` or arc command.
@@ -18,7 +31,9 @@ We'll dive into what each of these values means in a moment, but first, try to c
   <ArcSyntax />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={1}>
 
 ## How Arcs Are Formed
 
@@ -36,7 +51,9 @@ Try changing the radius of the arc or the position of the endpoint in the sandbo
 
 > This `(x,y)` pair is what confused me when I first learned the arc command. Intuitively, I would've thought that I'd need an angle to draw an arc, not an endpoint!
 
----
+</PageSection>
+
+<PageSection index={2}>
 
 Of course, it's not always possible to find a matching ellipse. What happens in that case? Click the "Shrink Arc" button below and let's find out:
 
@@ -50,7 +67,9 @@ Notice that when the ellipse isn't big enough to fit the arc's points, the arc i
 
 In the playground, this "scaled" ellipse is shown in light gray.
 
----
+</PageSection>
+
+<PageSection index={3}>
 
 ## X-Axis Rotation
 
@@ -66,7 +85,9 @@ The next argument, `x-axis-rotation`, is thankfully not as tricky. As you might 
 
 The best way to get a feel of this argument is to play around with it, so try changing the value above to see how it affects the arc.
 
----
+</PageSection>
+
+<PageSection index={4}>
 
 ## Large Arc and Sweep Flags
 
@@ -82,7 +103,9 @@ In the ellipse section, we said that the browser tries to find an ellipse that f
 
 The large arc and clockwise (sweep) flags control which of these four curves is ultimately drawn.
 
----
+</PageSection>
+
+<PageSection index={5}>
 
 ### Sweep
 
@@ -92,7 +115,9 @@ Out of the four arcs that can be drawn between two points, two of the arcs are d
   <Flags />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={6}>
 
 While the other two are drawn **counterclockwise**:
 
@@ -100,7 +125,9 @@ While the other two are drawn **counterclockwise**:
   <Flags />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={7}>
 
 The `sweep` flag controls which of these two directions is drawn, with `0` meaning the arc is drawn _counterclockwise_. This is why I prefer to call the sweep flag the clockwise flag!
 
@@ -112,7 +139,9 @@ Try toggling the sweep flag below and notice how the arc goes from counterclockw
   <Flags />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={8}>
 
 ### Large Arc
 
@@ -128,7 +157,9 @@ Notice that, out of the two remaining arcs, one of them is larger than the other
 
 > When the ellipse happens to be a perfect circle (i.e. when `rx == ry`), then the large arc flag has no effect.
 
----
+</PageSection>
+
+<PageSection index={9}>
 
 ## Summary
 
@@ -142,7 +173,9 @@ Here's the arc command in its entirety:
 
 You can play around with the different fields in the sandbox to get a better feel of how they change the shape of the arc.
 
----
+</PageSection>
+
+<PageSection index={10}>
 
 ## Practice
 
@@ -157,3 +190,5 @@ Remember — there's no right answer here, as long as the path ends up looking l
 </Svg>
 
 <PracticeQuestionEditor />
+
+</PageSection>

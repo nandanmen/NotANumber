@@ -1,3 +1,5 @@
+'use client'
+
 import { Ripple } from "app/svg-paths/components/ripple";
 import { useStateContext } from "../state";
 import { useSvgContext } from "app/svg-paths/components/svg";
@@ -19,7 +21,7 @@ export const initialState = {
 
 export const components = { Ellipse };
 
-function Ellipse() {
+export function Ellipse() {
   const { getRelative } = useSvgContext();
   const { data, set } = useStateContext("ellipse");
   const { path } = data;

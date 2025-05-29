@@ -1,3 +1,5 @@
+'use client'
+
 import { useStateContext } from "../state";
 import { parsePath } from "app/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";
@@ -13,7 +15,7 @@ export const initialState = {
 
 export const components = { Rotation };
 
-function Rotation() {
+export function Rotation() {
   const { data, set } = useStateContext("rotation");
   return (
     <>

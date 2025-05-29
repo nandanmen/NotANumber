@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { useIndexContext } from "app/svg-paths/components/index-provider";
 import { Ripple } from "app/svg-paths/components/ripple";
@@ -18,7 +20,7 @@ export const initialState = {
 
 export const components = { Flags };
 
-function Flags() {
+export function Flags() {
   const { index } = useIndexContext();
   const { data } = useStateContext("flags");
   const arc = data.path.atAbsolute<"A">(1);
