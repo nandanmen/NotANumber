@@ -1,10 +1,12 @@
+'use client'
+
 import { CubicPlayground } from "./cubic-playground";
 import { useStateContext } from "../state";
 import { Path } from "app/svg-paths/components/svg/path";
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line } from "app/svg-paths/components/svg/line";
 
-function CurveGeneral() {
+export function CurveGeneral() {
   const { data, set } = useStateContext("syntax");
   return (
     <g>

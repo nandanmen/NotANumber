@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { motion } from "framer-motion";
 import { useStateContext } from "../state";
@@ -15,7 +17,7 @@ const curveIndices = [1, 2, 3];
 
 export const components = { Chain };
 
-function Chain() {
+export function Chain() {
   const {
     data: { path, index, expanded, state },
     set,

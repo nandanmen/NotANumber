@@ -1,3 +1,14 @@
+import { CommandList, CommandListFromSource } from "../components/command-list";
+import { Svg } from "../components/svg";
+import { Pill } from "./content/pill";
+import { Syntax } from "./content/syntax";
+import { Chain } from "./content/chain";
+import { CurveGeneral } from "./content/curve-general";
+import { PracticeQuestion, PracticeQuestionEditor } from "../components/path-practice";
+import { PageSection } from "../components/page-section";
+
+<PageSection index={0}>
+
 # Curves II: Cubic Curves
 
 Quadratic curves are great, but as we saw in the previous section, they can be pretty limiting — there are only so many shapes you can make with only one control point!
@@ -13,7 +24,9 @@ This pill shape, for example, doesn't look quite right using quadratic curves:
   <Pill quadratic />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={1}>
 
 But if we change the quadratic curves to cubic curves instead, we get a much smoother pill shape:
 
@@ -28,7 +41,9 @@ But if we change the quadratic curves to cubic curves instead, we get a much smo
 
 We were able to make the curve look better because we had an extra control point to work with.
 
----
+</PageSection>
+
+<PageSection index={2}>
 
 ## Syntax
 
@@ -48,7 +63,9 @@ For example:
 
 Notice that the command looks just like the quadratic curve command but with an extra pair of coordinates for the second control point.
 
----
+</PageSection>
+
+<PageSection index={3}>
 
 You can kind of think of the cubic curve as a "generalization" of the quadratic curve — every quadratic curve can be represented as a cubic curve by putting the control points in the right place.
 
@@ -60,7 +77,9 @@ You can kind of think of the cubic curve as a "generalization" of the quadratic 
 
 > Interestingly, the point where the two curves line up is _not_ when the two control points are in the same place!
 
----
+</PageSection>
+
+<PageSection index={4}>
 
 ## Multiple Bezier Curves
 
@@ -80,7 +99,9 @@ Here, we use the `S` command to create a hot air balloon shape:
   <Chain />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={5}>
 
 ## Practice
 
@@ -91,3 +112,5 @@ Using _both_ curve commands and the other commands we've seen, trace over this r
 </Svg>
 
 <PracticeQuestionEditor />
+
+</PageSection>

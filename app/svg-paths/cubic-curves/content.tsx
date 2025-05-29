@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { MDX } from "../components/mdx";
 import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";
 import { PracticeQuestion } from "../components/path-practice";
@@ -10,20 +9,14 @@ import * as curveGeneral from "./content/curve-general";
 import * as chain from "./content/chain";
 import * as pill from "./content/pill";
 import { initialState } from "./state";
+import { ContentWrapper } from "../components/content-wrapper";
 
-export function Content({ content, length }) {
+export function Content({ children, length }) {
   return (
     <StateProvider initial={initialState}>
-      <MDX
-        content={content}
+      <ContentWrapper
+        content={children}
         numSections={length}
-        components={{
-          ...pill.components,
-          ...syntax.components,
-          ...chain.components,
-          ...curveGeneral.components,
-          PracticeQuestion,
-        }}
       >
         <VisualWrapper
           components={[
@@ -37,7 +30,7 @@ export function Content({ content, length }) {
             },
           ]}
         />
-      </MDX>
+      </ContentWrapper>
     </StateProvider>
   );
 }

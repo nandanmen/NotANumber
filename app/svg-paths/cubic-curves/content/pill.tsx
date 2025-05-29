@@ -1,3 +1,5 @@
+'use client'
+
 import { Circle } from "app/svg-paths/components/svg/circle";
 import { Line as BaseLine } from "app/svg-paths/components/svg/line";
 import { Path } from "app/svg-paths/components/svg/path";
@@ -49,7 +51,7 @@ function Point({ x, y }: { x: number; y: number }) {
   );
 }
 
-function Pill({ quadratic = false }) {
+export function Pill({ quadratic = false }) {
   const { x1, y1, x2, y2, x3, y3, x4, y4 } = getControlPoints(quadratic);
   return (
     <g>
