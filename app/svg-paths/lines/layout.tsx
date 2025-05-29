@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function LinesPage() {
-  const { content, length } = await readPage("lines");
-  return <LinesContent content={await serialize(content)} length={length} />;
+export default async function LinesPage({ children }) {
+  const { length } = await readPage("lines", "svg-paths", true);
+  return <LinesContent length={length}>{children}</LinesContent>;
 }

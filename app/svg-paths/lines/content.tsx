@@ -20,12 +20,13 @@ import { Circle } from "../components/svg/circle";
 import clsx from "clsx";
 import { Line } from "../components/svg/line";
 import { Text } from "../components/svg/text";
+import { ContentWrapper } from "../components/content-wrapper";
 
-export function LinesContent({ content, length }) {
+export function LinesContent({ children, length }) {
   return (
     <StateProvider initial={initialState}>
-      <MDX
-        content={content}
+      <ContentWrapper
+        content={children}
         numSections={length}
         components={{
           HeartCommands,
@@ -76,7 +77,7 @@ export function LinesContent({ content, length }) {
             },
           ]}
         />
-      </MDX>
+      </ContentWrapper>
     </StateProvider>
   );
 }

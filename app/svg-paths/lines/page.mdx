@@ -1,3 +1,20 @@
+import {
+  HeartCommands,
+  ClosePathToggle,
+  AbsoluteLine,
+  RelativeLine,
+  ZExample,
+  HeartPath,
+  Heart,
+} from "./components";
+import { CommandListFromSource } from "../components/command-list";
+import { Svg } from "../components/svg";
+import { PracticeQuestion, PracticeQuestionEditor } from "../components/path-practice";
+import { PageSection } from "../components/page-section";
+import { PathHoverVisual } from "../components/path-hover-visual";
+
+<PageSection index={0}>
+
 # Lines
 
 Now that we know all about cursors, let's start drawing stuff.
@@ -12,7 +29,9 @@ The most generic of them is the `L` command, which draws a line to a specific `(
   <AbsoluteLine />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={1}>
 
 Just like how the `m` command moves the cursor relative to its current position, the lowercase `l` command draws a line relative to the current cursor position:
 
@@ -23,7 +42,9 @@ Just like how the `m` command moves the cursor relative to its current position,
   <RelativeLine />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={2}>
 
 ## Vertical and Horizontal Lines
 
@@ -39,7 +60,9 @@ You can draw lines in specific directions using the `H` and `V` commands. `H` dr
 
 > This will be the last time I explicitly mention the lowercase relative version of the commands. For the rest of this guide, assume that all commands have a relative variant!
 
----
+</PageSection>
+
+<PageSection index={3}>
 
 ## The Close Path Command
 
@@ -55,7 +78,9 @@ This means instead of explicitly using a line command to close a shape, you can 
 
 > Funny enough, `Z` does have a relative lowercase version, but since it doesn't take any arguments, it's not functionally different from the uppercase version.
 
----
+</PageSection>
+
+<PageSection index={4}>
 
 One cool thing about `Z` is that it will "close" your path, even if the cursor is already back at the start of the path. Consider this heart shape for example:
 
@@ -67,7 +92,9 @@ Notice that the heart begins and ends at the same point (highlighted above). Thi
   <HeartPath />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={5}>
 
 This heart just has one small problem. If we zoom in to the middle of the heart, we find this awkward corner where the start and end curves meet.
 
@@ -81,7 +108,9 @@ We can make this point look smoother by adding the `Z` command to the end of the
 
 While using `Z` here doesn't add any new lines, it does tell the browser that the path is "closed", allowing it to draw the path correctly.
 
----
+</PageSection>
+
+<PageSection index={6}>
 
 ## Practice
 
@@ -92,3 +121,5 @@ Trace over this house using all of the commands we've seen so far (including the
 </Svg>
 
 <PracticeQuestionEditor />
+
+</PageSection>
