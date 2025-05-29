@@ -230,7 +230,7 @@ export default function HomePage() {
           </p>
         </footer>
       </aside>
-      <ul className="divide-y divide-gray7 divide-dashed bg-gray4 border-l border-gray8">
+      <ul className="divide-y divide-gray7 divide-dashed bg-gray4 lg:border-l border-gray8">
         {posts.map((post) => (
           <Post
             post={post}
