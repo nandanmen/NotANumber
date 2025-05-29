@@ -1,3 +1,11 @@
+import { Chain, CurvePlayground, CurveTypes, RoundedCorner } from "./components";
+import { Svg } from "../components/svg";
+import { CommandListFromSource } from "../components/command-list";
+import { PracticeQuestion, PracticeQuestionEditor } from "../components/path-practice";
+import { PageSection } from "../components/page-section";
+
+<PageSection index={0}>
+
 # Curves I: Bezier Curves
 
 Let's be honest. You wouldn't be reaching for SVG paths if you only wanted to draw straight lines; you'd use an SVG `<line />` element instead.
@@ -10,7 +18,9 @@ The true power of SVG paths comes from being able to draw curves. So let's talk 
 
 We'll divide these conversations into three parts, starting with quadratic bezier curves first.
 
----
+</PageSection>
+
+<PageSection index={1}>
 
 ## Bezier Curves
 
@@ -22,7 +32,9 @@ A bezier curve is a curve that is defined by a series of points known as **contr
   <CurvePlayground />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={2}>
 
 ## Quadratic Curves
 
@@ -42,7 +54,9 @@ This curve, for example, creates a rounded corner:
   <RoundedCorner />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={3}>
 
 ## Chaining Quadratic Curves
 
@@ -65,7 +79,9 @@ The `T` command will draw a new quadratic curve using the _reflection_ of the pr
 
 > Of course, this approach will only work if the reflection point is indeed the point that you're looking for - if it's not, you'll still have to use the full `Q` command.
 
----
+</PageSection>
+
+<PageSection index={4}>
 
 ## Practice
 
@@ -78,3 +94,5 @@ Using all of the commands we've looked at so far (cursor, line, and quadratic cu
 (As a little bonus, try rounding the frame!)
 
 <PracticeQuestionEditor />
+
+</PageSection>

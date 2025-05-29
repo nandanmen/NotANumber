@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { serialize } from "next-mdx-remote/serialize";
 import { readPage } from "../lib/fs";
 import { Content } from "./content";
 
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BezierCurvesPage() {
-  const { content, length } = await readPage("bezier-curves");
-  return <Content content={await serialize(content)} length={length} />;
+export default async function BezierCurvesPage({ children }) {
+  const { length } = await readPage("bezier-curves", "svg-paths", true);
+  return <Content length={length}>{children}</Content>;
 }
