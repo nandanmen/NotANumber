@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { serialize } from "next-mdx-remote/serialize";
 import { readPage } from "../lib/fs";
 import { Content } from "./content";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "SVG Path Commands | Challenges",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ChallengePage() {
-  const { content, length } = await readPage("challenge");
-  return <Content content={await serialize(content)} length={length} />;
+export default async function ChallengeLayout({ children }: { children: ReactNode }) {
+  const { length } = await readPage("challenge", "svg-paths", true);
+  return <Content length={length}>{children}</Content>;
 }

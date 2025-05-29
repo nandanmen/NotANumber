@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { CommandListFromSource } from "./command-list";
 import { AbsoluteCommand, parsePath, Path as IPath } from "../lib/path";
@@ -39,7 +41,7 @@ export function PathPractice({ value }: { value: string }) {
     try {
       const parsed = parsePath(value);
       setPath(parsed.absolute);
-    } catch {}
+    } catch { }
   }, [value]);
 
   return <PathVisualizer path={path} />;
