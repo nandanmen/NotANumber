@@ -1,3 +1,19 @@
+import {
+  Cursors,
+  CursorOverview,
+  Practice,
+  Corner,
+  AbsoluteRelative,
+} from "./cursors";
+import { Svg } from "../components/svg";
+import { CommandListFromSource } from "../components/command-list";
+import { PlaySliderFromSource } from "../components/play-slider";
+import { PageSection } from "../components/page-section";
+import { PracticeQuestion, PracticeQuestionEditor } from "../components/path-practice";
+import { PathHoverVisual } from "../components/path-hover-visual";
+
+<PageSection index={0}>
+
 # Cursors
 
 At the heart of all SVG paths is the **cursor**. All path commands _use_ the cursor to determine where to start drawing from, and all path commands _move_ the cursor to ensure the following command starts from the correct position.
@@ -8,7 +24,9 @@ At the heart of all SVG paths is the **cursor**. All path commands _use_ the cur
   <CursorOverview />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={1}>
 
 Consider this little corner, defined with the following commands:
 
@@ -27,7 +45,9 @@ Initially, the cursor is at the top left corner, the origin point `(0, 0)`. Then
 - `L 10 15` draws a line to `(10, 15)`, moving the cursor to `(10, 15)`;
 - `h 5` draws a horizontal line of length 5, moving the cursor to `(15, 15)`.
 
----
+</PageSection>
+
+<PageSection index={2}>
 
 Generally speaking, the cursor will end up wherever the current path "section" finishes - after all, you want your path sections to be connected to one another most of the time.
 
@@ -41,7 +61,9 @@ For **absolute commands**, the cursor will end up at the command's `x` and `y` v
   <AbsoluteRelative />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={3}>
 
 For **relative commands**, the cursor will end up at the cursor's current position _plus_ the command's `dx` and `dy` values. For example, if the cursor is currently at `(15, 5)`, then `l 10 15` will move the cursor to `(25, 20)`.
 
@@ -53,7 +75,9 @@ For **relative commands**, the cursor will end up at the cursor's current positi
 
 Remember: commands written with an uppercase letter are **absolute** commands, while commands written with a lowercase letter are **relative** commands.
 
----
+</PageSection>
+
+<PageSection index={4}>
 
 ## Move Command
 
@@ -72,7 +96,9 @@ These are useful when you want to draw paths that aren't connected to one anothe
   <PathHoverVisual source="move" />
 </Svg>
 
----
+</PageSection>
+
+<PageSection index={5}>
 
 ## Practice
 
@@ -83,3 +109,5 @@ Using the `M` and/or `m` commands, **move the cursor to the points shown on the 
 </Svg>
 
 <PracticeQuestionEditor />
+
+</PageSection>

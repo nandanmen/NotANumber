@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { serialize } from "next-mdx-remote/serialize";
 import { readPage } from "../lib/fs";
 import { CursorsContent } from "./content";
 
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function CursorsPage() {
-  const { content, length } = await readPage("cursors");
-  return <CursorsContent content={await serialize(content)} length={length} />;
+export default async function CursorsPage({ children }) {
+  const { length } = await readPage("cursors", "svg-paths", true);
+  return <CursorsContent length={length}>{children}</CursorsContent>;
 }
