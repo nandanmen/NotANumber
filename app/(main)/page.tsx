@@ -14,6 +14,7 @@ import tokenizer from '../_images/tokenizer.png';
 import framerMagicMotion from '../_images/framer-magic-motion.png';
 import framerMotionKeys from '../_images/framer-motion-keys.png';
 import svgPaths from '../_images/svg-paths.png';
+import { SubscribeButton } from "./subscribe";
 
 const posts = [
   /* {
@@ -204,9 +205,7 @@ export default function HomePage() {
               </a>
             </Balancer>
           </p>
-          <button className="text-sm font-medium rounded-full bg-gray12 text-gray1 px-3 py-1.5 w-fit">
-            Subscribe
-          </button>
+          <SubscribeButton />
         </div>
         <footer className="mt-auto flex justify-between items-end text-gray11">
           <div className="flex items-center gap-3">
