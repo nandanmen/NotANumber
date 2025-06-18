@@ -1,8 +1,8 @@
 import * as fs from "fs/promises";
 
-export const readPage = async (path: string) => {
+export const readPage = async (path: string, base = "svg-paths", isPage = false) => {
   const source = await fs.readFile(
-    `${process.cwd()}/app/svg-paths/${path}/index.mdx`,
+    `${process.cwd()}/app/${base}/${path}/${isPage ? "page.mdx" : "index.mdx"}`,
     "utf8"
   );
   return splitPage(source);

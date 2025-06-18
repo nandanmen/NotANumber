@@ -1,3 +1,5 @@
+'use client'
+
 import { CoordinatesTooltip } from "../../components/svg/tooltip";
 import type { AbsoluteCommand } from "app/svg-paths/lib/path";
 import { DraggableEndpoint } from "app/svg-paths/components/draggable-endpoint";

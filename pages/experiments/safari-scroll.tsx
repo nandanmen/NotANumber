@@ -1,6 +1,5 @@
 import React from "react";
 import { ExperimentsPage } from "~/components/layout/ExperimentsPage";
-import { GoTextSize } from "react-icons/go";
 import {
   motion,
   MotionValue,
@@ -49,7 +48,7 @@ function useScrollOffset(ref: React.RefObject<HTMLElement>) {
 const MAX_OFFSET = 50;
 
 export default function SafariScrollPage() {
-  const wrapperRef = React.useRef<HTMLDivElement>();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [open, setOpen] = React.useState(true);
   const scrollOffset = useScrollOffset(wrapperRef);
 
@@ -144,9 +143,6 @@ const Navbar = ({
           } as any
         }
       >
-        <Icon animate={{ opacity: open ? 1 : 0 }}>
-          <GoTextSize />
-        </Icon>
         <Box
           css={{ width: "100%", textAlign: "center" }}
           animate={{ fontSize: open ? "1em" : "0.75em" }}

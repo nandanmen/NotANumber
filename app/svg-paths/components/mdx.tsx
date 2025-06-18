@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { JSX } from "react";
 import { motion } from "framer-motion";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
@@ -24,9 +24,9 @@ import { signOut } from "next-auth/react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const baseComponents = {
-  h1: (props) => <h1 className="text-3xl font-bold" {...props} />,
-  h2: (props) => <h2 className="text-2xl font-bold" {...props} />,
-  h3: (props) => <h3 className="text-xl font-bold" {...props} />,
+  h1: (props) => <h1 className="text-3xl font-medium" {...props} />,
+  h2: (props) => <h2 className="text-2xl font-medium" {...props} />,
+  h3: (props) => <h3 className="text-xl font-medium" {...props} />,
   code: (props) => <code className="inline-code" {...props} />,
   pre: (props) => (
     <pre
@@ -42,6 +42,7 @@ const baseComponents = {
       {...props}
     />
   ),
+  strong: (props) => <strong className="font-medium" {...props} />,
   blockquote: (props) => (
     <blockquote className="bg-gray7 rounded-md px-4 py-3" {...props} />
   ),
@@ -56,6 +57,13 @@ const baseComponents = {
   PlaySlider,
   PlaySliderFromSource,
   PathHoverVisual,
+};
+
+export const MDXOutput = ({ content, components }: { content: MDXRemoteSerializeResult, components?: Record<string, (props: unknown) => JSX.Element> }) => {
+  return <MDXRemote
+    {...content}
+    components={{ ...baseComponents, ...components }}
+  />;
 };
 
 const sections = [
@@ -180,7 +188,7 @@ export const MDX = ({
                   <li
                     key={section}
                     className={clsx(
-                      "capitalize rounded-md py-1 px-2 font-semibold h-fit",
+                      "capitalize rounded-md py-1 px-2 font-medium h-fit",
                       href === pathName ? "bg-gray7" : "text-gray10"
                     )}
                   >
@@ -191,7 +199,7 @@ export const MDX = ({
             </ul>
             <div className="ml-auto text-gray11 rounded-md py-1 px-2 h-fit shrink-0">
               <motion.a
-                className="flex items-center text-sm font-bold gap-1"
+                className="flex items-center text-sm font-medium gap-1"
                 href="https://ko-fi.com/nandafyi"
                 target="_blank"
                 rel="noreferrer"

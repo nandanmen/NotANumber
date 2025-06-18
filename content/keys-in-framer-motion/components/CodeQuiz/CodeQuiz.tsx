@@ -94,7 +94,9 @@ export const CodeQuiz = ({ children, useKey = false, caption = _caption }) => {
             </AnswerButton>
           </Box>
         </Box>
-        {children}
+        <div className="overflow-x-auto">
+          {children}
+        </div>
       </Wrapper>
       {showAnswer && (
         <Caption

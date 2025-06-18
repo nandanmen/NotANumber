@@ -25,7 +25,7 @@ function mapReverse<V, T>(arr: V[], fn: (v: V, i: number) => T): T[] {
 const speeds = [0.25, 0.5, 1];
 
 export const Cards = () => {
-  const wrapperRef = React.useRef();
+  const wrapperRef = React.useRef(null);
   const [showOverflow, setShowOverflow] = React.useState(false);
   const [speed, setSpeed] = React.useState(1);
   const [data, setData] = React.useState(() =>
@@ -206,7 +206,7 @@ const _Card = styled(motion.button, {
   alignItems: "center",
   justifyContent: "center",
   fontSize: "10rem",
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
 
   span: {
     transform: "translateY(8px)",

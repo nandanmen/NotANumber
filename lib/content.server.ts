@@ -48,7 +48,7 @@ export const getPost = async (slug: string): Promise<Post> => {
     source: mdxSource,
     cwd: postFolder,
     mdxOptions(options) {
-      options.rehypePlugins = [
+      /* options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
         [
           rehypePrettyCode,
@@ -60,7 +60,7 @@ export const getPost = async (slug: string): Promise<Post> => {
             },
           },
         ],
-      ];
+      ]; */
       return options;
     },
     esbuildOptions(options) {

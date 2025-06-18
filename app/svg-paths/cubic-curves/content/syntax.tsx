@@ -1,7 +1,9 @@
+'use client'
+
 import { useStateContext } from "../state";
 import { CubicPlayground } from "./cubic-playground";
 
-function Syntax() {
+export function Syntax() {
   const { data, set } = useStateContext("syntax");
   return (
     <CubicPlayground

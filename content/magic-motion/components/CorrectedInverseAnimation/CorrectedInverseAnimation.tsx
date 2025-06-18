@@ -69,7 +69,7 @@ export const CorrectedInverseAnimation = ({
 
   // -- measuring container width --
 
-  const containerRef = React.useRef<HTMLDivElement>();
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(0);
 
   React.useEffect(() => {
@@ -230,7 +230,7 @@ type DistanceRulerProps = {
 };
 
 const DistanceRuler = ({ x1, y1, x2, y2 }: DistanceRulerProps) => {
-  const lineRef = React.useRef<SVGLineElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
 
   React.useEffect(() => {
     return x2.onChange((x) => {

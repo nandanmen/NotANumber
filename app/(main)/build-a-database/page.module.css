@@ -1,0 +1,11 @@
+.article {
+  display: grid;
+  grid-template-columns: 60ch 1fr;
+  row-gap: 20px;
+  column-gap: 80px;
+  line-height: 1.6;
+}
+
+.article > * {
+  grid-column: 1;
+}

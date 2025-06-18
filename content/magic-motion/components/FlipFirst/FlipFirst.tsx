@@ -9,7 +9,7 @@ import { Tooltip, ContentWrapper, Square, XLine, YLine } from "../shared";
 import { machine } from "./machine";
 
 export const FlipFirst = () => {
-  const buttonRef = React.useRef<HTMLButtonElement>();
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [state, send] = useMachine(machine, {
     actions: {
       measureBox: assign({

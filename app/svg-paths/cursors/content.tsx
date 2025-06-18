@@ -10,17 +10,17 @@ import {
 } from "./cursors";
 import { StateProvider } from "../components/state-context";
 import { initialState } from "./state";
+import { ContentWrapper } from "../components/content-wrapper";
 
-export function CursorsContent({ content, length }) {
+export function CursorsContent({ children, length }) {
   return (
     <StateProvider initial={initialState}>
-      <MDX
-        content={content}
+      <ContentWrapper
+        content={children}
         numSections={length}
-        components={{ CursorOverview, Practice, Corner, AbsoluteRelative }}
       >
         <Cursors />
-      </MDX>
+      </ContentWrapper>
     </StateProvider>
   );
 }

@@ -36,8 +36,8 @@ export const FlipOverview = () => {
   // Playing states
   const [playing, setPlaying] = React.useState(false);
 
-  const initialRef = React.useRef<SVGRectElement>();
-  const finalRef = React.useRef<SVGRectElement>();
+  const initialRef = React.useRef<SVGRectElement>(null);
+  const finalRef = React.useRef<SVGRectElement>(null);
 
   const [state, send] = useMachine(machine, {
     actions: {
@@ -88,8 +88,8 @@ export const FlipOverview = () => {
   /**
    * Updating the line and text with the motion value
    */
-  const lineRef = React.useRef<SVGLineElement>();
-  const textRef = React.useRef<SVGTextElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
+  const textRef = React.useRef<SVGTextElement>(null);
 
   React.useEffect(() => {
     return x.onChange((val) => {

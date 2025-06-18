@@ -10,7 +10,7 @@ export const Heading = ({ children }) => {
 
 const H2 = styled("h2", {
   fontSize: "$2xl",
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   fontWeight: 500,
   position: "relative",
   scrollMarginTop: "$16",

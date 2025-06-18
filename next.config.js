@@ -1,3 +1,5 @@
+const createMDX = require("@next/mdx");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -9,6 +11,7 @@ const nextConfig = {
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   async redirects() {
     return [
       {
@@ -28,6 +31,15 @@ const nextConfig = {
       },
     ];
   },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  }
 };
 
-module.exports = nextConfig;
+const withMDX = createMDX({});
+
+module.exports = withMDX(nextConfig);

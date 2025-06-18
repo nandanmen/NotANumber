@@ -1,41 +1,18 @@
 import React from "react";
-
-import { styled } from "~/stitches.config";
+import styles from "./ordered-list.module.css";
 
 export function OrderedList({ children }: { children: React.ReactNode }) {
   return (
-    <ListWrapper>
+    <ol className={styles.wrapper}>
       {React.Children.toArray(children)
         .filter(Boolean)
         .map((child: any, index) =>
           child.props ? (
-            <ListItem key={index}>
+            <li className={styles.item} key={index}>
               <div>{child.props.children}</div>
-            </ListItem>
+            </li>
           ) : null
         )}
-    </ListWrapper>
+    </ol>
   );
 }
-
-const ListWrapper = styled("ol", {
-  listStyle: "none",
-  counterReset: "counts 0",
-
-  "> :not([hidden]) ~ :not([hidden]), ol": {
-    marginTop: "$2",
-  },
-});
-
-const ListItem = styled("li", {
-  counterIncrement: "counts 1",
-  display: "flex",
-
-  "&:before": {
-    content: 'counter(counts) ". "', // {count}.
-    paddingRight: "$4",
-    fontFamily: "$mono",
-    fontWeight: "500",
-    color: "$gray11",
-  },
-});

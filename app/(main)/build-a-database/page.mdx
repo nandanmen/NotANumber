@@ -1,0 +1,354 @@
+import { AppendOnlyFile } from './_components/append-only-file'
+import { HardDrive } from './_components/hard-drive'
+import { FileResizing } from './_components/file-resizing'
+import { MutableDatabaseVisualizer, MutableDatabaseControls } from './_components/mutable-database'
+
+If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
+
+A key-value database works more or less like objects in JavaScript—you can store values using a key and retrieve them later using that same key:
+
+```sh
+$ db set 'hello' 'world'
+$ db get 'hello'
+world
+```
+
+Let's find out how they work!
+
+---
+
+<ScrollGroup>
+
+## The Humble File
+
+Databases were made to solve one problem:
+
+<ProblemStatement>
+
+How do we store data **persistently** and then **efficiently** look it up later?
+
+</ProblemStatement>
+
+The typical way to store any kind of data in a computer is to use a <Annotation type="circle"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+
+<MutableDatabaseControls mode={["add", "search"]} />
+
+**What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
+
+<AppendOnlyFile mode={["add", "update", "delete"]} mutable />
+
+This approach has two main issues:
+
+1. **Finding an entry is slow**—as we saw with the `db get` command, we potentially need to loop through the entire database to find the record that we want.
+2. **Updating a record in-place means potentially moving all the records that come after it.** A file, in reality, is a continuous string of bytes. If we want to make a record longer, we have to move all of the records that come after it to make room:
+
+<FileResizing />
+
+This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
+
+<ScrollFigure>
+  <MutableDatabaseVisualizer />
+</ScrollFigure>
+
+</ScrollGroup>
+
+---
+
+### Append-Only Files
+
+One way to work around the update problem is to **only append to the file**. This means that we can only add new records to the end of the file, never update or delete existing ones.
+
+With this approach, updates are treated the same as inserts—just add a new record to the end of the file:
+
+<AppendOnlyFile mode={["add", "update"]} />
+
+But now we have another problem—there are duplicate keys in the file!
+
+To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
+
+<AppendOnlyFile
+  mode={["search"]}
+  initialCommands={[
+    { type: 'set', key: 1, value: 'Lorem ipsum' },
+    { type: 'set', key: 18, value: 'dolor sit' },
+    { type: 'set', key: 1, value: 'dolor sit' },
+    { type: 'set', key: 10, value: 'adipisching elit.' }
+  ]}
+/>
+
+To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
+
+<AppendOnlyFile mode={["add", "delete"]} />
+
+And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
+
+### File Troubles
+
+This implementation is nowhere near perfect, however. Right now, there are two major issues:
+
+1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
+2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
+
+How can we fix these problems?
+
+---
+
+## Keeping Files Small
+
+<ProblemStatement>
+
+**How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
+
+</ProblemStatement>
+
+Take a look at our database here after a few updates and deletes:
+
+<AppendOnlyFile
+  initialCommands={[
+    { type: 'set', key: 1, value: 'Lorem ipsum' },
+    { type: 'set', key: 18, value: 'dolor sit' },
+    { type: 'set', key: 7, value: 'adipiscing elit.' },
+    { type: 'delete', key: 7 },
+    { type: 'set', key: 10, value: 'consectetur adipiscing elit.' },
+    { type: 'delete', key: 1 }
+  ]}
+/>
+
+Our database file has six entries, but only two represent actual records—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+
+---
+
+### Compaction
+
+One thing we can do is to periodically copy over all the "active" records to a new file:
+
+{/* <SingleFileCompaction /> */}
+
+Notice that because we're working on a new file, the existing one can still accept new records, like the keys `014` and `006` in the above animation.
+
+Wait a second. Those new records were added to the old file but weren't copied to the new one! What should we do? We _could_ rerun the compaction process, but what if new records come in during _that_ process?
+
+Hmm, let's take a step back. **Maybe there's another way to organize the data?**
+
+---
+
+### Splitting to Segments
+
+Both of these files contain up-to-date values for keys `12` and `18`, so what if we delete the values in one of the files?
+
+Of course, deleting these records isn't as straightforward as it seems—remember that the files are append-only, so we can't modify records that were already written. But **what if they were never part of the same file, to begin with?**
+
+Here's what we'll do. When our file exceeds a specific size, we'll **create a new file** and start writing to that one instead. We'll call these files _segments_.
+
+Try clicking on "Add" twice to add two new records, and notice what happens:
+
+{/* <Segments /> */}
+
+We'll then run our compaction process on the _old_ segments, potentially merging them along the way:
+
+{/* <SegmentCompaction /> */}
+
+"Old" is the keyword here—because we're not merging data from the current "active" segment, that segment can freely accept new records (as shown in the bottom-most segment above).
+
+Once the compaction is complete, we can safely delete the old segments.
+
+---
+
+### Adapting to Segments
+
+We'll need to change our search algorithm a bit to account for segments. Instead of searching through a file, we'll need to search through segments, starting with the newest segment first:
+
+```
+segment search example
+```
+
+---
+
+## Your First Index
+
+That's one problem solved; on to the next:
+
+<ProblemStatement>
+
+**How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is slow!
+
+</ProblemStatement>
+
+What if we use _objects_? That's right, these little guys:
+
+```js
+const hashTable = {};
+```
+
+In other languages, JavaScript objects are called _hash tables_ or _dictionaries_ (or _maps_). Hash tables are great because they're really good at storing key-value pairs and quickly looking them up later. The catch is they must live _in memory_.
+
+{/* <Callout label="What does 'in memory' mean?"> */}
+
+Generally speaking, there are two different ways for your computer to remember things — **in memory** and **on disk**. In memory means that the computer stores the data in its RAM (random access memory), while on disk means that the computer stores the data on its hard drive.
+
+Storing data in memory is much faster than storing it on disk because the computer can access RAM much more quickly than it can access the hard drive. However, RAM is also **volatile**, which means that if the computer loses power or the program is killed, all the data in memory will be lost. This is why we need to store data on disk as well.
+
+{/* </Callout> */}
+
+Here's how it'll work. For every key that we have in our database, we'll store the record's **offset** in the index:
+
+```
+offset example
+```
+
+I purposely showed the file a little differently this time. Here, I've portrayed the file more like what the computer might see — a series of contiguous characters. This makes it easier to show each record's byte offsets.
+
+{/* <Callout label="What are byte offsets?"> */}
+
+A record's offset is **the number of bytes from the beginning of the file to the start of the record**. For example, the second record, `12: Vestibulum varius`, has an offset of 15 because:
+
+1. Each character is 1 byte large;
+2. The first record is 13 characters long (`1:Lorem ipsum`);
+3. The first record ends with a newline character, which is 1 byte long;
+
+This gives us an offset of `13 + 1 + 1 = 15`.
+
+{/* </Callout> */}
+
+Notice that each segment has its own index because the offsets are relative to the start of each segment.
+
+### Searching With Indices
+
+Great! Now that we have our indices set up, our search algorithm now works a little differently:
+
+1. Starting at the most recent segment, look up the key in the index;
+2. If the key is found, read the record at the offset;
+3. If the key is not found, repeat with the second most recent segment, and so on.
+
+```
+searching with index
+```
+
+### Updating Indices
+
+Of course, we'll need to keep our indices up to date with the data — otherwise, they won't be useful! Specifically, whenever we update, delete, or insert a record, we have to change the index accordingly:
+
+```
+updating index
+```
+
+Notice what this implies — **writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
+
+### Tradeoffs
+
+An index is great because it lets us query our database much faster, but there are some problems with our specific hash table implementation:
+
+1. **Keys have to fit in memory**. Since we're using an in-memory hash table as our index, all of the keys in our database must fit in memory. This means there's a limit on the number of keys we can store!
+2. **Range queries are still inefficient**. Our data isn't sorted in any way, so we can't do range queries efficiently. For example, if we wanted to find all the records between the keys `12` and `18`, our index wouldn't help—we'd have to iterate through the entire database!
+
+---
+
+## Sorted String Tables
+
+Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we'll be able to solve both our problems at once.
+
+### Faster Range Queries
+
+If you have an unsorted array and you want to find all the elements between two specific values, your only option really is to iterate through the whole array:
+
+```
+[5,3,2,4,1]
+```
+
+If your array is sorted, however, you'll only need to look for the first element and then iterate until you have all the elements you need:
+
+```
+[1,2,3,4,5]
+```
+
+And if we use an index, we can find the first element essentially immediately.
+
+This begs the question though - how do we keep our data sorted without having to sort it every time we add a new record? In other words:
+
+<ProblemStatement>
+
+**How do we keep our data sorted _and_ append-only?** We can't sort the data every time we add a new record because we'll have to move around old records; and as we've discussed, moving records around is slow on a hard drive.
+
+</ProblemStatement>
+
+The trick is to **sort the data in memory first, _then_ write it to disk**. There are various ways to keep data sorted in memory, but the most common is to use a **balanced tree**.
+
+- SSTs are an improvement because they allow for sparse indices and better range query performance
+  - Though sparse, keys still have to fit in memory
+  - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
+
+### Fast Sorts With Balanced Trees
+
+## Persisting Trees on Disk
+
+- How might you take a BST and persist it on disk?
+  - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
+  - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
+- This requires a detour to how hard drives work imo
+
+---
+
+## How Computers Store Data
+
+Computers can store data in either **volatile** or **non-volatile** memory.
+
+Volatile memory, like [RAM](https://en.wikipedia.org/wiki/Random-access_memory), is really good for _fast, temporary_ storage. When you write variables in your code, they're stored (for the most part) in your computer's RAM:
+
+```js
+const x = 1;
+```
+
+<InlineNote>
+
+Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive) or [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
+
+<Note>
+
+Persistence, in this case, means that the data will still be there even if the program is stopped or the computer is turned off.
+
+</Note>
+
+</InlineNote>
+
+When you write data to a file, that data is stored on your computer's non-volatile memory (usually either an HDD or an SSD):
+
+```js
+import fs from "fs";
+fs.writeFileSync("data.txt", "Hello, world!");
+```
+
+It's perfectly possible to create a database using only variables in code, but it would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
+
+In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
+
+---
+
+### How HDDs Work
+
+Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
+
+<HardDrive />
+
+**A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
+
+To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
+
+<HardDrive />
+
+Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
+
+---
+
+### Your access patterns matter
+
+Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
+
+{/* <Callout label="Why is appending to a file faster?"> */}
+
+A disk in a hard drive is divided into _tracks_, with each track divided into _sectors_. Each sector is a fixed size, and the hard drive can only read or write data in whole sectors using a _disk head_.
+
+When the hard disk reads or writes data, it needs to move the disk head to the specific sector. Moving the disk head is much slower than simply reading or writing data, so we want to minimize the number of times the disk head is moved.
+
+When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
+
+{/* </Callout> */}

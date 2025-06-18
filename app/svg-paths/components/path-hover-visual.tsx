@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from "framer-motion";
 import { AbsoluteCommand, type Path } from "../lib/path";
 import { PathSection, PathSectionPoint } from "./path-visualizer";

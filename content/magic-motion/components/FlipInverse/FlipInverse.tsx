@@ -33,8 +33,8 @@ export const FlipInverse = () => {
   const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
   const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
 
-  const lineRef = React.useRef<SVGLineElement>();
-  const textRef = React.useRef<SVGTextElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
+  const textRef = React.useRef<SVGTextElement>(null);
   React.useEffect(() => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(

@@ -20,8 +20,8 @@ import {
 import { machine } from "./machine";
 
 export const FlipLast = () => {
-  const originalRef = React.useRef<HTMLButtonElement>();
-  const buttonRef = React.useRef<HTMLButtonElement>();
+  const originalRef = React.useRef<HTMLButtonElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const [state, send] = useMachine(machine, {
     actions: {

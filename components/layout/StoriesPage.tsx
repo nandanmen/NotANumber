@@ -127,7 +127,6 @@ const Sidebar = styled("aside", {
 const ContentWrapper = styled("div", {
   gridColumn: 2,
   padding: "$8 0",
-  overflowY: "scroll",
 });
 
 const Content = styled("ul", {
@@ -135,6 +134,9 @@ const Content = styled("ul", {
   display: "grid",
   gridTemplateColumns: "min(100%, 65ch) 1fr",
   margin: "0 auto",
+  height: "fit-content",
+  position: "sticky",
+  top: 0,
   listStyle: "none",
 
   "> *": {

@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import useInterval from "@use-it/interval";
 import { Button } from "./button";

@@ -1,3 +1,5 @@
+'use client'
+
 import { useStateContext } from "../state";
 import { useSvgContext } from "app/svg-paths/components/svg";
 import { Tooltip } from "app/svg-paths/components/svg/tooltip";
@@ -11,7 +13,7 @@ export const initialState = { path };
 
 export const components = { SmallEllipse };
 
-function SmallEllipse() {
+export function SmallEllipse() {
   const { getRelative } = useSvgContext();
   const { data, set } = useStateContext("small-ellipse");
   const { path } = data;

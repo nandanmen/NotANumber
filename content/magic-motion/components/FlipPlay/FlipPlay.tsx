@@ -34,8 +34,8 @@ export const FlipPlay = () => {
   const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
   React.useEffect(() => x.set(-1 * distance), [x, distance]);
 
-  const lineRef = React.useRef<SVGLineElement>();
-  const textRef = React.useRef<SVGTextElement>();
+  const lineRef = React.useRef<SVGLineElement>(null);
+  const textRef = React.useRef<SVGTextElement>(null);
   React.useEffect(() => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(

@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { motion } from "framer-motion";
 import { useStateContext } from "../state";
@@ -5,7 +7,7 @@ import { Svg } from "app/svg-paths/components/svg";
 import { Command } from "app/svg-paths/lib/path";
 import { ArcSandbox } from "./arc-sandbox";
 
-function ArcSyntax() {
+export function ArcSyntax() {
   const {
     data: { path, state, active },
     set,

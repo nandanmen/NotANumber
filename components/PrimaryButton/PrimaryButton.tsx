@@ -54,7 +54,7 @@ const _Button = styled(motion.button, {
   color: "$gray1",
   fontWeight: "bold",
   cursor: "pointer",
-  fontFamily: "$serif",
+  fontFamily: "var(--font-serif)",
   transition: "all 0.2s ease-out",
   position: "relative",
 
