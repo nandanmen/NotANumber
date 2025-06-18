@@ -68,8 +68,8 @@ function SubscribeForm({ onCancel }: { onCancel: () => void }) {
                                 Cancel
                             </span>
                             <svg width="24" height="24" fill="none" className="text-gray10" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L6.75 17.25"></path>
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 6.75L17.25 17.25"></path>
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.25 6.75L6.75 17.25"></path>
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6.75 6.75L17.25 17.25"></path>
                             </svg>
                         </button>
                     </span>
@@ -79,20 +79,20 @@ function SubscribeForm({ onCancel }: { onCancel: () => void }) {
                     <span>{success ? 'Subscribed' : 'Subscribe'}</span>
                     {loading && <span className="animate-spin block">
                         <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 4.75V6.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M17.1266 6.87347L16.0659 7.93413" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M19.25 12L17.75 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M17.1266 17.1265L16.0659 16.0659" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M12 17.75V19.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M7.9342 16.0659L6.87354 17.1265" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M6.25 12L4.75 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M7.9342 7.93413L6.87354 6.87347" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12 4.75V6.25" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M17.1266 6.87347L16.0659 7.93413" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M19.25 12L17.75 12" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M17.1266 17.1265L16.0659 16.0659" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M12 17.75V19.25" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M7.9342 16.0659L6.87354 17.1265" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M6.25 12L4.75 12" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
+                            <path d="M7.9342 7.93413L6.87354 6.87347" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </span>}
                     {success && (
                         <span>
                             <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5 }} d="M7.75 12.75L10 15.25L16.25 8.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></motion.path>
+                                <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5 }} d="M7.75 12.75L10 15.25L16.25 8.75" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></motion.path>
                             </svg>
                         </span>
                     )}
