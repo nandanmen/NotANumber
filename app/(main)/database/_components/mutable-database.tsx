@@ -66,30 +66,32 @@ export function FileDatabaseControls({
 
   return (
     <div className="space-y-3">
-      <Controls
-        mode={mode}
-        isEmpty={db.size() === 0}
-        on={(mode) => {
-          switch (mode) {
-            case "add":
-              addRecord();
-              break;
-            case "update":
-              updateRecord();
-              break;
-            case "delete":
-              deleteRecord();
-              break;
-            case "search":
-              db.get(getRandomKey());
-              break;
-            case "reset":
-              setStore(initialStore);
-              break;
-          }
-        }}
-      />
-      <CommandList commands={commands} />
+      {mode.length > 0 && (
+        <Controls
+          mode={mode}
+          isEmpty={db.size() === 0}
+          on={(mode) => {
+            switch (mode) {
+              case "add":
+                addRecord();
+                break;
+              case "update":
+                updateRecord();
+                break;
+              case "delete":
+                deleteRecord();
+                break;
+              case "search":
+                db.get(getRandomKey());
+                break;
+              case "reset":
+                setStore(initialStore);
+                break;
+            }
+          }}
+        />
+      )}
+      <CommandList showAll={mode.length === 0} commands={commands} />
     </div>
   );
 }
@@ -106,7 +108,13 @@ const commandArgs = (command: DatabaseCommand) => {
 
 const MAX_VISIBLE_COMMANDS = 4;
 
-function CommandList({ commands }: { commands: DatabaseCommand[] }) {
+function CommandList({
+  commands,
+  showAll,
+}: {
+  commands: DatabaseCommand[];
+  showAll: boolean;
+}) {
   const ref = useRef<HTMLOListElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -123,7 +131,7 @@ function CommandList({ commands }: { commands: DatabaseCommand[] }) {
     <div
       className="rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15"
       style={{
-        height: (MAX_VISIBLE_COMMANDS - 1) * 24 + 20 + 42,
+        height: showAll ? "auto" : (MAX_VISIBLE_COMMANDS - 1) * 24 + 20 + 42,
       }}
     >
       <ol

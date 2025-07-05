@@ -1,4 +1,3 @@
-import { AppendOnlyFile } from "./_components/append-only-file";
 import { HardDrive } from "./_components/hard-drive";
 import { FileResizing } from "./_components/file-resizing";
 import {
@@ -130,6 +129,17 @@ How can we fix these problems?
 
 ---
 
+<ScrollGroup figure={<FileDatabaseVisualizer />} state={createStore([
+    { type: "set", key: 1, value: "Lorem ipsum" },
+    { type: "set", key: 18, value: "dolor sit" },
+    { type: "set", key: 7, value: "adipiscing elit." },
+    { type: "delete", key: 7 },
+    { type: "set", key: 10, value: "consectetur adipiscing elit." },
+    { type: "delete", key: 1 },
+  ])}>
+
+<ScrollGroupSection>
+
 ## Keeping Files Small
 
 <ProblemStatement>
@@ -140,18 +150,13 @@ How can we fix these problems?
 
 Take a look at our database here after a few updates and deletes:
 
-<AppendOnlyFile
-  initialCommands={[
-    { type: "set", key: 1, value: "Lorem ipsum" },
-    { type: "set", key: 18, value: "dolor sit" },
-    { type: "set", key: 7, value: "adipiscing elit." },
-    { type: "delete", key: 7 },
-    { type: "set", key: 10, value: "consectetur adipiscing elit." },
-    { type: "delete", key: 1 },
-  ]}
-/>
+<FileDatabaseControls mode={[]} />
 
 Our database file has six entries, but only two represent actual records—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 
