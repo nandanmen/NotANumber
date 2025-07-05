@@ -1,7 +1,7 @@
 import { AppendOnlyFile } from './_components/append-only-file'
 import { HardDrive } from './_components/hard-drive'
 import { FileResizing } from './_components/file-resizing'
-import { MutableDatabaseVisualizer, MutableDatabaseControls } from './_components/mutable-database'
+import { FileDatabaseVisualizer, FileDatabaseControls } from './_components/mutable-database'
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -17,7 +17,9 @@ Let's find out how they work!
 
 ---
 
-<ScrollGroup>
+<ScrollGroup figure={<FileDatabaseVisualizer />}>
+
+<ScrollGroupSection>
 
 ## The Humble File
 
@@ -29,13 +31,21 @@ How do we store data **persistently** and then **efficiently** look it up later?
 
 </ProblemStatement>
 
-The typical way to store any kind of data in a computer is to use a <Annotation type="circle"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file; when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+The typical way to store any kind of data in a computer is to use a <Annotation type="underline"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file:
 
-<MutableDatabaseControls mode={["add", "search"]} />
+<FileDatabaseControls mode={["add"]} mutable />
+
+And when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+
+<FileDatabaseControls mode={["search"]} mutable />
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 **What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
 
-<AppendOnlyFile mode={["add", "update", "delete"]} mutable />
+{/* <AppendOnlyFile mode={["add", "update", "delete"]} mutable /> */}
 
 This approach has two main issues:
 
@@ -46,9 +56,7 @@ This approach has two main issues:
 
 This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
 
-<ScrollFigure>
-  <MutableDatabaseVisualizer />
-</ScrollFigure>
+</ScrollGroupSection>
 
 </ScrollGroup>
 

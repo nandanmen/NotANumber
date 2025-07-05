@@ -19,8 +19,8 @@ export default async function BuildADatabasePage({
           Subscribe
         </button>
       </header>
-      <div className="grid grid-cols-[250px_1fr]">
-        <aside className="h-[calc(100vh-57px)] sticky top-[57px] flex flex-col text-gray11 p-8 border-r border-borderSoft">
+      <div>
+        {/* <aside className="h-[calc(100vh-57px)] sticky top-[57px] flex flex-col text-gray11 p-8 border-r border-borderSoft">
           <ol className="text-sm space-y-1">
             <li>Introduction</li>
             <li>The Humble File</li>
@@ -29,9 +29,9 @@ export default async function BuildADatabasePage({
             <li>How Hard Drives Work</li>
             <li>Persisting Trees on Disk</li>
           </ol>
-        </aside>
-        <article className={clsx(styles.article, "p-10")}>
-          <header className="my-10 !col-span-2 space-y-2">
+        </aside> */}
+        <article className="p-10 grid grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
+          <header className="my-10 !max-w-full space-y-2">
             <h1 className="text-[80px] font-serif leading-[1]">
               Build Your Own Database
             </h1>

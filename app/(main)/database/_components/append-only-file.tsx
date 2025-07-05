@@ -35,11 +35,11 @@ export function AppendOnlyFile({
     const deleted = new Set(
       db.records
         .filter((record) => record.value === "null")
-        .map((record) => record.key)
+        .map((record) => record.key),
     );
     return pick(
       db.records.map((record) => record.key),
-      deleted
+      deleted,
     );
   };
 
@@ -49,9 +49,9 @@ export function AppendOnlyFile({
       randomUnique(
         0,
         20,
-        db.records.map((record) => record.key)
+        db.records.map((record) => record.key),
       ),
-      texts[(key - 1) % texts.length]
+      texts[(key - 1) % texts.length],
     );
   };
 
@@ -65,7 +65,7 @@ export function AppendOnlyFile({
   };
 
   return (
-    <div className="!col-span-2 space-y-4">
+    <div className="space-y-4 !max-w-full">
       <Controls
         mode={mode}
         isEmpty={db.size() === 0}
@@ -89,7 +89,7 @@ export function AppendOnlyFile({
           }
         }}
       />
-      <div className="grid grid-cols-[320px_1fr] border border-gray8 w-2/3 divide-x h-[400px] divide-gray8 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-[320px_1fr] border border-gray8 divide-x h-[400px] divide-gray8 rounded-lg overflow-hidden">
         <CommandList commands={db.commands} />
         <div className="bg-gray5 rounded-r-lg pt-10 flex justify-center relative">
           <FileDatabase

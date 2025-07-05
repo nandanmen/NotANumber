@@ -5,7 +5,11 @@ import { Annotation } from "./components/mdx/annotation";
 import { InlineNote, Note } from "./components/mdx/note";
 import { CodeBlock } from "./components/mdx/code-block";
 import { OrderedList } from "./components/OrderedList";
-import { ScrollGroup, ScrollFigure } from "./components/mdx/scroll-group";
+import {
+  ScrollGroup,
+  ScrollFigure,
+  ScrollGroupSection,
+} from "./components/mdx/scroll-group";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -19,7 +23,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ul: (props) => <ul className="list-disc pl-4" {...props} />,
     ol: OrderedList,
     hr: () => (
-      <hr className="border-gray7 border-dashed -mx-10 my-5 !col-span-2" />
+      <hr className="border-gray7 border-dashed -mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
     ),
     a: (props) => (
       <a className="text-gray11 underline underline-offset-2" {...props} />
@@ -29,7 +33,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Annotation,
     ProblemStatement: (props) => {
       return (
-        <div className="bg-gray5 border border-borderSoft rounded-lg px-4 py-3 relative">
+        <div className="bg-gray3 border border-borderStrong rounded-lg px-4 py-3 relative">
           <header>
             <h4 className="font-medium text-gray11">Problem</h4>
           </header>
@@ -38,6 +42,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     ScrollGroup,
+    ScrollGroupSection,
     ScrollFigure,
   };
 }

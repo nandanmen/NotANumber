@@ -24,10 +24,10 @@ export const runGenerator = <T, R>(generator: Generator<T, R, unknown>) => {
 export class MutableDatabase {
   records: DatabaseRecord[] = [];
 
-  constructor(initialRecords: Omit<DatabaseRecord, "id">[]) {
+  constructor(initialRecords: (DatabaseRecord & { id?: string })[]) {
     this.records = initialRecords.map((record) => ({
       ...record,
-      id: nanoid(),
+      id: record.id ?? nanoid(),
     }));
   }
 
@@ -64,7 +64,7 @@ export class MutableDatabase {
     return {
       db: new MutableDatabase([...this.records, newRecord]),
       newRecord,
-    }
+    };
   }
 
   *get(key: number) {
@@ -80,11 +80,11 @@ export class MutableDatabase {
       yield record;
       if (record.key === key) {
         return {
-          db: new MutableDatabase(this.records.filter(
-            (record) => record.id !== record.id
-          )),
+          db: new MutableDatabase(
+            this.records.filter((record) => record.id !== record.id),
+          ),
           deletedRecord: record,
-        }
+        };
       }
     }
     return null;
