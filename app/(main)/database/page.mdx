@@ -1,7 +1,11 @@
-import { AppendOnlyFile } from './_components/append-only-file'
-import { HardDrive } from './_components/hard-drive'
-import { FileResizing } from './_components/file-resizing'
-import { FileDatabaseVisualizer, FileDatabaseControls } from './_components/mutable-database'
+import { AppendOnlyFile } from "./_components/append-only-file";
+import { HardDrive } from "./_components/hard-drive";
+import { FileResizing } from "./_components/file-resizing";
+import {
+  FileDatabaseVisualizer,
+  FileDatabaseControls,
+} from "./_components/mutable-database";
+import { FileSequence } from "./_components/file-sequence";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -55,45 +59,55 @@ Easy! We're done right?
 
 ---
 
-### Sequential Access
+### Mutable Updates
 
+This approach, simple as it is, doesn't actually work very well in practice. The problem lies with the way we're doing updates and deletes—they're wholly inefficient.
 
+To a computer, our file looks something like this—nothing more than a long sequence of bytes:
+
+<FileSequence />
+
+When we go to update or delete a record, we're currently updating that record in-place, which means we potentially have to _move_ all of the data that comes after that record:
+
+<FileSequence updateable />
+
+In this case, updating the record `005` to "`adipiscing␣elit.␣vel␣mauris`" means moving all of the records that come after it by 11 bytes (the length of the added string "`␣vel␣mauris`"). This can quickly get really costly, especially as our database grows in size!
 
 ---
 
+<ScrollGroup figure={<FileDatabaseVisualizer />}>
+
+<ScrollGroupSection>
+
 ### Append-Only Files
 
-One way to work around the update problem is to **only append to the file**. This means that we can only add new records to the end of the file, never update or delete existing ones.
+One way to work around the update problem is to **make records immutable**. In other words, we add the constraint that we can only _add_ new records to the end of the file; never update or delete existing ones.
 
 With this approach, updates are treated the same as inserts—just add a new record to the end of the file:
 
-<AppendOnlyFile mode={["add", "update"]} />
+<FileDatabaseControls mode={["add", "update"]} />
 
 But now we have another problem—there are duplicate keys in the file!
 
 To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
 
-<AppendOnlyFile
-  mode={["search"]}
-  initialCommands={[
-    { type: 'set', key: 1, value: 'Lorem ipsum' },
-    { type: 'set', key: 18, value: 'dolor sit' },
-    { type: 'set', key: 1, value: 'dolor sit' },
-    { type: 'set', key: 10, value: 'adipisching elit.' }
-  ]}
-/>
+<FileDatabaseControls mode={["search"]} />
 
 To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
 
-<AppendOnlyFile mode={["add", "delete"]} />
+<FileDatabaseControls mode={["add", "delete"]} />
 
 And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
 
-### File Troubles
+</ScrollGroupSection>
 
-This implementation is nowhere near perfect, however. Right now, there are two major issues:
+</ScrollGroup>
 
-1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. This is not good!
+---
+
+Now this implementation isn't perfect; right now, there are two major issues:
+
+1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. Not good!
 2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
 
 How can we fix these problems?
@@ -112,12 +126,12 @@ Take a look at our database here after a few updates and deletes:
 
 <AppendOnlyFile
   initialCommands={[
-    { type: 'set', key: 1, value: 'Lorem ipsum' },
-    { type: 'set', key: 18, value: 'dolor sit' },
-    { type: 'set', key: 7, value: 'adipiscing elit.' },
-    { type: 'delete', key: 7 },
-    { type: 'set', key: 10, value: 'consectetur adipiscing elit.' },
-    { type: 'delete', key: 1 }
+    { type: "set", key: 1, value: "Lorem ipsum" },
+    { type: "set", key: 18, value: "dolor sit" },
+    { type: "set", key: 7, value: "adipiscing elit." },
+    { type: "delete", key: 7 },
+    { type: "set", key: 10, value: "consectetur adipiscing elit." },
+    { type: "delete", key: 1 },
   ]}
 />
 

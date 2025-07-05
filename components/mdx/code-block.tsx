@@ -94,7 +94,7 @@ export function CodeBlockMain({
   return (
     <div
       className={cn(
-        "border rounded-md border-gray8 overflow-x-auto bg-gray3",
+        "rounded-md ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray3",
         diff && "-ml-4 pl-4"
       )}
     >

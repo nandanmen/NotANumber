@@ -17,12 +17,12 @@ module.exports = {
         ...yellow,
         ...cyan,
         borderStrong: gray.gray8,
-        borderSoft: gray.gray7
+        borderSoft: gray.gray7,
       },
       fontFamily: {
         serif: "var(--font-serif)",
         sans: "var(--font-sans)",
-        mono: "SF Mono, monospace",
+        mono: "Berkeley Mono, monospace",
         handwriting: "var(--font-handwriting)",
       },
       screens: {
