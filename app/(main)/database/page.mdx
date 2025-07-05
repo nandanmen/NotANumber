@@ -31,34 +31,33 @@ How do we store data **persistently** and then **efficiently** look it up later?
 
 </ProblemStatement>
 
-The typical way to store any kind of data in a computer is to use a <Annotation type="underline"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file:
+The typical way to store any kind of data in a computer is to use a <Annotation type="box"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file:
 
 <FileDatabaseControls mode={["add"]} mutable />
 
-And when we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+When we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
 <FileDatabaseControls mode={["search"]} mutable />
 
-</ScrollGroupSection>
+For updates, we'll find the key and replace the value in-place:
 
-<ScrollGroupSection>
+<FileDatabaseControls mode={["update"]} mutable />
 
-**What about updates and deletes?** Probably the most intuitive way to go about this is to find the key and then either replace or delete the old key-value pair:
+And for deletes, we'll delete the record from the file:
 
-{/* <AppendOnlyFile mode={["add", "update", "delete"]} mutable /> */}
+<FileDatabaseControls mode={["delete"]} mutable />
 
-This approach has two main issues:
-
-1. **Finding an entry is slow**—as we saw with the `db get` command, we potentially need to loop through the entire database to find the record that we want.
-2. **Updating a record in-place means potentially moving all the records that come after it.** A file, in reality, is a continuous string of bytes. If we want to make a record longer, we have to move all of the records that come after it to make room:
-
-<FileResizing />
-
-This doesn't have a meaningful impact for small files, but as soon as the file grows to a certain size, this becomes a problem. Imagine having to move around gigabytes of data just to update a single record!
+Easy! We're done right?
 
 </ScrollGroupSection>
 
 </ScrollGroup>
+
+---
+
+### Sequential Access
+
+
 
 ---
 

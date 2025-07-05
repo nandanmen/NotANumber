@@ -70,7 +70,7 @@ export function FileDatabaseControls({
   };
 
   return (
-    <>
+    <div className="space-y-3">
       <Controls
         mode={mode}
         isEmpty={db.size() === 0}
@@ -95,7 +95,7 @@ export function FileDatabaseControls({
         }}
       />
       <CommandList commands={commands} />
-    </>
+    </div>
   );
 }
 
@@ -126,7 +126,7 @@ function CommandList({ commands }: { commands: DatabaseCommand[] }) {
 
   return (
     <div
-      className="rounded-lg bg-gray3 border border-borderStrong"
+      className="rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15"
       style={{
         height: (MAX_VISIBLE_COMMANDS - 1) * 24 + 20 + 42,
       }}
@@ -181,7 +181,7 @@ function Controls({
     return mode.includes(type);
   };
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-2">
       {showButton("add") && (
         <ToggleButton onClick={() => on("add")}>Add</ToggleButton>
       )}

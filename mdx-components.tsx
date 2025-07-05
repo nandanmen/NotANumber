@@ -33,7 +33,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Annotation,
     ProblemStatement: (props) => {
       return (
-        <div className="bg-gray3 border border-borderStrong rounded-lg px-4 py-3 relative">
+        <div className="bg-gray3 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
           <header>
             <h4 className="font-medium text-gray11">Problem</h4>
           </header>

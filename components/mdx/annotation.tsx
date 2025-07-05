@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import { useInView } from "framer-motion";
 import { annotate } from "rough-notation";
-import { RoughAnnotationType } from "rough-notation/lib/model";
+import type { RoughAnnotationType } from "rough-notation/lib/model";
 
 export function Annotation({
   children,

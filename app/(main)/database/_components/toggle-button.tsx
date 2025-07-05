@@ -11,7 +11,8 @@ export function ToggleButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="bg-gray3 border border-borderStrong flex items-center h-8 px-2.5 rounded-full text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed"
+      className="bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center h-8 px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed"
+      type="button"
     >
       {children}
     </button>
@@ -27,8 +28,9 @@ export function ResetButton({
 }) {
   return (
     <button
-      className="h-8 w-8 rounded-full bg-gray3 flex items-center justify-center border border-borderStrong hover:bg-gray4 text-gray11"
+      className="h-8 w-8 rounded-lg bg-gray3 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray4 text-gray11"
       onClick={onClick}
+      type="button"
     >
       <span className="sr-only">{label}</span>
       <svg
@@ -40,6 +42,7 @@ export function ResetButton({
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"
+        aria-hidden="true"
       >
         <path d="M11.25 4.75L8.75 7L11.25 9.25" />
         <path d="M12.75 19.25L15.25 17L12.75 14.75" />
