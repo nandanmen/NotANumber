@@ -1,38 +1,29 @@
 "use client";
 
-import { atom, useAtom, useAtomValue } from "jotai";
 import { motion } from "framer-motion";
 import { random, randomUnique, texts, pick } from "./utils";
 import { ResetButton, ToggleButton } from "./toggle-button";
 import { FileDatabase } from "./file-database";
 import {
-  createStore,
+  type DatabaseState,
   useFileDatabase,
   type DatabaseCommand,
-  type ExecutableDatabaseCommand,
 } from "../_lib/use-file-database";
-import { useEffect, useRef } from "react";
-
-const defaultCommands: ExecutableDatabaseCommand[] = [
-  { type: "set", key: 1, value: "Lorem ipsum" },
-  { type: "set", key: 18, value: "dolor sit" },
-];
-const initialStore = createStore(defaultCommands);
-
-const dbStore = atom(initialStore);
+import { useEffect, useRef, useState } from "react";
+import { useScrollGroupState } from "~/components/mdx/scroll-group";
 
 type Mode = "add" | "update" | "delete" | "search";
 
 export function FileDatabaseControls({
   mode,
-  mutable = false,
 }: {
   mode?: Mode[];
-  mutable?: boolean;
 }) {
-  const [store, setStore] = useAtom(dbStore);
+  const [store, setStore] = useScrollGroupState<DatabaseState>();
+  const [initialStore] = useState(store);
+
   const db = useFileDatabase(store, (u) => setStore((s) => ({ ...s, ...u })), {
-    mutable,
+    mutable: store.options.mutable,
   });
   const { records, commands } = store;
 
@@ -62,7 +53,11 @@ export function FileDatabaseControls({
 
   const updateRecord = () => {
     const value = texts[random(0, texts.length - 1)];
-    db.set(getRandomKey(), value);
+    if (store.options.mutable) {
+      db.update(getRandomKey(), value);
+    } else {
+      db.set(getRandomKey(), value);
+    }
   };
 
   const deleteRecord = () => {
@@ -206,7 +201,7 @@ function Controls({
 }
 
 export function FileDatabaseVisualizer() {
-  const store = useAtomValue(dbStore);
+  const [store] = useScrollGroupState<DatabaseState>();
   return (
     <div className="bg-gray4 border border-borderStrong rounded-xl h-[max(30vh,400px)] overflow-hidden relative">
       <p className="absolute top-3 left-4 text-gray11 font-mono text-sm">

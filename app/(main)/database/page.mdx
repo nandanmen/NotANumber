@@ -5,6 +5,7 @@ import {
   FileDatabaseVisualizer,
   FileDatabaseControls,
 } from "./_components/mutable-database";
+import { createStore } from "./_lib/file-database";
 import { FileSequence } from "./_components/file-sequence";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
@@ -21,7 +22,16 @@ Let's find out how they work!
 
 ---
 
-<ScrollGroup figure={<FileDatabaseVisualizer />}>
+<ScrollGroup 
+  figure={<FileDatabaseVisualizer />}
+  state={createStore(
+    [
+      { type: "set", key: 1, value: "Lorem ipsum" },
+      { type: "set", key: 18, value: "dolor sit" },
+    ],
+    { mutable: true },
+  )}
+>
 
 <ScrollGroupSection>
 
@@ -37,19 +47,19 @@ How do we store data **persistently** and then **efficiently** look it up later?
 
 The typical way to store any kind of data in a computer is to use a <Annotation type="box"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file:
 
-<FileDatabaseControls mode={["add"]} mutable />
+<FileDatabaseControls mode={["add"]} />
 
 When we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
-<FileDatabaseControls mode={["search"]} mutable />
+<FileDatabaseControls mode={["search"]} />
 
 For updates, we'll find the key and replace the value in-place:
 
-<FileDatabaseControls mode={["update"]} mutable />
+<FileDatabaseControls mode={["update"]} />
 
 And for deletes, we'll delete the record from the file:
 
-<FileDatabaseControls mode={["delete"]} mutable />
+<FileDatabaseControls mode={["delete"]} />
 
 Easy! We're done right?
 
@@ -75,13 +85,19 @@ In this case, updating the record `005` to "`adipiscing␣elit.␣vel␣mauris`"
 
 ---
 
-<ScrollGroup figure={<FileDatabaseVisualizer />}>
+<ScrollGroup
+  figure={<FileDatabaseVisualizer />}
+  state={createStore([
+    { type: "set", key: 1, value: "Lorem ipsum" },
+    { type: "set", key: 18, value: "dolor sit" },
+  ])}
+>
 
 <ScrollGroupSection>
 
 ### Append-Only Files
 
-One way to work around the update problem is to **make records immutable**. In other words, we add the constraint that we can only _add_ new records to the end of the file; never update or delete existing ones.
+One way to work around the update problem is to **make records immutable**. In other words, we add the constraint that we can only _add_ new records to the end of the file and never update or delete existing ones.
 
 With this approach, updates are treated the same as inserts—just add a new record to the end of the file:
 

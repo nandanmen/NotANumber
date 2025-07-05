@@ -142,9 +142,10 @@ export const RecordText = ({
         active &&
           "bg-gray1 shadow-md ring-neutral-950/15 py-4 px-8 -mx-4 rounded-lg",
         highlighted && "text-blue10",
-        stale && "text-gray9",
         type === "active" && "bg-blue5 text-blue11",
         type === "success" && "bg-green5 text-green11",
+        stale && "text-gray9",
+        stale && type !== "base" && "bg-gray4",
       )}
       style={{
         transition: "all 0.3s, transform 0s, opacity 0s",

@@ -70,46 +70,12 @@ type SearchState =
       context: null;
     };
 
-type DatabaseState = {
+export type DatabaseState = {
   commands: DatabaseCommand[];
   records: (DatabaseRecord & { id: string })[];
   searchArgs: SearchArgs | null;
   searchState: SearchState;
-};
-
-export const createStore = (commands: DatabaseCommand[]): DatabaseState => {
-  const records = populateRecordsFromCommands(commands);
-  return {
-    commands,
-    records,
-    searchArgs: null,
-    searchState: { type: "idle", context: null },
-  };
-};
-
-const populateRecordsFromCommands = (commands: DatabaseCommand[]) => {
-  const records: (DatabaseRecord & { id: string })[] = [];
-  for (const command of commands) {
-    switch (command.type) {
-      case "set":
-        records.push({
-          key: command.key,
-          value: command.value,
-          id: nanoid(),
-        });
-        break;
-      case "delete":
-        records.push({
-          key: command.key,
-          value: "null",
-          id: nanoid(),
-        });
-        break;
-      default:
-        break;
-    }
-  }
-  return records;
+  options: { mutable: boolean };
 };
 
 export const useFileDatabase = (
@@ -202,24 +168,36 @@ export const useFileDatabase = (
         return send({ type: "reset" });
       }
       const currentRecord = records[context.currentIndex];
-      if (!mutable) {
-        if (!currentRecord) {
-          if (matchesRef.current.length < 1) {
-            return send({ type: "not-found" });
-          }
-          const index = matchesRef.current.at(-1);
-          matchesRef.current = [];
-          return send({ type: "found", index });
-        }
-        if (currentRecord.key === searchArgs.key) {
-          matchesRef.current.push(context.currentIndex);
-        }
-      } else {
+
+      /**
+       * When mutable, we return as soon as we find the first occurrence of the
+       * key.
+       */
+      if (mutable) {
         if (!currentRecord) return send({ type: "not-found" });
         if (currentRecord.key === searchArgs.key) {
           return send({ type: "found", index: context.currentIndex });
         }
+        return send({ type: "continue" });
       }
+
+      /**
+       * Otherwise, we look for the _last_ occurrence of the key.
+       */
+      if (currentRecord?.key === searchArgs.key) {
+        matchesRef.current.push(context.currentIndex);
+        return send({ type: "continue" });
+      }
+
+      if (!currentRecord) {
+        if (matchesRef.current.length < 1) {
+          return send({ type: "not-found" });
+        }
+        const index = matchesRef.current.at(-1);
+        matchesRef.current = [];
+        return send({ type: "found", index });
+      }
+
       send({ type: "continue" });
     },
     type === "searching" ? 500 : null,
