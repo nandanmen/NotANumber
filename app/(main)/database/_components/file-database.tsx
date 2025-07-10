@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "framer-motion";
 import { styled } from "~/stitches.config";
-import type { DatabaseRecord } from "./database";
 import { cn } from "~/lib/cn";
+import type { DatabaseRecord } from "../_lib/use-file-database";
 
 export type Record = {
   id?: string;
@@ -17,7 +17,7 @@ type FileDatabaseProps = {
   recordAnimation?: boolean;
   children?: React.ReactNode;
   className?: string;
-};
+} & React.ComponentPropsWithoutRef<typeof motion.ul>;
 
 export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   if (record.value === "null") return true;

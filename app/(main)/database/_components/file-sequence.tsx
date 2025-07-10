@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ToggleButton } from "./toggle-button";
 import { cn } from "~/lib/cn";
+import { FullWidth } from "~/components/mdx/full-width";
 
 const NEW_CONTENT_WIDTH = 106;
 
@@ -13,13 +14,13 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
   return (
     <>
       {updateable && (
-        <div className="w-fit">
+        <div className="w-fit -mb-2">
           <ToggleButton onClick={() => setUpdated(!updated)}>
             Update
           </ToggleButton>
         </div>
       )}
-      <div className="!col-start-1 col-span-3 !max-w-full">
+      <FullWidth>
         <div className="p-4 bg-gray5 shadow-inner rounded-lg overflow-hidden border border-borderStrong">
           <p className="whitespace-pre font-mono">
             {updateable ? (
@@ -46,7 +47,7 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
                 <motion.span
                   className={cn(
                     "py-1.5 -my-1.5 transition-colors duration-300",
-                    animating && "bg-gray3"
+                    animating && "bg-gray3",
                   )}
                   animate={{ x: updated ? NEW_CONTENT_WIDTH : 0 }}
                   onAnimationStart={() => setAnimating(true)}
@@ -66,7 +67,7 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
             )}
           </p>
         </div>
-      </div>
+      </FullWidth>
     </>
   );
 }

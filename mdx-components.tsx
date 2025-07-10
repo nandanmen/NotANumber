@@ -10,6 +10,7 @@ import {
   ScrollFigure,
   ScrollGroupSection,
 } from "./components/mdx/scroll-group";
+import { FullWidth } from "./components/mdx/full-width";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -41,6 +42,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </div>
       );
     },
+    FullWidth,
     ScrollGroup,
     ScrollGroupSection,
     ScrollFigure,

@@ -232,7 +232,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!figureRef.current) return;
     setTop(
-      window.innerHeight * 0.3 -
+      window.innerHeight * 0.35 -
         figureRef.current.getBoundingClientRect().height / 2,
     );
   }, []);

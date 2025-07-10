@@ -3,16 +3,62 @@
 import { motion } from "framer-motion";
 import { random, randomUnique, texts, pick } from "./utils";
 import { ResetButton, ToggleButton } from "./toggle-button";
-import { FileDatabase } from "./file-database";
+import { FileDatabase as FileDatabaseComponent } from "./file-database";
 import {
   type DatabaseState,
   useFileDatabase,
   type DatabaseCommand,
+  type FileDatabase,
 } from "../_lib/use-file-database";
 import { useEffect, useRef, useState } from "react";
 import { useScrollGroupState } from "~/components/mdx/scroll-group";
 
 type Mode = "add" | "update" | "delete" | "search";
+
+export function getFileDatabaseControls({
+  store,
+  db,
+}: { store: DatabaseState; db: FileDatabase }) {
+  const { records } = store;
+  const getRandomKey = () => {
+    const deleted = new Set(
+      records
+        .filter((record) => record.value === "null")
+        .map((record) => record.key),
+    );
+    return pick(
+      records.map((record) => record.key),
+      deleted,
+    );
+  };
+  return {
+    add: () => {
+      const key = records.length + 1;
+      db.set(
+        randomUnique(
+          0,
+          20,
+          records.map((record) => record.key),
+        ),
+        texts[(key - 1) % texts.length],
+      );
+    },
+    update: () => {
+      const value = texts[random(0, texts.length - 1)];
+      if (store.options.mutable) {
+        db.update(getRandomKey(), value);
+      } else {
+        db.set(getRandomKey(), value);
+      }
+    },
+    delete: () => {
+      db.delete(getRandomKey());
+    },
+    search: () => {
+      db.get(getRandomKey());
+    },
+  };
+}
 
 export function FileDatabaseControls({
   mode,
@@ -25,44 +71,7 @@ export function FileDatabaseControls({
   const db = useFileDatabase(store, (u) => setStore((s) => ({ ...s, ...u })), {
     mutable: store.options.mutable,
   });
-  const { records, commands } = store;
-
-  const getRandomKey = () => {
-    const deleted = new Set(
-      records
-        .filter((record) => record.value === "null")
-        .map((record) => record.key),
-    );
-    return pick(
-      records.map((record) => record.key),
-      deleted,
-    );
-  };
-
-  const addRecord = () => {
-    const key = records.length + 1;
-    db.set(
-      randomUnique(
-        0,
-        20,
-        records.map((record) => record.key),
-      ),
-      texts[(key - 1) % texts.length],
-    );
-  };
-
-  const updateRecord = () => {
-    const value = texts[random(0, texts.length - 1)];
-    if (store.options.mutable) {
-      db.update(getRandomKey(), value);
-    } else {
-      db.set(getRandomKey(), value);
-    }
-  };
-
-  const deleteRecord = () => {
-    db.delete(getRandomKey());
-  };
+  const controls = getFileDatabaseControls({ store, db });
 
   return (
     <div className="space-y-3">
@@ -73,16 +82,16 @@ export function FileDatabaseControls({
           on={(mode) => {
             switch (mode) {
               case "add":
-                addRecord();
+                controls.add();
                 break;
               case "update":
-                updateRecord();
+                controls.update();
                 break;
               case "delete":
-                deleteRecord();
+                controls.delete();
                 break;
               case "search":
-                db.get(getRandomKey());
+                controls.search();
                 break;
               case "reset":
                 setStore(initialStore);
@@ -91,7 +100,7 @@ export function FileDatabaseControls({
           }}
         />
       )}
-      <CommandList showAll={mode.length === 0} commands={commands} />
+      <CommandList showAll={mode.length === 0} commands={store.commands} />
     </div>
   );
 }
@@ -208,6 +217,23 @@ function Controls({
   );
 }
 
+export const toFileDatabaseRecords = (store: DatabaseState) => {
+  return store.records.map(({ key, value, id }, index) => {
+    let type: "active" | "success" | "base" = "base";
+    if (
+      store.searchState.type !== "idle" &&
+      store.searchState.context?.currentIndex === index
+    ) {
+      type = store.searchArgs.key === key ? "success" : "active";
+    }
+    return {
+      value: { key, value },
+      type,
+      id,
+    };
+  });
+};
+
 export function FileDatabaseVisualizer() {
   const [store] = useScrollGroupState<DatabaseState>();
   return (
@@ -215,22 +241,9 @@ export function FileDatabaseVisualizer() {
       <p className="absolute top-3 left-4 text-gray11 font-mono text-sm">
         db.txt
       </p>
-      <FileDatabase
+      <FileDatabaseComponent
         className="mt-16"
-        records={store.records.map(({ key, value, id }, index) => {
-          let type: "active" | "success" | "base" = "base";
-          if (
-            store.searchState.type !== "idle" &&
-            store.searchState.context?.currentIndex === index
-          ) {
-            type = store.searchArgs.key === key ? "success" : "active";
-          }
-          return {
-            value: { key, value },
-            type,
-            id,
-          };
-        })}
+        records={toFileDatabaseRecords(store)}
       />
       <motion.div
         className="absolute bg-gray4 h-[50px] left-0 right-0 bottom-0 border-t border-gray8 font-mono text-sm text-gray11 flex items-center justify-center"

@@ -78,6 +78,8 @@ export type DatabaseState = {
   options: { mutable: boolean };
 };
 
+export type FileDatabase = ReturnType<typeof useFileDatabase>;
+
 export const useFileDatabase = (
   { commands, records, searchArgs, searchState }: DatabaseState,
   onChange: (state: Partial<DatabaseState>) => void,

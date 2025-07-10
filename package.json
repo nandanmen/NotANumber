@@ -64,6 +64,7 @@
     "swr": "^2.2.0",
     "tailwind-merge": "^2.6.0",
     "title-case": "^3.0.3",
+    "ts-pattern": "^5.7.1",
     "use-debounce": "^9.0.2",
     "uuid": "^9.0.0",
     "xstate": "^4.33.2"
