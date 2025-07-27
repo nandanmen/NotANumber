@@ -7,6 +7,8 @@ import {
 import { createStore } from "./_lib/file-database";
 import { FileSequence } from "./_components/file-sequence";
 import { Compaction } from "./_components/compaction";
+import { BuildIndex } from "./_components/build-index";
+import { Algorithm } from "./_components/algorithm";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -181,29 +183,39 @@ Here, we've set the maximum file size to seven records. Notice that the database
 
 Now, our database consists of two different files; we'll call these files **segments**.
 
+Notice that the segment becomes a lot smaller after compaction, which means if we have multiple segment files, we can potentially merge them together as part of the compaction process.
+
 ---
-
-### Merging Segments
-
-Once a segment is compacted, 
 
 ### Adapting to Segments
 
-We'll need to change our search algorithm a bit to account for segments. Instead of searching through a file, we'll need to search through segments, starting with the newest segment first:
+<InlineNote>
+
+Since our database is now partitioned across multiple segments, we'll need to change our search algorithm to search across all of the segments, starting with the <Annotation type="underline"> _newest_ </Annotation> segment first:
+
+<Note>
+
+The newest segment will always contain the most up-to-date data.
+
+</Note>
+
+</InlineNote>
 
 ```
 segment search example
 ```
 
+With that, we've made a mechanism to stop our database from growing indefinitely! That's one problem solved.
+
 ---
 
 ## Your First Index
 
-That's one problem solved; on to the next:
+Our next problem is on search performance:
 
 <ProblemStatement>
 
-**How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is slow!
+**How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is super slow!
 
 </ProblemStatement>
 
@@ -213,162 +225,286 @@ What if we use _objects_? That's right, these little guys:
 const hashTable = {};
 ```
 
-In other languages, JavaScript objects are called _hash tables_ or _dictionaries_ (or _maps_). Hash tables are great because they're really good at storing key-value pairs and quickly looking them up later. The catch is they must live _in memory_.
+In other languages, JavaScript objects are called _hash tables_ or _dictionaries_, and they're really good at storing and looking up key-value pairs:
 
-{/* <Callout label="What does 'in memory' mean?"> */}
-
-Generally speaking, there are two different ways for your computer to remember things — **in memory** and **on disk**. In memory means that the computer stores the data in its RAM (random access memory), while on disk means that the computer stores the data on its hard drive.
-
-Storing data in memory is much faster than storing it on disk because the computer can access RAM much more quickly than it can access the hard drive. However, RAM is also **volatile**, which means that if the computer loses power or the program is killed, all the data in memory will be lost. This is why we need to store data on disk as well.
-
-{/* </Callout> */}
-
-Here's how it'll work. For every key that we have in our database, we'll store the record's **offset** in the index:
-
-```
-offset example
+```js
+const hashTable = {
+  "hello": "world",
+  "foo": "bar",
+  "baz": "qux",
+}
+const value = hashTable["hello"]; // "world"
 ```
 
-I purposely showed the file a little differently this time. Here, I've portrayed the file more like what the computer might see — a series of contiguous characters. This makes it easier to show each record's byte offsets.
+Regardless of how many records you have, the time it takes to look up a value in a hash table is more or less constant. The catch is they must live _in memory_.
 
-{/* <Callout label="What are byte offsets?"> */}
+---
 
-A record's offset is **the number of bytes from the beginning of the file to the start of the record**. For example, the second record, `12: Vestibulum varius`, has an offset of 15 because:
+<ScrollGroup>
 
+<ScrollGroupSection>
+
+### Aside: How Computers Store Data
+
+What does it mean for something to be "in-memory"? If a data structure that can store and retrieve key-value pairs already exists, why do we still need to design a database? To answer these questions, we'll need to briefly take a look at how computers store data.
+
+Computers store data in one of two places: **volatile** or **non-volatile** memory. When you write variables in your code, they're stored (for the most part) in your computer's volatile memory, typically [RAM](https://en.wikipedia.org/wiki/Random-access_memory):
+
+```js
+const x = 1;
+```
+
+Volatile memory is really good for <Annotation type="underline"> _fast, temporary_ </Annotation> storage. Temporary is the keyword here—when the program is stopped or the computer shuts down, all of the data in RAM related to the program is lost. The tradeoff here is that RAM is very fast, with high-end RAM devices reaching speeds of around 56 GB/s.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive), [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), or [NVMe drives](https://en.wikipedia.org/wiki/NVM_Express) are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
+
+When you write data to a file, that data will be stored in your computer's non-volatile memory:
+
+```js
+fs.writeFileSync("data.txt", "Hello, world!");
+```
+
+Unlike volatile memory, non-volatile memory will stick around even if the program is stopped or the computer is turned off. The catch is that it's much slower than volatile memory:
+
+- Hard drives: 100 MB/s (500x slower than RAM)
+- SSDs: 500 MB/s (100x slower than RAM)
+- NVMe drives: 6 GB/s (9x slower than RAM)
+
+It's perfectly possible to create a database using only variables in code and in-memory data structures like a hash table:
+
+```js
+const db = {};
+
+const add = (key, value) => {
+  db[key] = value;
+};
+
+const get = (key) => {
+  return db[key];
+};
+```
+
+But this database would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+Here's how the index will work. For every record that we have in our database, we'll store that record's **offset**—the number of bytes from the beginning of the file to the start of the record—in the index:
+
+<BuildIndex />
+
+The second record, `18: dolor sit`, for example, has an offset of 15 because:
+eedw
 1. Each character is 1 byte large;
 2. The first record is 13 characters long (`1:Lorem ipsum`);
-3. The first record ends with a newline character, which is 1 byte long;
+3. The first record ends with a newline character, which is (at most) 2 bytes long;
 
-This gives us an offset of `13 + 1 + 1 = 15`.
+This gives us an offset of `13 + 2 = 15`.
 
-{/* </Callout> */}
+One thing to note is that we need an index for each segment because the offset is relative to the start of the file—in other words, the start of each segment.
 
-Notice that each segment has its own index because the offsets are relative to the start of each segment.
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
 
 ### Searching With Indices
 
-Great! Now that we have our indices set up, our search algorithm now works a little differently:
+Using an index, our search algorithm can now run a lot more efficiently:
 
 1. Starting at the most recent segment, look up the key in the index;
 2. If the key is found, read the record at the offset;
-3. If the key is not found, repeat with the second most recent segment, and so on.
+3. If the key is not found, move on to the next segment;
+4. Repeat (2) and (3) until the key is found or all segments have been searched.
 
 ```
 searching with index
 ```
 
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
 ### Updating Indices
 
-Of course, we'll need to keep our indices up to date with the data — otherwise, they won't be useful! Specifically, whenever we update, delete, or insert a record, we have to change the index accordingly:
+Of course, we'll need to keep our indices up to date with the data or they won't be useful otherwise. Whenever we update, delete, or insert a record, we have to change the index accordingly:
 
 ```
 updating index
 ```
 
-Notice what this implies — **writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
+Notice what this implies—**writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
 
 ### Tradeoffs
 
 An index is great because it lets us query our database much faster, but there are some problems with our specific hash table implementation:
 
 1. **Keys have to fit in memory**. Since we're using an in-memory hash table as our index, all of the keys in our database must fit in memory. This means there's a limit on the number of keys we can store!
-2. **Range queries are still inefficient**. Our data isn't sorted in any way, so we can't do range queries efficiently. For example, if we wanted to find all the records between the keys `12` and `18`, our index wouldn't help—we'd have to iterate through the entire database!
+2. **Range queries are inefficient**. Our index wouldn't help for search queries; if we wanted to find all the records between the keys `12` and `18`, for example, we'd have to iterate through the entire database!
 
 ---
 
 ## Sorted String Tables
 
-Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we'll be able to solve both our problems at once.
+Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we can immediately make range queries fast:
 
-### Faster Range Queries
+<Algorithm />
 
-If you have an unsorted array and you want to find all the elements between two specific values, your only option really is to iterate through the whole array:
-
-```
-[5,3,2,4,1]
-```
-
-If your array is sorted, however, you'll only need to look for the first element and then iterate until you have all the elements you need:
+Other than making range queries efficient, SSTs are also great for **reducing the memory footprint** of our index. Since our data is now sorted, we no longer need to store the offset of _every_ record in memory—we can store a much smaller number of keys and still keep most of the benefits of an index:
 
 ```
-[1,2,3,4,5]
+sparse index
 ```
 
-And if we use an index, we can find the first element essentially immediately.
+---
 
-This begs the question though - how do we keep our data sorted without having to sort it every time we add a new record? In other words:
+Ensuring our database is always sorted is much easier said than done; by definition, sorting data requires moving around records as new ones get added which is super slow when we're storing data on-disk. This brings us to our problem:
 
 <ProblemStatement>
 
-**How do we keep our data sorted _and_ append-only?** We can't sort the data every time we add a new record because we'll have to move around old records; and as we've discussed, moving records around is slow on a hard drive.
+**How do we keep our data sorted _and_ append-only?** It's too slow to sort the data on-disk every time we add a new record; is there another way?
 
 </ProblemStatement>
 
-The trick is to **sort the data in memory first, _then_ write it to disk**. There are various ways to keep data sorted in memory, but the most common is to use a **balanced tree**.
+---
 
-- SSTs are an improvement because they allow for sparse indices and better range query performance
-  - Though sparse, keys still have to fit in memory
-  - How do you make sure writes are still fast and sequential? By using an LSM-Tree, i.e., add records to an in-memory balanced tree and then flush to disk in the SST format
+<ScrollGroup>
 
-### Fast Sorts With Balanced Trees
+<ScrollGroupSection>
 
-## Persisting Trees on Disk
+The trick is to first **sort the data in memory**, and _then_ write it to disk.
 
-- How might you take a BST and persist it on disk?
-  - It kinda feels like B-Trees are a lower level of abstraction because we're working directly with blocks here
-  - I'm personally having a difficult time picturing disk pointers—are they just byte offsets?
-- This requires a detour to how hard drives work imo
+1. When we add a new record, add it to a sorted in-memory list;
+2. When our in-memory list gets too large, we'll write it to disk;
+3. When we want to read a record, we'll read the in-memory list first, and then the disk if necessary.
+
+The data structure used to store the in-memory list is usually one optimized for sorted data like a **balanced binary search tree**.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Of course, the main downside of having some of your data in-memory is that it's not persistent—if the program crashes or the computer shuts down, all of the data in the in-memory list is lost.
+
+The fix here is thankfully pretty straightforward—every time we add a record to the list, **we also write it to an append-only file on disk**. This way, we have a backup in case a crash does happen (which it most certainly will).
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 
-## How Computers Store Data
+<ScrollGroup>
 
-Computers can store data in either **volatile** or **non-volatile** memory.
+<ScrollGroupSection>
 
-Volatile memory, like [RAM](https://en.wikipedia.org/wiki/Random-access_memory), is really good for _fast, temporary_ storage. When you write variables in your code, they're stored (for the most part) in your computer's RAM:
+<SkipLink label="I know how balanced BSTs work" to="#lsm-trees">
 
-```js
-const x = 1;
+### Aside: Balanced Binary Search Trees
+
+</SkipLink>
+
+In a binary search tree, each key is stored in what's called a _node_. Each node has at most two children, with the left child being a value _smaller_ than the node's key and the right child being a value _greater_ than the node's key.
+
+```
+add records
 ```
 
-<InlineNote>
+</ScrollGroupSection>
 
-Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive) or [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
+<ScrollGroupSection>
 
-<Note>
+Organizing the data this way makes searching for data really fast. Since about half the data is either smaller or greater than the key we're looking for, we can immediately narrow down our search to one of the two children:
 
-Persistence, in this case, means that the data will still be there even if the program is stopped or the computer is turned off.
-
-</Note>
-
-</InlineNote>
-
-When you write data to a file, that data is stored on your computer's non-volatile memory (usually either an HDD or an SSD):
-
-```js
-import fs from "fs";
-fs.writeFileSync("data.txt", "Hello, world!");
+```
+search records
 ```
 
-It's perfectly possible to create a database using only variables in code, but it would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
+</ScrollGroupSection>
 
-In that regard, we have two options: HDDs or SSDs—we'll center our discussion around HDDs here because they're by far the more common choice, but we'll touch on SSDs a bit at the end.
+<ScrollGroupSection>
+
+The catch is the tree must be balanced, i.e. half the data is on the left side of the tree and half is on the right. If it's not, then the search isn't any faster than looking through all of the items in the tree:
+
+```
+slow search example
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+To keep the tree balanced, we'll need to rebalance it whenever we add or remove data from the tree. Try adding a few records here and notice that the tree rotates every so often to keep itself balanced:
+
+```
+rebalancing tree
+```
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 
-### How HDDs Work
+### LSM Trees
+
+This combination of an in-memory list (often called a _memtable_) and an on-disk file (typically called a _sorted string table_ or SST) is called an LSM or Log-Structured Merge Tree. LSM trees are the underlying data structure used for large-scale key-value databases like [Google's LevelDB](https://github.com/google/leveldb) and [Amazon's DynamoDB](https://aws.amazon.com/dynamodb/).
+
+LSM trees are great and are proven to perform well at scale (if DynamoDB's peak [80 million requests per second](https://aws.amazon.com/blogs/aws/amazon-prime-day-2020-powered-by-aws/) is any indication). Yet despite that, they still have their own drawbacks.
+
+While LSM trees boast very fast writes, they come at the cost of slower (albeit still fast) reads, since each read requires going through possibly all of the indices in the database to check if a key exists:
+
+```
+lsm read example
+```
+
+If our application tends to have a lot more reads than writes, than LSM trees may not necessarily be the best fit.
+
+---
+
+## B-Trees
+
+If LSM trees aren't that great for reads, what other options do we have? Enter the **B-Tree**. B-Trees work by taking the binary search tree that we saw earlier and making them work _on disk_.
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+<SkipLink label="I know how various storage devices work" to="#b-trees">
+
+### Aside: Persistent Storage
+
+</SkipLink>
+
+Volatile memory like RAM are **byte-addressable** which means 
 
 Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
-
-<HardDrive />
 
 **A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
 
 To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
 
-<HardDrive />
-
 Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 

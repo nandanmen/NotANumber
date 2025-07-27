@@ -8,6 +8,7 @@ import { cn } from "~/lib/cn";
 import useInterval from "@use-it/interval";
 import { DotAnimation } from "./dot-animation";
 import { match } from "ts-pattern";
+import { Wide } from "~/components/mdx/Wide";
 
 const records = [
   { uuid: "1", id: 1, value: "Lorem ipsum", isStale: true },
@@ -63,7 +64,7 @@ export function Compaction() {
           Add
         </ToggleButton>
       </div>
-      <div className="bg-gray5 border border-gray8 rounded-lg shadow-inner overflow-hidden relative !max-w-[calc(100%+64px)] -mx-8">
+      <Wide className="bg-gray5 border border-gray8 rounded-lg shadow-inner overflow-hidden relative">
         <div
           className={cn(
             "grid w-max gap-10 mx-auto py-10",
@@ -145,7 +146,7 @@ export function Compaction() {
             </ToggleButton>
           </div>
         </div> */}
-      </div>
+      </Wide>
     </>
   );
 }

@@ -1,19 +1,52 @@
+import { cn } from "~/lib/cn";
+
 export function ToggleButton({
   children,
   onClick,
   disabled,
+  className,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
+  className?: string;
 }) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className="bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center h-8 px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed"
+      className={cn(
+        "bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center h-8 px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed",
+        className,
+      )}
       type="button"
     >
+      {children}
+    </button>
+  );
+}
+
+export function IconButton({
+  onClick,
+  label,
+  children,
+  className,
+}: {
+  onClick: () => void;
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <button
+      className={cn(
+        "h-8 w-8 rounded-lg bg-gray3 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray4 text-gray11",
+        className,
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="sr-only">{label}</span>
       {children}
     </button>
   );

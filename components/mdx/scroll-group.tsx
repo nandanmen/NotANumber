@@ -2,7 +2,6 @@
 
 import clsx from "clsx";
 import styles from "./scroll-group.module.css";
-import { X } from "../icons";
 import {
   createContext,
   type Dispatch,
@@ -15,6 +14,7 @@ import {
   cloneElement,
 } from "react";
 import produce from "immer";
+import { ColumnRight, Columns } from "./columns";
 
 type EventEmitter<
   Types extends string,
@@ -118,7 +118,7 @@ export function ScrollGroup({
   const [_state, setState] = useState(state);
 
   return (
-    <section className="!col-span-3 relative !max-w-full grid lg:grid-cols-2 gap-x-10">
+    <Columns>
       <ScrollGroupContext.Provider
         value={{
           activeIndex,
@@ -144,7 +144,7 @@ export function ScrollGroup({
         </div>
         <ScrollFigure>{figure}</ScrollFigure>
       </ScrollGroupContext.Provider>
-    </section>
+    </Columns>
   );
 }
 
@@ -238,25 +238,12 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div
-      className="!col-start-2 row-start-1 absolute bottom-[-40px] top-[-40px] border-l border-borderSoft border-dashed p-5"
-      style={{
-        width: "calc(100% + 40px)",
-      }}
-    >
+    <ColumnRight>
       <div className="h-full bg-gray5 rounded-lg p-10">
         <div ref={figureRef} className="sticky" style={{ top }}>
           {children}
         </div>
       </div>
-      <div className="text-gray9">
-        <div className="absolute top-0 left-0 -translate-x-2.5 -translate-y-2.5">
-          <X />
-        </div>
-        <div className="absolute bottom-0 left-0 -translate-x-2.5 translate-y-2.5">
-          <X />
-        </div>
-      </div>
-    </div>
+    </ColumnRight>
   );
 }

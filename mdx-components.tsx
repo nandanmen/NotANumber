@@ -11,17 +11,32 @@ import {
   ScrollGroupSection,
 } from "./components/mdx/scroll-group";
 import { FullWidth } from "./components/mdx/full-width";
+import { Columns, ColumnRight } from "./components/mdx/columns";
+import { Heading } from "./components/mdx/heading";
+import { SkipLink } from "./components/mdx/skip-link";
+import { Wide } from "./components/mdx/Wide";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
-    h1: (props) => <h1 className="text-3xl font-medium" {...props} />,
-    h2: (props) => <h2 className="text-2xl font-medium" {...props} />,
-    h3: (props) => <h3 className="text-xl font-medium" {...props} />,
+    h1: (props) => (
+      <Heading level="h1" className="text-3xl font-medium" {...props} />
+    ),
+    h2: (props) => (
+      <Heading level="h2" className="text-2xl font-medium" {...props} />
+    ),
+    h3: (props) => (
+      <Heading level="h3" className="text-xl font-medium" {...props} />
+    ),
     strong: (props) => <strong className="font-medium" {...props} />,
     code: (props) => <code className="inline-code" {...props} />,
     pre: CodeBlock,
-    ul: (props) => <ul className="list-disc pl-4" {...props} />,
+    ul: (props) => (
+      <ul
+        className="list-none [&>li]:grid [&>li]:grid-cols-[26px_1fr] [&>li]:before:content-['–'] [&>li]:before:text-gray11"
+        {...props}
+      />
+    ),
     ol: OrderedList,
     hr: () => (
       <hr className="border-gray7 border-dashed -mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
@@ -46,5 +61,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ScrollGroup,
     ScrollGroupSection,
     ScrollFigure,
+    Columns,
+    ColumnRight,
+    SkipLink,
+    Wide,
   };
 }

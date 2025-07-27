@@ -107,7 +107,8 @@ export default function RootLayout({
           handwriting.variable,
           serif.variable,
           sans.variable,
-          "font-sans antialiased bg-gray4"
+          mono.variable,
+          "font-sans antialiased bg-gray4",
         )}
       >
         <AuthProvider>
