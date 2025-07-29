@@ -9,6 +9,7 @@ import { FileSequence } from "./_components/file-sequence";
 import { Compaction } from "./_components/compaction";
 import { BuildIndex } from "./_components/build-index";
 import { Algorithm } from "./_components/algorithm";
+import { BalancedTree } from "./_components/balanced-tree";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -229,10 +230,10 @@ In other languages, JavaScript objects are called _hash tables_ or _dictionaries
 
 ```js
 const hashTable = {
-  "hello": "world",
-  "foo": "bar",
-  "baz": "qux",
-}
+  hello: "world",
+  foo: "bar",
+  baz: "qux",
+};
 const value = hashTable["hello"]; // "world"
 ```
 
@@ -302,6 +303,7 @@ Here's how the index will work. For every record that we have in our database, w
 
 The second record, `18: dolor sit`, for example, has an offset of 15 because:
 eedw
+
 1. Each character is 1 byte large;
 2. The first record is 13 characters long (`1:Lorem ipsum`);
 3. The first record ends with a newline character, which is (at most) 2 bytes long;
@@ -364,7 +366,7 @@ Here's an idea: what if we **ensure our database is always sorted by key?** By s
 
 <Algorithm />
 
-Other than making range queries efficient, SSTs are also great for **reducing the memory footprint** of our index. Since our data is now sorted, we no longer need to store the offset of _every_ record in memory—we can store a much smaller number of keys and still keep most of the benefits of an index:
+Keeping our data sorted can also help us **reduce the memory footprint** of our indices. With sorted data, we no longer need to store the offset of _every_ record in memory—we can store a much smaller number of keys and still keep most of the benefits of an index:
 
 ```
 sparse index
@@ -392,7 +394,7 @@ The trick is to first **sort the data in memory**, and _then_ write it to disk.
 2. When our in-memory list gets too large, we'll write it to disk;
 3. When we want to read a record, we'll read the in-memory list first, and then the disk if necessary.
 
-The data structure used to store the in-memory list is usually one optimized for sorted data like a **balanced binary search tree**.
+The data structure used to store the in-memory list is usually one optimized for sorted data like a **balanced binary search tree** or more commonly, a **skip list**.
 
 </ScrollGroupSection>
 
@@ -408,7 +410,7 @@ The fix here is thankfully pretty straightforward—every time we add a record t
 
 ---
 
-<ScrollGroup>
+<ScrollGroup figure={<BalancedTree />}>
 
 <ScrollGroupSection>
 
@@ -492,7 +494,7 @@ If LSM trees aren't that great for reads, what other options do we have? Enter t
 
 </SkipLink>
 
-Volatile memory like RAM are **byte-addressable** which means 
+Volatile memory like RAM are **byte-addressable** which means
 
 Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
 

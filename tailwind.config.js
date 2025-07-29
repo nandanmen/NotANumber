@@ -22,7 +22,7 @@ module.exports = {
       fontFamily: {
         serif: "var(--font-serif)",
         sans: "var(--font-sans)",
-        mono: "ui-monospace, monospace",
+        mono: "Maple Mono, monospace",
         handwriting: "var(--font-handwriting)",
       },
       screens: {
