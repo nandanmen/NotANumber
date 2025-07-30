@@ -1,5 +1,5 @@
-import { exec } from "~/lib/algorithm";
 import { parseAlgorithm } from "~/lib/parse-algorithm";
+import { BalancedTreeClient } from "./client";
 
 const addToTree = parseAlgorithm(`function addToTree(tree, key) {
   let current = tree;
@@ -32,26 +32,7 @@ const addToTree = parseAlgorithm(`function addToTree(tree, key) {
   debugger;
   return tree;
 }`);
-const { entryPoint } = eval(addToTree);
 
 export function BalancedTree() {
-  const snapshots = exec(entryPoint, [
-    {
-      key: 1,
-      left: null,
-      right: {
-        key: 2,
-        left: null,
-        right: null,
-      },
-    },
-    3,
-  ]);
-  return (
-    <div>
-      {snapshots.map((s, i) => (
-        <pre key={i}>{JSON.stringify(s, null, 2)}</pre>
-      ))}
-    </div>
-  );
+  return <BalancedTreeClient program={addToTree} />;
 }

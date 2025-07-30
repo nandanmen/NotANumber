@@ -26,17 +26,19 @@ export function ToggleButton({
   );
 }
 
+type IconButtonProps = {
+  onClick: () => void;
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+};
+
 export function IconButton({
   onClick,
   label,
   children,
   className,
-}: {
-  onClick: () => void;
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
+}: IconButtonProps) {
   return (
     <button
       className={cn(
@@ -60,12 +62,7 @@ export function ResetButton({
   label?: string;
 }) {
   return (
-    <button
-      className="h-8 w-8 rounded-lg bg-gray3 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray4 text-gray11"
-      onClick={onClick}
-      type="button"
-    >
-      <span className="sr-only">{label}</span>
+    <IconButton onClick={onClick} label={label}>
       <svg
         width="20"
         height="20"
@@ -82,6 +79,6 @@ export function ResetButton({
         <path d="M9.75 7H13.25C16.5637 7 19.25 9.68629 19.25 13V13.25" />
         <path d="M14.25 17H10.75C7.43629 17 4.75 14.3137 4.75 11V10.75" />
       </svg>
-    </button>
+    </IconButton>
   );
 }

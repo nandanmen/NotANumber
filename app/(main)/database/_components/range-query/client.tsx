@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Wide } from "~/components/mdx/Wide";
-import { IconButton, ToggleButton } from "../toggle-button";
+import { IconButton } from "../toggle-button";
 import { useInterval } from "~/lib/use-interval";
 import { cn } from "~/lib/cn";
 import { Slider, SliderMarker } from "../slider";
