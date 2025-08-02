@@ -138,7 +138,7 @@ function CommandList({
 
   return (
     <div
-      className="rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15"
+      className="rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15 relative"
       style={{
         height: showAll ? "auto" : (MAX_VISIBLE_COMMANDS - 1) * 24 + 20 + 42,
       }}
@@ -146,9 +146,6 @@ function CommandList({
       <ol
         ref={ref}
         className="p-5 font-mono text-sm space-y-1 h-full overflow-y-auto"
-        style={{
-          maskImage: "linear-gradient(to bottom, transparent, black 30px)",
-        }}
       >
         {commands.map((command, index) => (
           <motion.li
@@ -175,6 +172,30 @@ function CommandList({
           </motion.li>
         ))}
       </ol>
+      <div
+        className="absolute h-12 top-0 left-0 right-0 rounded-t-lg bg-gray3 pointer-events-none"
+        style={{
+          maskImage: `linear-gradient(
+  to bottom,
+  hsl(0, 0%, 0%) 0%,
+  hsla(0, 0%, 0%, 0.987) 8.1%,
+  hsla(0, 0%, 0%, 0.951) 15.5%,
+  hsla(0, 0%, 0%, 0.896) 22.5%,
+  hsla(0, 0%, 0%, 0.825) 29%,
+  hsla(0, 0%, 0%, 0.741) 35.3%,
+  hsla(0, 0%, 0%, 0.648) 41.2%,
+  hsla(0, 0%, 0%, 0.55) 47.1%,
+  hsla(0, 0%, 0%, 0.45) 52.9%,
+  hsla(0, 0%, 0%, 0.352) 58.8%,
+  hsla(0, 0%, 0%, 0.259) 64.7%,
+  hsla(0, 0%, 0%, 0.175) 71%,
+  hsla(0, 0%, 0%, 0.104) 77.5%,
+  hsla(0, 0%, 0%, 0.049) 84.5%,
+  hsla(0, 0%, 0%, 0.013) 91.9%,
+  hsla(0, 0%, 0%, 0) 100%
+)`,
+        }}
+      />
     </div>
   );
 }
