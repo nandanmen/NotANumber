@@ -1,5 +1,6 @@
 "use client";
 
+import { useAtomValue } from "jotai";
 import {
   type CSSProperties,
   useEffect,
@@ -7,84 +8,22 @@ import {
   useRef,
   useState,
 } from "react";
-import { exec } from "~/lib/algorithm";
+import { type Tree as TreeType, treeAtom } from "./controls";
 
-type Tree = {
-  key: number;
-  parent: Tree | null;
-  left: Tree | null;
-  right: Tree | null;
-};
-
-class BST {
-  tree: Tree | null = null;
-
-  constructor(items: number[]) {
-    for (const item of items) {
-      this.insert(item);
-    }
-  }
-
-  insert(key: number) {
-    let current = this.tree;
-    let parent = null;
-    let isLeftChild = false;
-
-    while (current) {
-      if (current.key === key) return current;
-      parent = current;
-      if (key < current.key) {
-        isLeftChild = true;
-        current = current.left;
-      } else {
-        isLeftChild = false;
-        current = current.right;
-      }
-    }
-    const newNode = { key, left: null, right: null, parent };
-    if (!parent) {
-      this.tree = newNode;
-      return newNode;
-    }
-    if (isLeftChild) {
-      parent.left = newNode;
-    } else {
-      parent.right = newNode;
-    }
-    return newNode;
-  }
-}
-
-export function BalancedTreeClient({ program }: { program: string }) {
-  const addToTree = useMemo(() => eval(program).entryPoint, [program]);
-  const snapshots = exec(addToTree, [
-    {
-      key: 4,
-      left: {
-        key: 1,
-        left: null,
-        right: null,
-      },
-      right: {
-        key: 7,
-        left: null,
-        right: null,
-      },
-    },
-    3,
-  ]);
-  return <Tree tree={new BST([4, 1, 7, 3, 9, 2, 8, 5]).tree} />;
+export function BalancedTree() {
+  const bst = useAtomValue(treeAtom);
+  return <Tree tree={bst.tree} />;
 }
 
 const NODE_WIDTH = 56;
 const SVG_HEIGHT = 64;
 
-type TreeWithIndex = Omit<Tree, "parent"> & {
+type TreeWithIndex = Omit<TreeType, "parent"> & {
   index?: number;
   parent: TreeWithIndex | null;
 };
 
-function Tree({ tree }: { tree: Tree }) {
+function Tree({ tree }: { tree: TreeType }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [wrapperWidth, setWrapperWidth] = useState(0);
@@ -93,7 +32,8 @@ function Tree({ tree }: { tree: Tree }) {
   );
 
   useEffect(() => {
-    if (wrapperRef.current) {
+    if (!wrapperRef.current) return;
+    const update = () => {
       const wrapperBox = wrapperRef.current.getBoundingClientRect();
       setWrapperWidth(wrapperBox.width);
       const nodes =
@@ -104,7 +44,10 @@ function Tree({ tree }: { tree: Tree }) {
         positions[node.dataset.treeNode] = nodeBox.x - wrapperBox.x;
       }
       setNodePositions(positions);
-    }
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   const levels = useMemo(() => {
@@ -147,7 +90,11 @@ function Tree({ tree }: { tree: Tree }) {
             {levelBefore && nodePositions && (
               <svg
                 width="100%"
-                height={SVG_HEIGHT}
+                height={SVG_HEIGHT + NODE_WIDTH}
+                style={{
+                  marginTop: -NODE_WIDTH / 2,
+                  marginBottom: -NODE_WIDTH / 2,
+                }}
                 aria-hidden="true"
                 className="text-gray8"
               >
@@ -161,7 +108,8 @@ function Tree({ tree }: { tree: Tree }) {
                   return (
                     <path
                       key={node.key}
-                      d={`M${startX} 0 V${SVG_HEIGHT / 2} H${endX} V${SVG_HEIGHT}`}
+                      /* d={`M${startX} 0 V${SVG_HEIGHT / 2} H${endX} V${SVG_HEIGHT}`} */
+                      d={`M${startX} 0 L${endX} ${SVG_HEIGHT + NODE_WIDTH}`}
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -185,7 +133,7 @@ function Tree({ tree }: { tree: Tree }) {
                   <>
                     <div
                       data-tree-node={node.key}
-                      className="aspect-square rounded-xl bg-gray3 ring-1 ring-neutral-950/10 shadow flex items-center justify-center font-medium text-lg col-start-[var(--index)]"
+                      className="aspect-square rounded-xl bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg col-start-[--index] relative z-10"
                       key={node.key}
                       style={
                         {
