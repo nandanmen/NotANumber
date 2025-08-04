@@ -10,6 +10,7 @@ import { Compaction } from "./_components/compaction";
 import { BuildIndex } from "./_components/build-index";
 import { Algorithm } from "./_components/algorithm";
 import { BalancedTree } from "./_components/balanced-tree/client";
+import { TreeControls } from "./_components/balanced-tree/controls";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -410,58 +411,6 @@ The fix here is thankfully pretty straightforward—every time we add a record t
 
 ---
 
-<ScrollGroup figure={<BalancedTree />}>
-
-<ScrollGroupSection>
-
-<SkipLink label="I know how balanced BSTs work" to="#lsm-trees">
-
-### Aside: Balanced Binary Search Trees
-
-</SkipLink>
-
-In a binary search tree, each key is stored in what's called a _node_. Each node has at most two children, with the left child being a value _smaller_ than the node's key and the right child being a value _greater_ than the node's key.
-
-```
-add records
-```
-
-</ScrollGroupSection>
-
-<ScrollGroupSection>
-
-Organizing the data this way makes searching for data really fast. Since about half the data is either smaller or greater than the key we're looking for, we can immediately narrow down our search to one of the two children:
-
-```
-search records
-```
-
-</ScrollGroupSection>
-
-<ScrollGroupSection>
-
-The catch is the tree must be balanced, i.e. half the data is on the left side of the tree and half is on the right. If it's not, then the search isn't any faster than looking through all of the items in the tree:
-
-```
-slow search example
-```
-
-</ScrollGroupSection>
-
-<ScrollGroupSection>
-
-To keep the tree balanced, we'll need to rebalance it whenever we add or remove data from the tree. Try adding a few records here and notice that the tree rotates every so often to keep itself balanced:
-
-```
-rebalancing tree
-```
-
-</ScrollGroupSection>
-
-</ScrollGroup>
-
----
-
 ### LSM Trees
 
 This combination of an in-memory list (often called a _memtable_) and an on-disk file (typically called a _sorted string table_ or SST) is called an LSM or Log-Structured Merge Tree. LSM trees are the underlying data structure used for large-scale key-value databases like [Google's LevelDB](https://github.com/google/leveldb) and [Amazon's DynamoDB](https://aws.amazon.com/dynamodb/).
@@ -481,6 +430,70 @@ If our application tends to have a lot more reads than writes, than LSM trees ma
 ## B-Trees
 
 If LSM trees aren't that great for reads, what other options do we have? Enter the **B-Tree**. B-Trees work by taking the binary search tree that we saw earlier and making them work _on disk_.
+
+---
+
+<ScrollGroup figure={
+  <div className="py-5">
+    <BalancedTree />
+  </div>
+}>
+
+<ScrollGroupSection>
+
+<SkipLink label="I know how balanced BSTs work" to="#lsm-trees">
+
+### Aside: Balanced Binary Search Trees
+
+</SkipLink>
+
+In a binary search tree, each key is stored in what's called a _node_. Each node has at most two children, with the left child being a value _smaller_ than the node's key and the right child being a value _greater_ than the node's key.
+
+<TreeControls />
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Organizing the data this way makes searching for data really fast since we're essentially cutting the search space in half every time we go down a level:
+
+```
+search records
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+The caveat here is the tree must remain _balanced_ for searches to stay fast. Consider this tree where most of the data is on the right side of the tree. If we want to look for the key `18`, for example, we'd have to go through almost all of the nodes in the tree:
+
+```
+slow search example
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+If we move things around so that the tree is more balanced, we can search for the key `18` in a lot less time:
+
+```
+fast search example
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+To keep the tree balanced, we'll need to rebalance it whenever we add or remove data from the tree. Try adding a few records here and notice that the tree rotates every so often to keep itself balanced:
+
+```
+rebalancing tree
+```
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 

@@ -10,7 +10,7 @@ import {
   type DatabaseCommand,
   type FileDatabase,
 } from "../_lib/use-file-database";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useScrollGroupState } from "~/components/mdx/scroll-group";
 
 type Mode = "add" | "update" | "delete" | "search";
@@ -105,11 +105,14 @@ export function FileDatabaseControls({
   );
 }
 
-const commandArgs = (command: DatabaseCommand) => {
+type RenderableCommand = DatabaseCommand | { type: "add"; key: number };
+
+const commandArgs = (command: RenderableCommand) => {
   switch (command.type) {
     case "set":
       return `${command.key} "${command.value}"`;
     case "get":
+    case "add":
     case "delete":
       return `${command.key}`;
   }
@@ -117,11 +120,15 @@ const commandArgs = (command: DatabaseCommand) => {
 
 const MAX_VISIBLE_COMMANDS = 4;
 
-function CommandList({
+export function CommandList({
+  prefix = "db",
   commands,
   showAll,
+  empty,
 }: {
-  commands: DatabaseCommand[];
+  prefix?: string;
+  commands: RenderableCommand[];
+  empty?: ReactNode;
   showAll: boolean;
 }) {
   const ref = useRef<HTMLOListElement>(null);
@@ -164,16 +171,17 @@ function CommandList({
               <span className="ml-4">{command.value}</span>
             ) : (
               <>
-                <span>$ db </span>
+                <span>$ {prefix} </span>
                 <span className="font-medium text-blue11">{command.type}</span>
                 <span>{` ${commandArgs(command)}`}</span>
               </>
             )}
           </motion.li>
         ))}
+        {empty && commands.length === 0 && <>{empty}</>}
       </ol>
       <div
-        className="absolute h-12 top-0 left-0 right-0 rounded-t-lg bg-gray3 pointer-events-none"
+        className="absolute h-10 top-0 left-0 right-0 rounded-t-lg bg-gray3 pointer-events-none"
         style={{
           maskImage: `linear-gradient(
   to bottom,

@@ -3,17 +3,15 @@
 import { useAtomValue } from "jotai";
 import {
   type CSSProperties,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { type Tree as TreeType, treeAtom } from "./controls";
-
-export function BalancedTree() {
-  const bst = useAtomValue(treeAtom);
-  return <Tree tree={bst.tree} />;
-}
+import { type Tree as TreeType, stateAtom, treeAtom } from "./controls";
+import { cn } from "~/lib/cn";
+import { motion } from "motion/react";
 
 const NODE_WIDTH = 56;
 const SVG_HEIGHT = 64;
@@ -23,52 +21,63 @@ type TreeWithIndex = Omit<TreeType, "parent"> & {
   parent: TreeWithIndex | null;
 };
 
-function Tree({ tree }: { tree: TreeType }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
+export function BalancedTree() {
+  const tree = useAtomValue(treeAtom);
+  const animationState = useAtomValue(stateAtom);
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
   const [nodePositions, setNodePositions] = useState<Record<number, number>>(
     {},
   );
 
-  useEffect(() => {
+  const update = useCallback(() => {
     if (!wrapperRef.current) return;
-    const update = () => {
-      const wrapperBox = wrapperRef.current.getBoundingClientRect();
-      setWrapperWidth(wrapperBox.width);
-      const nodes =
-        wrapperRef.current.querySelectorAll<HTMLDivElement>("[data-tree-node]");
-      const positions = {};
-      for (const node of nodes) {
-        const nodeBox = node.getBoundingClientRect();
-        positions[node.dataset.treeNode] = nodeBox.x - wrapperBox.x;
-      }
-      setNodePositions(positions);
-    };
+    const wrapperBox = wrapperRef.current.getBoundingClientRect();
+    setWrapperWidth(wrapperBox.width);
+    const nodes =
+      wrapperRef.current.querySelectorAll<HTMLDivElement>("[data-tree-node]");
+    const positions = {};
+    for (const node of nodes) {
+      const nodeBox = node.getBoundingClientRect();
+      positions[node.dataset.treeNode] = nodeBox.x - wrapperBox.x;
+    }
+    setNodePositions(positions);
+  }, []);
+
+  useEffect(() => {
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, []);
+  }, [update]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setTimeout(update, 1);
+  }, [tree, update]);
 
   const levels = useMemo(() => {
     if (!tree) return [];
-    const levels: TreeWithIndex[][] = [];
+    const levels: { node: TreeWithIndex; index: number }[][] = [];
     const queue: TreeWithIndex[] = [tree];
+
+    const indices = {};
+
     while (queue.length > 0) {
       const level = [];
       const queueSize = queue.length;
       for (let i = 0; i < queueSize; i++) {
         const node = queue.shift();
         if (node) {
-          const parentStartingIndex = node.parent?.index
-            ? 2 * node.parent.index
-            : 0;
-          node.index = node.parent
-            ? node === node.parent.left
+          const parentIndex = indices[node.parent?.key];
+          const parentStartingIndex = parentIndex ? 2 * parentIndex : 0;
+          const index = node.parent
+            ? node.key === node.parent.left?.key
               ? parentStartingIndex
               : parentStartingIndex + 1
             : 0;
-          level.push(node);
+          indices[node.key] = index;
+          level.push({ node, index });
           queue.push(node.left, node.right);
         }
       }
@@ -81,6 +90,9 @@ function Tree({ tree }: { tree: TreeType }) {
 
   if (!tree) return null;
 
+  const currentState =
+    animationState.type === "searching" &&
+    animationState.snapshots[animationState.index];
   return (
     <div ref={wrapperRef}>
       {levels.map((level, i) => {
@@ -98,17 +110,20 @@ function Tree({ tree }: { tree: TreeType }) {
                 aria-hidden="true"
                 className="text-gray8"
               >
-                {level.map((node) => {
+                {level.map(({ node }) => {
                   const nodePosition = nodePositions[node.key];
+                  if (!nodePosition) return null;
                   const parentPosition = node.parent
                     ? nodePositions[node.parent.key]
                     : wrapperWidth / 2;
                   const startX = parentPosition + NODE_WIDTH / 2;
                   const endX = nodePosition + NODE_WIDTH / 2;
                   return (
-                    <path
+                    <motion.path
                       key={node.key}
-                      /* d={`M${startX} 0 V${SVG_HEIGHT / 2} H${endX} V${SVG_HEIGHT}`} */
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.3 }}
                       d={`M${startX} 0 L${endX} ${SVG_HEIGHT + NODE_WIDTH}`}
                       fill="none"
                       stroke="currentColor"
@@ -128,23 +143,31 @@ function Tree({ tree }: { tree: TreeType }) {
                 } as CSSProperties
               }
             >
-              {level.map((node) => {
+              {level.map(({ node, index }) => {
                 return (
-                  <>
-                    <div
-                      data-tree-node={node.key}
-                      className="aspect-square rounded-xl bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg col-start-[--index] relative z-10"
-                      key={node.key}
-                      style={
-                        {
-                          width: NODE_WIDTH,
-                          "--index": node.index + 1,
-                        } as CSSProperties
-                      }
+                  <motion.div
+                    data-tree-node={node.key}
+                    key={node.key}
+                    style={
+                      {
+                        width: NODE_WIDTH,
+                        "--index": index + 1,
+                      } as CSSProperties
+                    }
+                    className="aspect-square col-start-[--index] relative z-10"
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className={cn(
+                        "aspect-square rounded-xl bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg transition-colors",
+                        currentState?.current === node.key &&
+                          "bg-black text-white",
+                      )}
                     >
                       {node.key}
-                    </div>
-                  </>
+                    </motion.div>
+                  </motion.div>
                 );
               })}
             </div>

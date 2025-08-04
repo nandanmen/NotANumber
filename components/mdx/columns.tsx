@@ -11,7 +11,7 @@ export function Columns({ children }: { children: React.ReactNode }) {
 export function ColumnRight({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="!col-start-2 row-start-1 absolute bottom-[-40px] top-[-40px] border-l border-borderSoft border-dashed p-5"
+      className="!col-start-2 row-start-1 absolute bottom-[-40px] top-[-40px] border-l border-borderSoft"
       style={{
         width: "calc(100% + 40px)",
       }}

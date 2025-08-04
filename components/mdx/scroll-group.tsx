@@ -239,7 +239,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
 
   return (
     <ColumnRight>
-      <div className="h-full bg-gray5 rounded-lg p-10">
+      <div className="h-full bg-gray5 p-10 shadow-inner">
         <div ref={figureRef} className="sticky" style={{ top }}>
           {children}
         </div>

@@ -12,7 +12,7 @@ import { cn } from "~/lib/cn";
 
 export function Slider(props: SliderProps & { children?: ReactNode }) {
   return (
-    <SliderRoot className="w-full" {...props}>
+    <SliderRoot aria-label="Algorithm step" className="w-full" {...props}>
       <div className="flex touch-none items-center py-3 select-none px-2.5">
         <SliderTrack className="h-1.5 grow rounded-full bg-gray6 select-none">
           {({ state }) => (
