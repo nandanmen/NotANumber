@@ -134,7 +134,7 @@ export function BalancedTree() {
               </svg>
             )}
             <div
-              className="grid grid-cols-[repeat(var(--level-width),_minmax(0,_1fr))] justify-items-center"
+              className="grid grid-cols-[repeat(var(--level-width),_minmax(0,_1fr))] justify-items-center font-mono"
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={i}
               style={
@@ -144,6 +144,7 @@ export function BalancedTree() {
               }
             >
               {level.map(({ node, index }) => {
+                const isCurrent = currentState?.current === node.key;
                 return (
                   <motion.div
                     data-tree-node={node.key}
@@ -160,13 +161,22 @@ export function BalancedTree() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className={cn(
-                        "aspect-square rounded-xl bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg transition-colors",
-                        currentState?.current === node.key &&
-                          "bg-black text-white",
+                        "rounded-xl h-full bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg transition-colors relative z-10",
+                        isCurrent && "bg-black text-white",
                       )}
                     >
                       {node.key}
                     </motion.div>
+                    <motion.p
+                      animate={{
+                        y: isCurrent ? 0 : -48,
+                        scale: isCurrent ? 1 : 0.8,
+                      }}
+                      initial={{ y: -48, scale: 0.8 }}
+                      className="text-white bg-blue9 absolute text-sm w-7 h-7 flex items-center justify-center ring-1 ring-blue10 shadow rounded left-[calc(50%-14px)] -bottom-9"
+                    >
+                      {currentState?.key}
+                    </motion.p>
                   </motion.div>
                 );
               })}
