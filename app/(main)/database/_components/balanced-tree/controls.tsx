@@ -3,10 +3,11 @@
 import { atom, useAtom } from "jotai";
 import { ResetButton, ToggleButton } from "../toggle-button";
 import produce from "immer";
-import { randomUnique } from "../utils";
+import { pick, randomUnique } from "../utils";
 import { CommandList } from "../mutable-database";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInterval } from "~/lib/use-interval";
+import { useIsSectionActive } from "~/components/mdx/scroll-group";
 
 export type Tree = {
   key: number;
@@ -77,38 +78,58 @@ function insertKey(
   });
 }
 
-export const treeAtom = atom(buildTree([10, 7, 13]));
-export const stateAtom = atom<
+export type TreeAnimationState =
   | { type: "idle" }
+  | {
+      type: "adding";
+      snapshots: TreeSnapshot[];
+      result: Tree;
+      index: number;
+    }
   | {
       type: "searching";
       snapshots: TreeSnapshot[];
+      result: Tree | null;
       index: number;
-    }
->({ type: "idle" });
+    };
 
-export function TreeControls() {
+export const treeAtom = atom(buildTree([10, 7, 13]));
+export const stateAtom = atom<TreeAnimationState>({ type: "idle" });
+
+export function TreeControls({
+  mode = "add",
+  initialValues,
+}: {
+  mode?: "add" | "find";
+  initialValues: number[];
+}) {
+  const isSectionActive = useIsSectionActive();
   const [tree, setTree] = useAtom(treeAtom);
   const [state, setState] = useAtom(stateAtom);
-  const returnValueRef = useRef<Tree | null>(null);
   const [commands, setCommands] = useState([]);
+
+  useEffect(() => {
+    if (!initialValues.length || !isSectionActive) return;
+    setTree(buildTree(initialValues));
+  }, [initialValues, setTree, isSectionActive]);
 
   useInterval(
     () => {
-      if (state.type !== "searching") return;
+      if (state.type === "idle") return;
       if (state.index === state.snapshots.length - 1) {
+        if (state.type === "adding") {
+          setTree(state.result);
+        }
         setState({ type: "idle" });
-        setTree(returnValueRef.current);
       } else {
-        setState({
-          type: "searching",
-          snapshots: state.snapshots,
+        setState((s) => ({
+          ...s,
           index: state.index + 1,
-        });
+        }));
       }
     },
     {
-      delay: state.type === "searching" ? 500 : null,
+      delay: state.type === "idle" ? null : 500,
     },
   );
 
@@ -116,26 +137,55 @@ export function TreeControls() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <ToggleButton
-          onClick={() => {
-            const key = randomUnique(0, 20, Array.from(values));
-            const snapshots = [];
-            const result = insertKey(tree, key, (args) => snapshots.push(args));
-            returnValueRef.current = result;
-            setState({
-              type: "searching",
-              snapshots,
-              index: 0,
-            });
-            setCommands((prev) => [...prev, { type: "add", key }]);
-          }}
-          disabled={values.size >= 10}
-        >
-          Add key
-        </ToggleButton>
+        {mode === "add" && (
+          <ToggleButton
+            onClick={() => {
+              const key = randomUnique(0, 20, Array.from(values));
+              const snapshots = [];
+              const result = insertKey(tree, key, (args) =>
+                snapshots.push(args),
+              );
+              setState({
+                type: "adding",
+                snapshots,
+                index: 0,
+                result,
+              });
+              setCommands((prev) => [...prev, { type: "add", key }]);
+            }}
+            disabled={values.size >= 10}
+          >
+            Add key
+          </ToggleButton>
+        )}
+        {mode === "find" && (
+          <ToggleButton
+            onClick={() => {
+              const key = pick(
+                Array.from(values),
+                new Set(commands.map((c) => c.key)),
+              );
+              const snapshots = [];
+              const result = insertKey(tree, key, (args) =>
+                snapshots.push(args),
+              );
+              setState({
+                type: "searching",
+                snapshots,
+                index: 0,
+                result,
+              });
+              setCommands((prev) => [...prev, { type: "get", key }]);
+            }}
+            disabled={values.size >= 10}
+          >
+            Find key
+          </ToggleButton>
+        )}
+
         <ResetButton
           onClick={() => {
-            setTree(buildTree([10, 7, 13]));
+            setTree(buildTree(initialValues));
             setCommands([]);
           }}
         />

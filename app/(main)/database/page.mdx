@@ -449,7 +449,7 @@ If LSM trees aren't that great for reads, what other options do we have? Enter t
 
 In a binary search tree, each key is stored in what's called a _node_. Each node has at most two children, with the left child being a value _smaller_ than the node's key and the right child being a value _greater_ than the node's key.
 
-<TreeControls />
+<TreeControls initialValues={[10, 7, 13]} />
 
 </ScrollGroupSection>
 
@@ -457,9 +457,7 @@ In a binary search tree, each key is stored in what's called a _node_. Each node
 
 Organizing the data this way makes searching for data really fast since we're essentially cutting the search space in half every time we go down a level:
 
-```
-search records
-```
+<TreeControls mode="find" initialValues={[10, 7, 13, 3, 8, 12, 20]} />
 
 </ScrollGroupSection>
 

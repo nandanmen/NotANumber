@@ -3,13 +3,19 @@
 import { useAtomValue } from "jotai";
 import {
   type CSSProperties,
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { type Tree as TreeType, stateAtom, treeAtom } from "./controls";
+import {
+  type TreeAnimationState,
+  type Tree as TreeType,
+  stateAtom,
+  treeAtom,
+} from "./controls";
 import { cn } from "~/lib/cn";
 import { motion } from "motion/react";
 
@@ -24,7 +30,16 @@ type TreeWithIndex = Omit<TreeType, "parent"> & {
 export function BalancedTree() {
   const tree = useAtomValue(treeAtom);
   const animationState = useAtomValue(stateAtom);
+  return <BalancedTreeInner tree={tree} animationState={animationState} />;
+}
 
+function BalancedTreeInner({
+  tree,
+  animationState,
+}: {
+  tree: TreeType;
+  animationState: TreeAnimationState;
+}) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
   const [nodePositions, setNodePositions] = useState<Record<number, number>>(
@@ -91,14 +106,15 @@ export function BalancedTree() {
   if (!tree) return null;
 
   const currentState =
-    animationState.type === "searching" &&
+    animationState.type !== "idle" &&
     animationState.snapshots[animationState.index];
   return (
     <div ref={wrapperRef}>
       {levels.map((level, i) => {
         const levelBefore = levels[i - 1];
         return (
-          <>
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+          <Fragment key={i}>
             {levelBefore && nodePositions && (
               <svg
                 width="100%"
@@ -181,7 +197,7 @@ export function BalancedTree() {
                 );
               })}
             </div>
-          </>
+          </Fragment>
         );
       })}
     </div>

@@ -197,6 +197,17 @@ export const isVisible = (element: HTMLElement, threshold = 0.4) => {
   return top < window.innerHeight * threshold;
 };
 
+const ScrollSectionContext = createContext<{ index: number } | null>(null);
+
+export function useIsSectionActive() {
+  const ctx = useScrollGroupContext();
+  const sectionCtx = useContext(ScrollSectionContext);
+  if (!ctx || !sectionCtx) {
+    throw new Error("useIsSectionActive must be used within a ScrollGroup");
+  }
+  return ctx.activeIndex === sectionCtx.index;
+}
+
 export function ScrollGroupSection({
   children,
   index,
@@ -219,9 +230,11 @@ export function ScrollGroupSection({
   }, [ctx, index]);
 
   return (
-    <div className={clsx(styles.article, "min-h-[45vh]")} ref={ref}>
-      {children}
-    </div>
+    <ScrollSectionContext.Provider value={{ index }}>
+      <div className={clsx(styles.article, "min-h-[45vh]")} ref={ref}>
+        {children}
+      </div>
+    </ScrollSectionContext.Provider>
   );
 }
 
