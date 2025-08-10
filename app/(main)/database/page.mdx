@@ -495,6 +495,14 @@ rebalancing tree
 
 ---
 
+How do we begin to replicate the binary tree structure on disk? For starters, this is what a binary tree looks like laid out in memory:
+
+```
+memory tree
+```
+
+---
+
 <ScrollGroup>
 
 <ScrollGroupSection>
@@ -504,6 +512,8 @@ rebalancing tree
 ### Aside: Persistent Storage
 
 </SkipLink>
+
+Putting a binary tree on disk isn't exactly straightforward because the way data is accessed on a disk (or other persistent storage device) is different from how it's accessed in memory.
 
 Volatile memory like RAM are **byte-addressable** which means
 

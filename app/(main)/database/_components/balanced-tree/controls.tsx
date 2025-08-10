@@ -46,7 +46,7 @@ export type TreeSnapshot = {
 function insertKey(
   tree: Tree | null,
   key: number,
-  snapshot?: (args: TreeSnapshot) => void,
+  snapshot?: (args: TreeSnapshot) => void
 ) {
   return produce(tree, (draft) => {
     let current = draft;
@@ -55,7 +55,7 @@ function insertKey(
 
     while (current) {
       snapshot?.({ current: current.key, key });
-      if (current.key === key) return;
+      if (current.key === key) return current;
       parent = current;
       if (key < current.key) {
         isLeftChild = true;
@@ -79,7 +79,7 @@ function insertKey(
 }
 
 export type TreeAnimationState =
-  | { type: "idle" }
+  | { type: "idle"; selectedKey?: number }
   | {
       type: "adding";
       snapshots: TreeSnapshot[];
@@ -113,25 +113,33 @@ export function TreeControls({
     setTree(buildTree(initialValues));
   }, [initialValues, setTree, isSectionActive]);
 
-  useInterval(
-    () => {
-      if (state.type === "idle") return;
+  useEffect(() => {
+    if (state.type === "idle") return;
+    const timeout = setTimeout(() => {
       if (state.index === state.snapshots.length - 1) {
         if (state.type === "adding") {
           setTree(state.result);
+          setState({ type: "idle" });
+        } else {
+          setState((s) => {
+            if (s.type === "idle") return s;
+            return {
+              type: "idle",
+              selectedKey: s.type === "searching" ? s.result?.key : undefined,
+            };
+          });
         }
-        setState({ type: "idle" });
       } else {
         setState((s) => ({
           ...s,
           index: state.index + 1,
         }));
       }
-    },
-    {
-      delay: state.type === "idle" ? null : 500,
-    },
-  );
+    }, 500);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [state, setState, setTree]);
 
   const values = getValues(tree);
   return (
@@ -143,7 +151,7 @@ export function TreeControls({
               const key = randomUnique(0, 20, Array.from(values));
               const snapshots = [];
               const result = insertKey(tree, key, (args) =>
-                snapshots.push(args),
+                snapshots.push(args)
               );
               setState({
                 type: "adding",
@@ -163,11 +171,11 @@ export function TreeControls({
             onClick={() => {
               const key = pick(
                 Array.from(values),
-                new Set(commands.map((c) => c.key)),
+                new Set(commands.map((c) => c.key))
               );
               const snapshots = [];
               const result = insertKey(tree, key, (args) =>
-                snapshots.push(args),
+                snapshots.push(args)
               );
               setState({
                 type: "searching",
@@ -187,6 +195,7 @@ export function TreeControls({
           onClick={() => {
             setTree(buildTree(initialValues));
             setCommands([]);
+            setState({ type: "idle" });
           }}
         />
       </div>

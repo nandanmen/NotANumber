@@ -43,7 +43,7 @@ function BalancedTreeInner({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
   const [nodePositions, setNodePositions] = useState<Record<number, number>>(
-    {},
+    {}
   );
 
   const update = useCallback(() => {
@@ -179,6 +179,9 @@ function BalancedTreeInner({
                       className={cn(
                         "rounded-xl h-full bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg transition-colors relative z-10",
                         isCurrent && "bg-black text-white",
+                        animationState.type === "idle" &&
+                          animationState.selectedKey === node.key &&
+                          "bg-blue9 ring-blue10 text-white"
                       )}
                     >
                       {node.key}
