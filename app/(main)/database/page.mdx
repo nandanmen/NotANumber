@@ -495,10 +495,38 @@ rebalancing tree
 
 ---
 
+### Persisting a Binary Tree
+
 How do we begin to replicate the binary tree structure on disk? For starters, this is what a binary tree looks like laid out in memory:
 
 ```
 memory tree
+```
+
+Each node in the tree has a _pointer_ to its left and right children. In a file, we could potentially replicate this structure by keeping track of the _offsets_ of each node's children:
+
+```
+file tree with offsets
+```
+
+While traversing the tree, we can move to a node's left or right child by "jumping" to that child's offset in the file. For new nodes, we'll append them to the end of the file like we did before in an LSM tree.
+
+---
+
+There are a few issues with this setup.
+
+First, appending new nodes to the end of the file means **the distance between a node and its children grows as we add more and more nodes.**
+
+```
+growing file tree distance
+```
+
+This isn't necessarily an issue with in-memory trees but it is when you put the tree on disk; with persistent storage, data that is far from each other takes longer to access.
+
+Second, **rebalancing is very expensive.** Rebalancing a tree means moving around a lot of data, which is slow when you're working with persistent storage.
+
+```
+rebalancing tree on disk
 ```
 
 ---
@@ -513,17 +541,33 @@ memory tree
 
 </SkipLink>
 
-Putting a binary tree on disk isn't exactly straightforward because the way data is accessed on a disk (or other persistent storage device) is different from how it's accessed in memory.
+The reason why we have these issues is because of the differences between accessing data in memory and on disk.
 
-Volatile memory like RAM are **byte-addressable** which means
+First, **accessing data from memory is a _lot_ faster than accessing data from a disk**. In the time that it takes to read 1MB of data from disk, we can read approximately 275MB of data from memory.
 
-Hard disk drives work by storing data on a series of _spinning disks_. Each disk is divided into _tracks_, which are further divided into _sectors_.
+When working with storage devices, we'll see a ton of performance gains by minimizing the amount of data we need to read from disk.
 
-**A sector is the smallest unit of data that can be read or written to a hard drive.** If a sector is 4KB (4 kilobytes, or 4096 bytes) large, you can only read or write data in 4KB chunks—it’s not possible to update individual bytes like you can with RAM.
+</ScrollGroupSection>
 
-To read or write sectors, a _disk head_ has to physically move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
+<ScrollGroupSection>
 
-Seeking is by and large the main contributor to latency in a hard drive. This means if we want our database to be fast, we need to **minimize the number of times we need to seek**.
+Second, **persistent storage is not byte-addressable**.
+
+Volatile memory like RAM are byte-addressable which means the smallest unit of data that we can access from memory is a byte. Each byte of storage has a unique address that we can use to read or write data.
+
+On the other hand, the smallest unit of data that we can access from non-volatile storage is typically around 4KB (4 kilobytes, or 4096 bytes) in size, usually referred to as a _block_. In other words, if we want to update a few bytes of data, we have to update the _entire_ 4KB block that contains that data.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Lastly, **persistent storage prefers sequential access**.
+
+When we need to read or write multiple blocks of data, it's usually a lot faster to read or write them _continuously_ than it is _randomly_.
+
+For example, if we need to update blocks 10, 11, and 12, it's faster to update them in order (i.e. block 10 first, then block 11, then block 12) than it is to update them in a random order (e.g. block 10 first, then block 12, then block 11).
+
+This doesn't affect more modern storage devices (like SSDs or NVMe drives) as much as hard drives, but hard drives are still by and large the cheapest way to store large amounts of data—so it's still something we need to consider.
 
 </ScrollGroupSection>
 
@@ -531,16 +575,14 @@ Seeking is by and large the main contributor to latency in a hard drive. This me
 
 ---
 
-### Your access patterns matter
+### Aside: Why hard drives prefer sequential access
 
-Reading data _sequentially_ on a hard drive is much faster than reading data _randomly_.
+A hard drive is made up of a stack of spinning disks, with each disk divided into _tracks_. Each track is further divided into _sectors_, which are the smallest unit of data that can be read or written to a hard drive.
 
-{/* <Callout label="Why is appending to a file faster?"> */}
+```
+hard drive read/write example
+```
 
-A disk in a hard drive is divided into _tracks_, with each track divided into _sectors_. Each sector is a fixed size, and the hard drive can only read or write data in whole sectors using a _disk head_.
+To read or write data, a _disk head_ has to _physically_ move over the sector. This involves positioning the disk head over the correct track (a process known as seeking) and waiting for the sector to move below it.
 
-When the hard disk reads or writes data, it needs to move the disk head to the specific sector. Moving the disk head is much slower than simply reading or writing data, so we want to minimize the number of times the disk head is moved.
-
-When we append to a file, we're always adding data to the end of the file, so we only need to move the disk head once. When we modify a file, we potentially have to move the disk head multiple times, since we might need to read or write data from different sectors. This makes modifying a file much slower!
-
-{/* </Callout> */}
+Seeking is the primary bottleneck in accessing data from a hard drive. In the time it takes to seek (2ms), we can read over 666MB of data from memory.
