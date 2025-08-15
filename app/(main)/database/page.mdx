@@ -447,16 +447,14 @@ And that's our database!
 
 ---
 
-### LSM Trees
+## We made an LSM Tree
 
-This combination of an in-memory list (often called a _memtable_) and an on-disk file (typically called a _sorted string table_ or SST) is called an LSM or Log-Structured Merge Tree. LSM trees are the underlying data structure used for large-scale key-value databases like [Google's LevelDB](https://github.com/google/leveldb) and [Amazon's DynamoDB](https://aws.amazon.com/dynamodb/).
+What we just built actually exists in the real world—it's called **an LSM or Log-Structured Merge Tree**.
 
-LSM trees are great and are proven to perform well at scale (if DynamoDB's peak [80 million requests per second](https://aws.amazon.com/blogs/aws/amazon-prime-day-2020-powered-by-aws/) is any indication). Yet despite that, they still have their own drawbacks.
+An LSM tree works by combining an in-memory list (often called a _memtable_) with an on-disk file (typically called a _sorted string table_ or SST) to create a really fast key-value database.
 
-While LSM trees boast very fast writes, they come at the cost of slower (albeit still fast) reads, since each read requires going through possibly all of the indices in the database to check if a key exists:
+LSM trees are the underlying data structure used for large-scale key-value databases like [Google's LevelDB](https://github.com/google/leveldb) and [Amazon's DynamoDB](https://aws.amazon.com/dynamodb/), and they have proven to perform really well at scale—on Prime Day 2020, DynamoDB peaked at 80 _million_ requests per second!
 
-```
-lsm read example
-```
+Now, LSM trees aren't perfect, and they're certainly not the only way to structure a database. In fact, relational databases like PostgreSQL or MySQL use a completely different structure called a **B-Tree** to store their data—but that's a deep dive for another post.
 
-If our application tends to have a lot more reads than writes, than LSM trees may not necessarily be the best fit.
+For now, thanks for reading!
