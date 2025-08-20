@@ -61,6 +61,7 @@ export default function MainLayout({
               className="grid grid-cols-[60px_1fr] p-4 gap-5 items-center [&:nth-child(2n)]:border-l border-gray7 border-b -mb-px"
               key={post.slug}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="shrink-0 h-min"
                 src={post.image.src}
