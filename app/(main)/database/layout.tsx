@@ -11,7 +11,7 @@ export default async function BuildADatabasePage({
 }) {
   return (
     <>
-      <header className="px-10 py-3 border-b border-borderSoft sticky top-0 bg-gray4 z-20 text-gray11 flex justify-between items-center">
+      <header className="px-6 md:px-8 lg:px-10 py-3 border-b border-borderSoft sticky top-0 bg-gray4 z-20 text-gray11 flex justify-between items-center">
         <h2 className="font-serif text-2xl">
           <Link href="/">NaN</Link>
         </h2>
@@ -30,9 +30,9 @@ export default async function BuildADatabasePage({
             <li>Persisting Trees on Disk</li>
           </ol>
         </aside> */}
-        <article className="p-10 grid grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
+        <article className="p-6 md:p-8 lg:p-10 grid grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
           <header className="my-10 !max-w-full space-y-2">
-            <h1 className="text-[80px] font-serif leading-[1]">
+            <h1 className="text-6xl md:text-[80px] font-serif leading-[1]">
               Build Your Own Database
             </h1>
             <p className="text-gray11">

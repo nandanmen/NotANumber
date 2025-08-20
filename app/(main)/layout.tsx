@@ -32,7 +32,9 @@ export const metadata: Metadata = {
 
 export default function MainLayout({
   children,
-}: { children: React.ReactNode }) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen isolate pb-12">
       <BackgroundStripes className="fixed inset-0" />
