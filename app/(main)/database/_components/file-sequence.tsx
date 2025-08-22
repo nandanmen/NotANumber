@@ -20,9 +20,15 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
           </ToggleButton>
         </div>
       )}
-      <FullWidth>
-        <div className="p-4 bg-gray5 shadow-inner rounded-lg overflow-hidden border border-borderStrong">
-          <p className="whitespace-pre font-mono">
+      <FullWidth className="-mx-6 md:mx-0 !max-w-[initial]">
+        <div className="p-4 bg-gray5 md:rounded-lg overflow-hidden border-y md:border-x border-borderStrong">
+          <p
+            className={cn(
+              "whitespace-pre font-mono",
+              updateable &&
+                "-translate-x-[300px] md:-translate-x-[250px] lg:-translate-x-0",
+            )}
+          >
             {updateable ? (
               <span className="text-gray11 flex items-baseline">
                 001:Lorem␣ipsum\n018:dolor␣sit\n

@@ -64,7 +64,7 @@ export function Compaction() {
           Add
         </ToggleButton>
       </div>
-      <Wide className="bg-gray5 border border-gray8 rounded-lg shadow-inner overflow-hidden relative">
+      <Wide className="bg-gray5 border-y md:border-x border-borderStrong md:rounded-lg shadow-inner overflow-hidden relative">
         <div
           className={cn(
             "grid w-max gap-10 mx-auto py-10",

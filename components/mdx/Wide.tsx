@@ -8,7 +8,12 @@ export function Wide({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("!max-w-[calc(100%+64px)] -mx-8", className)}>
+    <div
+      className={cn(
+        "-mx-6 !max-w-[calc(100%+48px)] md:!max-w-[calc(100%+64px)] md:-mx-8",
+        className,
+      )}
+    >
       {children}
     </div>
   );

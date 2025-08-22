@@ -57,6 +57,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </div>
       );
     },
+    SmallOnly: (props) => <div className="lg:hidden" {...props} />,
     FullWidth,
     ScrollGroup,
     ScrollGroupSection,

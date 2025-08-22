@@ -53,17 +53,33 @@ The typical way to store any kind of data persistently in a computer is to use a
 
 <FileDatabaseControls mode={["add"]} />
 
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
 When we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
 
 <FileDatabaseControls mode={["search"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
 
 For updates, we'll find the key and replace the value in-place:
 
 <FileDatabaseControls mode={["update"]} />
 
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
 And for deletes, we'll delete the record from the file:
 
 <FileDatabaseControls mode={["delete"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
 
 Easy! We're done right?
 
