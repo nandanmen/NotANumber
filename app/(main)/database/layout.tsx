@@ -1,7 +1,4 @@
-import clsx from "clsx";
-import { ReactNode } from "react";
-import { BackgroundStripes } from "~/components/stripe-pattern";
-import styles from "./page.module.css";
+import type { ReactNode } from "react";
 import Link from "next/link";
 
 export default async function BuildADatabasePage({
@@ -15,7 +12,10 @@ export default async function BuildADatabasePage({
         <h2 className="font-serif text-2xl">
           <Link href="/">NaN</Link>
         </h2>
-        <button className="font-medium text-sm py-1.5 px-3 bg-gray12 text-gray1 rounded-full">
+        <button
+          className="font-medium text-sm py-1.5 px-3 bg-gray12 text-gray1 rounded-full"
+          type="button"
+        >
           Subscribe
         </button>
       </header>
@@ -32,7 +32,7 @@ export default async function BuildADatabasePage({
         </aside> */}
         <article className="p-6 md:p-8 lg:p-10 grid grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
           <header className="my-10 !max-w-full space-y-2">
-            <h1 className="text-6xl md:text-[80px] font-serif leading-[1]">
+            <h1 className="text-[52px] md:text-[80px] font-serif leading-[1]">
               Build Your Own Database
             </h1>
             <p className="text-gray11">
