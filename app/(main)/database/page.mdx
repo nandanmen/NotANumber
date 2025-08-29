@@ -123,15 +123,27 @@ With this approach, updates are treated the same as inserts—just add a new rec
 
 <FileDatabaseControls mode={["add", "update"]} />
 
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
 But now we have another problem—there are duplicate keys in the file!
 
 To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
 
 <FileDatabaseControls mode={["search"]} />
 
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
 To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
 
 <FileDatabaseControls mode={["add", "delete"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
 
 And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
 
@@ -172,6 +184,10 @@ How can we fix these problems?
 Take a look at our database here after a few updates and deletes:
 
 <FileDatabaseControls mode={[]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
 
 Our database file has six entries, but only two represent actual records—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
 

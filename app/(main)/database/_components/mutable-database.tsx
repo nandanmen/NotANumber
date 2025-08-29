@@ -266,12 +266,10 @@ export const toFileDatabaseRecords = (store: DatabaseState) => {
 export function FileDatabaseVisualizer() {
   const [store] = useScrollGroupState<DatabaseState>();
   return (
-    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-6 md:border-x lg:mx-0 border-borderStrong md:rounded-xl h-[350px] lg:h-[max(30vh,400px)] overflow-hidden relative">
-      <p className="absolute top-3 left-4 text-gray11 font-mono text-sm">
-        db.txt
-      </p>
+    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-6 md:border-x lg:mx-0 border-borderStrong md:rounded-xl h-[350px] lg:h-[max(30vh,400px)] overflow-hidden relative px-6">
+      <p className="text-gray11 font-mono text-sm my-3">db.txt</p>
       <FileDatabaseComponent
-        className="mt-16"
+        className="md:max-w-[300px] mx-auto"
         records={toFileDatabaseRecords(store)}
       />
       <motion.div

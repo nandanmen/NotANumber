@@ -45,7 +45,7 @@ export const FileDatabase = ({
     <LayoutGroup id={id}>
       <motion.ul
         className={cn(
-          "bg-gray2 rounded-lg max-w-[300px] h-full ring-1 ring-neutral-950/15 mx-auto text-sm py-4 shadow-md font-mono",
+          "bg-gray2 rounded-lg h-full ring-1 ring-neutral-950/15 mx-auto text-sm py-4 shadow-md font-mono",
           className,
         )}
         {...props}

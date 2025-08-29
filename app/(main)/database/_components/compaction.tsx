@@ -22,7 +22,21 @@ const records = [
 
 const steps = ["initial", "record-added", "compacting", "compacted"];
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+};
+
 export function Compaction() {
+  const isMobile = useIsMobile();
   const [step, setStep] = useState(0);
   const [index, setIndex] = useState(0);
   const state = steps[step];
@@ -67,36 +81,20 @@ export function Compaction() {
       <Wide className="bg-gray5 border-y md:border-x border-borderStrong md:rounded-lg shadow-inner overflow-hidden relative">
         <div
           className={cn(
-            "grid w-max gap-10 mx-auto py-10",
+            "grid w-max gap-5 lg:gap-10 mx-auto py-10",
             state === "record-added" || state === "compacted"
-              ? "grid-cols-2"
+              ? "grid-cols-1 md:grid-cols-2"
               : "grid-cols-1",
           )}
         >
-          <FileDatabase
-            className={cn(
-              "w-full h-[250px] mx-[initial] row-start-1 col-start-1 opacity-0 transition-opacity duration-500",
-              state !== "initial" && "opacity-100",
-              state === "compacting" && "absolute right-[calc(100%-32px)]",
-            )}
-            layout="position"
-            records={
-              state === "initial"
-                ? []
-                : [
-                    {
-                      type: "base",
-                      value: { key: 10, value: "Lorem ipsum" },
-                    },
-                  ]
-            }
-          />
           <motion.ul
             layout="position"
             className={cn(
               "row-start-1 font-mono text-sm px-5 py-4 w-[300px] h-[250px] bg-gray3 rounded-lg relative ring-1 ring-neutral-950/15 shadow-sm",
+              state === "record-added" &&
+                "max-md:absolute max-md:left-[calc(100%-24px)]",
               state === "record-added" || state === "compacted"
-                ? "col-start-2"
+                ? "col-start-1 md:col-start-2"
                 : "col-start-1",
             )}
           >
@@ -119,8 +117,29 @@ export function Compaction() {
               );
             })}
           </motion.ul>
+          <FileDatabase
+            className={cn(
+              "w-[300px] h-[250px] mx-[initial] row-start-1 col-start-1 md:opacity-0 transition-opacity duration-500 z-10 relative",
+              state === "initial" && "absolute right-[calc(100%+4px)]",
+              state !== "initial" && "md:opacity-100",
+              state === "compacting" && "absolute right-[calc(100%-24px)]",
+              state === "compacted" &&
+                "max-md:absolute max-md:-bottom-12 max-md:ring-gray8",
+            )}
+            layout="position"
+            records={
+              state === "initial"
+                ? []
+                : [
+                    {
+                      type: "base",
+                      value: { key: 10, value: "Lorem ipsum" },
+                    },
+                  ]
+            }
+          />
         </div>
-        <div className="bg-gray4 py-2.5 text-center font-mono text-sm text-gray11 border-t border-gray8 italic">
+        <div className="bg-gray4 py-2.5 text-center font-mono text-sm text-gray11 border-t border-gray8 italic relative z-10">
           {match(state)
             .with("initial", () => <DotAnimation>waiting</DotAnimation>)
             .with("record-added", () => (
@@ -130,20 +149,12 @@ export function Compaction() {
             .with("compacted", () => "done!")
             .otherwise(() => null)}
         </div>
-        {/* <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+        {/* <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
           <div className="flex gap-2">
-            <ToggleButton onClick={() => setState("initial")}>
-              initial
-            </ToggleButton>
-            <ToggleButton onClick={() => setState("record-addsed")}>
-              record-added
-            </ToggleButton>
-            <ToggleButton onClick={() => setState("compacting")}>
-              compacting
-            </ToggleButton>
-            <ToggleButton onClick={() => setState("compacted")}>
-              compacted
-            </ToggleButton>
+            <ToggleButton onClick={() => setStep(0)}>initial</ToggleButton>
+            <ToggleButton onClick={() => setStep(1)}>record-added</ToggleButton>
+            <ToggleButton onClick={() => setStep(2)}>compacting</ToggleButton>
+            <ToggleButton onClick={() => setStep(3)}>compacted</ToggleButton>
           </div>
         </div> */}
       </Wide>

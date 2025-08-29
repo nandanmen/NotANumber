@@ -8,17 +8,19 @@ export default async function BuildADatabasePage({
 }) {
   return (
     <>
-      <header className="px-6 md:px-8 lg:px-10 py-3 border-b border-borderSoft sticky top-0 bg-gray4 z-20 text-gray11 flex justify-between items-center">
-        <h2 className="font-serif text-2xl">
-          <Link href="/">NaN</Link>
-        </h2>
-        <button
-          className="font-medium text-sm py-1.5 px-3 bg-gray12 text-gray1 rounded-full"
-          type="button"
-        >
-          Subscribe
-        </button>
-      </header>
+      <div className="fixed top-0 w-full max-w-[1450px] z-20 md:px-4 left-1/2 -translate-x-1/2 border-x border-transparent">
+        <header className="px-6 md:px-8 lg:px-10 py-3 border-b border-borderSoft bg-gray4 text-gray11 flex justify-between items-center">
+          <h2 className="font-serif text-2xl translate-y-0.5">
+            <Link href="/">NaN</Link>
+          </h2>
+          <button
+            className="font-medium text-sm py-1.5 px-3 bg-gray12 text-gray1 rounded-full"
+            type="button"
+          >
+            Subscribe
+          </button>
+        </header>
+      </div>
       <div>
         {/* <aside className="h-[calc(100vh-57px)] sticky top-[57px] flex flex-col text-gray11 p-8 border-r border-borderSoft">
           <ol className="text-sm space-y-1">
@@ -30,7 +32,7 @@ export default async function BuildADatabasePage({
             <li>Persisting Trees on Disk</li>
           </ol>
         </aside> */}
-        <article className="p-6 md:p-8 lg:p-10 grid grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
+        <article className="p-6 pt-[81px] md:p-8 md:pt-[89px] lg:p-10 lg:pt-[105px] grid grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
           <header className="my-10 !max-w-full space-y-2">
             <h1 className="text-[52px] md:text-[80px] font-serif leading-[1]">
               Build Your Own Database
