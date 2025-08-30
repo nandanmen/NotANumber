@@ -215,31 +215,9 @@ Here, we've set the maximum file size to seven records. Notice that the database
 
 <Compaction />
 
-Now, our database consists of two different files; we'll call these files **segments**.
+Now, our database consists of two different files which we'll call **segments**. Each segment will usually become a lot smaller after compaction, which means we can merge them together as part of the compaction process.
 
-Notice that the segment becomes a lot smaller after compaction, which means if we have multiple segment files, we can potentially merge them together as part of the compaction process.
-
----
-
-### Adapting to Segments
-
-<InlineNote>
-
-Since our database is now partitioned across multiple segments, we'll need to change our search algorithm to search across all of the segments, starting with the <Annotation type="underline"> _newest_ </Annotation> segment first:
-
-<Note>
-
-The newest segment will always contain the most up-to-date data.
-
-</Note>
-
-</InlineNote>
-
-```
-segment search example
-```
-
-With that, we've made a mechanism to stop our database from growing indefinitely! That's one problem solved.
+With that, we've made a mechanism to stop our database from growing indefinitely!
 
 ---
 
@@ -259,7 +237,7 @@ What if we use _objects_? That's right, these little guys:
 const hashTable = {};
 ```
 
-In other languages, JavaScript objects are called _hash tables_ or _dictionaries_, and they're really good at storing and looking up key-value pairs:
+JavaScript objects, otherwise known as _hash tables_ or _dictionaries_, are really efficient at storing and looking up key-value pairs:
 
 ```js
 const hashTable = {
@@ -270,63 +248,51 @@ const hashTable = {
 const value = hashTable["hello"]; // "world"
 ```
 
-Regardless of how many records you have, the time it takes to look up a value in a hash table is more or less constant. The catch is they must live _in memory_.
+It doesn't matter how many records there are—the time it takes to look up and retrieve a value in a hash table is more or less constant. The catch is they must live _in memory_.
 
 ---
 
-<ScrollGroup>
+<SkipLink to="#" label="I know the difference between in-memory and on-disk">
 
-<ScrollGroupSection>
+### Aside: In-Memory vs. On-Disk
 
-### Aside: How Computers Store Data
+</SkipLink>
 
-What does it mean for something to be "in-memory"? If a data structure that can store and retrieve key-value pairs already exists, why do we still need to design a database? To answer these questions, we'll need to briefly take a look at how computers store data.
-
-Computers store data in one of two places: **volatile** or **non-volatile** memory. When you write variables in your code, they're stored (for the most part) in your computer's volatile memory, typically [RAM](https://en.wikipedia.org/wiki/Random-access_memory):
+When you write a variable in your code, the computer will "remember" the value of that variable only for as long as the program is running.
 
 ```js
-const x = 1;
+let x = 1;
+
+x = x + 1;
+console.log(x); // 2
+
+x = x + 1;
+console.log(x); // 3
 ```
 
-Volatile memory is really good for <Annotation type="underline"> _fast, temporary_ </Annotation> storage. Temporary is the keyword here—when the program is stopped or the computer shuts down, all of the data in RAM related to the program is lost. The tradeoff here is that RAM is very fast, with high-end RAM devices reaching speeds of around 56 GB/s.
+This program will always print `2` and `3` because the value of `x` "resets" every time we run the program. This is because `x` is stored <Annotation type="underline"> _in-memory_ </Annotation>, and any value stored in memory is discarded when the program stops.
 
-</ScrollGroupSection>
-
-<ScrollGroupSection>
-
-Non-volatile memory, like [hard disk drives (HDDs)](https://en.wikipedia.org/wiki/Hard_disk_drive), [solid state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state_drive), or [NVMe drives](https://en.wikipedia.org/wiki/NVM_Express) are really good when you need your data to <Annotation type="underline"> _persist_ </Annotation> instead.
-
-When you write data to a file, that data will be stored in your computer's non-volatile memory:
+If we want our data to "stick" between runs, we'll need to store it <Annotation type="underline">_on-disk_</Annotation>—in other words, a file.
 
 ```js
-fs.writeFileSync("data.txt", "Hello, world!");
+import fs from "fs";
+
+let x = Number(fs.readFileSync("data.txt", "utf8")) || 1;
+
+x = x + 1;
+console.log(x);
+
+x = x + 1;
+console.log(x);
+
+fs.writeFileSync("data.txt", x);
 ```
 
-Unlike volatile memory, non-volatile memory will stick around even if the program is stopped or the computer is turned off. The catch is that it's much slower than volatile memory:
+This time, `x` will print `2` and `3` the first run, and `4` and `5` the second run.
 
-- Hard drives: 100 MB/s (500x slower than RAM)
-- SSDs: 500 MB/s (100x slower than RAM)
-- NVMe drives: 6 GB/s (9x slower than RAM)
+---
 
-It's perfectly possible to create a database using only variables in code and in-memory data structures like a hash table:
-
-```js
-const db = {};
-
-const add = (key, value) => {
-  db[key] = value;
-};
-
-const get = (key) => {
-  return db[key];
-};
-```
-
-But this database would be a pretty bad one—whenever the program crashes or the computer restarts, all the data would be lost! For that reason, we'll need to use **non-volatile** memory to store our data.
-
-</ScrollGroupSection>
-
-</ScrollGroup>
+If we can persist data by saving it to a file, why can't we just store our hash table in a file? For starters, we'll need to somehow convert our hash table to a string—a process called _serialization_—
 
 ---
 
