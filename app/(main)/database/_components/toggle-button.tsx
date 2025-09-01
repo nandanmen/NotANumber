@@ -1,28 +1,19 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "~/lib/cn";
 
 export function ToggleButton({
-  children,
-  onClick,
-  disabled,
   className,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-  className?: string;
-}) {
+  ...props
+}: ComponentPropsWithoutRef<"button">) {
   return (
     <button
-      onClick={onClick}
-      disabled={disabled}
       className={cn(
         "bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center h-8 px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed",
         className,
       )}
       type="button"
-    >
-      {children}
-    </button>
+      {...props}
+    />
   );
 }
 

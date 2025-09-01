@@ -15,6 +15,7 @@ import { Columns, ColumnRight } from "./components/mdx/columns";
 import { Heading } from "./components/mdx/heading";
 import { SkipLink } from "./components/mdx/skip-link";
 import { Wide } from "./components/mdx/Wide";
+import { Aside } from "./components/mdx/aside";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -57,6 +58,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </div>
       );
     },
+    Aside,
     SmallOnly: (props) => <div className="lg:hidden" {...props} />,
     FullWidth,
     ScrollGroup,

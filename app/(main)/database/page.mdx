@@ -11,6 +11,7 @@ import { BuildIndex } from "./_components/build-index";
 import { Algorithm } from "./_components/algorithm";
 import { BalancedTree } from "./_components/balanced-tree/client";
 import { TreeControls } from "./_components/balanced-tree/controls";
+import { Script } from "./_components/script";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -252,13 +253,11 @@ It doesn't matter how many records there are—the time it takes to look up and 
 
 ---
 
-<SkipLink to="#" label="I know the difference between in-memory and on-disk">
-
-### Aside: In-Memory vs. On-Disk
-
-</SkipLink>
+<Aside label="In-Memory vs. On-Disk">
 
 When you write a variable in your code, the computer will "remember" the value of that variable only for as long as the program is running.
+
+<Script>
 
 ```js
 let x = 1;
@@ -270,9 +269,13 @@ x = x + 1;
 console.log(x); // 3
 ```
 
+</Script>
+
 This program will always print `2` and `3` because the value of `x` "resets" every time we run the program. This is because `x` is stored <Annotation type="underline"> _in-memory_ </Annotation>, and any value stored in memory is discarded when the program stops.
 
 If we want our data to "stick" between runs, we'll need to store it <Annotation type="underline">_on-disk_</Annotation>—in other words, a file.
+
+<Script mode="on-disk">
 
 ```js
 import fs from "fs";
@@ -288,11 +291,13 @@ console.log(x);
 fs.writeFileSync("data.txt", x);
 ```
 
+</Script>
+
 This time, `x` will print `2` and `3` the first run, and `4` and `5` the second run.
 
----
+The tradeoff to persistence is performance—accessing data from memory is about 80x faster on average than accessing it from disk.
 
-If we can persist data by saving it to a file, why can't we just store our hash table in a file? For starters, we'll need to somehow convert our hash table to a string—a process called _serialization_—
+</Aside>
 
 ---
 
