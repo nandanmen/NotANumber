@@ -1,0 +1,131 @@
+a shape in an svg can have a stroke, a fill, or both:
+
+---
+
+a fill will color in the shape, while a stroke is the shape's border.
+
+## drawing animations
+
+a shape's stroke can be animated to make it look like the shape is being drawn:
+
+---
+
+the main way to do this is by using the `stroke-dasharray` property. this property wasn't initially intended for this kind of animation—it was originally meant to create dashed borders.
+
+if you set `stroke-dasharray` to a single number, it'll create dashes and gaps of equal length, equal to the number that you set:
+
+---
+
+if we increase `stroke-dasharray` so that the dash is as big as the shape, we get our initial shape back. not super interesting so far.
+
+there's another property called `stroke-dashoffset` that lets you change where the first dash starts:
+
+---
+
+positive values of `stroke-dashoffset` will actually move the starting dash to the *left*. think of it as changing the starting position of the stroke. setting `stroke-dashoffset` to 20 means we want to start drawing from where 20 used to be; hence moving the entire stroke to the left.
+
+if we set `stroke-dashoffset` to the same number as `stroke-dasharray`, our shape will be filled by the "gap" between dashes—hence disappearing completely:
+
+---
+
+this creates the perfect starting point for our animation. from here, if we animate the `stroke-dashoffset` property down to zero, we get the drawing effect that we want:
+
+---
+
+### the path length shortcut
+
+the catch with this is that the right value for `stroke-dasharray` and `stroke-dashoffset` changes depending on the shape.
+
+---
+
+we can avoid the need to measure each shape's length by using the setting the `pathLength` property on the element. unlike what you might expect, this attribute doesn't change how the path is drawn at all (e.g. pathLength `0.5` won't make the browser draw half the shape). instead, it *sets* the length of the shape to a certain value so that `stroke-dasharray` and `stroke-dashoffset` can be relative to this value.
+
+for example, if we set `pathLength` to 1, then setting `stroke-dasharray` to 1 will create dashes and gaps equal to the entire span of the path.
+
+---
+
+with this, we don't need to guess what the correct value is. if we set a value to `pathLength` and ensure both `stroke-dasharray` and `stroke-dashoffset` are set to the same value, we will always get the right number.
+
+one thing that's common in svg paths is to use rounded ends set with the `stroke-linecap` property. these rounded ends are *not* considered as part of the path, so if we set pathLength to 1 and `stroke-dasharray` to 1, we'll find that the dash is just a tad short.
+
+---
+
+to make it work in this case, we need to extend the `stroke-dasharray` just a little longer (say, 1.1).
+
+---
+
+## animating along paths
+
+when we animate movement using `translate`, we're forced to animate on a straight line. this approach isn't always the most natural.
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+we can make our objects animate along a curve by using the `offset-path` css property. `offset-path` lets you place objects on a path of your choosing, defined with the same commands that make up the svg `d` attribute*.
+
+\*for more on the d attribute, check out my post on svg paths
+
+
+we can place our object on different parts of the path using the `offset-distance` css property.
+
+
+animating this value lets us create movement. for example, animating from `0%` to `100%` will make the object move along the entirety of the path.
+
+
+the object will automatically rotate to be perpendicular to the path wherever it is on the path. this is usually what we want, but we can change this behaviour using `offset-rotate`.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+### creating lighting effects
+
+one popular animation is a ball of light travel through a path:
+
+
+a common way of implementing this is using a linear gradient that rotates around the approximate shape of the path, and then making the path mask over the gradient:
+
+
+this works but leads to inconsistent velocities where the light will be much faster at certain points of the path:
+
+
+to fix this, we need to make the linear gradient move along the path, using the `offset-distance` property we were just using.
+
+first, we'll make the ball using a combination of a circle and a radial gradient:
+
+```css
+.ball {
+  background: radial-gradient(circle, red, blue);
+}
+```
+
+then, we'll put the ball on the path, using the path as a mask to cut out everything outside of the path.
+
+
+then we animate `offset-distance` to make it move:
+
+
+we're animating `offset-distance` to a little more than 100 here to make the gradient hide completely when it reaches the end of the path.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+## svg masks
+
+you can cut out parts of an svg by using another svg as a mask. as we saw just now with the lighting effect, this can be a powerful trick for making animations.
+
+---
+
+the main drawback to the path drawing animation trick is that it relies on `stroke-dasharray` to work. this means the svg must be drawn with a stroke and not a fill.
+
+this can feel pretty limiting, since strokes are fundamentally symmetric. if we want to animate a tick that tapers off a bit at the end, we can't do it using `stroke-dasharray` alone.
+
+---
+
+
