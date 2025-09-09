@@ -12,6 +12,7 @@ import { Algorithm } from "./_components/algorithm";
 import { BalancedTree } from "./_components/balanced-tree/client";
 import { TreeControls } from "./_components/balanced-tree/controls";
 import { Script } from "./_components/script";
+import { SearchIndex } from "./_components/search-index";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -306,7 +307,6 @@ Here's how the index will work. For every record that we have in our database, w
 <BuildIndex />
 
 The second record, `18: dolor sit`, for example, has an offset of 15 because:
-eedw
 
 1. Each character is 1 byte large;
 2. The first record is 13 characters long (`1:Lorem ipsum`);
@@ -318,10 +318,6 @@ One thing to note is that we need an index for each segment because the offset i
 
 ---
 
-<ScrollGroup>
-
-<ScrollGroupSection>
-
 ### Searching With Indices
 
 Using an index, our search algorithm can now run a lot more efficiently:
@@ -331,27 +327,21 @@ Using an index, our search algorithm can now run a lot more efficiently:
 3. If the key is not found, move on to the next segment;
 4. Repeat (2) and (3) until the key is found or all segments have been searched.
 
-```
-searching with index
-```
+<Wide>
+  <SearchIndex />
+</Wide>
 
-</ScrollGroupSection>
-
-<ScrollGroupSection>
+---
 
 ### Updating Indices
 
-Of course, we'll need to keep our indices up to date with the data or they won't be useful otherwise. Whenever we update, delete, or insert a record, we have to change the index accordingly:
+An index is only useful if it's in sync with our data. Whenever we update, delete, or insert a record, we have to change the index accordingly:
 
 ```
 updating index
 ```
 
 Notice what this implies—**writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
-
-</ScrollGroupSection>
-
-</ScrollGroup>
 
 ---
 

@@ -84,7 +84,13 @@ function Post({
           }}
           className="flex items-start lg:items-center ml-auto gap-4"
         >
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               stroke="currentColor"
               strokeLinecap="round"
@@ -108,7 +114,7 @@ function Post({
 
 export default function HomePage() {
   return (
-    <div className="lg:grid grid-cols-[320px_1fr]">
+    <div className="lg:grid grid-cols-[320px_1fr] bg-gray4 md:border-x border-gray8 relative">
       <aside className="p-6 pt-12 lg:p-10 border-gray8 top-0 flex flex-col gap-6 relative bg-gray4 border-b lg:border-b-0 lg:border-r-0 lg:sticky lg:h-screen">
         <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
         <div className="md:flex lg:block lg:space-y-8 space-y-6 md:space-y-0 items-center justify-between">
@@ -168,6 +174,7 @@ export default function HomePage() {
               height="24"
               fill="none"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 stroke="currentColor"

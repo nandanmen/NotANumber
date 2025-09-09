@@ -40,22 +40,11 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-screen isolate pb-4 xl:pb-12">
+    <div className="min-h-screen w-screen isolate">
       <BackgroundStripes className="fixed inset-0" />
       <div className="relative z-10 mx-auto md:px-4 max-w-[1450px] w-full">
-        <div className="bg-gray4 md:border-x border-b border-gray8 pb-8 relative">
-          {children}
-          <span className="text-gray10">
-            <span className="bottom-0 right-0 absolute translate-x-1/2 translate-y-1/2">
-              <XIcon />
-            </span>
-            <span className="bottom-0 left-0 absolute -translate-x-1/2 translate-y-1/2">
-              <XIcon />
-            </span>
-          </span>
-        </div>
+        {children}
       </div>
-      <PostsFooter />
     </div>
   );
 }

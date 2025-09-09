@@ -22,7 +22,7 @@ export function Slider(props: SliderProps & { children?: ReactNode }) {
                 style={{ width: `${state.getThumbPercent(0) * 100}%` }}
               />
               {props.children}
-              <SliderThumb className="size-5 rounded-full bg-gray2 ring-1 ring-neutral-950/15 shadow select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800 top-1/2" />
+              <SliderThumb className="size-5 rounded-full bg-gray2 hover:bg-gray3 ring-1 ring-neutral-950/15 shadow select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800 top-1/2" />
             </>
           )}
         </SliderTrack>
