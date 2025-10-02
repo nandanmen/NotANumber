@@ -12,23 +12,27 @@ import {
 } from "../_lib/use-file-database";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useScrollGroupState } from "~/components/mdx/scroll-group";
+import { cn } from "~/lib/cn";
 
 type Mode = "add" | "update" | "delete" | "search";
 
 export function getFileDatabaseControls({
   store,
   db,
-}: { store: DatabaseState; db: FileDatabase }) {
+}: {
+  store: DatabaseState;
+  db: FileDatabase;
+}) {
   const { records } = store;
   const getRandomKey = () => {
     const deleted = new Set(
       records
         .filter((record) => record.value === "null")
-        .map((record) => record.key),
+        .map((record) => record.key)
     );
     return pick(
       records.map((record) => record.key),
-      deleted,
+      deleted
     );
   };
   return {
@@ -38,9 +42,9 @@ export function getFileDatabaseControls({
         randomUnique(
           0,
           20,
-          records.map((record) => record.key),
+          records.map((record) => record.key)
         ),
-        texts[(key - 1) % texts.length],
+        texts[(key - 1) % texts.length]
       );
     },
     update: () => {
@@ -60,11 +64,7 @@ export function getFileDatabaseControls({
   };
 }
 
-export function FileDatabaseControls({
-  mode,
-}: {
-  mode?: Mode[];
-}) {
+export function FileDatabaseControls({ mode }: { mode?: Mode[] }) {
   const [store, setStore] = useScrollGroupState<DatabaseState>();
   const [initialStore] = useState(store);
 
@@ -122,14 +122,16 @@ const MAX_VISIBLE_COMMANDS = 4;
 
 export function CommandList({
   prefix = "db",
+  className,
   commands,
-  showAll,
+  showAll = false,
   empty,
 }: {
   prefix?: string;
+  className?: string;
   commands: RenderableCommand[];
   empty?: ReactNode;
-  showAll: boolean;
+  showAll?: boolean;
 }) {
   const ref = useRef<HTMLOListElement>(null);
 
@@ -145,7 +147,10 @@ export function CommandList({
 
   return (
     <div
-      className="rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15 relative"
+      className={cn(
+        "rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15 relative",
+        className
+      )}
       style={{
         height: showAll ? "auto" : (MAX_VISIBLE_COMMANDS - 1) * 24 + 20 + 42,
       }}
