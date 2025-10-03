@@ -11,3 +11,6 @@ export const steppedRange = (start: number, end: number, step: number) => {
 export const getId = (text: string) => {
   return text?.toLowerCase?.().replace(/\s/g, "-").replace(/\.|\?/g, "");
 };
+
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
