@@ -35,7 +35,7 @@ export default async function BuildADatabasePage({
             <li>Persisting Trees on Disk</li>
           </ol>
         </aside> */}
-          <article className="p-6 pt-[81px] md:p-8 md:pt-[89px] lg:p-10 lg:pt-[105px] grid grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch]">
+          <article className="p-6 pt-[81px] md:p-8 md:pt-[89px] lg:p-10 lg:pt-[105px] grid grid-cols-[1fr_100%_1fr] md:grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch] pb-24 md:pb-24 lg:pb-32">
             <header className="my-10 !max-w-full space-y-2">
               <h1 className="text-[52px] md:text-[80px] font-serif leading-[1]">
                 Build Your Own Database
@@ -48,7 +48,7 @@ export default async function BuildADatabasePage({
             {children}
           </article>
         </div>
-        <span className="text-gray10">
+        <span className="text-gray10 hidden md:block">
           <span className="bottom-0 right-0 absolute translate-x-1/2 translate-y-1/2">
             <XIcon />
           </span>

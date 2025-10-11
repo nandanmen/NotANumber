@@ -149,15 +149,18 @@ export function SearchIndex() {
       </div>
       <Wide>
         <div
-          className="grid grid-cols-[1fr_3fr] h-[300px] border border-borderStrong rounded-lg overflow-hidden"
+          className="md:grid grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] md:h-[300px] border-y md:border-x border-borderStrong md:rounded-lg overflow-hidden"
           ref={scope}
         >
           <CommandList
-            className="ring-0 shadow-none rounded-none border-r border-borderStrong h-full"
+            className="ring-0 shadow-none rounded-none border-b md:border-b-0 md:border-r border-borderStrong md:h-full h-[150px]"
             commands={commands}
+            empty={
+              <p className="text-gray10 italic">$ Waiting for commands...</p>
+            }
             showAll
           />
-          <div className="bg-gray5 shadow-inner pr-4 pl-[19px] -ml-[5px] flex items-center overflow-hidden">
+          <div className="bg-gray5 shadow-inner pr-4 pl-[19px] -ml-[5px] flex items-center overflow-hidden py-12 md:py-0">
             <div className="grid grid-cols-[1fr_2fr] gap-4 w-fit mx-auto">
               <div className="relative">
                 <motion.div

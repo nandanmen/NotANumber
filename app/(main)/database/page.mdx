@@ -13,6 +13,7 @@ import { BalancedTree } from "./_components/balanced-tree/client";
 import { TreeControls } from "./_components/balanced-tree/controls";
 import { Script } from "./_components/script";
 import { SearchIndex } from "./_components/search-index";
+import { UpdateIndex } from "./_components/update-index";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -335,9 +336,7 @@ Using an index, our search algorithm can now run a lot more efficiently:
 
 An index is only useful if it's in sync with our data. Whenever we update, delete, or insert a record, we have to change the index accordingly:
 
-```
-updating index
-```
+<UpdateIndex />
 
 Notice what this implies—**writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
 

@@ -40,7 +40,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     ol: OrderedList,
     hr: () => (
-      <hr className="border-gray7 border-dashed -mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
+      <hr className="border-gray7 border-dashed md:-mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
     ),
     a: (props) => (
       <a className="text-gray11 underline underline-offset-2" {...props} />

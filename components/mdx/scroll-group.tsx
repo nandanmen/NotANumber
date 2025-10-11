@@ -231,7 +231,10 @@ export function ScrollGroupSection({
 
   return (
     <ScrollSectionContext.Provider value={{ index }}>
-      <div className={clsx(styles.article, "min-h-[45vh]")} ref={ref}>
+      <div
+        className={clsx(styles.article, "md:max-w-[60ch] min-h-[45vh]")}
+        ref={ref}
+      >
         {children}
       </div>
     </ScrollSectionContext.Provider>

@@ -2,7 +2,6 @@
   display: grid;
   grid-auto-rows: min-content;
   row-gap: 20px;
-  max-width: 60ch;
   margin: 0 auto;
   line-height: 1.6;
 }
