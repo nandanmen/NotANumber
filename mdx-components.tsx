@@ -43,7 +43,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <hr className="border-gray7 border-dashed md:-mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
     ),
     a: (props) => (
-      <a className="text-gray11 underline underline-offset-2" {...props} />
+      <a
+        className="text-gray11 underline underline-offset-2 hover:text-green9"
+        {...props}
+      />
     ),
     InlineNote,
     Note,

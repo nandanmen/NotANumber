@@ -49,10 +49,10 @@ export const createRandomRecord = (
 
 export function pick<DataType>(
   array: DataType[],
-  exclude: Set<DataType>,
+  exclude?: Set<DataType>,
 ): DataType {
   let item = array[random(0, array.length - 1)];
-  while (exclude.has(item)) {
+  while (exclude?.has(item)) {
     item = array[random(0, array.length - 1)];
   }
   return item;

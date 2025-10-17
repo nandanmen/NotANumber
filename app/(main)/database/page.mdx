@@ -14,6 +14,8 @@ import { TreeControls } from "./_components/balanced-tree/controls";
 import { Script } from "./_components/script";
 import { SearchIndex } from "./_components/search-index";
 import { UpdateIndex } from "./_components/update-index";
+import { SparseIndex, SearchSparseIndex } from "./_components/sparse-index";
+import { LSM } from "./_components/lsm";
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -357,15 +359,39 @@ Here's an idea: what if we **ensure our database is always sorted by key?** By s
 
 <Algorithm />
 
-Keeping our data sorted can also help us **reduce the memory footprint** of our indices. With sorted data, we no longer need to store the offset of _every_ record in memory—we can store a much smaller number of keys and still keep most of the benefits of an index:
+---
 
-```
-sparse index
-```
+### Sparse Indices
+
+One benefit of sorting our data is that we no longer need to store the offset of _every_ record in memory.
+
+Take a look at this database with four records. Since there's no logical order to the records, there's no way to determine where a record is without storing its key or searching through the entire database.
+
+<SparseIndex />
+
+Knowing that `10` has an offset of `50` doesn't help us find where `18` is.
 
 ---
 
-Ensuring our database is always sorted is much easier said than done; by definition, sorting data requires moving around records as new ones get added which is super slow when we're storing data on-disk. This brings us to our problem:
+Now if these records were sorted, we could determine the location of each record using _any_ of the keys in the index, even if it's not the key we're looking for.
+
+Let's say our database is sorted but we only had the offset for the key `10`:
+
+<SparseIndex sorted />
+
+Let's say we want to find the key `18`. We know that `18` is greater than `10`, which means it must be after `10` in the database. In other words, we can start searching for `18` from `10`'s offset—`36` in this case.
+
+<SearchSparseIndex />
+
+While this is certainly slower than having the offset for `18` directly, it's still faster than looping through the database in its entirety.
+
+The real unlock here lies in being able to control the trade-off between memory and performance: **a denser index means faster lookups, but more memory usage**.
+
+---
+
+### Sorting in Practice
+
+Ensuring our database is always sorted is much easier said than done; by definition, sorting data requires moving around records as new ones get added—something that cannot be done efficiently when we're storing data on-disk. This brings us to our problem:
 
 <ProblemStatement>
 
@@ -375,65 +401,75 @@ Ensuring our database is always sorted is much easier said than done; by definit
 
 ---
 
-<ScrollGroup>
-
-<ScrollGroupSection>
-
 The trick is to first **sort the data in memory**, and _then_ write it to disk.
 
 1. When we add a new record, add it to a sorted in-memory list;
 2. When our in-memory list gets too large, we'll write it to disk;
 3. When we want to read a record, we'll read the in-memory list first, and then the disk if necessary.
 
+<LSM />
+
 The data structure used to store the in-memory list is usually one optimized for sorted data like a **balanced binary search tree** or more commonly, a **skip list**.
 
-</ScrollGroupSection>
-
-<ScrollGroupSection>
+---
 
 Of course, the main downside of having some of your data in-memory is that it's not persistent—if the program crashes or the computer shuts down, all of the data in the in-memory list is lost.
 
 The fix here is thankfully pretty straightforward—every time we add a record to the list, **we also write it to an append-only file on disk**. This way, we have a backup in case a crash does happen (which it most certainly will).
 
-</ScrollGroupSection>
+<LSM showLog />
 
-</ScrollGroup>
+The append-only file doesn't need to be sorted nor does it need to have every record in the database; only the ones that are currently in memory.
 
 ---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
 
 With that, we have our very own key-value database! Let's recap how it works.
 
 Our database starts out empty. When we go to add a new record, we'll add it to a **sorted in-memory list**, keeping a copy in an append-only file in case of crashes.
 
-```
-in-memory list
-```
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 When the in-memory list gets too large, we'll _flush_ the list by writing all of the records to a file in sorted order. In the process, we'll keep note of each record's offset in an **index** so we can efficiently look them up later.
 
-```
-flush + index
-```
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 When we want to look up a record, we'll first check the in-memory list. If the record isn't there, we'll check the index to see if it's in the on-disk file.
 
-```
-lookup
-```
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 Once a file is saved to disk, it's considered **immutable** which means we can only ever read from the file and never update it. To work around this, we'll treat updates and deletes the same as inserting new records—add them to the in-memory list.
 
-```
-updates + deletes
-```
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 Treating updates and deletes as new records means our file will only ever grow larger. To prevent this, we'll occassionally _compact_ the on-disk files by deleting all duplicate records.
 
-```
-compaction
-```
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Treating updates and deletes as new records means our file will only ever grow larger. To prevent this, we'll occassionally _compact_ the on-disk files by deleting all duplicate records.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 And that's our database!
+
+</ScrollGroupSection>
+
+</ScrollGroup>
 
 ---
 

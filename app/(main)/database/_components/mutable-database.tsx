@@ -16,6 +16,18 @@ import { cn } from "~/lib/cn";
 
 type Mode = "add" | "update" | "delete" | "search";
 
+export const getNextRecord = (records: { key: number; value: string }[]) => {
+  const textKey = records.length + 1;
+  return {
+    key: randomUnique(
+      0,
+      20,
+      records.map((record) => record.key),
+    ),
+    value: texts[(textKey - 1) % texts.length],
+  };
+};
+
 export function getFileDatabaseControls({
   store,
   db,
@@ -37,17 +49,11 @@ export function getFileDatabaseControls({
   };
   return {
     add: () => {
-      const key = records.length + 1;
-      db.set(
-        randomUnique(
-          0,
-          20,
-          records.map((record) => record.key),
-        ),
-        texts[(key - 1) % texts.length],
-      );
+      const { key, value } = getNextRecord(records);
+      db.set(key, value);
     },
     update: () => {
+      if (db.size() === 0) return;
       const value = texts[random(0, texts.length - 1)];
       if (store.options.mutable) {
         db.update(getRandomKey(), value);
@@ -56,9 +62,11 @@ export function getFileDatabaseControls({
       }
     },
     delete: () => {
+      if (db.size() === 0) return;
       db.delete(getRandomKey());
     },
     search: () => {
+      if (db.size() === 0) return;
       db.get(getRandomKey());
     },
   };

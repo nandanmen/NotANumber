@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { LayoutGroup, motion } from "framer-motion";
+import { LayoutGroup } from "framer-motion";
 import { styled } from "~/stitches.config";
 import { cn } from "~/lib/cn";
 import type { DatabaseRecord } from "../_lib/use-file-database";
+import { useIsPresent, motion, AnimatePresence } from "motion/react";
 
 export type Record = {
   id?: string;
@@ -50,20 +51,22 @@ export const FileDatabase = ({
         )}
         {...props}
       >
-        {records.map(({ id, value, type, stale }, index) => {
-          const { key: dbKey, value: dbValue } = value;
-          return (
-            <Record
-              key={id ?? `${index}-${dbKey}`}
-              dbKey={dbKey}
-              value={dbValue}
-              type={type}
-              highlighted={highlighted === index}
-              stale={stale ?? isStale(value, records)}
-              animate={animate}
-            />
-          );
-        })}
+        <AnimatePresence>
+          {records.map(({ id, value, type, stale }, index) => {
+            const { key: dbKey, value: dbValue } = value;
+            return (
+              <Record
+                key={id ?? `${index}-${dbKey}`}
+                dbKey={dbKey}
+                value={dbValue}
+                type={type}
+                highlighted={highlighted === index}
+                stale={stale ?? isStale(value, records)}
+                animate={animate}
+              />
+            );
+          })}
+        </AnimatePresence>
         {highlighted === undefined && (
           <HighlightDot
             layoutId="highlight"
@@ -95,12 +98,15 @@ const Record = ({
   animate = true,
 }: RecordProps) => {
   const [active, setActive] = React.useState(animate);
+  const isPresent = useIsPresent();
   return (
     <motion.div
       animate={animate && { y: 0 }}
       initial={animate && { y: 300 }}
       transition={{ type: "spring", damping: 20 }}
+      exit={{ height: 0 }}
       onAnimationComplete={() => setActive(false)}
+      className={cn(!isPresent && "bg-gray4 overflow-hidden")}
     >
       <RecordText
         animate={animate}

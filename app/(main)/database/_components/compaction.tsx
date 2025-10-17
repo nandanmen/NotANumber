@@ -22,21 +22,7 @@ const records = [
 
 const steps = ["initial", "record-added", "compacting", "compacted"];
 
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  return isMobile;
-};
-
 export function Compaction() {
-  const isMobile = useIsMobile();
   const [step, setStep] = useState(0);
   const [index, setIndex] = useState(0);
   const state = steps[step];

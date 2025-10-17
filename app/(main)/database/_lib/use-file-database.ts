@@ -214,7 +214,7 @@ export const useFileDatabase = (
     size() {
       const valuesUnique = {};
       for (const record of records) {
-        valuesUnique[record[0]] = record[1];
+        valuesUnique[record.key] = record.value;
       }
       return new Set(
         Object.entries(valuesUnique)

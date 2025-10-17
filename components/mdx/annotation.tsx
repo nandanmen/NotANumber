@@ -18,7 +18,7 @@ export function Annotation({
 
   useEffect(() => {
     if (!ref.current) return;
-    annotationRef.current = annotate(ref.current, { type, color: "#0081F1" });
+    annotationRef.current = annotate(ref.current, { type, color: "#30A46C" });
   }, [type]);
 
   useEffect(() => {

@@ -41,6 +41,7 @@ const getOffsetAtIndex = (
 export function SearchIndex() {
   const [state, setState] = useState<"idle" | "second">("idle");
   const [commands, setCommands] = useState([]);
+  const [playing, setPlaying] = useState(false);
   const [scope, animate] = useAnimate();
 
   const bounce = async (selector: string) => {
@@ -72,22 +73,19 @@ export function SearchIndex() {
 
   return (
     <>
-      <div className="flex -mb-2">
-        {/* <ToggleButton onClick={() => setState("idle")}>Idle</ToggleButton>
-        <ToggleButton onClick={() => setState("second")}>Second</ToggleButton> */}
+      <div className="flex -mb-2 h-8 items-center">
         <ToggleButton
+          loading={playing}
           onClick={async () => {
-            const keyToSearch = pick<number>(
-              [
-                ...firstSection.map((record) => record.key),
-                ...secondSection.map((record) => record.key),
-              ],
-              new Set(commands.map((c) => c.key)),
-            );
+            const keyToSearch = pick<number>([
+              ...firstSection.map((record) => record.key),
+              ...secondSection.map((record) => record.key),
+            ]);
             setCommands((c) => [...c, { type: "get", key: keyToSearch }]);
 
             animate(".bg", { scaleX: 0 }, { duration: 0.2, bounce: 0 });
 
+            setPlaying(true);
             if (state !== "idle") {
               setState("idle");
               await sleep(200);
@@ -141,6 +139,7 @@ export function SearchIndex() {
               }
             }
 
+            setPlaying(false);
             setCommands((c) => [...c, { type: "result", value: record.value }]);
           }}
         >
@@ -153,7 +152,7 @@ export function SearchIndex() {
           ref={scope}
         >
           <CommandList
-            className="ring-0 shadow-none rounded-none border-b md:border-b-0 md:border-r border-borderStrong md:h-full h-[150px]"
+            className="ring-0 shadow-none rounded-none border-b md:border-b-0 md:border-r border-borderStrong md:h-full h-[150px] overflow-y-auto"
             commands={commands}
             empty={
               <p className="text-gray10 italic">$ Waiting for commands...</p>
@@ -177,7 +176,7 @@ export function SearchIndex() {
                 >
                   <div
                     className={cn(
-                      "grid font-mono text-sm gap-2 bg-gray3 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]",
+                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]",
                       "index second",
                     )}
                   >
@@ -206,7 +205,7 @@ export function SearchIndex() {
                 >
                   <div
                     className={cn(
-                      "grid font-mono text-sm gap-2 bg-gray3 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min overflow-hidden",
+                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min overflow-hidden",
                       "index first",
                     )}
                   >
@@ -240,7 +239,7 @@ export function SearchIndex() {
                   }}
                   transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                 >
-                  <div className="grid font-mono text-sm gap-2 bg-gray3 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]">
+                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]">
                     {secondSection.map((record) => {
                       return (
                         <span className="relative" key={record.key}>
@@ -264,7 +263,7 @@ export function SearchIndex() {
                   }}
                   transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                 >
-                  <div className="grid font-mono text-sm gap-2 bg-gray3 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min">
+                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min">
                     {firstSection.map((record) => {
                       return (
                         <span className="relative" key={record.key}>

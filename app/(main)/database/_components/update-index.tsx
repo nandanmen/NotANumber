@@ -10,8 +10,30 @@ import {
 } from "./mutable-database";
 import { useEffect, useState } from "react";
 import { createStore } from "../_lib/file-database";
-import { useFileDatabase } from "../_lib/use-file-database";
+import {
+  type DatabaseRecord,
+  useFileDatabase,
+} from "../_lib/use-file-database";
 import { cn } from "~/lib/cn";
+
+export const getIndexRecords = (
+  records: DatabaseRecord[],
+): { key: string; offset: number }[] => {
+  const index = {};
+  let offset = 0;
+  for (const record of records) {
+    if (record.value === "null") {
+      delete index[record.key];
+      continue;
+    }
+    index[record.key] = offset;
+    offset += record.value.length + record.key.toString().length + 3;
+  }
+  return Object.entries(index).map(([key, offset]) => ({ key, offset })) as {
+    key: string;
+    offset: number;
+  }[];
+};
 
 export function UpdateIndex() {
   const [store, setStore] = useState(
@@ -22,20 +44,6 @@ export function UpdateIndex() {
   );
   const db = useFileDatabase(store, (u) => setStore((s) => ({ ...s, ...u })));
   const controls = getFileDatabaseControls({ store, db });
-
-  const getIndexRecords = () => {
-    const index = {};
-    let offset = 0;
-    for (const record of store.records) {
-      if (record.value === "null") {
-        delete index[record.key];
-        continue;
-      }
-      index[record.key] = offset;
-      offset += record.value.length + record.key.toString().length + 3;
-    }
-    return Object.entries(index) as [string, number][];
-  };
 
   return (
     <>
@@ -63,17 +71,36 @@ export function UpdateIndex() {
             />
           </div>
           <div className="p-6 pb-0 border-t md:border-l md:border-t-0 border-borderStrong">
-            <ul className="bg-gray2 rounded-lg h-full ring-1 ring-neutral-950/15 text-sm py-4 shadow-md font-mono md:max-w-[200px] mx-auto translate-y-4">
-              <AnimatePresence>
-                {getIndexRecords().map(([key, offset]) => (
-                  <IndexItem keyValue={key} offset={offset} key={key} />
-                ))}
-              </AnimatePresence>
-            </ul>
+            <DatabaseIndex
+              className="h-full md:max-w-[200px] mx-auto translate-y-4"
+              items={getIndexRecords(store.records)}
+            />
           </div>
         </div>
       </Wide>
     </>
+  );
+}
+
+export function DatabaseIndex({
+  className,
+  items,
+}: { className?: string; items: { key: string; offset: number }[] }) {
+  return (
+    <ul
+      className={cn(
+        "bg-gray2 rounded-lg ring-1 ring-neutral-950/15 text-sm p-1 shadow-md font-mono",
+        className,
+      )}
+    >
+      <div className="h-full py-3 border border-borderSoft border-dashed rounded-md">
+        <AnimatePresence>
+          {items.map(({ key, offset }) => (
+            <IndexItem keyValue={key} offset={offset} key={key} />
+          ))}
+        </AnimatePresence>
+      </div>
+    </ul>
   );
 }
 

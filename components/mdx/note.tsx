@@ -8,7 +8,7 @@ export function InlineNote({ children }: { children: React.ReactNode }) {
 
 export function Note({ children }: { children: React.ReactNode }) {
   return (
-    <div className="lg:text-sm font-handwriting text-blue10" data-note>
+    <div className="lg:text-sm font-handwriting text-green9" data-note>
       {children}
     </div>
   );
