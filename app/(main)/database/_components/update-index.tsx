@@ -85,13 +85,17 @@ export function UpdateIndex() {
 export function DatabaseIndex({
   className,
   items,
-}: { className?: string; items: { key: string; offset: number }[] }) {
+  ...props
+}: { items: { key: string; offset: number }[] } & React.ComponentProps<
+  typeof motion.ul
+>) {
   return (
-    <ul
+    <motion.ul
       className={cn(
         "bg-gray2 rounded-lg ring-1 ring-neutral-950/15 text-sm p-1 shadow-md font-mono",
         className,
       )}
+      {...props}
     >
       <div className="h-full py-3 border border-borderSoft border-dashed rounded-md">
         <AnimatePresence>
@@ -100,7 +104,7 @@ export function DatabaseIndex({
           ))}
         </AnimatePresence>
       </div>
-    </ul>
+    </motion.ul>
   );
 }
 
@@ -121,7 +125,7 @@ function IndexItem({ keyValue, offset }: { keyValue: string; offset: number }) {
     <motion.li
       layout="position"
       className={cn(
-        "px-5 flex items-center overflow-hidden transition-colors duration-300",
+        "px-5 flex items-center overflow-hidden transition-colors duration-300 relative",
         (isAnimating || !isPresent) && "bg-gray4",
       )}
       initial={{ height: 0 }}
@@ -129,7 +133,16 @@ function IndexItem({ keyValue, offset }: { keyValue: string; offset: number }) {
       exit={{ height: 0 }}
       onAnimationComplete={() => setIsAnimating(false)}
     >
-      {String(keyValue).padStart(3, "0")}: {offset}
+      <span
+        className={cn(
+          "absolute left-0 right-0 h-[24px] bg-gray4 scale-x-0 origin-left",
+          "index-highlight",
+        )}
+        data-key={keyValue}
+      />
+      <span className="relative">
+        {String(keyValue).padStart(3, "0")}: {offset}
+      </span>
     </motion.li>
   );
 }

@@ -106,7 +106,7 @@ export function RangeQueryClient({
         </p>
       </Wide>
       <Wide>
-        <div className="bg-gray5 border border-gray8 rounded-lg shadow-inner overflow-hidden relative grid grid-cols-2 divide-x divide-gray8 h-[350px]">
+        <div className="bg-gray5 border-y md:border-x border-gray8 md:rounded-lg shadow-inner overflow-hidden relative grid grid-rows-[repeat(2,250px)] lg:grid-rows-[300px] lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray8">
           <div className="flex items-center justify-center relative">
             <p className="text-gray10 font-medium text-sm absolute top-3 left-3">
               Unsorted
@@ -115,7 +115,7 @@ export function RangeQueryClient({
               Find all values &gt; 2 and &lt; 6
             </p>
             <List values={inputs.unsorted} snapshot={currentUnsortedSnapshot} />
-            <p className="text-gray10 text-sm absolute bottom-3 left-1/2 -translate-x-1/2">
+            <p className="text-gray10 text-sm absolute bottom-3 w-full text-center">
               {currentUnsortedSnapshot?.message}
             </p>
           </div>
@@ -127,7 +127,7 @@ export function RangeQueryClient({
               Find all values &gt; 2 and &lt; 6
             </p>
             <List values={inputs.sorted} snapshot={currentSortedSnapshot} />
-            <p className="text-gray10 text-sm absolute bottom-3 left-1/2 -translate-x-1/2">
+            <p className="text-gray10 text-sm absolute bottom-3 w-full text-center">
               {currentSortedSnapshot?.message}
             </p>
           </div>

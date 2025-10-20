@@ -16,6 +16,7 @@ import { Heading } from "./components/mdx/heading";
 import { SkipLink } from "./components/mdx/skip-link";
 import { Wide } from "./components/mdx/Wide";
 import { Aside } from "./components/mdx/aside";
+import { cn } from "./lib/cn";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -62,7 +63,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     Aside,
-    SmallOnly: (props) => <div className="lg:hidden" {...props} />,
+    SmallOnly: ({ className, ...props }) => (
+      <div className={cn("lg:hidden", className)} {...props} />
+    ),
     FullWidth,
     ScrollGroup,
     ScrollGroupSection,

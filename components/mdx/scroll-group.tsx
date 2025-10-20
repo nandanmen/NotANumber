@@ -208,6 +208,14 @@ export function useIsSectionActive() {
   return ctx.activeIndex === sectionCtx.index;
 }
 
+export function useSectionIndex() {
+  const sectionCtx = useContext(ScrollSectionContext);
+  if (!sectionCtx) {
+    throw new Error("useSectionIndex must be used within a ScrollGroupSection");
+  }
+  return sectionCtx.index;
+}
+
 export function ScrollGroupSection({
   children,
   index,
@@ -232,7 +240,10 @@ export function ScrollGroupSection({
   return (
     <ScrollSectionContext.Provider value={{ index }}>
       <div
-        className={clsx(styles.article, "md:max-w-[60ch] min-h-[45vh]")}
+        className={clsx(
+          styles.article,
+          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[45vh]",
+        )}
         ref={ref}
       >
         {children}
@@ -247,16 +258,27 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!figureRef.current) return;
-    setTop(
-      window.innerHeight * 0.35 -
-        figureRef.current.getBoundingClientRect().height / 2,
-    );
+    const updateTop = () => {
+      setTop(
+        window.innerHeight * 0.35 -
+          figureRef.current.getBoundingClientRect().height / 2,
+      );
+    };
+    updateTop();
+    window.addEventListener("resize", updateTop);
+    return () => {
+      window.removeEventListener("resize", updateTop);
+    };
   }, []);
 
   return (
     <ColumnRight>
-      <div className="h-full bg-gray5 p-10 shadow-inner">
-        <div ref={figureRef} className="sticky" style={{ top }}>
+      <div className="h-full bg-gray5 py-10 shadow-inner">
+        <div
+          ref={figureRef}
+          className="sticky px-10 overflow-hidden"
+          style={{ top }}
+        >
           {children}
         </div>
       </div>

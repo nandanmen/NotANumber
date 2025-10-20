@@ -93,7 +93,7 @@ export function BuildIndex() {
       </div>
       <FullWidth>
         <div
-          className="border border-gray8 rounded-lg grid grid-cols-[3fr_2fr] h-[280px] overflow-hidden font-mono text-sm divide-x divide-gray8"
+          className="border-y border-gray8 md:rounded-lg grid grid-rows-[repeat(2,250px)] md:grid-rows-[250px] md:grid-cols-2 lg:grid-cols-[3fr_2fr] overflow-hidden font-mono text-sm divide-y md:divide-y-0 md:divide-x divide-gray8 -mx-6 md:mx-0 md:border-x"
           ref={scope}
         >
           <div className="flex flex-col">

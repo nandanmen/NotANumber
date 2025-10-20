@@ -144,7 +144,7 @@ export const RecordText = ({
   return (
     <motion.li
       className={cn(
-        "flex gap-2 py-1 px-5 ring-1 ring-transparent",
+        "flex gap-2 py-1 px-5 ring-1 ring-transparent relative",
         active &&
           "bg-gray1 shadow-md ring-neutral-950/15 py-4 px-8 -mx-4 rounded-lg",
         highlighted && "text-blue10",
@@ -158,6 +158,14 @@ export const RecordText = ({
       }}
       {...props}
     >
+      <span
+        className="absolute inset-0 w-0 overflow-hidden text-nowrap file-highlight"
+        data-key={dbKey}
+      >
+        <span className="px-5 bg-blue5 text-blue11 flex items-center h-full">
+          {String(dbKey).padStart(3, "0")}: {dbValue}
+        </span>
+      </span>
       <motion.span
         className="font-medium"
         layout={animate ? "position" : false}
