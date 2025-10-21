@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { PostsFooter } from "../footer";
 import { XIcon } from "../posts";
+import { Subscribe } from "./subscribe";
 
 export default async function BuildADatabasePage({
   children,
@@ -16,12 +17,7 @@ export default async function BuildADatabasePage({
             <h2 className="font-serif text-2xl translate-y-0.5">
               <Link href="/">NaN</Link>
             </h2>
-            <button
-              className="font-medium text-sm py-1.5 px-3 bg-gray12 text-gray1 rounded-full"
-              type="button"
-            >
-              Subscribe
-            </button>
+            <Subscribe />
           </header>
         </div>
         <article className="p-6 pt-16 md:p-8 md:pt-[89px] lg:p-10 lg:pt-[105px] grid grid-cols-[1fr_100%_1fr] md:grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch] pb-24 md:pb-24 lg:pb-32">

@@ -660,7 +660,7 @@ export function LSM({ showLog = false }) {
       </div>
       <Wide>
         <div
-          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong grid grid-rows-[repeat(2,230px)] md:grid-rows-[250px] md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-borderStrong"
+          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong grid grid-rows-[repeat(2,230px)] md:grid-rows-[250px] md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-borderStrong overflow-hidden"
           ref={scope}
         >
           <div className="px-6 pt-3 pb-0 overflow-hidden relative">

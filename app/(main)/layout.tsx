@@ -1,10 +1,8 @@
 import { BackgroundStripes } from "~/components/stripe-pattern";
 import type { Metadata, Viewport } from "next";
-import { XIcon } from "./posts";
-import { PostsFooter } from "./footer";
 
 export const viewport: Viewport = {
-  themeColor: "var(--gray4)",
+  themeColor: "#ededed",
 };
 
 export const metadata: Metadata = {
