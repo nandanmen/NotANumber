@@ -32,7 +32,7 @@ export const posts = [
     description:
       "How would you reinvent the database? In this post, we'll build a key-value database from the ground up.",
     shortDescription: "Make your own database from scratch.",
-    editedAt: "2025-01-03",
+    editedAt: "2025-10-22",
     image: db,
   },
   {
