@@ -38,9 +38,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-screen isolate">
+    <div className="min-h-screen isolate">
       <BackgroundStripes className="fixed inset-0" />
-      <div className="relative z-10 mx-auto md:px-4 max-w-[1450px] w-full">
+      <div className="relative z-10 mx-auto md:px-4 w-full max-w-[1450px]">
         {children}
       </div>
     </div>
