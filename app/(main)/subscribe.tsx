@@ -35,7 +35,7 @@ export const subscribe = async (email: string) => {
   );
   if (!response.ok) {
     const body = await response.json();
-    if (body.code === "email_already_exists") {
+    if (body.code === "email_already_exists" || body.code === "loops_error") {
       return {
         error:
           "You're already subscribed to the waitlist! Check your inbox for a confirmation email.",

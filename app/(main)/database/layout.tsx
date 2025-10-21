@@ -3,6 +3,33 @@ import Link from "next/link";
 import { PostsFooter } from "../footer";
 import { XIcon } from "../posts";
 import { Subscribe } from "./subscribe";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Build Your Own Database",
+  description:
+    "A step-by-step guide to building a key-value database from scratch.",
+  authors: [
+    {
+      name: "Nanda Syahrasyad",
+      url: "https://twitter.com/nandafyi",
+    },
+  ],
+  twitter: {
+    card: "summary_large_image",
+    title: "Build Your Own Database",
+    description:
+      "A step-by-step guide to building a key-value database from scratch.",
+    creator: "@nandafyi",
+  },
+  openGraph: {
+    title: "Build Your Own Database",
+    description:
+      "A step-by-step guide to building a key-value database from scratch.",
+    url: "https://nan.fyi/database",
+    siteName: "Not a Number",
+  },
+};
 
 export default async function BuildADatabasePage({
   children,
