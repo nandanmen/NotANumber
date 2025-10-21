@@ -1,7 +1,9 @@
-import React from "react";
-import { LayoutGroup, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { LayoutGroup } from "framer-motion";
 import { styled } from "~/stitches.config";
-import { type DatabaseRecord } from "./database";
+import { cn } from "~/lib/cn";
+import type { DatabaseRecord } from "../_lib/use-file-database";
+import { useIsPresent, motion, AnimatePresence } from "motion/react";
 
 export type Record = {
   id?: string;
@@ -15,7 +17,8 @@ type FileDatabaseProps = {
   highlighted?: number;
   recordAnimation?: boolean;
   children?: React.ReactNode;
-};
+  className?: string;
+} & React.ComponentPropsWithoutRef<typeof motion.ul>;
 
 export const isStale = (record: DatabaseRecord, records: Record[] = []) => {
   if (record.value === "null") return true;
@@ -29,32 +32,47 @@ export const FileDatabase = ({
   records,
   highlighted,
   children,
-  recordAnimation = true,
+  className,
   ...props
 }: FileDatabaseProps) => {
   const id = React.useId();
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
+
   return (
     <LayoutGroup id={id}>
       <motion.ul
-        className="font-mono text-sm rounded-t-md border border-b-0 border-gray8 bg-gray3 py-4 shadow-sm h-full min-w-[300px] leading-[1.1] relative"
+        className={cn(
+          "bg-gray2 rounded-lg h-full ring-1 ring-neutral-950/15 mx-auto text-sm py-4 shadow-md font-mono",
+          className,
+        )}
         {...props}
       >
-        {records.map(({ id, value, type, stale }, index) => {
-          const { key: dbKey, value: dbValue } = value;
-          return (
-            <Record
-              key={id ?? `${index}-${dbKey}`}
-              dbKey={dbKey}
-              value={dbValue}
-              type={type}
-              highlighted={highlighted === index}
-              stale={stale ?? isStale(value, records)}
-              animate={recordAnimation}
-            />
-          );
-        })}
+        <AnimatePresence>
+          {records.map(({ id, value, type, stale }, index) => {
+            const { key: dbKey, value: dbValue } = value;
+            return (
+              <Record
+                key={id ?? `${index}-${dbKey}`}
+                dbKey={dbKey}
+                value={dbValue}
+                type={type}
+                highlighted={highlighted === index}
+                stale={stale ?? isStale(value, records)}
+                animate={animate}
+              />
+            );
+          })}
+        </AnimatePresence>
         {highlighted === undefined && (
-          <HighlightDot layoutId="highlight" animate={{ opacity: 0 }} />
+          <HighlightDot
+            layoutId="highlight"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0 }}
+          />
         )}
         {children}
       </motion.ul>
@@ -80,12 +98,15 @@ const Record = ({
   animate = true,
 }: RecordProps) => {
   const [active, setActive] = React.useState(animate);
+  const isPresent = useIsPresent();
   return (
     <motion.div
       animate={animate && { y: 0 }}
       initial={animate && { y: 300 }}
       transition={{ type: "spring", damping: 20 }}
+      exit={{ height: 0 }}
       onAnimationComplete={() => setActive(false)}
+      className={cn(!isPresent && "bg-gray4 overflow-hidden")}
     >
       <RecordText
         animate={animate}
@@ -114,10 +135,37 @@ export const RecordText = ({
   dbKey,
   dbValue,
   animate,
+  active,
+  highlighted,
+  stale,
+  type,
   ...props
 }: RecordTextProps) => {
   return (
-    <RecordWrapper {...props}>
+    <motion.li
+      className={cn(
+        "flex gap-2 py-1 px-5 ring-1 ring-transparent relative",
+        active &&
+          "bg-gray1 shadow-md ring-neutral-950/15 py-4 px-8 -mx-4 rounded-lg",
+        highlighted && "text-blue10",
+        type === "active" && "bg-blue5 text-blue11",
+        type === "success" && "bg-green5 text-green11",
+        stale && "text-gray9",
+        stale && type !== "base" && "bg-gray4",
+      )}
+      style={{
+        transition: "all 0.3s, transform 0s, opacity 0s",
+      }}
+      {...props}
+    >
+      <span
+        className="absolute inset-0 w-0 overflow-hidden text-nowrap file-highlight"
+        data-key={dbKey}
+      >
+        <span className="px-5 bg-blue5 text-blue11 flex items-center h-full">
+          {String(dbKey).padStart(3, "0")}: {dbValue}
+        </span>
+      </span>
       <motion.span
         className="font-medium"
         layout={animate ? "position" : false}
@@ -126,7 +174,7 @@ export const RecordText = ({
       </motion.span>
       <motion.span layout={animate ? "position" : false}>{dbValue}</motion.span>
       {children}
-    </RecordWrapper>
+    </motion.li>
   );
 };
 
@@ -143,7 +191,7 @@ const HighlightDot = styled(motion.span, {
 });
 
 export const RecordWrapper = styled(motion.li, {
-  padding: "$1 $5",
+  padding: "2px $5",
   display: "flex",
   gap: "$2",
   border: "1px solid transparent",
@@ -152,7 +200,7 @@ export const RecordWrapper = styled(motion.li, {
   variants: {
     active: {
       true: {
-        background: "$gray2",
+        background: "$gray1",
         borderColor: "$gray8",
         borderRadius: "$base",
         padding: "$4 $8",

@@ -1,0 +1,30 @@
+It's really easy to overlook the way the internet works. In JavaScript, we can make software that talks to other computers on the internet simply using a `fetch` call:
+
+```js
+fetch("https://api.example.com/data")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+```
+
+But what's really happening under the hood when we do that? Let's find out!
+
+---
+
+## The Network Stack
+
+The network is made up of five different layers that build on top of each other to send and receive data. Starting from the highest abstraction, these layers are:
+
+1. Application Layer
+2. Transport Layer
+3. Network Layer
+4. Data Link Layer
+5. Physical Layer
+
+When we make a `fetch` call, we're operating at the highest level of the stack, the application layer. Most of the time, we're making an HTTP request, which means we're communicating with the other computer using HTTP (HyperText Transfer Protocol).
+
+HTTP effectively works like a contract between the two computers. It's an agreed-upon format for the data that we want to send and receive. For example, the format for sending a `GET` request to `https://api.example.com/data` would look something like:
+
+```
+GET /data HTTP/1.1
+Host: api.example.com
+```

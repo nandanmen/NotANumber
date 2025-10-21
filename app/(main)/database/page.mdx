@@ -1,0 +1,502 @@
+import { HardDrive } from "./_components/hard-drive";
+import { FileResizing } from "./_components/file-resizing";
+import {
+  FileDatabaseVisualizer,
+  FileDatabaseControls,
+} from "./_components/mutable-database";
+import { createStore } from "./_lib/file-database";
+import { FileSequence } from "./_components/file-sequence";
+import { Compaction } from "./_components/compaction";
+import { BuildIndex } from "./_components/build-index";
+import { Algorithm } from "./_components/algorithm";
+import { BalancedTree } from "./_components/balanced-tree/client";
+import { TreeControls } from "./_components/balanced-tree/controls";
+import { Script } from "./_components/script";
+import { SearchIndex } from "./_components/search-index";
+import { UpdateIndex } from "./_components/update-index";
+import { SparseIndex, SearchSparseIndex } from "./_components/sparse-index";
+import { LSM, LSMVisual, MobileWrapper, CompactionControls } from "./_components/lsm";
+
+If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
+
+A key-value database works more or less like objects in JavaScript—you can store values using a key and retrieve them later using that same key:
+
+```sh
+$ db set 'hello' 'world'
+$ db get 'hello'
+world
+```
+
+Let's find out how they work!
+
+---
+
+<ScrollGroup 
+  figure={<FileDatabaseVisualizer />}
+  state={createStore(
+    [
+      { type: "set", key: 1, value: "Lorem ipsum" },
+      { type: "set", key: 18, value: "dolor sit" },
+    ],
+    { mutable: true },
+  )}
+>
+
+<ScrollGroupSection>
+
+## The Humble File
+
+Databases were made to solve one problem:
+
+<ProblemStatement>
+
+How do we store data **persistently** and then **efficiently** look it up later?
+
+</ProblemStatement>
+
+The typical way to store any kind of data persistently in a computer is to use a <Annotation type="box"> _file_ </Annotation>. When we want to store data, we add the key-value pair to the file:
+
+<FileDatabaseControls mode={["add"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+When we want to look for a specific key, we iterate through the pairs to see if there's a matching key:
+
+<FileDatabaseControls mode={["search"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+For updates, we'll find the key and replace the value in-place:
+
+<FileDatabaseControls mode={["update"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+And for deletes, we'll delete the record from the file:
+
+<FileDatabaseControls mode={["delete"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+Easy! We're done right?
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+### Mutable Updates
+
+This approach, simple as it is, doesn't actually work very well in practice. The problem lies with the way we're doing updates and deletes—they're wholly inefficient.
+
+To a computer, our file looks something like this—nothing more than a long sequence of bytes:
+
+<FileSequence />
+
+When we go to update or delete a record, we're currently updating that record in-place, which means we potentially have to _move_ all of the data that comes after that record:
+
+<FileSequence updateable />
+
+In this case, updating the record `005` to "`adipiscing␣elit.␣vel␣mauris`" means moving all of the records that come after it by 11 bytes (the length of the added string "`␣vel␣mauris`"). This can quickly get really costly, especially as our database grows in size!
+
+---
+
+<ScrollGroup
+  figure={<FileDatabaseVisualizer />}
+  state={createStore([
+    { type: "set", key: 1, value: "Lorem ipsum" },
+    { type: "set", key: 18, value: "dolor sit" },
+  ])}
+>
+
+<ScrollGroupSection>
+
+### Append-Only Files
+
+One way to work around the update problem is to **make records immutable**. In other words, we add the constraint that we can only _add_ new records to the end of the file and never update or delete existing ones.
+
+With this approach, updates are treated the same as inserts—just add a new record to the end of the file:
+
+<FileDatabaseControls mode={["add", "update"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+But now we have another problem—there are duplicate keys in the file!
+
+To work around this, we have to change our search algorithm to look for the _last_ occurrence of the key instead of the first:
+
+<FileDatabaseControls mode={["search"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+To delete records, we create a special "tombstone" record that marks the key as deleted. There's no single way to do this, but one way is to use a special value like `null`:
+
+<FileDatabaseControls mode={["add", "delete"]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+And there we have it! We have a key-value database that uses a file as its storage mechanism. Using it, we can store, find, update, and delete key-value pairs.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+Now this implementation isn't perfect; right now, there are two major issues:
+
+1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. Not good!
+2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
+
+How can we fix these problems?
+
+---
+
+<ScrollGroup figure={<FileDatabaseVisualizer />} state={createStore([
+    { type: "set", key: 1, value: "Lorem ipsum" },
+    { type: "set", key: 18, value: "dolor sit" },
+    { type: "set", key: 7, value: "adipiscing elit." },
+    { type: "delete", key: 7 },
+    { type: "set", key: 10, value: "consectetur adipiscing elit." },
+    { type: "delete", key: 1 },
+  ])}>
+
+<ScrollGroupSection>
+
+## Keeping Files Small
+
+<ProblemStatement>
+
+**How do we make sure the file doesn't grow indefinitely?** Because we're using an append-only file, we need some mechanism to periodically "shrink" the file so it doesn't eventually take over our entire hard drive.
+
+</ProblemStatement>
+
+Take a look at our database here after a few updates and deletes:
+
+<FileDatabaseControls mode={[]} />
+
+<SmallOnly>
+  <FileDatabaseVisualizer />
+</SmallOnly>
+
+Our database file has six entries, but only two represent actual records—the rest are either deleted or contain stale data. If we can clear all the irrelevant data, we can shrink the file by over 66%!
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+### Segments and Compaction
+
+<InlineNote>
+
+Here's an idea: once a file exceeds a certain size, we'll <Annotation type="underline"> _close_ </Annotation> the file and create a new one. While the new file ingests new data (in the same way we've been doing so far), we'll _compact_ the old file by deleting all of its irrelevant data.
+
+<Note>
+
+Meaning, we stop adding new data to the file.
+
+</Note>
+
+</InlineNote>
+
+Here, we've set the maximum file size to seven records. Notice that the database is full—try clicking on "Add" to add a new record and notice what happens:
+
+<Compaction />
+
+Now, our database consists of two different files which we'll call **segments**. Each segment will usually become a lot smaller after compaction, which means we can merge them together as part of the compaction process.
+
+With that, we've made a mechanism to stop our database from growing indefinitely!
+
+---
+
+## Your First Index
+
+Our next problem is on search performance:
+
+<ProblemStatement>
+
+**How do we make searching fast?** Right now, we have to iterate through all of the records in the database to find a specific key. This is super slow!
+
+</ProblemStatement>
+
+What if we use _objects_? That's right, these little guys:
+
+```js
+const hashTable = {};
+```
+
+JavaScript objects, otherwise known as _hash tables_ or _dictionaries_, are really efficient at storing and looking up key-value pairs:
+
+```js
+const hashTable = {
+  hello: "world",
+  foo: "bar",
+  baz: "qux",
+};
+const value = hashTable["hello"]; // "world"
+```
+
+It doesn't matter how many records there are—the time it takes to look up and retrieve a value in a hash table is more or less constant. The catch is they must live _in memory_.
+
+---
+
+<Aside label="In-Memory vs. On-Disk">
+
+When you write a variable in your code, the computer will "remember" the value of that variable only for as long as the program is running.
+
+<Script>
+
+```js
+let x = 1;
+
+x = x + 1;
+console.log(x); // 2
+
+x = x + 1;
+console.log(x); // 3
+```
+
+</Script>
+
+This program will always print `2` and `3` because the value of `x` "resets" every time we run the program. This is because `x` is stored <Annotation type="underline"> _in-memory_ </Annotation>, and any value stored in memory is discarded when the program stops.
+
+If we want our data to "stick" between runs, we'll need to store it <Annotation type="underline">_on-disk_</Annotation>—in other words, a file.
+
+<Script mode="on-disk">
+
+```js
+import fs from "fs";
+
+let x = Number(fs.readFileSync("data.txt", "utf8")) || 1;
+
+x = x + 1;
+console.log(x);
+
+x = x + 1;
+console.log(x);
+
+fs.writeFileSync("data.txt", x);
+```
+
+</Script>
+
+This time, `x` will print `2` and `3` the first run, and `4` and `5` the second run.
+
+The tradeoff to persistence is performance—accessing data from memory is about 80x faster on average than accessing it from disk.
+
+</Aside>
+
+---
+
+Here's how the index will work. For every record that we have in our database, we'll store that record's **offset**—the number of bytes from the beginning of the file to the start of the record—in the index:
+
+<BuildIndex />
+
+The second record, `18: dolor sit`, for example, has an offset of 15 because:
+
+1. Each character is 1 byte large;
+2. The first record is 13 characters long (`1:Lorem ipsum`);
+3. The first record ends with a newline character, which is (at most) 2 bytes long;
+
+This gives us an offset of `13 + 2 = 15`.
+
+One thing to note is that we need an index for each segment because the offset is relative to the start of the file—in other words, the start of each segment.
+
+---
+
+### Searching With Indices
+
+Using an index, our search algorithm can now run a lot more efficiently:
+
+1. Starting at the most recent segment, look up the key in the index;
+2. If the key is found, read the record at the offset;
+3. If the key is not found, move on to the next segment;
+4. Repeat (2) and (3) until the key is found or all segments have been searched.
+
+<SearchIndex />
+
+---
+
+### Updating Indices
+
+An index is only useful if it's in sync with our data. Whenever we update, delete, or insert a record, we have to change the index accordingly:
+
+<UpdateIndex />
+
+Notice what this implies—**writing to the database is slower with an index!** This is one of the tradeoffs of using an index; we can search for data much faster at the cost of slower writes.
+
+---
+
+### Tradeoffs
+
+An index is great because it lets us query our database much faster, but there are some problems with our specific hash table implementation:
+
+1. **Keys have to fit in memory**. Since we're using an in-memory hash table as our index, all of the keys in our database must fit in memory. This means there's a limit on the number of keys we can store!
+2. **Range queries are inefficient**. Our index wouldn't help for search queries; if we wanted to find all the records between the keys `12` and `18`, for example, we'd have to iterate through the entire database!
+
+---
+
+## Sorted String Tables
+
+Here's an idea: what if we **ensure our database is always sorted by key?** By sorting our data, we can immediately make range queries fast:
+
+<Algorithm />
+
+---
+
+### Sparse Indices
+
+One benefit of sorting our data is that we no longer need to store the offset of _every_ record in memory.
+
+Take a look at this database with four records. Since there's no logical order to the records, there's no way to determine where a record is without storing its key or searching through the entire database.
+
+<SparseIndex />
+
+Knowing that `10` has an offset of `50` doesn't help us find where `18` is.
+
+---
+
+Now if these records were sorted, we could determine the location of each record using _any_ of the keys in the index, even if it's not the key we're looking for.
+
+Let's say our database is sorted but we only had the offset for the key `10`:
+
+<SparseIndex sorted />
+
+Let's say we want to find the key `18`. We know that `18` is greater than `10`, which means it must be after `10` in the database. In other words, we can start searching for `18` from `10`'s offset—`36` in this case.
+
+<SearchSparseIndex />
+
+While this is certainly slower than having the offset for `18` directly, it's still faster than looping through the database in its entirety.
+
+The real unlock here lies in being able to control the trade-off between memory and performance: **a denser index means faster lookups, but more memory usage**.
+
+---
+
+### Sorting in Practice
+
+Ensuring our database is always sorted is much easier said than done; by definition, sorting data requires moving around records as new ones get added—something that cannot be done efficiently when we're storing data on-disk. This brings us to our problem:
+
+<ProblemStatement>
+
+**How do we keep our data sorted _and_ append-only?** It's too slow to sort the data on-disk every time we add a new record; is there another way?
+
+</ProblemStatement>
+
+---
+
+The trick is to first **sort the data in memory**, and _then_ write it to disk.
+
+1. When we add a new record, add it to a sorted in-memory list;
+2. When our in-memory list gets too large, we'll write it to disk;
+3. When we want to read a record, we'll read the in-memory list first, and then the disk if necessary.
+
+<LSM />
+
+The data structure used to store the in-memory list is usually one optimized for sorted data like a **balanced binary search tree** or more commonly, a **skip list**.
+
+---
+
+Of course, the main downside of having some of your data in-memory is that it's not persistent—if the program crashes or the computer shuts down, all of the data in the in-memory list is lost.
+
+The fix here is thankfully pretty straightforward—every time we add a record to the list, **we also write it to an append-only file on disk**. This way, we have a backup in case a crash does happen (which it most certainly will).
+
+<LSM showLog />
+
+The append-only file doesn't need to be sorted nor does it need to have every record in the database; only the ones that are currently in memory.
+
+---
+
+<ScrollGroup
+  state={{
+    records: [{ key: 10, value: "Lorem ipsum" }],
+    diskRecords: [[]],
+  }}
+  figure={<LSMVisual />}
+>
+
+<ScrollGroupSection>
+
+With that, we have our very own key-value database! Let's recap how it works.
+
+Our database starts out empty. When we go to add a new record, we'll add it to a **sorted in-memory list**, keeping a copy in an append-only file in case of crashes.
+
+<MobileWrapper>
+  <LSMVisual index={0} />
+</MobileWrapper>
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+When the in-memory list gets too large, we'll _flush_ the list by writing all of the records to a file in sorted order. In the process, we'll keep note of each record's offset in an **index** so we can efficiently look them up later.
+
+<MobileWrapper>
+  <LSMVisual index={1} />
+</MobileWrapper>
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+When we want to look up a record, we'll first check the in-memory list. If the record isn't there, we'll check the index to see if it's in the on-disk file.
+
+<MobileWrapper>
+  <LSMVisual index={2} />
+</MobileWrapper>
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Once a file is saved to disk, it's considered **immutable** which means we can only ever read from the file and never update it. To work around this, we'll treat updates and deletes the same as inserting new records—add them to the in-memory list.
+
+<MobileWrapper>
+  <LSMVisual index={3} />
+</MobileWrapper>
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Treating updates and deletes as new records means our file will only ever grow larger. To prevent this, we'll occassionally _compact_ the on-disk files by deleting all duplicate records.
+
+<CompactionControls />
+
+<SmallOnly className="grid gap-5">
+  <Compaction />
+</SmallOnly>
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+## LSM Trees
+
+What we just built actually exists in the real world—it's called **an LSM or Log-Structured Merge Tree**.
+
+An LSM tree works by combining an in-memory list (often called a _memtable_) with an on-disk file (typically called a _sorted string table_ or SST) to create a really fast key-value database.
+
+LSM trees are the underlying data structure used for large-scale key-value databases like [Google's LevelDB](https://github.com/google/leveldb) and [Amazon's DynamoDB](https://aws.amazon.com/dynamodb/), and they have proven to perform really well at scale—on Prime Day 2020, DynamoDB peaked at 80 _million_ requests per second!
+
+Now, LSM trees aren't perfect, and they're certainly not the only way to structure a database. In fact, relational databases like PostgreSQL or MySQL use a completely different structure called a **B-Tree** to store their data—but that's a deep dive for another post.
+
+For now, thanks for reading!

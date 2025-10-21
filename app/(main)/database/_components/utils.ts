@@ -1,8 +1,6 @@
-import type { DatabaseRecord } from "./database";
-
 const ipsum =
   "dolor sit amet, consectetur adipiscing elit. Vestibulum varius vel mauris iaculis pharetra.".split(
-    " "
+    " ",
   );
 
 export const texts: string[] = [];
@@ -29,6 +27,8 @@ export const randomUnique = (min: number, max: number, exclude: number[]) => {
   return number;
 };
 
+type DatabaseRecord = [number, string];
+
 export const createRandomRecords = (len: number): DatabaseRecord[] => {
   const keys = [];
   const records: DatabaseRecord[] = [];
@@ -41,7 +41,7 @@ export const createRandomRecords = (len: number): DatabaseRecord[] => {
 };
 
 export const createRandomRecord = (
-  existingKeys: number[] = []
+  existingKeys: number[] = [],
 ): DatabaseRecord => {
   const key = randomUnique(1, 999, existingKeys);
   return [key, texts[random(0, texts.length - 1)]];
@@ -49,10 +49,10 @@ export const createRandomRecord = (
 
 export function pick<DataType>(
   array: DataType[],
-  exclude: Set<DataType>
+  exclude?: Set<DataType>,
 ): DataType {
   let item = array[random(0, array.length - 1)];
-  while (exclude.has(item)) {
+  while (exclude?.has(item)) {
     item = array[random(0, array.length - 1)];
   }
   return item;

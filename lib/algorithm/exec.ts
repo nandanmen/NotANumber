@@ -7,12 +7,12 @@ const clone = rfdc();
 export function exec<
   StateType,
   ParameterType extends unknown[],
-  ReturnValueType
+  ReturnValueType,
 >(
   algorithm: (
-    snapshotter: Pushable
+    snapshotter: Pushable,
   ) => (...args: ParameterType) => ReturnValueType,
-  inputs: ParameterType
+  inputs: ParameterType,
 ) {
   const snapshots = [] as Array<StateType & StateMetadata<ReturnValueType>>;
   const returnVal = algorithm({
