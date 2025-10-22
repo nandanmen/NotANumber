@@ -5,10 +5,10 @@ import { styled } from "~/stitches.config";
 import { SecondaryButton } from "./SecondaryButton";
 
 export const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   return (
     <Button
-      onClick={() => (theme === "dark" ? setTheme("light") : setTheme("dark"))}
+      onClick={() => (resolvedTheme === "dark" ? setTheme("light") : setTheme("dark"))}
     >
       <BiSun />
     </Button>
