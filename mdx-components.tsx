@@ -52,6 +52,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     InlineNote,
     Note,
     Annotation,
+    Callout: (props) => (
+      <div
+        className="bg-gray3 ring-1 ring-gray8 rounded-lg px-4 py-3 relative"
+        {...props}
+      />
+    ),
     ProblemStatement: (props) => {
       return (
         <div className="bg-gray3 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
