@@ -6,7 +6,7 @@ export type Token = TokensResult["tokens"][number][number];
 export async function getTokens(
   code: string,
   lang: BundledLanguage,
-  theme = "github-light"
+  theme = "github-light",
 ): Promise<Token[][]> {
   const result = await codeToTokens(code, {
     lang,
@@ -45,7 +45,7 @@ export async function CodeBlockRaw({
             className={cn(
               "min-h-[21px] -mx-4 px-4 relative",
               (isAddition || isHighlighted) && "bg-blue3",
-              isDeletion && "bg-green3"
+              isDeletion && "bg-green3",
             )}
             key={index}
           >
@@ -55,7 +55,7 @@ export async function CodeBlockRaw({
                 className={cn(
                   "absolute -left-[20px] pl-[6px] w-[20px] block border-r select-none",
                   isAddition && "bg-blue3 text-blue11 border-blue7",
-                  isDeletion && "bg-green3 text-green11 border-green7"
+                  isDeletion && "bg-green3 text-green11 border-green7",
                 )}
               >
                 {isAddition ? "+" : "-"}
@@ -94,14 +94,14 @@ export function CodeBlockMain({
   return (
     <div
       className={cn(
-        "rounded-md ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray3",
-        diff && "-ml-4 pl-4"
+        "rounded-lg ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray3",
+        diff && "-ml-4 pl-4",
       )}
     >
       <pre
         className={cn(
           "relative p-4 text-sm leading-normal",
-          diff && "border-l border-gray7"
+          diff && "border-l border-gray7",
         )}
       >
         <CodeBlockRaw diff={diff} highlight={highlight} lang={lang}>
