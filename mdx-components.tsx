@@ -17,6 +17,7 @@ import { SkipLink } from "./components/mdx/skip-link";
 import { Wide } from "./components/mdx/Wide";
 import { Aside } from "./components/mdx/aside";
 import { cn } from "./lib/cn";
+import Link from "next/link";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -43,12 +44,27 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     hr: () => (
       <hr className="border-gray7 border-dashed md:-mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
     ),
-    a: (props) => (
-      <a
-        className="text-gray11 underline underline-offset-2 hover:text-green9"
-        {...props}
-      />
-    ),
+    a: ({ href, ...props }) => {
+      const isExternal = href?.startsWith("http");
+      if (isExternal) {
+        return (
+          <a
+            className="text-gray11 underline underline-offset-2 hover:text-green9"
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            {...props}
+          />
+        );
+      }
+      return (
+        <Link
+          href={href}
+          className="text-gray11 underline underline-offset-2 hover:text-green9"
+          {...props}
+        />
+      );
+    },
     InlineNote,
     Note,
     Annotation,
