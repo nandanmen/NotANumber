@@ -1,3 +1,5 @@
+import { Drawing, Checkmarks } from './_components/drawing'
+
 The SVG path element lets you draw any kind of shape you want:
 
 ```html
@@ -10,63 +12,98 @@ But after drawing the shape, how do you make it come alive? How do you animate i
 
 <Callout>
 
-**Heads up!** This post will not cover how you go about drawing the shape in the first place. If you're not familiar with path commands and the `d` attribute, check out my post on [SVG paths](/svg-paths).
+**Heads up!** This post will not cover how to draw the shape in the first place. If you're not familiar with path commands and the `d` attribute, check out my post on [SVG paths](/svg-paths).
 
 </Callout>
 
 ---
 
-## How Paths Get Drawn
+## Path Drawing
 
-Before we get into the animations themselves, we first need to understand two important SVG properties: `stroke` and `fill`.
+Perhaps the most common of path animations is the path drawing animation:
 
-To draw a path, the browser first executes the commands in the `d` attribute, in sequential order, creating a sort of "skeleton" of the shape:
+<Drawing />
+
+This animation works through two SVG properties working together: `stroke-dasharray` and `stroke-dashoffset`. But what do these properties do? Let's take a look!
 
 ---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+### How Paths Get Drawn
+
+To draw a path, the browser first draws a sort-of "skeleton" of the shape using the commands set in the path's `d` attribute:
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
 
 Then, the browser fills in the area covered by the shape, using the color set by the `fill` property (or black if no fill is set).
 
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Finally, if the path has its `stroke` property set, a line will be drawn centered along the shape's skeleton, using whatever color `stroke` is set to (moving forwards, I'll refer to this line as the path's "stroke").
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
 ---
 
-Finally, if the path has its `stroke` property set, a line will be drawn along the shape's skeleton, using whatever color `stroke` is set to.
+<ScrollGroup>
 
----
+<ScrollGroupSection>
 
-### Path-based vs. Fill-based shapes
+The `stroke-dasharray` property lets you draw the stroke as a series of dashes instead of one continuous line:
 
-Since both `fill` and `stroke` can be used to paint a shape with color, it's technically possible to create idential shapes using just fill _or_ just stroke.
+```html
+<path
+  stroke="blue"
+  stroke-dasharray="10"
+/>
+```
+
+The number `10` here represents the length of the dash itself _and_ the gap between each dash. In other words, we're telling the browser to draw the stroke with dashes of length 10, separated 10 units apart.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Now if you make the `stroke-dasharray` property big enough, you get a path that's indistinguishable from the original shape.
 
 ```
-fill based vs stroke based
+slider
 ```
 
----
+</ScrollGroupSection>
 
-## drawing animations
+<ScrollGroupSection>
 
-a shape's stroke can be animated to make it look like the shape is being drawn:
+This isn't super interesting on its own, until you remember that a large-enough dash also means a large-enough _gap_ that we can use to hide the shape altogether—if only we can move the stroke.
 
----
+Thankfully, we can! Using—that's right—the `stroke-dashoffset` property:
 
-the main way to do this is by using the `stroke-dasharray` property. this property wasn't initially intended for this kind of animation—it was originally meant to create dashed borders.
+```html
+<path
+  stroke="blue"
+  stroke-dasharray="20"
+  stroke-dashoffset="20"
+/>
+```
 
-if you set `stroke-dasharray` to a single number, it'll create dashes and gaps of equal length, equal to the number that you set:
+</ScrollGroupSection>
 
----
+<ScrollGroupSection>
 
-if we increase `stroke-dasharray` so that the dash is as big as the shape, we get our initial shape back. not super interesting so far.
+The dash never really want away here—it's just outside of the bounds of the shape. If we now animate the `stroke-dashoffset` property down to zero, we get our drawing animation!
 
-there's another property called `stroke-dashoffset` that lets you change where the first dash starts:
+</ScrollGroupSection>
 
----
-
-positive values of `stroke-dashoffset` will actually move the starting dash to the *left*. think of it as changing the starting position of the stroke. setting `stroke-dashoffset` to 20 means we want to start drawing from where 20 used to be; hence moving the entire stroke to the left.
-
-if we set `stroke-dashoffset` to the same number as `stroke-dasharray`, our shape will be filled by the "gap" between dashes—hence disappearing completely:
-
----
-
-this creates the perfect starting point for our animation. from here, if we animate the `stroke-dashoffset` property down to zero, we get the drawing effect that we want:
+</ScrollGroup>
 
 ---
 
@@ -89,6 +126,24 @@ one thing that's common in svg paths is to use rounded ends set with the `stroke
 ---
 
 to make it work in this case, we need to extend the `stroke-dasharray` just a little longer (say, 1.1).
+
+---
+
+### Stroke-based vs. fill-based
+
+There's just one requirement for this stroke trick to work: the SVG must be **stroke-based**, not fill-based. Take a look at these two identical checkmarks:
+
+<Checkmarks />
+
+We're using the `stroke-dashoffset` and `stroke-dasharray` trick on both SVGs here, but the only SVG animating is the one on the left. How come?
+
+---
+
+If we make each path's skeleton visible, we can see what's going on here:
+
+<Checkmarks />
+
+The SVG on the left is drawn using a stroke, while the SVG on the right is drawn using a fill.
 
 ---
 
