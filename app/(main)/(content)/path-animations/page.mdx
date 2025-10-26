@@ -107,7 +107,7 @@ The dash never really want away here—it's just outside of the bounds of the sh
 
 ---
 
-### the path length shortcut
+<Aside label="The pathLength shortcut">
 
 the catch with this is that the right value for `stroke-dasharray` and `stroke-dashoffset` changes depending on the shape.
 
@@ -127,6 +127,8 @@ one thing that's common in svg paths is to use rounded ends set with the `stroke
 
 to make it work in this case, we need to extend the `stroke-dasharray` just a little longer (say, 1.1).
 
+</Aside>
+
 ---
 
 ### Stroke-based vs. fill-based
@@ -135,15 +137,58 @@ There's just one requirement for this stroke trick to work: the SVG must be **st
 
 <Checkmarks />
 
-We're using the `stroke-dashoffset` and `stroke-dasharray` trick on both SVGs here, but the only SVG animating is the one on the left. How come?
+We're using the `stroke-dashoffset` and `stroke-dasharray` trick on both checkmarks here, but only the checkmark on the left is animating properly. 
+
+How come?
 
 ---
 
-If we make each path's skeleton visible, we can see what's going on here:
+If we make each path's skeleton visible, we can see what's going on:
 
-<Checkmarks />
+<Checkmarks showSkeleton />
 
-The SVG on the left is drawn using a stroke, while the SVG on the right is drawn using a fill.
+The path on the left is drawn using a stroke, while the path on the right is drawn using a fill. Using `stroke-dasharray` on a fill-based path doesn't actually do anything—after all, there's no stroke to apply the dashes to.
+
+---
+
+In code, we can tell if a path is fill-based or stroke-based by checking if its color comes from the `fill` attribute or the `stroke` attribute:
+
+```html
+<!-- stroke based -->
+<path
+  d="M7 13L10 16L17 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+/>
+```
+
+```html
+<!-- fill based -->
+<path
+  d="M17.6585 7.24744C18.0741 ..."
+  fill="currentColor"
+  fill-rule="evenodd"
+  clip-rule="evenodd"
+/>
+```
+
+---
+
+In Figma, we can do the same by seeing if the vector has its fill or stroke set:
+
+```
+figma drawing
+```
+
+This is relevant because Figma's `fill` and `stroke` styles map 1-to-1 to SVG attributes when you export vectors to SVG.
+
+<Callout>
+
+I've written extensively on how Figma's SVG export works in my SVG course, [Interactive SVG Animations](https://svg-animations.how). Check out the course or the [corresponding blog post](https://courses.nan.fyi/blog/svg/animating-figma-exports) if you're interested!
+
+</Callout>
 
 ---
 

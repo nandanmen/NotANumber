@@ -70,7 +70,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Annotation,
     Callout: (props) => (
       <div
-        className="bg-gray3 ring-1 ring-gray8 rounded-lg px-4 py-3 relative"
+        className="bg-gray3 border border-borderStrong border-dashed rounded-lg px-4 py-3.5 relative"
         {...props}
       />
     ),
