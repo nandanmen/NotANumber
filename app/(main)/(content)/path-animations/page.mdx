@@ -1,0 +1,362 @@
+import { Drawing, Checkmarks } from './_components/drawing'
+
+The SVG path element lets you draw any kind of shape you want:
+
+```html
+<svg width="100%" height="100%">
+  <path d="M 0 0 L 100 100" />
+</svg>
+```
+
+But after drawing the shape, how do you make it come alive? How do you animate it, and how might you use it for other effects? Let's find out!
+
+<Callout>
+
+**Heads up!** This post will not cover how to draw the shape in the first place. If you're not familiar with path commands and the `d` attribute, check out my post on [SVG paths](/svg-paths).
+
+</Callout>
+
+---
+
+## Path Drawing
+
+Perhaps the most common of path animations is the path drawing animation:
+
+<Drawing />
+
+This animation works through two SVG properties working together: `stroke-dasharray` and `stroke-dashoffset`. But what do these properties do? Let's take a look!
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+### How Paths Get Drawn
+
+To draw a path, the browser first draws a sort-of "skeleton" of the shape using the commands set in the path's `d` attribute:
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Then, the browser fills in the area covered by the shape, using the color set by the `fill` property (or black if no fill is set).
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Finally, if the path has its `stroke` property set, a line will be drawn centered along the shape's skeleton, using whatever color `stroke` is set to (moving forwards, I'll refer to this line as the path's "stroke").
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+The `stroke-dasharray` property lets you draw the stroke as a series of dashes instead of one continuous line:
+
+```html
+<path
+  stroke="blue"
+  stroke-dasharray="10"
+/>
+```
+
+The number `10` here represents the length of the dash itself _and_ the gap between each dash. In other words, we're telling the browser to draw the stroke with dashes of length 10, separated 10 units apart.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Now if you make the `stroke-dasharray` property big enough, you get a path that's indistinguishable from the original shape.
+
+```
+slider
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+This isn't super interesting on its own, until you remember that a large-enough dash also means a large-enough _gap_ that we can use to hide the shape altogether—if only we can move the stroke.
+
+Thankfully, we can! Using—that's right—the `stroke-dashoffset` property:
+
+```html
+<path
+  stroke="blue"
+  stroke-dasharray="20"
+  stroke-dashoffset="20"
+/>
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+The dash never really want away here—it's just outside of the bounds of the shape. If we now animate the `stroke-dashoffset` property down to zero, we get our drawing animation!
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+<Aside label="The pathLength shortcut">
+
+the catch with this is that the right value for `stroke-dasharray` and `stroke-dashoffset` changes depending on the shape.
+
+---
+
+we can avoid the need to measure each shape's length by using the setting the `pathLength` property on the element. unlike what you might expect, this attribute doesn't change how the path is drawn at all (e.g. pathLength `0.5` won't make the browser draw half the shape). instead, it *sets* the length of the shape to a certain value so that `stroke-dasharray` and `stroke-dashoffset` can be relative to this value.
+
+for example, if we set `pathLength` to 1, then setting `stroke-dasharray` to 1 will create dashes and gaps equal to the entire span of the path.
+
+---
+
+with this, we don't need to guess what the correct value is. if we set a value to `pathLength` and ensure both `stroke-dasharray` and `stroke-dashoffset` are set to the same value, we will always get the right number.
+
+one thing that's common in svg paths is to use rounded ends set with the `stroke-linecap` property. these rounded ends are *not* considered as part of the path, so if we set pathLength to 1 and `stroke-dasharray` to 1, we'll find that the dash is just a tad short.
+
+---
+
+to make it work in this case, we need to extend the `stroke-dasharray` just a little longer (say, 1.1).
+
+</Aside>
+
+---
+
+### Stroke-based vs. fill-based
+
+There's just one requirement for this stroke trick to work: the SVG must be **stroke-based**, not fill-based. Take a look at these two identical checkmarks:
+
+<Checkmarks />
+
+We're using the `stroke-dashoffset` and `stroke-dasharray` trick on both checkmarks here, but only the checkmark on the left is animating properly. 
+
+How come?
+
+---
+
+If we make each path's skeleton visible, we can see what's going on:
+
+<Checkmarks showSkeleton />
+
+The path on the left is drawn using a stroke, while the path on the right is drawn using a fill. Using `stroke-dasharray` on a fill-based path doesn't actually do anything—after all, there's no stroke to apply the dashes to.
+
+---
+
+In code, we can tell if a path is fill-based or stroke-based by checking if its color comes from the `fill` attribute or the `stroke` attribute:
+
+```html
+<!-- stroke based -->
+<path
+  d="M7 13L10 16L17 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+/>
+```
+
+```html
+<!-- fill based -->
+<path
+  d="M17.6585 7.24744C18.0741 ..."
+  fill="currentColor"
+  fill-rule="evenodd"
+  clip-rule="evenodd"
+/>
+```
+
+---
+
+In Figma, we can do the same by seeing if the vector has its fill or stroke set:
+
+```
+figma drawing
+```
+
+Figma's `fill` and `stroke` styles map directly to SVG's `fill` and `stroke` attributes when you export vectors, so it's important to check there first!
+
+<Callout>
+
+I've written extensively on how Figma's SVG export works in my SVG course, [Interactive SVG Animations](https://svg-animations.how). Check out the course or the [specific blog post](https://courses.nan.fyi/blog/svg/animating-figma-exports) if you're interested!
+
+</Callout>
+
+---
+
+## Animating Along Paths
+
+When we use `translate` to animate movement, we're limited to moving along a straight line:
+
+```
+translate animation
+```
+
+But if we animate along a _path_, we can mimic more natural movement:
+
+```
+along path animation
+```
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+The `offset-path` property lets you place an element—_any_ element, HTML or SVG—on a path of your choosing:
+
+```css
+.box {
+  offset-path: path('M 0 0 L 100 100');
+}
+```
+
+The `offset-distance` property lets us choose where the element is placed along the path. We can use percentage values here to make it relative to whatever length the path has:
+
+```css
+.box {
+  offset-path: path('M 0 0 L 100 100');
+  offset-distance: 50%;
+}
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Like other CSS properties, we can animate `offset-distance` to make it move along the path:
+
+```css
+.box {
+  offset-path: path('M 0 0 L 100 100');
+  offset-distance: 0%;
+  transition: offset-distance 1s ease-in-out;
+}
+
+.box.active {
+  offset-distance: 100%;
+}
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+By default, the element will automatically rotate to be perpendicular to the path wherever it is on the path. Usually this is what we want; but in case it isn't, we can change it using the `offset-rotate` property:
+
+```css
+.box {
+  offset-path: path('M 0 0 L 100 100');
+  offset-rotate: 0deg;
+}
+```
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+### Creating lighting effects
+
+One common SVG animation is a ball of light traveling through a path:
+
+```
+light animation
+```
+
+The typical way to implement this is to use a linear gradient that rotates around the approximate shape of the path, and then masking the gradient with the path:
+
+```
+light animation mask
+```
+
+this works but leads to inconsistent velocities where the light will be much faster at certain points of the path:
+
+
+to fix this, we need to make the linear gradient move along the path, using the `offset-distance` property we were just using.
+
+first, we'll make the ball using a combination of a circle and a radial gradient:
+
+```css
+.ball {
+  background: radial-gradient(circle, red, blue);
+}
+```
+
+then, we'll put the ball on the path, using the path as a mask to cut out everything outside of the path.
+
+
+then we animate `offset-distance` to make it move:
+
+
+we're animating `offset-distance` to a little more than 100 here to make the gradient hide completely when it reaches the end of the path.
+
+---
+
+### svg masks
+
+you can cut out parts of an svg by using another svg as a mask. as we saw just now with the lighting effect, this can be a powerful trick for making animations.
+
+---
+
+the main drawback to the path drawing animation trick is that it relies on `stroke-dasharray` to work. this means the svg must be drawn with a stroke and not a fill.
+
+this can feel pretty limiting, since strokes are fundamentally symmetric. if we want to animate a tick that tapers off a bit at the end, we can't do it using `stroke-dasharray` alone.
+
+---
+
+## Path Morphing
+
+One animation that's only possible with SVG is morphing: when one shape smoothly transforms into another:
+
+```
+morphing animation
+```
+
+This works because most SVG attributes, **including the `d` attribute**, are animatable.
+
+---
+
+Let's take a step back to talk about the `d` attribute.
+
+We won't get into the specifics of the attribute here, but the main thing you need to know is that it's a sequence of commands, with each command defined by the following syntax:
+
+```
+<command code> <arguments>
+```
+
+For example, the following `d` attribute says "move the cursor to the point `(10,10)` and then draw a line to the point `(20,10)`":
+
+```html
+<path d="M 10 10 L 20 10" />
+```
+
+The key here is that **all of the command's arguments are animatable**. To turn this line to a diagonal line, for example, we'll animate the arguments of the `L` command to `20 20`:
+
+```html
+<path d="M 10 10 L 20 20" />
+```
+
+The `d` attribute is animatable as long as **only the arguments to a command change**. If the command code itself changes or the sequence of commands changes, the animation won't work.
+
+---
+
+## Animating Strokes
+
+I'm not a Threads user, but I've always loved their refresh animation:
+
+```
+threads refresh animation
+```
+
+It might seem tricky at first because the stroke is "morphing" as it moves 

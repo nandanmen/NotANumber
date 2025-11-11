@@ -1,0 +1,18 @@
+.draw {
+  animation-name: draw;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes draw {
+  40% {
+    stroke-dashoffset: -16;
+  }
+  80% {
+    stroke-dashoffset: -32;
+  }
+  100% {
+    stroke-dashoffset: -32;
+  }
+}

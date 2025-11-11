@@ -5,7 +5,7 @@ import { cn } from "~/lib/cn";
 import { motion } from "motion/react";
 import { Popover } from "./popover";
 import IsEmail from "isemail";
-import { subscribe } from "../subscribe";
+import { subscribe } from "app/(main)/subscribe";
 
 export function Subscribe() {
   const [isOpen, setIsOpen] = useState(false);

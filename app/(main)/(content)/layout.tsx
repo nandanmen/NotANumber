@@ -3,35 +3,8 @@ import Link from "next/link";
 import { PostsFooter } from "../footer";
 import { XIcon } from "../posts";
 import { Subscribe } from "./subscribe";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Build Your Own Database",
-  description:
-    "A step-by-step guide to building a key-value database from scratch.",
-  authors: [
-    {
-      name: "Nanda Syahrasyad",
-      url: "https://twitter.com/nandafyi",
-    },
-  ],
-  twitter: {
-    card: "summary_large_image",
-    title: "Build Your Own Database",
-    description:
-      "A step-by-step guide to building a key-value database from scratch.",
-    creator: "@nandafyi",
-  },
-  openGraph: {
-    title: "Build Your Own Database",
-    description:
-      "A step-by-step guide to building a key-value database from scratch.",
-    url: "https://nan.fyi/database",
-    siteName: "Not a Number",
-  },
-};
-
-export default async function BuildADatabasePage({
+export default async function ContentLayout({
   children,
 }: {
   children: ReactNode;
@@ -48,15 +21,6 @@ export default async function BuildADatabasePage({
           </header>
         </div>
         <article className="p-6 pt-16 md:p-8 md:pt-[89px] lg:p-10 lg:pt-[105px] grid grid-cols-[1fr_100%_1fr] md:grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] gap-y-5 leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch] pb-24 md:pb-24 lg:pb-32">
-          <header className="my-10 !max-w-full space-y-2">
-            <h1 className="text-[52px] md:text-[80px] font-serif leading-[1]">
-              Build Your Own Database
-            </h1>
-            <p className="text-gray11">
-              A step-by-step guide to building a key-value database from
-              scratch.
-            </p>
-          </header>
           {children}
         </article>
         <span className="text-gray10 hidden md:block">
