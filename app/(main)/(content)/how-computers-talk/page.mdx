@@ -1,30 +1,274 @@
 It's really easy to overlook the way the internet works. In JavaScript, we can make software that talks to other computers on the internet simply using a `fetch` call:
 
 ```js
-fetch("https://api.example.com/data")
-  .then((response) => response.json())
-  .then((data) => console.log(data));
+fetch("https://nan.fyi")
+  .then((response) => response.text())
+  .then((html) => console.log(html)); // html of this web page!
 ```
 
 But what's really happening under the hood when we do that? Let's find out!
 
 ---
 
-## The Network Stack
+## Domain Name Resolution
 
-The network is made up of five different layers that build on top of each other to send and receive data. Starting from the highest abstraction, these layers are:
+For starters, computers don't actually use human-readable names like `nan.fyi` or `google.com` to refer to websites. Instead, they use a sequence of numbers called an **IP address**.
 
-1. Application Layer
-2. Transport Layer
-3. Network Layer
-4. Data Link Layer
-5. Physical Layer
+Before your computer can connect to a website, it first has to _convert_ the domain name into an IP address. `google.com`, for example, corresponds to the IP address `142.250.73.110`.
 
-When we make a `fetch` call, we're operating at the highest level of the stack, the application layer. Most of the time, we're making an HTTP request, which means we're communicating with the other computer using HTTP (HyperText Transfer Protocol).
+<Callout>
 
-HTTP effectively works like a contract between the two computers. It's an agreed-upon format for the data that we want to send and receive. For example, the format for sending a `GET` request to `https://api.example.com/data` would look something like:
+Try entering `142.250.73.110` into your browser's address bar. You'll end up in the Google home page!
+
+</Callout>
+
+This conversion process is called **domain name resolution** and it's handled by a system called, rather appropriately, the **Domain Name System** (DNS for short).
+
+---
+
+### The DNS Lookup Process
+
+The DNS lookup process effecively boils down to this JavaScript code:
+
+```js
+const ipAddresses = {
+  "google.com": "142.250.73.110",
+  "nan.fyi": "127.0.0.1",
+  // other domain names and their corresponding IP addresses...
+};
+const ipAddress = ipAddresses["google.com"];
+console.log(ipAddress); // 142.250.73.110
+```
+
+Seems pretty straightforward! And it would be, if it weren't for the fact that there are millions of domains and tens of millions of computers looking up IP addresses _every second_.
+
+This level of scale doesn't fit in a single server. So:
+
+<ProblemStatement>
+
+How do we organize our table to handle _tens of millions_ of requests per second?
+
+</ProblemStatement>
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+One approach would be to **divide up the domain names into smaller groups, and have dedicated servers for each group**. Thankfully, there's a pretty clear way to group domains: their _suffixes_.
+
+For example, `google.com` and `youtube.com` both end with `.com`, so they can be grouped together. Similarly, `nan.fyi` and `example.fyi` both end with `.fyi`, so they can be grouped together too.
+
+Each group of servers now have a much smaller table to work with!
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+This brings another problem though:
+
+<ProblemStatement>
+
+How does our computer know _where_ the servers for each suffix are?
+
+</ProblemStatement>
+
+Not only are there hundreds of possible suffixes, the list of suffixes and the IP addresses of the servers handling each suffix are constantly changing too. Imagine needing to update every computer on the internet every time the list of suffixes or IP addresses changes!
+
+One way to fix this is to have an unchanging set of **root servers** that _point_ to the servers handling each suffix. With this, our computers only need to know about the root servers, and the root servers will know where to find the servers for each suffix.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+Putting everything together, we get our final lookup algorithm:
+
+1. Using the suffix of the domain, ask the root servers for the IP address of the group handling that suffix;
+2. Using the IP address of the group, ask the group's servers for the IP address of the domain.
 
 ```
-GET /data HTTP/1.1
-Host: api.example.com
+dns visual
 ```
+
+---
+
+<Aside label="Resolvers and Authoritative Servers">
+
+There are two additional layers to the DNS lookup process that I omitted for simplicity: **DNS resolvers** and **authoritative servers**.
+
+**A DNS resolver is a server dedicated to performing the DNS lookup process**. In practice, DNS lookup isn't something your computer does on its own; instead, it asks a DNS resolver to do it for them.
+
+In other words, your computer doesn't keep the IP addresses of the root servers—only the address of the DNS resolver it should ask. In MacOS, you can check the address of your DNS resolver by running `scutil --dns`:
+
+```bash
+~ scutil --dns
+DNS configuration
+
+resolver #1
+  nameserver[0] : 2001:568:ff09:10c::67
+  nameserver[1] : 2001:568:ff09:10a::116
+  nameserver[2] : 192.168.1.254
+  if_index : 15 (en1)
+  flags    : Request A records, Request AAAA records
+  reach    : 0x00000002 (Reachable)
+
+...
+```
+
+Another layer is the **authoritative server**. In practice, the "suffix servers" don't store the IP addresses of the domains they're responsible for; instead, they store the IP address of the authoritative server for that domain.
+
+The authoritative server keeps what's called the domain's **zone file**, which contains the IP address of the domain, the subdomains, and other information about the domain.
+
+This additional layer of indirection exists because there's more to DNS than just the IP address of a domain. Email, for example, requires a dedicated DNS record (called an MX record) to be set so that servers know where to send emails to.
+
+</Aside>
+
+---
+
+## Routing
+
+Great! At this point, we've converted the domain name into an IP address. Now how do we get data from our computer to that IP address?
+
+---
+
+<ScrollGroup>
+
+<ScrollGroupSection>
+
+### A Little Internet
+
+Let's say you have a network of four computers that you want to connect to each other. One way to do this is to physically connect each computer—either through cables or a wireless technology of your choosing—and have every computer save the IP address of every other computer in the network.
+
+Then, when a computer wants to send data to another computer, it can lookup the IP address of the other computer and send it along the physical connection.
+
+```
+send button
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+This is... fine, at least until you add a fifth computer to the mix:
+
+```
+add button
+```
+
+Now you have to update the previous four computers in the network to include the IP address of the new computer. If we add a sixth, we have to update all five computers; a 7th, all six, and so on.
+
+As you might imagine, this quickly becomes impractical!
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+One way to fix this is to have a dedicated central computer whose sole purpose is to _connect_ the computers in the network to each other. In this setup, the computers only need to be physically connected to the central computer.
+
+When a computer wants to send data to another, it'll send it to the central computer with the destination IP address. Since this central computer knows all of the IP addresses in the network, it can correctly _route_ the data to its destination.
+
+```
+send button
+```
+
+We'll call this central computer a **router** because, er, it routes.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Let's introduce another network to the mix.
+
+Here, we have two networks, Network 1 and Network 2, each with four connected computers. The routers of the two networks are physically connected to each other.
+
+With this new network, we'll need to update the hash tables in each router to allow data to be sent to computers in the other network. One option is to simply **add the IP addresses of the computers in the other network to the hash table.**
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+This works, but doesn't really make sense—the router in the other network already knows the IP addresses of their computers, so why should we duplicate?
+
+What we can do instead is to change our IP address format to **include the number of the network the IP address belongs to**:
+
+```
+1.1 -> Network 1, Computer 1
+2.3 -> Network 2, Computer 3
+```
+
+Now, we can change the logic in the router to check the _prefix_ first. If the destination IP address starts with "1", it's in Network 1; if it starts with "2", it's in Network 2.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+In this setup, if computer `1.1` wants to send data to computer `2.3`, it will:
+
+1. Send the data to the router with the destination IP address `2.3`;
+2. The router will see the destination is in network 2, and sends it to the router in Network 2;
+3. The router in Network 2 will see the destination is computer `2.3`, and sends it to the computer.
+
+```
+send button
+```
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+### Autonomous Systems
+
+In this little internet, it's possible for every router in the network to know about every other router because there are only three routers. In the real world, this is not the case—there are **hundreds of millions of routers** in the Internet.
+
+To keep things organized, routers in the Internet are organized into smaller networks called **Autonomous Systems** (AS for short). Each AS is owned and operated by some governing body, such as hosting providers (Google, Amazon, Cloudflare), ISPs (Telus, Bell), or universities.
+
+Most traffic in the Internet has to go through several ASes. For example, data between my computer and this website has to go through Telus's AS (my ISP) and Amazon's AS (where the website is hosted).
+
+---
+
+Traffic between ASes is handled by a group of routers called **border routers**. These are routers dedicated exclusively to handling traffic moving in/out its AS.
+
+If the networks in our little internet were ASes for example, you can think of border routers as the routers that connect the ASes to each other:
+
+```
+border router visual
+```
+
+This frees up our other router to focus on handling traffic within the AS.
+
+---
+
+Organizing networks into ASes eases the burden on all the routers in the network. When getting data out of an AS:
+
+- Routers within an AS only need to get traffic to the border routers;
+- Border routers only need to get traffic to other ASes;
+- Border routers of the other AS can handle routing traffic into the right computer within its AS.
+
+```
+some AS visual with border routers
+```
+
+---
+
+## Border Gateway Protocol
+
+This routing system works under one assumption: that every border router knows how to get to every other border router in the Internet. But, _how_ do they?
+
+<ProblemStatement>
+
+**How do border routers know how to get to every other border router in the Internet?** Is it a manually controlled list, or is there a more automated way?
+
+</ProblemStatement>
+
+---
+
+This isn't a super intuitive thing to figure out.
+
+First, while ASes help drastically reduce the number of routers that need to know about each other, there are still **around 90 thousand ASes** in the Internet.
+
+Second, not every AS is directly connected to every other AS. To get from one AS to another, you'd often have to go through multiple intermediate ASes.

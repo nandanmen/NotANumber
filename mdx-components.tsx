@@ -36,7 +36,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: CodeBlock,
     ul: (props) => (
       <ul
-        className="list-none [&>li]:grid [&>li]:grid-cols-[26px_1fr] [&>li]:before:content-['–'] [&>li]:before:text-gray11"
+        className="list-none relative pl-[26px] [&>li]:before:content-['–'] [&>li]:before:text-gray11 [&>li]:before:absolute [&>li]:before:left-0"
         {...props}
       />
     ),
@@ -76,11 +76,15 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     ProblemStatement: (props) => {
       return (
-        <div className="bg-gray3 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
+        <div className="rounded-t-lg">
           <header>
-            <h4 className="font-medium text-gray11">Problem</h4>
+            <h4 className="bg-gray3 font-medium text-gray11 text-sm px-4 py-1 rounded-t-lg border border-gray7 border-b-0 -mx-px -mb-1.5 pb-2.5">
+              Problem
+            </h4>
           </header>
-          <div>{props.children}</div>
+          <div className="bg-gray2 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
+            {props.children}
+          </div>
         </div>
       );
     },
