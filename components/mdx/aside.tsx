@@ -5,7 +5,7 @@ export function Aside({
   return (
     <details className="!col-start-1 !col-span-3 !max-w-[initial] -m-4 rounded-xl bg-gray5 group">
       <summary className="p-4 md:p-6 list-none">
-        <div className="flex items-center gap-1.5 w-[min(60ch,100%)] lg:w-[min(900px,100%)] mx-auto">
+        <div className="flex items-center gap-2 w-[min(60ch,100%)] lg:w-[min(900px,100%)] mx-auto">
           <svg
             aria-hidden="true"
             width="20"

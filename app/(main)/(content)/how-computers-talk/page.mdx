@@ -208,7 +208,7 @@ Now, we can change the logic in the router to check the _prefix_ first. If the d
 In this setup, if computer `1.1` wants to send data to computer `2.3`, it will:
 
 1. Send the data to the router with the destination IP address `2.3`;
-2. The router will see the destination is in network 2, and sends it to the router in Network 2;
+2. The router sees the IP address starts with "2", so it sends it to the router in Network 2;
 3. The router in Network 2 will see the destination is computer `2.3`, and sends it to the computer.
 
 ```
@@ -223,17 +223,21 @@ send button
 
 ### Autonomous Systems
 
-In this little internet, it's possible for every router in the network to know about every other router because there are only three routers. In the real world, this is not the case—there are **hundreds of millions of routers** in the Internet.
+In the real world, these little networks are called **autonomous systems** (AS for short). Each AS is owned and operated by some governing body, such as hosting providers (Google, Amazon, Cloudflare), ISPs (Telus, Bell), or universities. Together, there are around 90 thousand ASes and hundreds of millions of routers in the Internet.
 
-To keep things organized, routers in the Internet are organized into smaller networks called **Autonomous Systems** (AS for short). Each AS is owned and operated by some governing body, such as hosting providers (Google, Amazon, Cloudflare), ISPs (Telus, Bell), or universities.
+Just like how Network 2 in our little internet is responsible for all addresses starting with "2", each AS is responsible for all addresses starting with a certain prefix. Google's AS, for example, is responsible for all IP addresses starting with `142.251.33`.
 
-Most traffic in the Internet has to go through several ASes. For example, data between my computer and this website has to go through Telus's AS (my ISP) and Amazon's AS (where the website is hosted).
+This means that if a router sees that a data packet's destination IP address starts with `142.251.33`, it knows to send it to the router in Google's AS.
+
+```
+router prefix visual
+```
 
 ---
 
-Traffic between ASes is handled by a group of routers called **border routers**. These are routers dedicated exclusively to handling traffic moving in/out its AS.
+Unlike the routers in our little internet, not every router in the Internet is connected to every other router. Instead, each AS has a group of routers called **border routers** that are connected to the routers of other ASes.
 
-If the networks in our little internet were ASes for example, you can think of border routers as the routers that connect the ASes to each other:
+This would be like if our networks had a dedicated router to connect to the routers of other networks:
 
 ```
 border router visual
@@ -243,14 +247,10 @@ This frees up our other router to focus on handling traffic within the AS.
 
 ---
 
-Organizing networks into ASes eases the burden on all the routers in the network. When getting data out of an AS:
-
-- Routers within an AS only need to get traffic to the border routers;
-- Border routers only need to get traffic to other ASes;
-- Border routers of the other AS can handle routing traffic into the right computer within its AS.
+Another difference with our little internet model is that not every AS is connected to every other AS. It's possible, and often very likely, that a data packet has to travel through multiple ASes to get to its destination.
 
 ```
-some AS visual with border routers
+visual with multiple AS hops
 ```
 
 ---
