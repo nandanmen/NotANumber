@@ -225,9 +225,9 @@ send button
 
 In the real world, these little networks are called **autonomous systems** (AS for short). Each AS is owned and operated by some governing body, such as hosting providers (Google, Amazon, Cloudflare), ISPs (Telus, Bell), or universities. Together, there are around 90 thousand ASes and hundreds of millions of routers in the Internet.
 
-Just like how Network 2 in our little internet is responsible for all addresses starting with "2", each AS is responsible for all addresses starting with a certain prefix. Google's AS, for example, is responsible for all IP addresses starting with `142.251.33`.
+Just like how Network 2 in our little internet is responsible for all addresses starting with "2", each AS is responsible for all addresses starting with a certain prefix.
 
-This means that if a router sees that a data packet's destination IP address starts with `142.251.33`, it knows to send it to the router in Google's AS.
+Google's AS, for example, is responsible for all IP addresses starting with `142.251.33` — which means if a router sees that a data packet's destination IP address starts with `142.251.33`, it knows to send it to the router in Google's AS.
 
 ```
 router prefix visual
@@ -247,17 +247,19 @@ This frees up our other router to focus on handling traffic within the AS.
 
 ---
 
-Another difference with our little internet model is that not every AS is connected to every other AS. It's possible, and often very likely, that a data packet has to travel through multiple ASes to get to its destination.
+Another difference with our little internet model is that **not every AS is connected to every other AS**. It's possible, and often very likely, that a data packet has to travel through multiple ASes to get to its destination.
 
 ```
 visual with multiple AS hops
 ```
 
+This lack of a direct connection means border routers don't necessarily store the destination router for every prefix. For the prefixes it can't directly reach, border routers store the **next hop**—the router that brings the data packet _closer_ to its destination.
+
 ---
 
 ## Border Gateway Protocol
 
-This routing system works under one assumption: that every border router knows how to get to every other border router in the Internet. But, _how_ do they?
+This routing system works under the big assumption that every border router inherently knows how to reach every IP on the Internet. But, _how_ do they?
 
 <ProblemStatement>
 
@@ -267,8 +269,98 @@ This routing system works under one assumption: that every border router knows h
 
 ---
 
-This isn't a super intuitive thing to figure out.
+<ScrollGroup>
 
-First, while ASes help drastically reduce the number of routers that need to know about each other, there are still **around 90 thousand ASes** in the Internet.
+<ScrollGroupSection>
 
-Second, not every AS is directly connected to every other AS. To get from one AS to another, you'd often have to go through multiple intermediate ASes.
+Here's an idea: when an AS connects to other ASes, it will **announce** the prefixes it's responsible for to the connecting ASes. Those ASes in turn will announce the prefixes they're responsible for to their connecting ASes, and so on.
+
+For example, let's say Network 3 wants to announce that it's responsible for all addresses starting with `3.1`. It'll start by announcing to Network 2 that all `3.1` addresses should be sent to Network 3.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+When Network 2 receives this announcement, it'll update its routing table to say that all `3.1` addresses should be sent to Network 3. Network 2 will then announce to Network 1 that all `3.1` addresses should be sent to Network 2 (so it can then send it to Network 3).
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+When Network 1 receives this announcement, it'll update its routing table to say that all `3.1` addresses should be sent to Network 2.
+
+All the networks in the system now know how to send data to Network 3!
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Now let's add a direct connection between Network 1 and Network 3.
+
+This time, when Network 3 announces the new prefix, Network 1 will update its routing table to say that all `3.1` addresses should be sent directly to Network 3:
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+But because Network 1 is also connected to Network 2, it will later receive an announcement from Network 2 that all `3.1` addresses should be sent to _Network 2_ instead. **What should Network 1 do in this case?**
+
+```
+bgp visual with direct connection
+```
+
+Since we can see the full picture, we know that Network 1 should disregard the Network 2 announcement because there's a direct connection to the destination. But Network 1 doesn't know this—to it, it's just receiving two announcements for the same prefix at two different points in time.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Network 1 doesn't have enough information to tie-break the two announcements. To help Network 1 decide, we need to add **the ASes the announcement has gone through** to the announcement.
+
+With this, Network 1 can drop the Network 2 announcement because it knows that the direct connection to Network 3 is faster.
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+---
+
+This algorithm we just saw is called the **Border Gateway Protocol** (BGP for short). It's _the_ algorithm responsible for keeping the Internet together.
+
+---
+
+<Aside label="Facebook's BGP Outage">
+
+In October 2021, a bunch of Facebook's services, including Instagram, WhatsApp, and Facebook itself, were unavailable for about 5.5 hours.
+
+The outage happened because Facebook's DNS servers (that knows how to translate `facebook.com` and other Facebook-owned domains to IP addresses) were removed from routing tables—making them impossible to reach.
+
+Just like how ASes can _announce_ that they can reach a certain prefix, they can also _withdraw_ a certain path to a prefix.
+
+```
+bgp visual with withdrawal
+```
+
+In this case, Facebook's ASes made several withdrawals, saying to the other ASes that their DNS servers are no longer reachable—completely disconnecting them from the rest of the Internet.
+
+Cloudflare and Facebook wrote extensive blog posts on this outage if you're interested in learning more:
+
+- [https://blog.cloudflare.com/october-2021-facebook-outage/](https://blog.cloudflare.com/october-2021-facebook-outage/)
+- [https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/](https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/)
+
+</Aside>
+
+---
+
+## How Data Flows Through the Internet
+
+With that, we have a complete picture of what happens when we visit a website or make a `fetch` call to an API:
+
+1. First, your computer converts the domain name into an IP address using its saved DNS resolver.
+2. Then, it sends data to your connected router, attaching the destination IP address to the data packet.
+3. The router checks the destination IP address against its routing table and sends the data packet to the next hop.
+4. This process repeats until the data packet reaches its destination.
+
+Of course, this is a very simplified view of how the entire process works. I've skipped over a lot of details here, such as how the packet makes it to your ISP's border router or how the data packet is encrypted so it can't be read by anyone else—but that's for another post.
+
+For now, thanks for reading!
