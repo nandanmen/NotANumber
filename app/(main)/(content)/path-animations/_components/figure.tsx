@@ -21,8 +21,7 @@ export function Figure({
         className={cn(
           "relative border-y md:border-x border-borderStrong md:rounded-lg",
           variant === "inset" && "bg-gray5 shadow-inner",
-          variant === "grid" && "overflow-hidden",
-          className
+          className,
         )}
       >
         {variant === "grid" && <BackgroundGrid />}

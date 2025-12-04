@@ -12,44 +12,47 @@ export function ToggleButton({
   children: ReactNode;
 }) {
   return (
-    <motion.button
-      className={cn(
-        "bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed",
-        loading && "overflow-hidden shadow-none",
-        className,
-      )}
-      whileTap={{ scale: 0.93 }}
-      style={{
-        backgroundImage: loading
-          ? "linear-gradient(to right, #f8f8f8, #e8e8e8 20%, #e8e8e8 30%, #f8f8f8, #e8e8e8 70%, #e8e8e8 80%, #f8f8f8)"
-          : undefined,
-        backgroundSize: "200%",
-      }}
-      initial={{ backgroundPosition: "0%", height: 32 }}
-      animate={{
-        height: loading ? 8 : 32,
-        backgroundPosition: "-100%",
-      }}
-      transition={{
-        height: {
-          type: "spring",
-          bounce: 0,
-          duration: 0.3,
-        },
-        backgroundPosition: {
-          type: "tween",
-          ease: "linear",
-          duration: 0.4,
-          repeat: Number.POSITIVE_INFINITY,
-        },
-      }}
-      type="button"
-      {...props}
-    >
-      <span className={cn("transition-opacity", loading && "opacity-0")}>
-        {children}
-      </span>
-    </motion.button>
+    <div className="h-8 flex items-center">
+      <motion.button
+        className={cn(
+          "bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed",
+          loading && "overflow-hidden shadow-none",
+          className,
+        )}
+        whileTap={{ scale: 0.93 }}
+        disabled={loading}
+        style={{
+          backgroundImage: loading
+            ? "linear-gradient(to right, #f8f8f8, #e8e8e8 20%, #e8e8e8 30%, #f8f8f8, #e8e8e8 70%, #e8e8e8 80%, #f8f8f8)"
+            : undefined,
+          backgroundSize: "200%",
+        }}
+        initial={{ backgroundPosition: "0%", height: 32 }}
+        animate={{
+          height: loading ? 8 : 32,
+          backgroundPosition: "-100%",
+        }}
+        transition={{
+          height: {
+            type: "spring",
+            bounce: 0,
+            duration: 0.3,
+          },
+          backgroundPosition: {
+            type: "tween",
+            ease: "linear",
+            duration: 0.4,
+            repeat: Number.POSITIVE_INFINITY,
+          },
+        }}
+        type="button"
+        {...props}
+      >
+        <span className={cn("transition-opacity", loading && "opacity-0")}>
+          {children}
+        </span>
+      </motion.button>
+    </div>
   );
 }
 

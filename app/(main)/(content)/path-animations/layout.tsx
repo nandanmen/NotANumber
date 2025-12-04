@@ -9,8 +9,8 @@ export default async function PathAnimationsLayout({
   return (
     <>
       <Header
-        title="Path Animations"
-        description="The different ways you can use SVG paths to create animations."
+        title="Drawing Paths"
+        description="A closer look at a common path animation."
       />
       {children}
     </>
