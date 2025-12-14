@@ -4,10 +4,6 @@ const createMDX = require("@next/mdx");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    forceSwcTransforms: true,
-    appDir: true,
-  },
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
