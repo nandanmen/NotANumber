@@ -6,7 +6,7 @@ import {
 } from "motion/react";
 import { PathParts } from "./path-parts";
 import { CodeBlockTemplate } from "~/components/mdx/code-block-template";
-import { ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { cn } from "~/lib/cn";
 import { Figure } from "./figure";
 import { ToggleButton } from "../../database/_components/toggle-button";
