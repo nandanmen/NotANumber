@@ -1,40 +1,35 @@
 import { Drawing, Checkmarks } from './_components/drawing'
-
-The SVG path element lets you draw any kind of shape you want:
-
-```html
-<svg width="100%" height="100%">
-  <path d="M 0 0 L 100 100" />
-</svg>
-```
-
-But after drawing the shape, how do you make it come alive? How do you animate it, and how might you use it for other effects? Let's find out!
-
-<Callout>
-
-**Heads up!** This post will not cover how to draw the shape in the first place. If you're not familiar with path commands and the `d` attribute, check out my post on [SVG paths](/svg-paths).
-
-</Callout>
-
----
-
-## Path Drawing
+import { PathBuckets } from './_components/path-examples'
+import { PathDrawing } from './_components/path-drawing'
+import { PathLength, PathLengthVisual } from './_components/path-length'
 
 Perhaps the most common of path animations is the path drawing animation:
 
 <Drawing />
 
-This animation works through two SVG properties working together: `stroke-dasharray` and `stroke-dashoffset`. But what do these properties do? Let's take a look!
+This animation looks pretty straightforward, but there's actually quite a bit of nuance required to get it looking and feeling just right. Let's take a closer look!
 
 ---
 
-<ScrollGroup>
+<ScrollGroup figure={<PathDrawing />}>
 
 <ScrollGroupSection>
 
-### How Paths Get Drawn
+## How paths are drawn
 
-To draw a path, the browser first draws a sort-of "skeleton" of the shape using the commands set in the path's `d` attribute:
+To best understand how this animation works, we'll need to explore how paths are drawn by the browser in the first place.
+
+All path elements are defined by a `d` attribute: a string of commands that dictate how the path should be drawn:
+
+```html
+<path
+  d="M4 20C4 20 4 4 7 4C9 4 9 11 11.5 11C14 11 15 6.7 20 8"
+/>
+```
+
+We won't dive into the details of each command here; all you need to know is that each letter code corrsponds to a drawing operation (e.g. `M` is for move, `L` is for line, `C` is for cubic curve, etc.) and that the numbers following the letter code are the arguments for that operation.
+
+Using the `d` attribute, the browser starts with a "skeleton" of the shape:
 
 </ScrollGroupSection>
 
@@ -48,6 +43,17 @@ Then, the browser fills in the area covered by the shape, using the color set by
 
 Finally, if the path has its `stroke` property set, a line will be drawn centered along the shape's skeleton, using whatever color `stroke` is set to (moving forwards, I'll refer to this line as the path's "stroke").
 
+```html
+<path
+  d="M4 20C4 20 4 4 7 4C9 4 9 11 11.5 11C14 11 15 6.7 20 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+/>
+```
+
+The `stroke-width` and `stroke-linecap` properties let you change the appearance of the stroke. `stroke-width` sets the thickness of the stroke, and `stroke-linecap` sets the shape of the stroke's ends.
+
 </ScrollGroupSection>
 
 </ScrollGroup>
@@ -58,40 +64,60 @@ Finally, if the path has its `stroke` property set, a line will be drawn centere
 
 <ScrollGroupSection>
 
+### Creating the animation
+
 The `stroke-dasharray` property lets you draw the stroke as a series of dashes instead of one continuous line:
 
 ```html
 <path
-  stroke="blue"
-  stroke-dasharray="10"
+  d="M4 20C4 20 4 4 7 4C9 4 9 11 11.5 11C14 11 15 6.7 20 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-dasharray="5"
 />
 ```
 
-The number `10` here represents the length of the dash itself _and_ the gap between each dash. In other words, we're telling the browser to draw the stroke with dashes of length 10, separated 10 units apart.
+Here, we've set `stroke-dasharray` to 5 which means we want dashes of length 5, separated 5 units apart.
 
 </ScrollGroupSection>
 
 <ScrollGroupSection>
 
-Now if you make the `stroke-dasharray` property big enough, you get a path that's indistinguishable from the original shape.
+If we set `stroke-dasharray` to a value large enough, we can make each dash **as large as the path itself**:
+
+```html
+<path
+  d="M4 20C4 20 4 4 7 4C9 4 9 11 11.5 11C14 11 15 6.7 20 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-dasharray="35"
+/>
+```
 
 ```
 slider
 ```
 
+Now, the path looks the same as if it didn't have a `stroke-dasharray` at all.
+
 </ScrollGroupSection>
 
 <ScrollGroupSection>
 
-This isn't super interesting on its own, until you remember that a large-enough dash also means a large-enough _gap_ that we can use to hide the shape altogether—if only we can move the stroke.
+This isn't super interesting on its own, until you remember that the path-sized dashes are separated by _path-sized gaps_. This lets us hide the path if we just move the dash out of bounds.
 
-Thankfully, we can! Using—that's right—the `stroke-dashoffset` property:
+Thankfully, we can do this using the `stroke-dashoffset` property:
 
 ```html
 <path
-  stroke="blue"
-  stroke-dasharray="20"
-  stroke-dashoffset="20"
+  d="M4 20C4 20 4 4 7 4C9 4 9 11 11.5 11C14 11 15 6.7 20 8"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-dasharray="35"
+  stroke-dashoffset="35"
 />
 ```
 
@@ -104,6 +130,28 @@ The dash never really want away here—it's just outside of the bounds of the sh
 </ScrollGroupSection>
 
 </ScrollGroup>
+
+---
+
+And that's the end of the blog post! Or, it would've been—if it wasn't for a few other edge cases we need to think about. Let's take a look at them.
+
+---
+
+### Choosing the right path length
+
+Technically speaking, the animation will work as long as the dash is *at least* as long as the path itself. This means we can set `stroke-dasharray` to some really large number without many noticeable differences:
+
+<PathLength />
+
+You'll find that the larger `stroke-dasharray` value finishes much faster, but other than that, there isn't really a difference between these two checkmarks—at least, at first.
+
+The real problem comes when we try to inverse the animation:
+
+<PathLength inverse />
+
+The checkmark with the larger `stroke-dasharray` has a noticeable delay before it actually starts animating. What's going on here?
+
+<PathLengthVisual />
 
 ---
 
@@ -131,7 +179,11 @@ to make it work in this case, we need to extend the `stroke-dasharray` just a li
 
 ---
 
-### Stroke-based vs. fill-based
+### Handling rounded ends
+
+---
+
+## Stroke-based vs. fill-based
 
 There's just one requirement for this stroke trick to work: the SVG must be **stroke-based**, not fill-based. Take a look at these two identical checkmarks:
 
@@ -348,15 +400,3 @@ The key here is that **all of the command's arguments are animatable**. To turn 
 ```
 
 The `d` attribute is animatable as long as **only the arguments to a command change**. If the command code itself changes or the sequence of commands changes, the animation won't work.
-
----
-
-## Animating Strokes
-
-I'm not a Threads user, but I've always loved their refresh animation:
-
-```
-threads refresh animation
-```
-
-It might seem tricky at first because the stroke is "morphing" as it moves 

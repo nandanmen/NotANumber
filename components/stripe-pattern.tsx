@@ -30,7 +30,7 @@ function StripePattern({
   );
 }
 
-function GridPattern({
+export function GridPattern({
   size = 16,
   ...props
 }: {
