@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Header } from "../header";
+import { Article, Header } from "../header";
 
 export default async function HowComputersTalkLayout({
   children,
@@ -10,9 +10,9 @@ export default async function HowComputersTalkLayout({
     <>
       <Header
         title="How Computers Talk to Each Other"
-        description="A deep dive into how computers talk to each other."
+        description="Recreating the Internet from the ground up."
       />
-      {children}
+      <Article>{children}</Article>
     </>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { posts, XIcon } from "./posts";
 import { usePathname } from "next/navigation";
+import { XIcon, posts } from "./posts";
 
 export function PostsFooter() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export function PostsFooter() {
       <p className="font-serif text-7xl md:text-[140px] lg:text-[190px] translate-y-[0.15em] leading-none text-gray7 text-center">
         More Posts
       </p>
-      <ul className="border border-gray8 bg-gray4 -mt-2 md:-mt-6 relative grid md:grid-cols-2">
+      <ul className="ring-1 ring-black/20 rounded shadow-sm bg-gray3 -mt-2 md:-mt-6 relative grid md:grid-cols-2">
         {posts
           .filter((post) => post.slug !== current)
           .map((post) => (

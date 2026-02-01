@@ -23,10 +23,18 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     h1: (props) => (
-      <Heading level="h1" className="text-3xl font-medium" {...props} />
+      <Heading
+        level="h1"
+        className="text-3xl font-medium tracking-tight"
+        {...props}
+      />
     ),
     h2: (props) => (
-      <Heading level="h2" className="text-2xl font-medium" {...props} />
+      <Heading
+        level="h2"
+        className="text-2xl font-medium tracking-tight"
+        {...props}
+      />
     ),
     h3: (props) => (
       <Heading level="h3" className="text-xl font-medium" {...props} />

@@ -6,6 +6,7 @@ import { Fragment, useState } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { motion } from "motion/react";
 import { TRANSITIONS } from "~/lib/transitions";
+import { BackgroundGrid } from "~/components/stripe-pattern";
 
 const suffixServers = [
   {
@@ -150,15 +151,19 @@ function DomainList({
 }
 
 export function DNSScrollVisual() {
-  const [width, setWidth] = useState(0);
   const index = useActiveIndex();
+  return <DNSScrollVisualInner index={index} />;
+}
+
+function DNSScrollVisualInner({ index }: { index: number }) {
+  const [width, setWidth] = useState(0);
 
   const boxWidth = (width - 24) / 2;
 
   return (
     <div
       ref={(el) => setWidth(el?.getBoundingClientRect().width)}
-      className="h-[500px] flex items-center"
+      className="h-[400px] flex items-center"
     >
       <div className="grid grid-cols-2 gap-x-6">
         {index > 0 && (
@@ -249,11 +254,31 @@ export function DNSScrollVisual() {
 export function DNSVisual() {
   return (
     <Wide>
-      <Figure className="h-[300px] grid grid-cols-2 divide-x divide-gray8">
+      <Figure className="grid grid-cols-2 divide-x divide-gray8 h-[400px]">
         <div className="flex justify-center items-center">
-          <p className="text-2xl font-medium">nan.fyi.</p>
+          <p className="text-2xl font-medium font-mono">nan.fyi.</p>
         </div>
-        <div></div>
+        <div className="flex flex-col items-center justify-center overflow-hidden relative">
+          <BackgroundGrid />
+          <div className="relative">
+            <div className="size-4 bg-gray1 border-[3px] border-gray8 rounded-full" />
+            <div className="w-[3px] h-[20px] bg-gray8 mx-auto" />
+          </div>
+          <div className="w-[60px] h-14 relative">
+            <div className="absolute right-full text-right leading-none mr-2.5">
+              <p>Root</p>
+              <p>Server</p>
+            </div>
+            <div
+              className="w-max"
+              style={{
+                transform: "translate(-115px,-12px)",
+              }}
+            >
+              <DNSScrollVisualInner index={1} />
+            </div>
+          </div>
+        </div>
       </Figure>
     </Wide>
   );

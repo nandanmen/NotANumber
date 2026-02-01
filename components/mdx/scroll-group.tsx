@@ -1,32 +1,32 @@
 "use client";
 
 import clsx from "clsx";
-import styles from "./scroll-group.module.css";
+import produce from "immer";
 import {
-  createContext,
+  Children,
   type Dispatch,
   type SetStateAction,
-  useContext,
-  useRef,
-  useEffect,
-  useState,
-  Children,
   cloneElement,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
-import produce from "immer";
 import { ColumnRight, Columns } from "./columns";
+import styles from "./scroll-group.module.css";
 
 type EventEmitter<
   Types extends string,
-  Payloads extends { [K in Types]: unknown }
+  Payloads extends { [K in Types]: unknown },
 > = {
   on: <TEvent extends Types>(
     event: TEvent,
-    cb: (args: Payloads[TEvent]) => void
+    cb: (args: Payloads[TEvent]) => void,
   ) => () => void;
   notify: <TEvent extends Types>(
     event: TEvent,
-    args?: Payloads[TEvent]
+    args?: Payloads[TEvent],
   ) => void;
 };
 
@@ -53,7 +53,7 @@ const createEventEmitter = () => {
 
 export function useScrollGroupEvents<
   Types extends string,
-  Payloads extends { [K in Types]: unknown } = { [K in Types]: never }
+  Payloads extends { [K in Types]: unknown } = { [K in Types]: never },
 >() {
   const ctx = useScrollGroupContext();
   if (!ctx) {
@@ -138,7 +138,7 @@ export function ScrollGroup({
               child as React.ReactElement<{ index: number }>,
               {
                 index: i,
-              }
+              },
             );
           })}
         </div>
@@ -245,7 +245,7 @@ export function ScrollGroupSection({
       <div
         className={clsx(
           styles.article,
-          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[45vh]"
+          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[45vh]",
         )}
         ref={ref}
       >
@@ -264,7 +264,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
     const updateTop = () => {
       setTop(
         window.innerHeight * 0.35 -
-          figureRef.current.getBoundingClientRect().height / 2
+          figureRef.current.getBoundingClientRect().height / 2,
       );
     };
     updateTop();
@@ -276,7 +276,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
 
   return (
     <ColumnRight>
-      <div className="h-full bg-gray5 py-10 shadow-inner">
+      <div className="h-full py-10">
         <div
           ref={figureRef}
           className="sticky px-10 overflow-hidden"
