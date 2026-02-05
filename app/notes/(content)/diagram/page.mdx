@@ -1,4 +1,31 @@
+## control flow graphs
+
+Before we get into it, a bit of context: Cloudflare Workflows is an engine for running asynchronous JavaScript code. By grouping sections of code into atomic blocks called _steps_, you can create a workflow that you can run on demand and carefully control the execution of.
+
+```ts
+await step.do('my first step', () => { ... })
+
+await Promise.all([
+  step.waitForEvent('request-approval', () => { ... }),
+  parseApi(),
+  step.do('do something else', () => { ... }),
+])
+
+await step.do('make a call to write', () => { ... })
+```
+
+---
+
 ## code layout
+
+Since workflows are defined in code, there's pretty much no limit to how complex they can get. How do we even begin to visualize something like this?
+
+Let's start with the simplest sequence possible: one step followed by another.
+
+```ts
+await step.do('first step', () => { ... })
+await step.do('second step', () => { ... })
+```
 
 If you think about it, there are really only four ways code can flow:
 

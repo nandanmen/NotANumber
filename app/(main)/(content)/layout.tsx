@@ -8,15 +8,15 @@ export default async function ContentLayout({
   children: ReactNode;
 }) {
   return (
-    <div>
-      <div className="w-full max-w-[1600px] z-20 md:border-x border-transparent mx-auto sticky top-0">
-        <header className="h-16 text-gray11 flex justify-between items-center px-3">
-          <h2 className="font-serif text-2xl translate-y-0.5">
+    <div className="grid grid-cols-[250px_1fr] divide-x divide-borderStrong">
+      <aside>
+        <header className="flex p-4 justify-between">
+          <h2 className="font-serif text-2xl translate-y-0.5 text-gray11">
             <Link href="/">NaN</Link>
           </h2>
           <Subscribe />
         </header>
-      </div>
+      </aside>
       {children}
     </div>
   );

@@ -94,7 +94,7 @@ export function CodeBlockMain({
   return (
     <div
       className={cn(
-        "rounded-lg ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray2",
+        "rounded-lg ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray1",
         diff && "-ml-4 pl-4",
       )}
     >

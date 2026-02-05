@@ -7,12 +7,14 @@ export default async function HowComputersTalkLayout({
   children: ReactNode;
 }) {
   return (
-    <>
-      <Header
-        title="How Computers Talk to Each Other"
-        description="Recreating the Internet from the ground up."
-      />
-      <Article>{children}</Article>
-    </>
+    <div>
+      <Article>
+        <Header
+          title="How Computers Talk to Each Other"
+          description="Recreating the Internet from the ground up."
+        />
+        {children}
+      </Article>
+    </div>
   );
 }
