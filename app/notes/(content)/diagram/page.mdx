@@ -1,0 +1,129 @@
+## control flow graphs
+
+Before we get into it, a bit of context: Cloudflare Workflows is an engine for running asynchronous JavaScript code. By grouping sections of code into atomic blocks called _steps_, you can create a workflow that you can run on demand and carefully control the execution of.
+
+```ts
+await step.do('my first step', () => { ... })
+
+await Promise.all([
+  step.waitForEvent('request-approval', () => { ... }),
+  parseApi(),
+  step.do('do something else', () => { ... }),
+])
+
+await step.do('make a call to write', () => { ... })
+```
+
+---
+
+## code layout
+
+Since workflows are defined in code, there's pretty much no limit to how complex they can get. How do we even begin to visualize something like this?
+
+Let's start with the simplest sequence possible: one step followed by another.
+
+```ts
+await step.do('first step', () => { ... })
+await step.do('second step', () => { ... })
+```
+
+If you think about it, there are really only four ways code can flow:
+
+- Sequentially, one after the other
+- Concurrently, with multiple branches running at the same time
+- Conditionally, with one out of a select number of branches being taken
+- Backwards, as some control flow structures let you “jump” back to a previous point (loops)
+
+How might we visualize these four cases?
+
+Sequential execution is pretty straightforward - just render the nodes one on top of the other.
+
+---
+
+Coding this is straightforward as well. Render the nodes one after the other and they will naturally sit on top of each other.
+
+Concurrent execution involves several nodes running at the same time, so it probably makes sense to render them side by side.
+
+---
+
+One way of accomplishing this is by using CSS grids, with grid columns equal to the number of nodes running in parallel.
+
+Conditional nodes are similar, except we probably want to add a label to differentiate each branch from one another.
+
+---
+
+Nevertheless, we’ll be using grids for this one too.
+
+Loops are similar to sequential execution with the added need to connect the last step with the first.
+
+---
+
+We haven’t discussed how to make these connectors yet so let’s table this for now.
+
+---
+
+## dom vs svg
+
+the typical method for making charts and diagrams on the web is to use svgs because svgs offer a ton of flexibility over html and css:
+
+1. **shapes as a first class citizen** allows you to draw any arbitrary line, curve, or shape that you'd like, freeing yourself from the constraints of html and css's box model.
+2. **no layout engine** means you can freely position elements anywhere you'd like on the page without having to "fight" against the browser's layout algorithms.
+
+(1) is reason alone to use svgs, but (2) is more of a double-edged sword than it looks like at first.
+
+---
+
+in the dom, elements are positioned on the page based on a layout algorithm. when you have two `p` elements written one after the other, the browser will, by default, place them on top of each other:
+
+```html
+<p>hello</p>
+<p>world</p>
+```
+
+with svgs, each element must be explicitly positioned at a specific coordinate point. omitting this will make the elements overlap one another.
+
+```html
+<svg width="100%" height="100%">
+  <circle cx="50" cy="50" r="40" fill="red" />
+  <rect x="10" y="10" width="80" height="80" fill="blue" />
+</svg>
+```
+
+this extends to shapes like paths, where you have to individually define where each point of the path is placed. this flexibility is great for unstructured layouts but becomes increasingly complex when you have a logical order of where things should go.
+
+consider the following diagram with one top node connected to two bottom nodes:
+
+```html
+<svg width="100%" height="100%">
+  <circle cx="50" cy="50" r="40" fill="red" />
+  <rect x="10" y="10" width="80" height="80" fill="blue" />
+</svg>
+```
+
+if we were to build it with svgs, we would have to calculate the `x`, `y`, `width`, and `height` of each node based on its content and relationship with other nodes.
+
+---
+
+every element in the dom is a box. making other shapes involve hacks like using multiple elements, border-radius, clip-path, etc.
+
+```html
+<div class="box">
+  <div class="box-inner">
+    hello
+  </div>
+</div>
+```
+
+---
+
+this flexibility makes it much easier to build charts and diagrams that don't have a predefined layout structure.
+
+this flexibility is the main reason why charts and diagrams are typically built with svgs. but this flexibility is a double-edged sword, especially when your desired image does have some form of structured layout.
+
+but these two reasons were the exact reasons why i *didn't* want to use svgs for this project.
+
+the main data structure we're working with is something called a directed acyclic graph, or DAG for short. This is a type of graph that only points downwards, meaning there are no cycles in the graph. visualizing code execution also comes with an extra constraint that will prove useful to us later: all branches must _converge_ before continuing.
+
+charts and diagrams are often built 
+
+when i build something for the web, i always first explore to see if it's possible to build it with only the DOM. 
