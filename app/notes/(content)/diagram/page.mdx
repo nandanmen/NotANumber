@@ -63,6 +63,30 @@ await Promise.all([
 ])
 ```
 
-Here, the steps execute concurrently, with step 1 and step 2 running at the same time. A natural way of visualizing this is to render the step 1 and step 2 nodes side by side, with a line connecting them.
+Here, both step 1 and step 2 start at the same time, which means we'll need to put them side by side. With the DOM, we can accomplish this by using flexbox or grids:
 
-How might we build this in code? Assuming that the nodes are written using HTML elements, we don't have to do anything to accomplish this layout. By rendering the component side by side, we get the desired layout by default:
+```html
+<div class="flex">
+  <div>step 1</div>
+  <div>step 2</div>
+</div>
+```
+
+SVGs make more sense here for the connectors since they're not straight lines. Having said that, SVGs are quite annoying to work with in this case because SVG shapes need explicit coordinates and we don't have them here (because we're letting the DOM position the nodes for us).
+
+We certainly could measure the size and position of the nodes, but what if we don't have to? That's right—what if we again use HTML and CSS to render the connectors?
+
+Above each node, we'll add a `div` that's:
+
+- Half the width of the node
+- Has a single rounded corner
+- Has borders on two sides
+
+```html
+<div>
+  <div class="w-1/2 h-8 bg-gray10 rounded-tr-xl border-r border-b border-gray10" />
+  <div>step 1</div>
+</div>
+```
+
+The rounded corner and the border will need to be flipped for the other side. But how do we know which side is which?

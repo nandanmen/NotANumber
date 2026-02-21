@@ -1,11 +1,11 @@
 "use client";
 
-import { Subscribe } from "app/(main)/(content)/subscribe";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/cn";
+import { Subscribe } from "./subscribe";
 
-export function NotesHeader() {
+export function Navbar({ showNotesLabel = false }) {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isCovered, setIsCovered] = useState(false);
 

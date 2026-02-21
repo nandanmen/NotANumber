@@ -1,23 +1,23 @@
 // @ts-nocheck
 
 import type { MDXComponents } from "mdx/types";
-import { Annotation } from "./components/mdx/annotation";
-import { InlineNote, Note } from "./components/mdx/note";
-import { CodeBlock } from "./components/mdx/code-block";
+import Link from "next/link";
 import { OrderedList } from "./components/OrderedList";
+import { Wide } from "./components/mdx/Wide";
+import { Annotation } from "./components/mdx/annotation";
+import { Aside } from "./components/mdx/aside";
+import { CodeBlock } from "./components/mdx/code-block";
+import { ColumnRight, Columns } from "./components/mdx/columns";
+import { FullWidth } from "./components/mdx/full-width";
+import { Heading } from "./components/mdx/heading";
+import { InlineNote, Note } from "./components/mdx/note";
 import {
-  ScrollGroup,
   ScrollFigure,
+  ScrollGroup,
   ScrollGroupSection,
 } from "./components/mdx/scroll-group";
-import { FullWidth } from "./components/mdx/full-width";
-import { Columns, ColumnRight } from "./components/mdx/columns";
-import { Heading } from "./components/mdx/heading";
 import { SkipLink } from "./components/mdx/skip-link";
-import { Wide } from "./components/mdx/Wide";
-import { Aside } from "./components/mdx/aside";
 import { cn } from "./lib/cn";
-import Link from "next/link";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -42,7 +42,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     ol: OrderedList,
     hr: () => (
-      <hr className="border-gray7 border-dashed md:-mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
+      <hr className="border-gray7 border-dashed my-5 !col-start-1 col-span-3 !max-w-full" />
     ),
     a: ({ href, ...props }) => {
       const isExternal = href?.startsWith("http");

@@ -7,12 +7,8 @@ export default function DiagramLayout({
   children: React.ReactNode;
 }) {
   return (
-    <article className="grid grid-cols-2 [&>*]:col-start-1 auto-rows-min gap-y-4 pl-12 pb-20 relative gap-x-12 leading-relaxed isolate">
-      {/* <div className="absolute top-[72px] right-0 text-right text-sm font-mono text-gray9">
-        <p>Nanda_Syahrasyad</p>
-        <p>4/Feb/2026</p>
-      </div> */}
-      <header className="pt-20 pb-16 col-span-2">
+    <article className="grid grid-cols-2 [&>*]:col-start-1 [&>*]:w-full [&>*]:max-w-[60ch] auto-rows-min grow justify-items-center gap-y-4 pl-12 pb-20 relative gap-x-12 leading-relaxed isolate">
+      <header className="pt-20 pb-16">
         <h1 className="font-serif text-7xl text-balance leading-[1.1]">
           DOM-Based Diagrams
         </h1>

@@ -2,7 +2,7 @@ import { X } from "../icons";
 
 export function Columns({ children }: { children: React.ReactNode }) {
   return (
-    <section className="!col-span-3 relative !max-w-full grid lg:grid-cols-2 gap-x-10">
+    <section className="grid grid-cols-subgrid relative col-span-3 !max-w-full">
       {children}
     </section>
   );
@@ -10,21 +10,8 @@ export function Columns({ children }: { children: React.ReactNode }) {
 
 export function ColumnRight({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className="hidden lg:block !col-start-2 row-start-1 absolute bottom-[-40px] top-[-40px] border-l border-borderSoft"
-      style={{
-        width: "calc(100% + 40px)",
-      }}
-    >
+    <div className="hidden lg:block col-start-3 row-start-1 border-l border-borderSoft -my-10">
       {children}
-      <div className="text-gray9">
-        <div className="absolute top-0 left-0 -translate-x-2.5 -translate-y-2.5">
-          <X />
-        </div>
-        <div className="absolute bottom-0 left-0 -translate-x-2.5 translate-y-2.5">
-          <X />
-        </div>
-      </div>
     </div>
   );
 }
