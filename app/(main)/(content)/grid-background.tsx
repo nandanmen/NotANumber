@@ -5,14 +5,20 @@ import { useEffect, useId, useRef, useState } from "react";
 export function GridBackground() {
   const gridId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [patternWidth, setPatternWidth] = useState(20);
+  const [patternSize, setPatternSize] = useState(20);
 
   useEffect(() => {
     const updatePatternSize = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
-        const newPatternWidth = containerWidth / 15;
-        setPatternWidth(newPatternWidth);
+        const newPatternSize = containerWidth / 15;
+        setPatternSize(newPatternSize);
+
+        // Set CSS variable on the article parent for children to consume
+        const article = containerRef.current.closest("article");
+        if (article) {
+          article.style.setProperty("--grid-size", `${newPatternSize}px`);
+        }
       }
     };
 
@@ -42,12 +48,12 @@ export function GridBackground() {
         <defs>
           <pattern
             id={gridId}
-            width={patternWidth}
-            height={patternWidth}
+            width={patternSize}
+            height={patternSize}
             patternUnits="userSpaceOnUse"
           >
             <path
-              d={`M ${patternWidth} 0 L 0 0 0 ${patternWidth}`}
+              d={`M ${patternSize} 0 L 0 0 0 ${patternSize}`}
               fill="none"
               stroke="currentColor"
             />

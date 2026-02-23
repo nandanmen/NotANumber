@@ -26,7 +26,7 @@ export function Navbar({ showNotesLabel = false }) {
   }, []);
 
   return (
-    <header className="mx-10 px-10 sticky top-0 z-20 mb-6">
+    <header className="px-10 sticky top-0 z-20 mb-6 max-w-[2000px] mx-auto w-full">
       <div
         className={cn(
           "flex items-center gap-2 h-16 mx-px",

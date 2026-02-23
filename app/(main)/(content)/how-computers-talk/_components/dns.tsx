@@ -95,9 +95,9 @@ const suffixServers = [
   },
 ];
 
-function Server() {
+export function Computer() {
   return (
-    <div className="w-[60px] mx-auto bg-gray2 rounded-lg ring-1 ring-black/10">
+    <div className="w-[60px] mx-auto bg-gray1 shadow-md shadow-black/7 rounded-lg ring-1 ring-black/10">
       <div className="h-7 flex items-center px-2 gap-1 border-b border-black/10">
         <div className="size-2.5 rounded-full bg-green-400" />
         <div className="h-2.5 grow grid grid-rows-2 gap-px">
@@ -106,7 +106,30 @@ function Server() {
         </div>
       </div>
       <div className="bg-gray4 pb-px rounded-b-lg overflow-hidden">
-        <div className="h-7 flex items-center px-2 gap-1 bg-gray2 rounded-b-lg -mt-px">
+        <div className="h-7 flex items-center px-2 gap-1 bg-gray1 rounded-b-lg -mt-px">
+          <div className="size-2.5 rounded-full bg-gray6" />
+          <div className="h-2.5 grow grid grid-rows-2 gap-px">
+            <div className="bg-gray6 rounded-[2px]" />
+            <div className="bg-gray6 rounded-[2px]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Server() {
+  return (
+    <div className="w-[60px] mx-auto bg-gray1 shadow-md shadow-black/7 rounded-lg ring-1 ring-black/10">
+      <div className="h-7 flex items-center px-2 gap-1 border-b border-black/10">
+        <div className="size-2.5 rounded-full bg-green-400" />
+        <div className="h-2.5 grow grid grid-rows-2 gap-px">
+          <div className="bg-gray6 rounded-[2px]" />
+          <div className="bg-gray6 rounded-[2px]" />
+        </div>
+      </div>
+      <div className="bg-gray4 pb-0.5 rounded-b-lg overflow-hidden">
+        <div className="h-7 flex items-center px-2 gap-1 bg-gray1 rounded-b-lg -mt-px">
           <div className="size-2.5 rounded-full bg-gray6" />
           <div className="h-2.5 grow grid grid-rows-2 gap-px">
             <div className="bg-gray6 rounded-[2px]" />
@@ -121,7 +144,10 @@ function Server() {
 function DomainList({
   suffix,
   domains,
-}: { suffix: string; domains: { domain: string; ipAddress: string }[] }) {
+}: {
+  suffix: string;
+  domains: { domain: string; ipAddress: string }[];
+}) {
   return (
     <div className="relative">
       <p className="bg-gray3 w-fit rounded-t-md border border-black/15 border-b-0 ml-3 px-1.5 absolute bottom-full -mb-px">

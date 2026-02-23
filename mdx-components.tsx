@@ -32,7 +32,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <Heading level="h3" className="text-xl font-medium" {...props} />
     ),
     strong: (props) => <strong className="font-medium" {...props} />,
-    code: (props) => <code className="inline-code" {...props} />,
+    code: (props) => (
+      <code
+        className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded ring-neutral-950/15"
+        {...props}
+      />
+    ),
     pre: CodeBlock,
     ul: (props) => (
       <ul
