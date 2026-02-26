@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useGridSize } from "./grid-context";
 
 export function GridBackground() {
   const gridId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [patternSize, setPatternSize] = useState(20);
+  const { setGridSize } = useGridSize();
 
   useEffect(() => {
     const updatePatternSize = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
-        const newPatternSize = containerWidth / 15;
+        const newPatternSize = containerWidth / 14;
         setPatternSize(newPatternSize);
+        setGridSize(newPatternSize);
 
         // Set CSS variable on the article parent for children to consume
         const article = containerRef.current.closest("article");
@@ -32,7 +35,7 @@ export function GridBackground() {
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [setGridSize]);
 
   return (
     <div
