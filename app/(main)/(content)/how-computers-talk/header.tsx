@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import { Connectors } from "./_components/connectors";
-import { Computer, Router, Server } from "./_components/dns";
+import { GridCell } from "./_components/grid-cell";
+import { Computer, Router, Server } from "./_components/network-devices";
 
 export function PageHeader({ children }: { children: ReactNode }) {
   return (
-    <div className="!col-start-1 col-span-4 grid grid-cols-subgrid border-b border-borderSoft mb-[calc(var(--grid-size)-16px)] relative">
+    <div className="!col-start-1 col-span-4 grid grid-cols-subgrid border-b border-borderSoft mb-[var(--grid-size)] relative min-h-[round(up,60vh,var(--grid-size))]">
       <section className="col-start-2 auto-rows-min gap-y-5 leading-relaxed grid">
         {children}
       </section>
       <figure className="col-start-4 flex flex-col items-center">
-        <GridCell className="relative" margin={{ y: 3 }}>
+        <GridCell className="relative" margin={{ y: 2 }}>
           <Connectors />
           <div className="relative flex flex-col items-center">
             <div className="flex justify-between">
@@ -55,79 +56,6 @@ export function PageHeader({ children }: { children: ReactNode }) {
           </div>
         </GridCell>
       </figure>
-    </div>
-  );
-}
-
-type SpacingValue =
-  | number
-  | { top?: number; right?: number; bottom?: number; left?: number }
-  | { x?: number; y?: number };
-
-function gridCalc(multiplier: number): string {
-  return `calc(var(--grid-size) * ${multiplier})`;
-}
-
-function getSpacingStyles(
-  spacing: SpacingValue | undefined,
-  property: "padding" | "margin",
-): React.CSSProperties {
-  if (spacing === undefined) return {};
-
-  if (typeof spacing === "number") {
-    return { [property]: gridCalc(spacing) };
-  }
-
-  if ("x" in spacing || "y" in spacing) {
-    const { x, y } = spacing as { x?: number; y?: number };
-    return {
-      [`${property}Left`]: x !== undefined ? gridCalc(x) : undefined,
-      [`${property}Right`]: x !== undefined ? gridCalc(x) : undefined,
-      [`${property}Top`]: y !== undefined ? gridCalc(y) : undefined,
-      [`${property}Bottom`]: y !== undefined ? gridCalc(y) : undefined,
-    };
-  }
-
-  const { top, right, bottom, left } = spacing as {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
-  };
-  return {
-    [`${property}Top`]: top !== undefined ? gridCalc(top) : undefined,
-    [`${property}Right`]: right !== undefined ? gridCalc(right) : undefined,
-    [`${property}Bottom`]: bottom !== undefined ? gridCalc(bottom) : undefined,
-    [`${property}Left`]: left !== undefined ? gridCalc(left) : undefined,
-  };
-}
-
-export function GridCell({
-  className,
-  children,
-  width,
-  height,
-  padding,
-  margin,
-}: {
-  className?: string;
-  children: ReactNode;
-  width?: number;
-  height?: number;
-  padding?: SpacingValue;
-  margin?: SpacingValue;
-}) {
-  return (
-    <div
-      className={className}
-      style={{
-        width: width !== undefined ? gridCalc(width) : undefined,
-        height: height !== undefined ? gridCalc(height) : undefined,
-        ...getSpacingStyles(padding, "padding"),
-        ...getSpacingStyles(margin, "margin"),
-      }}
-    >
-      {children}
     </div>
   );
 }

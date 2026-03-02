@@ -9,7 +9,7 @@ export default async function ContentLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-gray4 min-h-screen pb-32 px-10">
+    <div className="bg-gray4 min-h-screen pb-32 px-5">
       <Navbar />
       <main className="bg-gray2 ring-1 ring-black/15 mx-auto max-w-[1700px] flex shadow-sm grow w-full">
         <div className="px-2 border-r border-borderSoft flex flex-col justify-around text-gray4">
@@ -18,7 +18,7 @@ export default async function ContentLayout({
             <div key={index} className="size-6 bg-current rounded-full" />
           ))}
         </div>
-        <article className="grid grid-cols-[1fr_min(60ch,100%)_1fr_50%] [&>*]:col-start-2 [&>*]:w-full [&>*]:max-w-[60ch] auto-rows-min grow gap-y-4 relative leading-relaxed isolate">
+        <article className="grid grid-cols-[minmax(32px,1fr)_min(60ch,calc(50%-64px))_minmax(32px,1fr)_50%] [&>*]:col-start-2 [&>*]:w-full [&>*]:max-w-[60ch] auto-rows-min grow relative leading-relaxed isolate">
           <GridSizeProvider>
             <GridBackground />
             {children}

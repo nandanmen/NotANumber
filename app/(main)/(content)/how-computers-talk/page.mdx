@@ -1,14 +1,16 @@
+import { BGPScrollVisual } from "./_components/bgp";
 import { DNSVisual, DNSScrollVisual } from "./_components/dns";
+import { Section } from "./_components/grid-snapped-section";
+import { LittleInternetScrollVisual } from "./_components/little-internet";
+import { SequenceList } from "./_components/sequence-list";
 
-<ScrollGroup>
+<ScrollGroup figure={<LittleInternetScrollVisual />}>
 
 <ScrollGroupSection>
 
 ## A Little Internet
 
-Let's say you have a network of four computers that you want to connect to each other. One way to do this is to physically connect each computer—either through cables or a wireless technology of your choosing—and have every computer save the IP address of every other computer in the network.
-
-Then, when a computer wants to send data to another computer, it can lookup the IP address of the other computer and send it along the physical connection.
+One way to transmit data between two computers is to have them physically connected to each other—be it through cables or some form of wireless technology. To send data, a computer only needs to send it along the physical connection.
 
 ```
 send button
@@ -18,15 +20,29 @@ send button
 
 <ScrollGroupSection>
 
-This is... fine, at least until you add a fifth computer to the mix:
+If we add a third computer, we get a network.
+
+Now, each computer needs a label so that the other computers can know where to send data to. For now, let's label them 1, 2, and 3.
+
+Here, we can send data by sending it over the physical connection that's connected to our destination computer.
+
+```
+send button
+```
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Let's now add two more computers, giving us a total network size of five computers. Here, in order for a computer to send data to any other computer in the network, it needs a direct physical connection to _every other computer_. For a network of five computers, that's 20 total connections!
+
+If we then add a 6th computer, we'll need to add 5 more connections:
 
 ```
 add button
 ```
 
-Now you have to update the previous four computers in the network to include the IP address of the new computer. If we add a sixth, we have to update all five computers; a 7th, all six, and so on.
-
-As you might imagine, this quickly becomes impractical!
+A 7th, 6 more connections, and so on. This quickly becomes impractical!
 
 </ScrollGroupSection>
 
@@ -48,24 +64,22 @@ We'll call this central computer a **router** because, er, it routes.
 
 Let's introduce another network to the mix.
 
-Here, we have two networks, Network 1 and Network 2, each with four connected computers. The routers of the two networks are physically connected to each other.
+Here, we have two networks, Network 1 and Network 2, each with three connected computers. The routers of the two networks are physically connected to each other.
 
-With this new network, we'll need to update the hash tables in each router to allow data to be sent to computers in the other network. One option is to simply **add the IP addresses of the computers in the other network to the hash table.**
+In this setup, the routers only know about the computers in their own network, and not the computers in the other network. How can it send data to them?
 
 </ScrollGroupSection>
 
 <ScrollGroupSection>
 
-This works, but doesn't really make sense—the router in the other network already knows the IP addresses of their computers, so why should we duplicate?
+One option is to have every router know about every computer, including those not in its own network. But this feels wasteful—the other router already knows about its own computers, so why should we duplicate?
 
-What we can do instead is to change our IP address format to **include the number of the network the IP address belongs to**:
+**What if we include the network number in each computer's label?** Here, computer 1 becomes `1.1`, computer 2 becomes `1.2`, computer 5 becomes `2.2`, and so on.
 
 ```
 1.1 -> Network 1, Computer 1
-2.3 -> Network 2, Computer 3
+2.2 -> Network 2, Computer 2 // previously computer 5
 ```
-
-Now, we can change the logic in the router to check the _prefix_ first. If the destination IP address starts with "1", it's in Network 1; if it starts with "2", it's in Network 2.
 
 </ScrollGroupSection>
 
@@ -83,9 +97,85 @@ send button
 
 </ScrollGroupSection>
 
+<ScrollGroupSection>
+
+We can add a third router (and network) and everything will work without any changes necessary.
+
+```
+send button
+```
+
+</ScrollGroupSection>
+
 </ScrollGroup>
 
----
+<ScrollGroup figure={<BGPScrollVisual />}>
+
+<ScrollGroupSection>
+
+## Path Finding
+
+Our little internet so far assumes that every router is physically connected to every other router. This isn't quite realistic; imagine if your home router needs to be connected to Amazon's wifi just so you can read this post!
+
+In practice, data packets typically have to go through a chain of routers before making it to its destination. For example, let’s say we have the following 3 networks connected in a chain, and we want to send data from computer `1.1` to computer `3.1`.
+
+```
+send button
+```
+
+For data from router 1 to make it to router 3, router 1 needs to know that:
+
+1. Router 3 exists
+2. Router 3 is reachable through router 2
+
+But how can router 1 know this?
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+One way is for router 3 to **announce its existence** to router 1.
+
+<SequenceList>
+
+1. When router 3 starts up, it will announce to router 2 that it can receive all addresses starting with `3.x`.
+2. Router 2 will update its routing table to say that all `3.x` addresses should be sent to router 3.
+3. Router 2 will then announce to router 1 that it can receive all addresses starting with `3.x`.
+4. Router 1 will update its routing table to say that all `3.x` addresses should be sent to router 2.
+
+</SequenceList>
+
+Router 1 can now send data to router 3!
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+What about router 3? How does router 3 know about the other 2 routers? Router 2 already knows about router 1, so router 2 can tell router 3 during the initial connection.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+### Tie-Breaking
+
+Let's now add a direct connection between router 1 and router 3.
+
+This time, when router 3 starts up, it will announce to _both_ router 1 and router 2 that it can receive all addresses starting with `3.x`.
+
+</ScrollGroupSection>
+
+<ScrollGroupSection>
+
+Router 2 doesn't know that router 1 and router 3 are directly connected to each other, so it will also announce to router 1 that it can receive all addresses starting with `3.x`.
+
+What should router 1 do in this case?
+
+</ScrollGroupSection>
+
+</ScrollGroup>
+
+<Section>
 
 ### Autonomous Systems
 
@@ -99,7 +189,10 @@ Google's AS, for example, is responsible for all IP addresses starting with `142
 router prefix visual
 ```
 
----
+
+</Section>
+
+<Section>
 
 Unlike the routers in our little internet, not every router in the Internet is connected to every other router. Instead, each AS has a group of routers called **border routers** that are connected to the routers of other ASes.
 
@@ -111,7 +204,10 @@ border router visual
 
 This frees up our other router to focus on handling traffic within the AS.
 
----
+
+</Section>
+
+<Section>
 
 Another difference with our little internet model is that **not every AS is connected to every other AS**. It's possible, and often very likely, that a data packet has to travel through multiple ASes to get to its destination.
 
@@ -121,7 +217,10 @@ visual with multiple AS hops
 
 This lack of a direct connection means border routers don't necessarily store the destination router for every prefix. For the prefixes it can't directly reach, border routers store the **next hop**—the router that brings the data packet _closer_ to its destination.
 
----
+
+</Section>
+
+<Section>
 
 ## Domain Name Resolution
 
@@ -137,7 +236,9 @@ Try entering `142.250.73.110` into your browser's address bar. You'll end up on 
 
 This conversion process is called **domain name resolution** and it's handled by a system called, rather appropriately, the **Domain Name System** (DNS for short).
 
----
+</Section>
+
+<Section>
 
 ### The DNS Lookup Process
 
@@ -163,7 +264,8 @@ How do we organize our table to handle _tens of millions_ of requests per second
 
 </ProblemStatement>
 
----
+
+</Section>
 
 <ScrollGroup figure={<DNSScrollVisual />}>
 
@@ -195,7 +297,7 @@ One way to fix this is to have an unchanging set of **root servers** that _point
 
 </ScrollGroup>
 
----
+<Section>
 
 Putting everything together, we get our final lookup algorithm:
 
@@ -204,7 +306,9 @@ Putting everything together, we get our final lookup algorithm:
 
 <DNSVisual />
 
----
+</Section>
+
+<Section>
 
 <Aside label="Resolvers and Authoritative Servers">
 
@@ -237,7 +341,9 @@ This additional layer of indirection exists because there's more to DNS than jus
 
 </Aside>
 
----
+</Section>
+
+<Section>
 
 ## Border Gateway Protocol
 
@@ -249,7 +355,7 @@ This routing system works under the big assumption that every border router inhe
 
 </ProblemStatement>
 
----
+</Section>
 
 <ScrollGroup>
 
@@ -305,11 +411,14 @@ With this, Network 1 can drop the Network 2 announcement because it knows that t
 
 </ScrollGroup>
 
----
+<Section>
 
 This algorithm we just saw is called the **Border Gateway Protocol** (BGP for short). It's _the_ algorithm responsible for keeping the Internet together.
 
----
+
+</Section>
+
+<Section>
 
 <Aside label="Facebook's BGP Outage">
 
@@ -332,7 +441,9 @@ Cloudflare and Facebook wrote extensive blog posts on this outage if you're inte
 
 </Aside>
 
----
+</Section>
+
+<Section>
 
 ## How Data Flows Through the Internet
 
@@ -346,3 +457,5 @@ With that, we have a complete picture of what happens when we visit a website or
 Of course, this is a very simplified view of how the entire process works. I've skipped over a lot of details here, such as how the packet makes it to your ISP's border router or how the data packet is encrypted so it can't be read by anyone else—but that's for another post.
 
 For now, thanks for reading!
+
+</Section>

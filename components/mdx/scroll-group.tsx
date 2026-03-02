@@ -118,7 +118,7 @@ export function ScrollGroup({
   const [_state, setState] = useState(state);
 
   return (
-    <div className="grid grid-cols-subgrid col-span-4 !col-start-1">
+    <div className="grid grid-cols-subgrid col-span-4 !col-start-1 border-t border-borderSoft pt-[var(--grid-size)]">
       <ScrollGroupContext.Provider
         value={{
           activeIndex,
@@ -132,7 +132,7 @@ export function ScrollGroup({
           lastIndex,
         }}
       >
-        <div className="space-y-5 col-start-2">
+        <div className="col-start-2">
           {Children.map(children, (child, i) => {
             return cloneElement(
               child as React.ReactElement<{ index: number }>,
@@ -245,7 +245,7 @@ export function ScrollGroupSection({
       <div
         className={clsx(
           styles.article,
-          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[45vh]",
+          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[round(up,45vh,var(--grid-size))]",
         )}
         ref={ref}
       >
@@ -275,10 +275,10 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="hidden lg:block col-start-4 row-start-1 h-full py-10">
+    <div className="hidden lg:block col-start-4 row-start-1 h-full">
       <div
         ref={figureRef}
-        className="sticky px-10 overflow-hidden"
+        className="sticky px-[var(--grid-size)] overflow-hidden"
         style={{ top }}
       >
         {children}

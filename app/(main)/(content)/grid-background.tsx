@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import { useGridSize } from "./grid-context";
+
+export const CONNECTOR_MARKER_ID = "how-computers-talk-connector-marker";
 
 export function GridBackground() {
   const gridId = useId();
@@ -9,7 +11,7 @@ export function GridBackground() {
   const [patternSize, setPatternSize] = useState(20);
   const { setGridSize } = useGridSize();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updatePatternSize = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
@@ -40,15 +42,25 @@ export function GridBackground() {
   return (
     <div
       ref={containerRef}
-      className="absolute !col-start-4 col-span-2 row-start-1 border-l border-borderSoft top-0 bottom-0 !max-w-full"
+      className="absolute !col-start-4 col-span-2 row-start-1 border-l border-borderSoft top-0 bottom-0 !max-w-full -translate-x-px"
     >
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none text-borderSoft"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <title>Grid background pattern</title>
         <defs>
+          <marker
+            id={CONNECTOR_MARKER_ID}
+            markerUnits="userSpaceOnUse"
+            markerWidth="10"
+            markerHeight="10"
+            refX="5"
+            refY="5"
+            orient="auto"
+          >
+            <circle cx="5" cy="5" r="4" className="fill-gray8" />
+          </marker>
           <pattern
             id={gridId}
             width={patternSize}

@@ -6,6 +6,7 @@ import { Wide } from "~/components/mdx/Wide";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { TRANSITIONS } from "~/lib/transitions";
 import { Figure } from "../../_common/figure";
+import { Server } from "./network-devices";
 
 const suffixServers = [
   {
@@ -94,59 +95,6 @@ const suffixServers = [
     ],
   },
 ];
-
-export function Computer() {
-  return (
-    <div className="w-[60px] h-14 mx-auto flex flex-col">
-      <div className="bg-gray4 pb-0.5 shadow-md shadow-black/7 rounded-lg ring-1 ring-black/10  grow relative">
-        <div className="h-full flex items-center bg-gray4 rounded-lg border-4 border-gray1" />
-      </div>
-      <div className="h-1.5 w-4 bg-gray8 mx-auto" />
-      <div className="h-2 w-2/3 mx-auto bg-gray1 shadow-md shadow-black/7 rounded-sm ring-1 ring-black/10" />
-    </div>
-  );
-}
-
-export function Router() {
-  return (
-    <div className="w-[60px] h-14 mx-auto flex flex-col">
-      <div className="h-1/2 flex justify-between px-2">
-        <div className="h-full w-1 bg-gray1 shadow-md shadow-black/7 rounded-t ring-1 ring-black/10" />
-        <div className="h-full w-1 bg-gray1 shadow-md shadow-black/7 rounded-t ring-1 ring-black/10" />
-      </div>
-      <div className="bg-gray4 pb-0.5 shadow-md shadow-black/7 rounded-lg ring-1 ring-black/10 h-1/2 -translate-y-1">
-        <div className="h-full flex items-center bg-gray1 rounded-lg px-2 gap-0.5">
-          <div className="size-2.5 rounded-full bg-blue-500 border-2 border-blue-200" />
-          <div className="size-1.5 rounded-full bg-gray6 ml-auto" />
-          <div className="size-1.5 rounded-full bg-gray6" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function Server() {
-  return (
-    <div className="w-[60px] mx-auto bg-gray1 shadow-md shadow-black/7 rounded-lg ring-1 ring-black/10">
-      <div className="h-7 flex items-center px-2 gap-1 border-b border-black/10">
-        <div className="size-2.5 rounded-full bg-blue-500 border-2 border-blue-200" />
-        <div className="h-2.5 grow grid grid-rows-2 gap-px">
-          <div className="bg-gray6 rounded-[2px]" />
-          <div className="bg-gray6 rounded-[2px]" />
-        </div>
-      </div>
-      <div className="bg-gray4 pb-0.5 rounded-b-lg overflow-hidden">
-        <div className="h-7 flex items-center px-2 gap-1 bg-gray1 rounded-b-lg -mt-px">
-          <div className="size-2.5 rounded-full bg-gray6" />
-          <div className="h-2.5 grow grid grid-rows-2 gap-px">
-            <div className="bg-gray6 rounded-[2px]" />
-            <div className="bg-gray6 rounded-[2px]" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function DomainList({
   suffix,
