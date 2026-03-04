@@ -1,4 +1,8 @@
-import type { CSSProperties, ReactNode } from "react";
+"use client";
+
+import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
+import { type TargetAndTransition, motion } from "motion/react";
+import type { CSSProperties, ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "~/lib/cn";
 
 type SpacingValue =
@@ -51,6 +55,13 @@ export function GridCell({
   height = 2,
   padding,
   margin,
+  x = 0,
+  y = 0,
+  animate,
+  initial,
+  transition,
+  style,
+  ...props
 }: {
   className?: string;
   children: ReactNode;
@@ -58,18 +69,42 @@ export function GridCell({
   height?: number;
   padding?: SpacingValue;
   margin?: SpacingValue;
-}) {
+  x?: number;
+  y?: number;
+  animate?: TargetAndTransition;
+  initial?: TargetAndTransition;
+} & Omit<ComponentPropsWithoutRef<typeof motion.div>, "animate" | "initial">) {
   return (
-    <div
-      className={cn("flex items-center justify-center", className)}
+    <motion.div
+      className={cn(
+        "grid-cell flex items-center justify-center",
+        (x || y) && "absolute",
+        className,
+      )}
       style={{
         width: gridCalc(width),
         height: gridCalc(height),
         ...getSpacingStyles(padding, "padding"),
         ...getSpacingStyles(margin, "margin"),
+        ...style,
       }}
+      initial={{
+        x: `calc(var(--grid-size) * ${x})`,
+        y: `calc(var(--grid-size) * ${y})`,
+        ...initial,
+      }}
+      animate={{
+        x: `calc(var(--grid-size) * ${x})`,
+        y: `calc(var(--grid-size) * ${y})`,
+        ...animate,
+      }}
+      transition={{
+        ...transitions.swift,
+        ...transition,
+      }}
+      {...props}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

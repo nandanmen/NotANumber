@@ -1,8 +1,7 @@
-import { BGPScrollVisual } from "./_components/bgp";
+import { BGPPathFindingSequenceList, BGPScrollVisual } from "./_components/bgp";
 import { DNSVisual, DNSScrollVisual } from "./_components/dns";
 import { Section } from "./_components/grid-snapped-section";
 import { LittleInternetScrollVisual } from "./_components/little-internet";
-import { SequenceList } from "./_components/sequence-list";
 
 <ScrollGroup figure={<LittleInternetScrollVisual />}>
 
@@ -136,14 +135,14 @@ But how can router 1 know this?
 
 One way is for router 3 to **announce its existence** to router 1.
 
-<SequenceList>
+<BGPPathFindingSequenceList>
 
 1. When router 3 starts up, it will announce to router 2 that it can receive all addresses starting with `3.x`.
 2. Router 2 will update its routing table to say that all `3.x` addresses should be sent to router 3.
 3. Router 2 will then announce to router 1 that it can receive all addresses starting with `3.x`.
 4. Router 1 will update its routing table to say that all `3.x` addresses should be sent to router 2.
 
-</SequenceList>
+</BGPPathFindingSequenceList>
 
 Router 1 can now send data to router 3!
 

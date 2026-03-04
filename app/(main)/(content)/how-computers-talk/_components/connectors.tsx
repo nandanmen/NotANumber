@@ -1,5 +1,7 @@
 "use client";
 
+import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
+import { motion } from "motion/react";
 import { CONNECTOR_MARKER_ID } from "../../grid-background";
 import { useGridSize } from "../../grid-context";
 
@@ -10,27 +12,9 @@ export function Connectors() {
         <Path x1={3} y1={1} x2={4} y2={2} />
         <Path x1={5} y1={1} x2={4} y2={2} />
         <Path x1={4} y1={4} x2={4} y2={5} />
-        <Path
-          x1={4}
-          y1={7}
-          x2={4}
-          y2={9}
-          direction="vertical-first"
-        />
-        <Path
-          x1={4}
-          y1={7}
-          x2={2}
-          y2={8}
-          direction="vertical-first"
-        />
-        <Path
-          x1={4}
-          y1={7}
-          x2={6}
-          y2={8}
-          direction="vertical-first"
-        />
+        <Path x1={4} y1={7} x2={4} y2={9} direction="vertical-first" />
+        <Path x1={4} y1={7} x2={2} y2={8} direction="vertical-first" />
+        <Path x1={4} y1={7} x2={6} y2={8} direction="vertical-first" />
       </svg>
     </div>
   );
@@ -97,12 +81,14 @@ export function Path({
   y2,
   radius: radiusProp,
   direction = "horizontal-first",
+  offset = { x: 0, y: 0 },
 }: {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
   radius?: number;
+  offset?: { x?: number; y?: number };
   direction?: "horizontal-first" | "vertical-first" | "direct";
 }) {
   const { gridSize } = useGridSize();
@@ -130,21 +116,31 @@ export function Path({
     direction === "direct"
       ? `M ${startX} ${startY} L ${endX} ${endY}`
       : radius <= 0
-      ? direction === "vertical-first"
-        ? `M ${startX} ${startY} V ${endY} L ${endX} ${endY}`
-        : `M ${startX} ${startY} H ${endX} L ${endX} ${endY}`
-      : direction === "vertical-first"
-        ? `M ${startX} ${startY} L ${startX} ${vEnd} A ${radius} ${radius} 0 0 ${sweepVH} ${hStart} ${endY} L ${endX} ${endY}`
-        : `M ${startX} ${startY} L ${hEnd} ${startY} A ${radius} ${radius} 0 0 ${sweepHV} ${endX} ${vStart} L ${endX} ${endY}`;
+        ? direction === "vertical-first"
+          ? `M ${startX} ${startY} V ${endY} L ${endX} ${endY}`
+          : `M ${startX} ${startY} H ${endX} L ${endX} ${endY}`
+        : direction === "vertical-first"
+          ? `M ${startX} ${startY} L ${startX} ${vEnd} A ${radius} ${radius} 0 0 ${sweepVH} ${hStart} ${endY} L ${endX} ${endY}`
+          : `M ${startX} ${startY} L ${hEnd} ${startY} A ${radius} ${radius} 0 0 ${sweepHV} ${endX} ${vStart} L ${endX} ${endY}`;
 
   return (
-    <path
-      d={d}
-      stroke="currentColor"
-      strokeWidth="3"
-      fill="none"
-      markerStart={`url(#${CONNECTOR_MARKER_ID})`}
-      markerEnd={`url(#${CONNECTOR_MARKER_ID})`}
-    />
+    <motion.g
+      initial={{
+        transform: `translate(${toCoords(offset.x ?? 0)}px, ${toCoords(offset.y ?? 0)}px)`,
+      }}
+      animate={{
+        transform: `translate(${toCoords(offset.x ?? 0)}px, ${toCoords(offset.y ?? 0)}px)`,
+      }}
+      transition={transitions.swift}
+    >
+      <path
+        d={d}
+        stroke="currentColor"
+        strokeWidth="3"
+        fill="none"
+        markerStart={`url(#${CONNECTOR_MARKER_ID})`}
+        markerEnd={`url(#${CONNECTOR_MARKER_ID})`}
+      />
+    </motion.g>
   );
 }
