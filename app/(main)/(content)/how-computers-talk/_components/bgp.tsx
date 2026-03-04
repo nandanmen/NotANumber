@@ -1,5 +1,6 @@
 "use client";
 
+import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
@@ -25,15 +26,15 @@ function BGPThreeRoutersDiagram() {
         className="text-gray8 absolute inset-0 overflow-visible"
       >
         <Path
-          offset={{ x: index > 0 ? 0 : 2 }}
+          offset={{ x: index >= 0 ? 0 : 2 }}
           x1={3}
           y1={5}
           x2={5}
           y2={5}
           direction="direct"
         />
-        {index > 0 && <Path x1={7} y1={5} x2={9} y2={5} direction="direct" />}
-        {index > 0 && (
+        {index >= 0 && <Path x1={7} y1={5} x2={9} y2={5} direction="direct" />}
+        {index >= 0 && (
           <svg
             width={gridSize * 2}
             height={gridSize * 2}
@@ -46,7 +47,7 @@ function BGPThreeRoutersDiagram() {
               cy={gridSize * 1}
               animate={{ x: gridSize * -2 - 8 }}
               transition={{
-                delay: 0.25,
+                delay: 0.8,
                 type: "tween",
                 duration: 0.75,
                 ease: "easeInOut",
@@ -58,13 +59,44 @@ function BGPThreeRoutersDiagram() {
           </svg>
         )}
       </svg>
-      <GridCell x={index > 0 ? 1 : 3} y={4}>
+      <GridCell x={index >= 0 ? 1 : 3} y={4}>
         <Router label={1} />
       </GridCell>
-      <GridCell x={index > 0 ? 5 : 7} y={4}>
+      <GridCell x={index >= 0 ? 5 : 7} y={4}>
         <Router label={2} />
+        <GridCell
+          width={3.5}
+          className="absolute block top-full text-sm"
+          animate={{ y: index === 1 ? 0 : -40 }}
+          initial={{ y: -40 }}
+          transition={{ ...transitions.swift, delay: index === 1 ? 0 : 0.1 }}
+        >
+          <div className="absolute bottom-full z-10 -mb-2 h-[calc(var(--grid-size)/1.5)] text-gray8 flex flex-col items-center left-1/2 -translate-x-1/2">
+            <div className="w-[3px] bg-current grow -mb-1" />
+            <div className="size-2 bg-current rounded-full" />
+          </div>
+          <motion.div
+            animate={index === 1 ? { scale: 1 } : { scale: 0 }}
+            initial={{ scale: 0 }}
+            style={{ originY: "top" }}
+            transition={{ ...transitions.swift, delay: index === 1 ? 0.2 : 0 }}
+            className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md"
+          >
+            <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow">
+              <div className="absolute border-r border-borderSoft h-full left-1/2" />
+              <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                <p>Address</p>
+                <p>Router</p>
+              </li>
+              <li className="grid grid-cols-2 place-items-center font-mono py-0.5">
+                <p>1.x</p>
+                <p>1</p>
+              </li>
+            </ul>
+          </motion.div>
+        </GridCell>
       </GridCell>
-      {index > 0 && (
+      {index >= 0 && (
         <GridCell className="relative" x={9} y={4}>
           <motion.div animate={{ scale: 1 }} initial={{ scale: 0 }}>
             <Router label={3} />
@@ -73,10 +105,10 @@ function BGPThreeRoutersDiagram() {
             width={3}
             height={1}
             className="absolute top-full text-sm text-center font-handwriting"
-            animate={{ scale: 1 }}
+            animate={{ scale: index === 0 ? 1 : 0 }}
             initial={{ scale: 0 }}
             style={{ originY: "top" }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: index === 0 ? 0.4 : 0 }}
           >
             <Arrow />
             <p>I can process all 3.x addresses!</p>

@@ -9,7 +9,7 @@ import {
 } from "react";
 import { cn } from "~/lib/cn";
 
-const STEP_INTERVAL_MS = 2000;
+const STEP_INTERVAL_MS = 1500;
 
 export function SequenceList({
   children,
@@ -59,6 +59,7 @@ export function SequenceList({
       if (step < count) {
         onIndexChange(step);
       } else {
+        onIndexChange(-1);
         stopPlay();
       }
     }, STEP_INTERVAL_MS);
@@ -76,15 +77,18 @@ export function SequenceList({
           const isActive = i === index;
           return (
             <li
-              className={cn(
-                item.props.className,
-                "p-4 pr-10",
-                isActive && "bg-gray4",
-              )}
+              className={cn(item.props.className, "p-4 group")}
               key={String(i)}
               onMouseEnter={() => handleItemMouseEnter(i)}
             >
-              {item.props.children}
+              <div
+                className={cn(
+                  "-my-2 -ml-[34px] mr-2 pl-[34px] py-2 rounded group-first:rounded-tl-md group-last:rounded-bl-md",
+                  isActive && "bg-gray4",
+                )}
+              >
+                {item.props.children}
+              </div>
             </li>
           );
         })}
