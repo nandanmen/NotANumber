@@ -74,6 +74,8 @@ export function GridCell({
   animate?: TargetAndTransition;
   initial?: TargetAndTransition;
 } & Omit<ComponentPropsWithoutRef<typeof motion.div>, "animate" | "initial">) {
+  const showAnimate = x || y || animate;
+  const showInitial = x || y || initial;
   return (
     <motion.div
       className={cn(
@@ -88,16 +90,24 @@ export function GridCell({
         ...getSpacingStyles(margin, "margin"),
         ...style,
       }}
-      initial={{
-        x: `calc(var(--grid-size) * ${x})`,
-        y: `calc(var(--grid-size) * ${y})`,
-        ...initial,
-      }}
-      animate={{
-        x: `calc(var(--grid-size) * ${x})`,
-        y: `calc(var(--grid-size) * ${y})`,
-        ...animate,
-      }}
+      initial={
+        showInitial
+          ? {
+              x: x ? `calc(var(--grid-size) * ${x})` : undefined,
+              y: y ? `calc(var(--grid-size) * ${y})` : undefined,
+              ...initial,
+            }
+          : undefined
+      }
+      animate={
+        showAnimate
+          ? {
+              x: x ? `calc(var(--grid-size) * ${x})` : undefined,
+              y: y ? `calc(var(--grid-size) * ${y})` : undefined,
+              ...animate,
+            }
+          : undefined
+      }
       transition={{
         ...transitions.swift,
         ...transition,

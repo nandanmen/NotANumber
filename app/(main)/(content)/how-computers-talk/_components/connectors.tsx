@@ -81,15 +81,15 @@ export function Path({
   y2,
   radius: radiusProp,
   direction = "horizontal-first",
-  offset = { x: 0, y: 0 },
+  id,
 }: {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
   radius?: number;
-  offset?: { x?: number; y?: number };
   direction?: "horizontal-first" | "vertical-first" | "direct";
+  id?: string;
 }) {
   const { gridSize } = useGridSize();
   if (gridSize == null) return null;
@@ -124,15 +124,7 @@ export function Path({
           : `M ${startX} ${startY} L ${hEnd} ${startY} A ${radius} ${radius} 0 0 ${sweepHV} ${endX} ${vStart} L ${endX} ${endY}`;
 
   return (
-    <motion.g
-      initial={{
-        transform: `translate(${toCoords(offset.x ?? 0)}px, ${toCoords(offset.y ?? 0)}px)`,
-      }}
-      animate={{
-        transform: `translate(${toCoords(offset.x ?? 0)}px, ${toCoords(offset.y ?? 0)}px)`,
-      }}
-      transition={transitions.swift}
-    >
+    <g id={id}>
       <path
         d={d}
         stroke="currentColor"
@@ -141,6 +133,6 @@ export function Path({
         markerStart={`url(#${CONNECTOR_MARKER_ID})`}
         markerEnd={`url(#${CONNECTOR_MARKER_ID})`}
       />
-    </motion.g>
+    </g>
   );
 }

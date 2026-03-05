@@ -2,8 +2,8 @@
 
 import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
 import { atom, useAtom, useAtomValue } from "jotai";
-import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import { motion, useAnimate } from "motion/react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { useGridSize } from "../../grid-context";
 import { GridPath, Path } from "./connectors";
@@ -11,78 +11,103 @@ import { GridCell } from "./grid-cell";
 import { Computer, Router } from "./network-devices";
 import { NetworkDiagram } from "./network-diagram";
 import { SequenceList } from "./sequence-list";
+import { ToggleButton } from "../../database/_components/toggle-button";
 
-const pathFindingStepAtom = atom(1);
+const pathFindingStepAtom = atom(-1);
 
 function BGPThreeRoutersDiagram() {
-  const index = useAtomValue(pathFindingStepAtom);
+  const [scope, animate] = useAnimate();
+
+  // const index = useAtomValue(pathFindingStepAtom);
+  const [index, setIndex] = useState(-1);
+
   const { gridSize } = useGridSize();
+
+  const transitions = {
+    "0--1": {},
+  };
+
+  useEffect(() => {
+    switch (index) {
+      case -1: {
+        animate([
+          ["#path-1-2", { x: 0 }],
+          ["#router-1", { x: 0 }],
+          ["#router-2", { x: 0 }],
+        ]);
+        break;
+      }
+      case 0: {
+        animate([
+          ["#path-1-2", { x: -2 * gridSize }],
+          ["#router-1", { x: -2 * gridSize }],
+          ["#router-2", { x: -2 * gridSize }],
+        ]);
+        break;
+      }
+      default:
+        break;
+    }
+  }, [index, animate, gridSize]);
+
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative" ref={scope}>
       <svg
         width="100%"
         height="100%"
         aria-hidden="true"
         className="text-gray8 absolute inset-0 overflow-visible"
       >
-        <Path
-          offset={{ x: index >= 0 ? 0 : 2 }}
-          x1={3}
-          y1={5}
-          x2={5}
-          y2={5}
-          direction="direct"
-        />
-        {index >= 0 && <Path x1={7} y1={5} x2={9} y2={5} direction="direct" />}
+        <Path id="path-1-2" x1={5} y1={5} x2={7} y2={5} direction="direct" />
         {index >= 0 && (
-          <svg
-            width={gridSize * 2}
-            height={gridSize * 2}
-            x={gridSize * 7}
-            y={gridSize * 4}
-            aria-hidden="true"
-          >
-            <motion.ellipse
-              cx={gridSize * 2 + 4}
-              cy={gridSize * 1}
-              animate={{ x: gridSize * -2 - 8 }}
-              transition={{
-                delay: 0.8,
-                type: "tween",
-                duration: 0.75,
-                ease: "easeInOut",
-              }}
-              rx={7}
-              ry={4}
-              fill="currentColor"
-            />
-          </svg>
+          <Path id="path-2-3" x1={7} y1={5} x2={9} y2={5} direction="direct" />
         )}
+        <svg
+          width={gridSize * 2}
+          height={gridSize * 2}
+          x={gridSize * 7}
+          y={gridSize * 4}
+          aria-hidden="true"
+        >
+          <motion.ellipse
+            cx={gridSize * 2 + 14}
+            cy={gridSize * 1}
+            id="data-2-3"
+            rx={7}
+            ry={4}
+            fill="currentColor"
+          />
+        </svg>
       </svg>
-      <GridCell x={index >= 0 ? 1 : 3} y={4}>
+      <GridCell id="router-1" x={3} y={4}>
         <Router label={1} />
       </GridCell>
-      <GridCell x={index >= 0 ? 5 : 7} y={4}>
+      <GridCell id="router-2" x={7} y={4}>
         <Router label={2} />
         <GridCell
           width={3.5}
-          className="absolute block top-full text-sm"
-          animate={{ y: index === 1 ? 0 : -40 }}
-          initial={{ y: -40 }}
-          transition={{ ...transitions.swift, delay: index === 1 ? 0 : 0.1 }}
+          className="absolute block top-full text-sm -translate-y-10"
+          id="table-2"
         >
           <div className="absolute bottom-full z-10 -mb-2 h-[calc(var(--grid-size)/1.5)] text-gray8 flex flex-col items-center left-1/2 -translate-x-1/2">
             <div className="w-[3px] bg-current grow -mb-1" />
             <div className="size-2 bg-current rounded-full" />
           </div>
-          <motion.div
-            animate={index === 1 ? { scale: 1 } : { scale: 0 }}
-            initial={{ scale: 0 }}
+          <div
+            animate={{
+              scale: index >= 0 ? 1 : 0,
+              height: index === 1 ? 81 : 57,
+            }}
+            initial={{ scale: 0, height: 57 }}
             style={{ originY: "top" }}
-            transition={{ ...transitions.swift, delay: index === 1 ? 0.2 : 0 }}
-            className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md"
+            transition={{
+              scale: { ...transitions.swift, delay: index >= 0 ? 0.2 : 0 },
+              height: { ...transitions.swift, delay: index === 1 ? 0.5 : 0 },
+            }}
+            id="table-contents-2"
+            className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md origin-top scale-0"
           >
-            <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow">
+            <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
               <div className="absolute border-r border-borderSoft h-full left-1/2" />
               <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
                 <p>Address</p>
@@ -92,29 +117,42 @@ function BGPThreeRoutersDiagram() {
                 <p>1.x</p>
                 <p>1</p>
               </li>
+              <li className="grid grid-cols-2 place-items-center bg-gray2 font-mono py-0.5">
+                <p>3.x</p>
+                <p>3</p>
+              </li>
             </ul>
-          </motion.div>
+          </div>
         </GridCell>
       </GridCell>
-      {index >= 0 && (
-        <GridCell className="relative" x={9} y={4}>
-          <motion.div animate={{ scale: 1 }} initial={{ scale: 0 }}>
-            <Router label={3} />
-          </motion.div>
-          <GridCell
-            width={3}
-            height={1}
-            className="absolute top-full text-sm text-center font-handwriting"
-            animate={{ scale: index === 0 ? 1 : 0 }}
-            initial={{ scale: 0 }}
-            style={{ originY: "top" }}
-            transition={{ delay: index === 0 ? 0.4 : 0 }}
-          >
-            <Arrow />
-            <p>I can process all 3.x addresses!</p>
-          </GridCell>
+      <GridCell className="relative" x={9} y={4}>
+        <div id="router-3" className="scale-0">
+          <Router label={3} />
+        </div>
+        <GridCell
+          id="tooltip-3"
+          width={3}
+          height={1}
+          className="absolute top-full text-sm text-center font-handwriting origin-top scale-0"
+        >
+          <Arrow />
+          <p>I can process all 3.x addresses!</p>
         </GridCell>
-      )}
+      </GridCell>
+      <div className="fixed bottom-8 flex gap-4">
+        {[-1, 0, 1, 2, 3].map((i) => {
+          return (
+            <ToggleButton
+              className="w-8 justify-center bg-gray1"
+              type="button"
+              onClick={() => setIndex(i)}
+              key={i}
+            >
+              {i}
+            </ToggleButton>
+          );
+        })}
+      </div>
     </div>
   );
 }
