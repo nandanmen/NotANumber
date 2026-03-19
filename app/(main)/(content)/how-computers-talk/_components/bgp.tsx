@@ -2,53 +2,27 @@
 
 import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
 import { atom, useAtom, useAtomValue } from "jotai";
-import { motion, useAnimate } from "motion/react";
-import { useEffect, useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useAnimate } from "motion/react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
+import { cn } from "~/lib/cn";
+import { ToggleButton } from "../../database/_components/toggle-button";
 import { useGridSize } from "../../grid-context";
 import { GridPath, Path } from "./connectors";
 import { GridCell } from "./grid-cell";
 import { Computer, Router } from "./network-devices";
 import { NetworkDiagram } from "./network-diagram";
 import { SequenceList } from "./sequence-list";
-import { ToggleButton } from "../../database/_components/toggle-button";
 
 const pathFindingStepAtom = atom(-1);
 
 function BGPThreeRoutersDiagram() {
   const [scope, animate] = useAnimate();
 
-  // const index = useAtomValue(pathFindingStepAtom);
-  const [index, setIndex] = useState(-1);
+  const [index, setIndex] = useAtom(pathFindingStepAtom);
+  // const [index, setIndex] = useState(-1);
 
   const { gridSize } = useGridSize();
-
-  const transitions = {
-    "0--1": {},
-  };
-
-  useEffect(() => {
-    switch (index) {
-      case -1: {
-        animate([
-          ["#path-1-2", { x: 0 }],
-          ["#router-1", { x: 0 }],
-          ["#router-2", { x: 0 }],
-        ]);
-        break;
-      }
-      case 0: {
-        animate([
-          ["#path-1-2", { x: -2 * gridSize }],
-          ["#router-1", { x: -2 * gridSize }],
-          ["#router-2", { x: -2 * gridSize }],
-        ]);
-        break;
-      }
-      default:
-        break;
-    }
-  }, [index, animate, gridSize]);
 
   return (
     <div className="w-full h-full relative" ref={scope}>
@@ -58,87 +32,198 @@ function BGPThreeRoutersDiagram() {
         aria-hidden="true"
         className="text-gray8 absolute inset-0 overflow-visible"
       >
-        <Path id="path-1-2" x1={5} y1={5} x2={7} y2={5} direction="direct" />
+        <motion.g
+          animate={{ x: index >= 0 ? -2 * gridSize : 0 }}
+          transition={transitions.swift}
+        >
+          <Path id="path-1-2" x1={5} y1={5} x2={7} y2={5} direction="direct" />
+        </motion.g>
         {index >= 0 && (
           <Path id="path-2-3" x1={7} y1={5} x2={9} y2={5} direction="direct" />
         )}
-        <svg
-          width={gridSize * 2}
-          height={gridSize * 2}
-          x={gridSize * 7}
-          y={gridSize * 4}
-          aria-hidden="true"
-        >
-          <motion.ellipse
-            cx={gridSize * 2 + 14}
-            cy={gridSize * 1}
-            id="data-2-3"
-            rx={7}
-            ry={4}
-            fill="currentColor"
-          />
-        </svg>
-      </svg>
-      <GridCell id="router-1" x={3} y={4}>
-        <Router label={1} />
-      </GridCell>
-      <GridCell id="router-2" x={7} y={4}>
-        <Router label={2} />
-        <GridCell
-          width={3.5}
-          className="absolute block top-full text-sm -translate-y-10"
-          id="table-2"
-        >
-          <div className="absolute bottom-full z-10 -mb-2 h-[calc(var(--grid-size)/1.5)] text-gray8 flex flex-col items-center left-1/2 -translate-x-1/2">
-            <div className="w-[3px] bg-current grow -mb-1" />
-            <div className="size-2 bg-current rounded-full" />
-          </div>
-          <div
-            animate={{
-              scale: index >= 0 ? 1 : 0,
-              height: index === 1 ? 81 : 57,
-            }}
-            initial={{ scale: 0, height: 57 }}
-            style={{ originY: "top" }}
-            transition={{
-              scale: { ...transitions.swift, delay: index >= 0 ? 0.2 : 0 },
-              height: { ...transitions.swift, delay: index === 1 ? 0.5 : 0 },
-            }}
-            id="table-contents-2"
-            className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md origin-top scale-0"
+        {index === 1 && (
+          <svg
+            width={gridSize * 2}
+            height={gridSize * 2}
+            x={gridSize * 7}
+            y={gridSize * 4}
+            aria-hidden="true"
           >
-            <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
-              <div className="absolute border-r border-borderSoft h-full left-1/2" />
-              <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
-                <p>Address</p>
-                <p>Router</p>
-              </li>
-              <li className="grid grid-cols-2 place-items-center font-mono py-0.5">
-                <p>1.x</p>
-                <p>1</p>
-              </li>
-              <li className="grid grid-cols-2 place-items-center bg-gray2 font-mono py-0.5">
-                <p>3.x</p>
-                <p>3</p>
-              </li>
-            </ul>
-          </div>
+            <motion.ellipse
+              cx={gridSize * 2 + 14}
+              cy={gridSize * 1}
+              rx={7}
+              ry={4}
+              animate={{ x: -2 * gridSize - 16 }}
+              transition={{
+                type: "tween",
+                ease: "easeInOut",
+                duration: 0.5,
+                delay: 0.3,
+              }}
+              fill="currentColor"
+            />
+          </svg>
+        )}
+        {index === 2 && (
+          <svg
+            width={gridSize * 2}
+            height={gridSize * 2}
+            x={gridSize * 3}
+            y={gridSize * 4}
+            aria-hidden="true"
+          >
+            <motion.ellipse
+              cx={gridSize * 2 + 14}
+              cy={gridSize * 1}
+              rx={7}
+              ry={4}
+              animate={{ x: -2 * gridSize - 16 }}
+              transition={{
+                type: "tween",
+                ease: "easeInOut",
+                duration: 0.5,
+                delay: 0.3,
+              }}
+              fill="currentColor"
+            />
+          </svg>
+        )}
+      </svg>
+      <motion.div
+        animate={{ x: index >= 0 ? -2 * gridSize : 0 }}
+        transition={transitions.swift}
+      >
+        <GridCell id="router-1" x={3} y={4}>
+          <Router label={1} />
+          {index >= 2 && (
+            <GridCell
+              width={3.5}
+              className="absolute block top-full text-sm"
+              id="table-2"
+              animate={{ y: -7 }}
+              initial={{ y: -40 }}
+            >
+              <div className="absolute bottom-full z-10 -mb-2 h-[calc(var(--grid-size)/1.5)] text-gray8 flex flex-col items-center left-1/2 -translate-x-1/2">
+                <div className="w-[3px] bg-current grow -mb-1" />
+                <div className="size-2 bg-current rounded-full" />
+              </div>
+              <motion.div
+                className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md"
+                animate={{ scale: 1, height: 81 }}
+                initial={{ scale: 0, height: 57 }}
+                style={{ originY: "top" }}
+                transition={{
+                  scale: transitions.swift,
+                  height: { delay: 0.8, ...transitions.swift },
+                }}
+              >
+                <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
+                  <div className="absolute border-r border-borderSoft h-full left-1/2" />
+                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                    <p>Address</p>
+                    <p>Router</p>
+                  </li>
+                  <li className="grid grid-cols-2 place-items-center font-mono py-0.5">
+                    <p>2.x</p>
+                    <p>2</p>
+                  </li>
+                  <li className="grid grid-cols-2 place-items-center bg-gray3 font-mono py-0.5">
+                    <p>3.x</p>
+                    <p>2</p>
+                  </li>
+                </ul>
+              </motion.div>
+            </GridCell>
+          )}
         </GridCell>
-      </GridCell>
-      <GridCell className="relative" x={9} y={4}>
-        <div id="router-3" className="scale-0">
-          <Router label={3} />
-        </div>
-        <GridCell
-          id="tooltip-3"
-          width={3}
-          height={1}
-          className="absolute top-full text-sm text-center font-handwriting origin-top scale-0"
-        >
-          <Arrow />
-          <p>I can process all 3.x addresses!</p>
+        <GridCell id="router-2" x={7} y={4}>
+          <Router label={2} />
+          {index >= 1 && (
+            <GridCell
+              width={3.5}
+              className="absolute block top-full text-sm"
+              id="table-2"
+              animate={{ y: -7 }}
+              initial={{ y: -40 }}
+            >
+              <div className="absolute bottom-full z-10 -mb-2 h-[calc(var(--grid-size)/1.5)] text-gray8 flex flex-col items-center left-1/2 -translate-x-1/2">
+                <div className="w-[3px] bg-current grow -mb-1" />
+                <div className="size-2 bg-current rounded-full" />
+              </div>
+              <motion.div
+                className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md"
+                animate={{ scale: 1, height: 81 }}
+                initial={{ scale: 0, height: 57 }}
+                style={{ originY: "top" }}
+                transition={{
+                  scale: { delay: 0.2, ...transitions.swift },
+                  height: { delay: 0.8, ...transitions.swift },
+                }}
+                onAnimationComplete={() =>
+                  setTimeout(() => setIndex((i) => i + 1), 300)
+                }
+              >
+                <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
+                  <div className="absolute border-r border-borderSoft h-full left-1/2" />
+                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                    <p>Address</p>
+                    <p>Router</p>
+                  </li>
+                  <li className="grid grid-cols-2 place-items-center font-mono py-0.5">
+                    <p>1.x</p>
+                    <p>1</p>
+                  </li>
+                  <li className="grid grid-cols-2 place-items-center bg-gray3 font-mono py-0.5">
+                    <p>3.x</p>
+                    <p>3</p>
+                  </li>
+                </ul>
+              </motion.div>
+            </GridCell>
+          )}
+          <AnimatePresence>
+            {index === 2 && (
+              <GridCell
+                width={3}
+                height={1}
+                className="absolute bottom-full text-sm text-center font-handwriting"
+                animate={{ scale: 1 }}
+                initial={{ scale: 0 }}
+                exit={{ scale: 0 }}
+                style={{ originY: "bottom" }}
+              >
+                <Arrow className="rotate-180 top-full -translate-y-3" />
+                <p>I can process all 3.x addresses!</p>
+              </GridCell>
+            )}
+          </AnimatePresence>
         </GridCell>
-      </GridCell>
+      </motion.div>
+      {index >= 0 && (
+        <GridCell className="relative" x={9} y={4}>
+          <motion.div animate={{ scale: 1 }} initial={{ scale: 0 }}>
+            <Router label={3} />
+          </motion.div>
+          <AnimatePresence>
+            {index < 2 && (
+              <GridCell
+                width={3}
+                height={1}
+                className="absolute top-full text-sm text-center font-handwriting"
+                animate={{ scale: 1 }}
+                initial={{ scale: 0 }}
+                exit={{ scale: 0 }}
+                style={{ originY: "top" }}
+                transition={{ delay: index < 2 ? 0.2 : 0 }}
+              >
+                <Arrow />
+                <p>I can process all 3.x addresses!</p>
+              </GridCell>
+            )}
+          </AnimatePresence>
+        </GridCell>
+      )}
       <div className="fixed bottom-8 flex gap-4">
         {[-1, 0, 1, 2, 3].map((i) => {
           return (
@@ -157,7 +242,7 @@ function BGPThreeRoutersDiagram() {
   );
 }
 
-function Arrow() {
+function Arrow({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +252,7 @@ function Arrow() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="absolute bottom-1/2 -translate-y-2"
+      className={cn("absolute bottom-1/2 -translate-y-2", className)}
     >
       <g transform="matrix(1, 0, 0, 1, 87.777, 3254.0538)" opacity="1">
         <g transform="scale(0.8)">
