@@ -1,9 +1,9 @@
 "use client";
 
 import { transitions } from "app/notes/(content)/diagram/_components/workflows/transitions";
-import { atom, useAtom, useAtomValue } from "jotai";
-import { AnimatePresence, motion, useAnimate } from "motion/react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { atom, useAtom } from "jotai";
+import { AnimatePresence, motion } from "motion/react";
+import type { ReactNode } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { cn } from "~/lib/cn";
 import { ToggleButton } from "../../database/_components/toggle-button";
@@ -17,15 +17,10 @@ import { SequenceList } from "./sequence-list";
 const pathFindingStepAtom = atom(-1);
 
 function BGPThreeRoutersDiagram() {
-  const [scope, animate] = useAnimate();
-
   const [index, setIndex] = useAtom(pathFindingStepAtom);
-  // const [index, setIndex] = useState(-1);
-
   const { gridSize } = useGridSize();
-
   return (
-    <div className="w-full h-full relative" ref={scope}>
+    <div className="w-full h-full relative">
       <svg
         width="100%"
         height="100%"
@@ -160,9 +155,6 @@ function BGPThreeRoutersDiagram() {
                   scale: { delay: 0.2, ...transitions.swift },
                   height: { delay: 0.8, ...transitions.swift },
                 }}
-                onAnimationComplete={() =>
-                  setTimeout(() => setIndex((i) => i + 1), 300)
-                }
               >
                 <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
                   <div className="absolute border-r border-borderSoft h-full left-1/2" />

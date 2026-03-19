@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
+import { useGridSize } from "../../grid-context";
 import { Path } from "./connectors";
 import { GridCell } from "./grid-cell";
 import { Computer, Router } from "./network-devices";
@@ -27,6 +28,7 @@ export function ComputerCell({
 
 export function LittleInternetScrollVisual() {
   const index = useActiveIndex();
+  const { gridSize } = useGridSize();
   return (
     <div className="aspect-square flex items-center justify-center text-gray8">
       {index === 0 && (
@@ -78,19 +80,36 @@ export function LittleInternetScrollVisual() {
             aria-hidden="true"
             className="text-gray8 absolute inset-0"
           >
-            <Path x1={2} y1={2} x2={4} y2={2} />
-            <Path x1={2} y1={2} x2={2} y2={4} />
-            <Path x1={2} y1={2} x2={4} y2={4} direction="direct" />
-            <Path x1={2} y1={2} x2={3} y2={6} direction="direct" />
+            <defs>
+              <mask id="center-cutout">
+                <rect width="100%" height="100%" fill="white" />
+                {gridSize != null && (
+                  <rect
+                    x={2.8 * gridSize}
+                    y={2 * gridSize}
+                    width={0.4 * gridSize}
+                    height={1 * gridSize}
+                    fill="black"
+                  />
+                )}
+              </mask>
+            </defs>
+            <g mask="url(#center-cutout)">
+              <Path x1={1} y1={1} x2={5} y2={4} offset={1} direction="direct" />
+              <Path x1={5} y1={1} x2={1} y2={4} offset={1} direction="direct" />
+            </g>
 
-            <Path x1={4} y1={2} x2={4} y2={4} />
-            <Path x1={4} y1={2} x2={2} y2={4} direction="direct" />
-            <Path x1={4} y1={2} x2={3} y2={6} direction="direct" />
+            <Path x1={2} y1={0.8} x2={4} y2={0.8} />
+            <Path x1={1} y1={2} x2={1} y2={3} />
+            <Path x1={2} y1={1.1} x2={2.9} y2={6} />
 
-            <Path x1={2} y1={4} x2={4} y2={4} />
-            <Path x1={2} y1={4} x2={3} y2={6} direction="direct" />
+            <Path x1={5} y1={2} x2={5} y2={3} />
+            <Path x1={4} y1={1.1} x2={3.1} y2={6} />
 
-            <Path x1={4} y1={4} x2={3} y2={6} direction="direct" />
+            <Path x1={2} y1={3.8} x2={4} y2={3.8} />
+            <Path x1={2} y1={4.1} x2={2.7} y2={6} />
+
+            <Path x1={4} y1={4.1} x2={3.3} y2={6} />
           </svg>
           <div className="flex items-center">
             <ComputerCell
@@ -98,7 +117,7 @@ export function LittleInternetScrollVisual() {
               labelColor="bg-blue9"
               margin={{ right: 2 }}
             />
-            <ComputerCell label="2" labelColor="bg-green9" />
+            <ComputerCell label="2" labelColor="bg-green9" labelSide="right" />
           </div>
           <div className="flex items-center">
             <ComputerCell
@@ -106,7 +125,12 @@ export function LittleInternetScrollVisual() {
               labelColor="bg-yellow10"
               margin={{ right: 2, top: 1 }}
             />
-            <ComputerCell label="4" labelColor="bg-red9" margin={{ top: 1 }} />
+            <ComputerCell
+              label="4"
+              labelColor="bg-red9"
+              margin={{ top: 1 }}
+              labelSide="right"
+            />
           </div>
           <ComputerCell
             label="5"

@@ -139,8 +139,7 @@ One way is for router 3 to **announce its existence** to router 1.
 
 1. When router 3 starts up, it will announce to router 2 that it can receive all addresses starting with `3.x`.
 2. Router 2 will update its routing table to say that all `3.x` addresses should be sent to router 3.
-3. Router 2 will then announce to router 1 that it can receive all addresses starting with `3.x`.
-4. Router 1 will update its routing table to say that all `3.x` addresses should be sent to router 2.
+3. Router 2 will then announce to router 1 that it can receive all addresses starting with `3.x`. Router 1 will then update its routing table.
 
 </BGPPathFindingSequenceList>
 

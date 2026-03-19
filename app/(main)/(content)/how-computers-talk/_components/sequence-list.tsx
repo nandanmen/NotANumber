@@ -56,10 +56,8 @@ export function SequenceList({
     onIndexChange(0);
     intervalRef.current = setInterval(() => {
       step += 1;
-      if (step < count) {
-        onIndexChange(step);
-      } else {
-        onIndexChange(-1);
+      onIndexChange(step);
+      if (step >= count) {
         stopPlay();
       }
     }, STEP_INTERVAL_MS);

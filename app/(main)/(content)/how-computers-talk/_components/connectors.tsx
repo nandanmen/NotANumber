@@ -81,6 +81,7 @@ export function Path({
   y2,
   radius: radiusProp,
   direction = "horizontal-first",
+  offset,
   id,
 }: {
   x1: number;
@@ -89,13 +90,27 @@ export function Path({
   y2: number;
   radius?: number;
   direction?: "horizontal-first" | "vertical-first" | "direct";
+  offset?: number;
   id?: string;
 }) {
   const { gridSize } = useGridSize();
   if (gridSize == null) return null;
 
   const toCoords = (n: number) => n * gridSize;
-  const [startX, startY, endX, endY] = [x1, y1, x2, y2].map(toCoords);
+  let [startX, startY, endX, endY] = [x1, y1, x2, y2].map(toCoords);
+
+  if (offset) {
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const ux = dx / len;
+    const uy = dy / len;
+    const o = offset * gridSize;
+    startX += ux * o;
+    startY += uy * o;
+    endX -= ux * o;
+    endY -= uy * o;
+  }
 
   const lenH = Math.abs(endX - startX);
   const lenV = Math.abs(endY - startY);
