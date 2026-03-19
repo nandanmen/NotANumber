@@ -1,4 +1,4 @@
-import { BGPPathFindingSequenceList, BGPScrollVisual } from "./_components/bgp";
+import { BGPPathFindingSequenceList, BGPPlayButton, BGPScrollVisual } from "./_components/bgp";
 import { DNSVisual, DNSScrollVisual } from "./_components/dns";
 import { Section } from "./_components/grid-snapped-section";
 import { LittleInternetScrollVisual } from "./_components/little-internet";
@@ -150,6 +150,8 @@ Router 1 can now send data to router 3!
 <ScrollGroupSection>
 
 What about router 3? How does router 3 know about the other 2 routers? Router 2 already knows about router 1, so router 2 can tell router 3 during the initial connection.
+
+<BGPPlayButton />
 
 </ScrollGroupSection>
 
