@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/cn";
-import { Subscribe } from "./subscribe";
+import { Subscribe } from "../(content)/subscribe";
 
 export function Navbar({ showNotesLabel = false }) {
   const [hasScrolled, setHasScrolled] = useState(false);

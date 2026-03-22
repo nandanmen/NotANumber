@@ -10,7 +10,7 @@ import {
   useScrollGroupEvents,
 } from "~/components/mdx/scroll-group";
 import { cn } from "~/lib/cn";
-import { ToggleButton } from "../../database/_components/toggle-button";
+import { ToggleButton } from "../../../(content)/database/_components/toggle-button";
 import { useGridSize } from "../../grid-context";
 import { GridPath, Path } from "./connectors";
 import { GridCell } from "./grid-cell";

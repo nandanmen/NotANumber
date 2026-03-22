@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-import { PageHeader } from "./header";
 import { CodeBlockMain } from "~/components/mdx/code-block";
-import { Header } from "../header";
+import { ArticleTitle, PageHeader } from "./header";
 
 const code = `fetch("https://nan.fyi")
   .then((response) => response.text())
@@ -15,7 +14,7 @@ export default async function HowComputersTalkLayout({
   return (
     <>
       <PageHeader>
-        <Header
+        <ArticleTitle
           title="How Computers Talk to Each Other"
           description="A deep dive into how computers talk to each other."
         />

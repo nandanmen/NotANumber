@@ -5,7 +5,7 @@ import { Fragment, useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { TRANSITIONS } from "~/lib/transitions";
-import { Figure } from "../../_common/figure";
+import { Figure } from "../../../(content)/_common/figure";
 import { Server } from "./network-devices";
 
 const suffixServers = [

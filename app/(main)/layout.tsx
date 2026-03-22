@@ -1,5 +1,5 @@
-import type { Metadata, Viewport } from "next";
 import { BackgroundStripes } from "~/components/stripe-pattern";
+import type { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
   themeColor: "#ededed",
@@ -37,5 +37,12 @@ export default function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen isolate">{children}</div>;
+  return (
+    <div className="min-h-screen isolate">
+      <BackgroundStripes className="fixed inset-0" />
+      <div className="relative z-10 mx-auto md:px-4 w-full max-w-[1450px]">
+        {children}
+      </div>
+    </div>
+  );
 }
