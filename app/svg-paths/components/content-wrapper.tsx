@@ -1,8 +1,7 @@
 "use client";
 
-import React, { JSX } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PageSection } from "./page-section";
 import { IndexProvider } from "./index-provider";
 import { InteractiveCommand } from "./interactive-command";
