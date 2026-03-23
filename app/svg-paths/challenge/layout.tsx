@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { serialize } from "next-mdx-remote/serialize";
 import { readPage } from "../lib/fs";
 import { Content } from "./content";
 import { ReactNode } from "react";
