@@ -1,11 +1,11 @@
 "use client";
 
 import {
+  type ReactNode,
   createContext,
   useCallback,
   useContext,
   useState,
-  type ReactNode,
 } from "react";
 
 type GridContextValue = {
@@ -16,7 +16,7 @@ type GridContextValue = {
 const GridContext = createContext<GridContextValue | null>(null);
 
 export function GridSizeProvider({ children }: { children: ReactNode }) {
-  const [gridSize, setGridSizeState] = useState<number | null>(null);
+  const [gridSize, setGridSizeState] = useState<number | null>(48);
   const setGridSize = useCallback((size: number) => setGridSizeState(size), []);
   return (
     <GridContext.Provider value={{ gridSize, setGridSize }}>

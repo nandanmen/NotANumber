@@ -30,7 +30,7 @@ export function LittleInternetScrollVisual() {
   const index = useActiveIndex();
   const { gridSize } = useGridSize();
   return (
-    <div className="aspect-square flex items-center justify-center text-gray8">
+    <div className="flex items-center justify-center text-gray8 py-32">
       {index === 0 && (
         <div className="relative flex">
           <svg

@@ -11,7 +11,7 @@ export function ArticleTitle({
   description: ReactNode;
 }) {
   return (
-    <header className="mt-24 mb-16">
+    <header className="text-center space-y-4">
       <h1 className="text-[52px] md:text-[72px] font-serif leading-[1] text-balance">
         {title}
       </h1>
@@ -22,7 +22,7 @@ export function ArticleTitle({
 
 export function PageHeader({ children }: { children: ReactNode }) {
   return (
-    <div className="!col-start-1 col-span-4 grid grid-cols-subgrid border-b border-borderSoft mb-[var(--grid-size)] relative min-h-[round(up,60vh,var(--grid-size))]">
+    <div className="!col-start-1 col-span-4 grid grid-cols-subgrid relative min-h-[round(up,60vh,var(--grid-size))]">
       <section className="col-start-2 auto-rows-min gap-y-5 leading-relaxed grid">
         {children}
       </section>

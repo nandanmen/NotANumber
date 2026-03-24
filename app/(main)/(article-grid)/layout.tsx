@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { GridBackground } from "./grid-background";
 import { GridSizeProvider } from "./grid-context";
 import { Navbar } from "./nav";
@@ -9,23 +10,23 @@ export default async function ArticleGridLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-gray4 min-h-screen pb-32 px-5">
+    <div
+      className="bg-gray3 min-h-screen pb-32 px-5 space-y-16"
+      style={
+        {
+          "--content-width": "1600px",
+        } as CSSProperties
+      }
+    >
       <Navbar />
-      <main className="bg-gray2 ring-1 ring-black/15 mx-auto max-w-[1700px] flex shadow-sm grow w-full">
-        <div className="px-2 border-r border-borderSoft flex flex-col justify-around text-gray4">
-          {Array.from({ length: 16 }).map((_, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: decorative column
-            <div key={index} className="size-6 bg-current rounded-full" />
-          ))}
-        </div>
-        <article className="grid grid-cols-[minmax(32px,1fr)_min(60ch,calc(50%-64px))_minmax(32px,1fr)_50%] [&>*]:col-start-2 [&>*]:w-full [&>*]:max-w-[60ch] auto-rows-min grow relative leading-relaxed isolate">
-          <GridSizeProvider>
-            <GridBackground />
-            {children}
-          </GridSizeProvider>
+      <GridSizeProvider>
+        <article
+          className="mx-auto max-w-[var(--content-width)] grow space-y-16 w-full"
+          style={{ "--grid-size": "48px" } as CSSProperties}
+        >
+          {children}
         </article>
-        <div className="w-10 border-l border-borderSoft shrink-0" />
-      </main>
+      </GridSizeProvider>
     </div>
   );
 }

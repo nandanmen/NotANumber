@@ -13,11 +13,11 @@ export default async function HowComputersTalkLayout({
 }) {
   return (
     <>
-      <PageHeader>
-        <ArticleTitle
-          title="How Computers Talk to Each Other"
-          description="A deep dive into how computers talk to each other."
-        />
+      <ArticleTitle
+        title="How Computers Talk to Each Other"
+        description="A deep dive into how computers talk to each other."
+      />
+      <header className="grid grid-cols-[1fr_min(65ch,100%)_1fr] [&>*]:col-start-2 gap-y-5 leading-relaxed">
         <p>
           It's really easy to overlook the way the internet works. In
           JavaScript, we can make software that talks to other computers on the
@@ -33,7 +33,7 @@ export default async function HowComputersTalkLayout({
           our request to fetch the webpage actually make it to the server? Let's
           find out by remaking our own mini-version of the Internet.
         </p>
-      </PageHeader>
+      </header>
       {children}
     </>
   );

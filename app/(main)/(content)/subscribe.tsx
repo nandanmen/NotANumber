@@ -1,11 +1,11 @@
 "use client";
 
+import { subscribe } from "app/(main)/subscribe";
+import IsEmail from "isemail";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "~/lib/cn";
-import { motion } from "motion/react";
 import { Popover } from "./popover";
-import IsEmail from "isemail";
-import { subscribe } from "app/(main)/subscribe";
 
 export function Subscribe() {
   const [isOpen, setIsOpen] = useState(false);

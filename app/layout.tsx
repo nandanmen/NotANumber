@@ -1,16 +1,16 @@
+import { clsx } from "clsx";
 import {
-  Kalam,
   Fira_Code,
   JetBrains_Mono,
-  Source_Code_Pro,
+  Kalam,
   Shantell_Sans,
+  Source_Code_Pro,
 } from "next/font/google";
 import localFont from "next/font/local";
-import { clsx } from "clsx";
 import "./styles.css";
-import { AuthProvider } from "./svg-paths/provider";
 import { Analytics } from "@vercel/analytics/react";
 import { Provider } from "./provider";
+import { AuthProvider } from "./svg-paths/provider";
 
 export const metadata = {
   title: "Next.js",
