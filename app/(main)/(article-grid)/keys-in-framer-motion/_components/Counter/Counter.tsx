@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FullWidth } from "~/components/FullWidth";
+import { FullWidth } from "~/components/mdx/full-width";
 import { Content, ToggleButton, Visualizer } from "~/components/Visualizer";
 import { darkTheme, styled } from "~/stitches.config";
 

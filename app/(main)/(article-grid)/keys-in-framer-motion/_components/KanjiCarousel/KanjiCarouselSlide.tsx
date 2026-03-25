@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FullWidth } from "~/components/FullWidth";
+import { FullWidth } from "~/components/mdx/full-width";
 import {
   Content,
   Controls,
@@ -12,46 +12,10 @@ import { FaArrowRight } from "react-icons/fa";
 
 const KANJI = ["中", "学", "校"];
 
-export const KanjiViewer = ({ showOverflow, index }) => {
-  return (
-    <Box
-      css={{
-        background: "$gray4",
-        border: "1px solid $gray8",
-        fontSize: "8rem",
-        fontWeight: "bold",
-        padding: "$4 0",
-        borderRadius: "$base",
-        position: "relative",
-        overflow: showOverflow ? undefined : "hidden",
-        width: 200,
-        textAlign: "center",
-
-        [`.${darkTheme} &`]: {
-          background: "$gray1",
-          borderColor: "$gray6",
-        },
-      }}
-    >
-      <AnimatePresence mode="popLayout">
-        <motion.p
-          key={index}
-          animate={{ x: 0 }}
-          initial={{ x: -200 }}
-          exit={{ x: 200 }}
-          transition={{ type: "spring", damping: 20 }}
-        >
-          {KANJI[index]}
-        </motion.p>
-      </AnimatePresence>
-    </Box>
-  );
-};
-
-export const KanjiCarousel = () => {
-  const [hasOverflow, toggle] = React.useReducer((state) => !state, false);
+export const KanjiCarouselSlide = () => {
+  const [hasOverflow, toggle] = React.useReducer((state) => !state, true);
   const [currentIndex, next] = React.useReducer((index) => {
-    return index === KANJI.length - 1 ? 0 : index + 1;
+    return Math.min(index + 1, KANJI.length - 1);
   }, 0);
 
   return (
@@ -66,7 +30,38 @@ export const KanjiCarousel = () => {
           }}
         >
           <Box css={{ display: "flex", alignItems: "center" }}>
-            <KanjiViewer showOverflow={hasOverflow} index={currentIndex} />
+            <Box
+              css={{
+                background: "$gray4",
+                border: "1px solid $gray8",
+                fontSize: "8rem",
+                fontWeight: "bold",
+                padding: "$4 0",
+                borderRadius: "$base",
+                position: "relative",
+                overflow: hasOverflow ? undefined : "hidden",
+                width: 200,
+                textAlign: "center",
+
+                [`.${darkTheme} &`]: {
+                  background: "$gray1",
+                  borderColor: "$gray6",
+                },
+              }}
+            >
+              <Box
+                as={motion.div}
+                animate={{ x: -400 + currentIndex * 200 }}
+                transition={{ type: "spring", damping: 20 }}
+                css={{ display: "flex" }}
+              >
+                {KANJI.map((char) => (
+                  <Box key={char} as="p" css={{ width: 200, flexShrink: 0 }}>
+                    {char}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
             <Box
               as="button"
               onClick={next}

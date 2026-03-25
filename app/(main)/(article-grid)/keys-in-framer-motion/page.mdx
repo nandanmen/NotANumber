@@ -1,19 +1,13 @@
----
-title: "The Power of Keys in Framer Motion"
-blurb: "Exploring how to use the React key prop to power your Framer Motion animations."
-description: "Exploring how to use the React key prop to power your Framer Motion animations."
-publishedAt: "2023-02-22"
-editedAt: "2023-02-22"
----
-
-import { FullWidth } from "~/components/FullWidth";
 import { Spoiler } from "~/components/Spoiler";
-import { CodeQuiz } from "./components/CodeQuiz";
-import { Counter } from "./components/Counter";
-import { RefreshComponent } from "./components/RefreshComponent";
-import { AnimationShowcase } from "./components/AnimationShowcase";
-import { NextButton, NextButtonSandbox } from "./components/NextButton";
-import { KanjiCarousel, KanjiCarouselSlide } from "./components/KanjiCarousel";
+import { Section } from "../how-computers-talk/_components/grid-snapped-section";
+import { CodeQuiz } from "./_components/CodeQuiz";
+import { Counter } from "./_components/Counter";
+import { RefreshComponent } from "./_components/RefreshComponent";
+import { AnimationShowcase } from "./_components/AnimationShowcase";
+import { NextButton, NextButtonSandbox } from "./_components/NextButton";
+import { KanjiCarousel, KanjiCarouselSlide } from "./_components/KanjiCarousel";
+
+<Section>
 
 What do these animations have in common?
 
@@ -141,7 +135,7 @@ Now let's change the key of the component when we click on "Change Key":
 
 <CodeQuiz caption={`This time, clicking on "Change Key" causes MyComponent to remount, printing "unmounted" when it unmounts then "mounted" when it mounts one more time. This happens because we changed the key.`} useKey>
 
-```jsx {15}
+```jsx
 const MyComponent = () => {
   React.useEffect(() => {
     console.log("mounted");
@@ -263,6 +257,8 @@ As with everything in computer science, there are multiple ways to solve a probl
 
 To summarize, the `key` prop is a special prop in React that lets you uniquely identify components. When a component's key changes, React will treat that component as a different component, unmounting the existing component.
 
-In Framer Motion, we can exploit this behavior to trigger animations. For example, we can use keys to trigger mount animations by changing the key of the component we want to animate.
+In Framer Motion, we can exploit this behavior to trigger animations. For example, we can use keys to trigger mount animations by changing the key of the component you want to animate.
 
 That's all for today; thanks for reading!
+
+</Section>

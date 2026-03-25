@@ -1,6 +1,6 @@
 import React from "react";
 import useInterval from "@use-it/interval";
-import { FullWidth } from "~/components/FullWidth";
+import { FullWidth } from "~/components/mdx/full-width";
 import { Content, Visualizer } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 import { KanjiViewer } from "../KanjiCarousel";
@@ -18,38 +18,30 @@ export const AnimationShowcase = ({ speed = 1500 }) => {
   }, speed);
 
   return (
-    <Wrapper className="full-width">
-      <Box css={{ display: "flex", gap: "$4", width: "100%" }}>
-        <VisualWrapper>
-          <ContentWrapper>
-            <KanjiViewer showOverflow={false} index={currentIndex} />
-          </ContentWrapper>
-        </VisualWrapper>
-        <VisualWrapper>
-          <ContentWrapper>
-            <Button toggled={toggled} />
-          </ContentWrapper>
-        </VisualWrapper>
-      </Box>
-      <Box css={{ height: "100%", width: "$4", "@md": { display: "none" } }} />
-    </Wrapper>
+    <FullWidth>
+      <Wrapper>
+        <Box css={{ display: "flex", gap: "$4", width: "100%" }}>
+          <VisualWrapper>
+            <ContentWrapper>
+              <KanjiViewer showOverflow={false} index={currentIndex} />
+            </ContentWrapper>
+          </VisualWrapper>
+          <VisualWrapper>
+            <ContentWrapper>
+              <Button toggled={toggled} />
+            </ContentWrapper>
+          </VisualWrapper>
+        </Box>
+        <Box css={{ height: "100%", width: "$4", "@md": { display: "none" } }} />
+      </Wrapper>
+    </FullWidth>
   );
 };
 
 const Wrapper = styled("figure", {
-  marginLeft: "-$4",
-  marginRight: "-$4",
-  padding: "0 $4",
   overflowX: "auto",
-  width: "calc(100% + 2 * $space$4) !important",
+  width: "100%",
   display: "flex",
-
-  "@md": {
-    marginLeft: 0,
-    marginRight: 0,
-    padding: 0,
-    width: "100% !important",
-  },
 });
 
 const VisualWrapper = styled(Visualizer, {
