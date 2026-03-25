@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { kv } from "../kv";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { deleteSubscribeToken, getSubscribeEmailForToken } from "../kv";
 import { loops } from "../loops";
 
 export async function GET(request: NextRequest) {
@@ -8,12 +9,12 @@ export async function GET(request: NextRequest) {
         return new Response(null, { status: 401 });
     }
 
-    const email = await kv.get<string>(`token:${token}`);
+    const email = await getSubscribeEmailForToken(token);
     if (!email) {
         return new Response(null, { status: 401 });
     }
 
-    await kv.del(`token:${token}`);
+    await deleteSubscribeToken(token);
     await loops.updateContact(email, { subscribed: true });
 
     const redirectTo = request.nextUrl.clone();

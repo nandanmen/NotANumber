@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
-import { kv } from "../kv";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import crypto from "node:crypto";
+import { setSubscribeToken } from "../kv";
 import { APIError } from "loops";
 import { loops } from "../loops";
 
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const token = crypto.randomBytes(12).toString("hex");
-    await kv.set(`token:${token}`, email, { ex: 60 * 60 * 24 * 7 });
+    await setSubscribeToken(token, email);
 
     await loops.sendTransactionalEmail({
         transactionalId: CONFIRM_EMAIL_ID,

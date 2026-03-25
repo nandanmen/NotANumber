@@ -4,6 +4,7 @@ const createMDX = require("@next/mdx");
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -44,3 +45,5 @@ const nextConfig = {
 const withMDX = createMDX({});
 
 module.exports = withMDX(nextConfig);
+
+import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

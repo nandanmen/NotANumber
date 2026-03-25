@@ -10,7 +10,6 @@ import localFont from "next/font/local";
 import "./styles.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Provider } from "./provider";
-import { AuthProvider } from "./svg-paths/provider";
 
 export const metadata = {
   title: "Next.js",
@@ -118,9 +117,7 @@ export default function RootLayout({
           "font-sans antialiased bg-gray4",
         )}
       >
-        <AuthProvider>
-          <Provider>{children}</Provider>
-        </AuthProvider>
+        <Provider>{children}</Provider>
         <Analytics />
       </body>
     </html>
