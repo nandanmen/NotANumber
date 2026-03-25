@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import useInterval from "@use-it/interval";
-import { FullWidth } from "~/components/mdx/full-width";
+import { ArticleBleed } from "../article-bleed";
 import { Content, Visualizer } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 import { KanjiViewer } from "../KanjiCarousel";
@@ -18,7 +20,7 @@ export const AnimationShowcase = ({ speed = 1500 }) => {
   }, speed);
 
   return (
-    <FullWidth>
+    <ArticleBleed>
       <Wrapper>
         <Box css={{ display: "flex", gap: "$4", width: "100%" }}>
           <VisualWrapper>
@@ -34,7 +36,7 @@ export const AnimationShowcase = ({ speed = 1500 }) => {
         </Box>
         <Box css={{ height: "100%", width: "$4", "@md": { display: "none" } }} />
       </Wrapper>
-    </FullWidth>
+    </ArticleBleed>
   );
 };
 

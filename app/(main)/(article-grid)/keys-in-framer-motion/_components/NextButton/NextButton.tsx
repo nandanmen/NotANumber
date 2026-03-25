@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
-import { FullWidth } from "~/components/mdx/full-width";
+import { ArticleBleed } from "../article-bleed";
 import { Content, Visualizer } from "~/components/Visualizer";
 import { styled } from "~/stitches.config";
 
@@ -42,7 +44,7 @@ export const Button = ({ toggled, onClick = () => {} }) => {
 export const NextButton = () => {
   const [toggled, toggle] = React.useReducer((state) => !state, false);
   return (
-    <FullWidth>
+    <ArticleBleed>
       <Visualizer>
         <Content
           css={{
@@ -55,7 +57,7 @@ export const NextButton = () => {
           <Button toggled={toggled} onClick={toggle} />
         </Content>
       </Visualizer>
-    </FullWidth>
+    </ArticleBleed>
   );
 };
 

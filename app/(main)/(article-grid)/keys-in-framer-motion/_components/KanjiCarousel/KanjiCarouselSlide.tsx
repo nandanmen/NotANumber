@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FullWidth } from "~/components/mdx/full-width";
+import { ArticleBleed } from "../article-bleed";
 import {
   Content,
   Controls,
@@ -19,7 +21,7 @@ export const KanjiCarouselSlide = () => {
   }, 0);
 
   return (
-    <FullWidth>
+    <ArticleBleed>
       <Visualizer>
         <Content
           css={{
@@ -96,7 +98,7 @@ export const KanjiCarouselSlide = () => {
           </ToggleButton>
         </Controls>
       </Visualizer>
-    </FullWidth>
+    </ArticleBleed>
   );
 };
 

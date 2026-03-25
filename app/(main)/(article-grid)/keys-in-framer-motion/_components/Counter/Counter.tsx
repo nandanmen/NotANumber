@@ -1,13 +1,15 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
-import { FullWidth } from "~/components/mdx/full-width";
+import { ArticleBleed } from "../article-bleed";
 import { Content, ToggleButton, Visualizer } from "~/components/Visualizer";
 import { darkTheme, styled } from "~/stitches.config";
 
 export const Counter = ({ withKey = false, children }) => {
   const [name, setName] = React.useState("John");
   return (
-    <FullWidth>
+    <ArticleBleed>
       <Visualizer
         childBorders={false}
         css={{
@@ -57,7 +59,7 @@ export const Counter = ({ withKey = false, children }) => {
           </BlockWrapper>
         </Box>
       </Visualizer>
-    </FullWidth>
+    </ArticleBleed>
   );
 };
 

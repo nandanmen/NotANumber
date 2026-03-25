@@ -1,4 +1,5 @@
 import { Spoiler } from "~/components/Spoiler";
+import { ArticleBleed } from "./_components/article-bleed";
 import { Section } from "../how-computers-talk/_components/grid-snapped-section";
 import { CodeQuiz } from "./_components/CodeQuiz";
 import { Counter } from "./_components/Counter";
@@ -21,6 +22,10 @@ Well, they're both written in Framer Motion, but more importantly, they both **t
 
 You see, the `key` prop is a lot more powerful than it seems, and in this post, we'll explore exactly what it is and how you can use it to create some pretty cool animations.
 
+</Section>
+
+<Section>
+
 ## A Primer on Keys
 
 The purpose of the `key` prop is to **uniquely identify a React component**. If React sees that a component's key has changed between renders, it will unmount that component and mount a new one in its place.
@@ -28,6 +33,10 @@ The purpose of the `key` prop is to **uniquely identify a React component**. If 
 > For the purposes of this post, I'm using the term "React component" to refer to both custom components (like `const MyComponent = (props) => { ... }`) and JSX tags (like `<div />`).
 
 **The implication of this is we can use keys to explicitly tell React to "re-mount" a component**.
+
+</Section>
+
+<Section>
 
 ### A Counter Component
 
@@ -102,6 +111,10 @@ This time, clicking on "Change Name" resets the counter to 0!
 
 This state reset is just a byproduct, however; under the hood, React is unmounting the old instance of `<Counter />` and mounting a new one in its place.
 
+</Section>
+
+<Section>
+
 ### Short Quiz
 
 Let's take a short quiz. Take a look at the following code and try to answer the question:
@@ -160,23 +173,35 @@ const App = () => {
 
 ---
 
+</Section>
+
+<Section>
+
 **But how is this useful to Framer Motion?**
 
 In Framer Motion, we can make mount animations using the `animate` prop and unmount animations using `AnimatePresence`. Since changing keys lets us re-mount components, we can essentially **use keys to trigger animations**!
 
 Let's take a look at a few examples.
 
+</Section>
+
+<Section>
+
 ## Refresh Component
 
 One utility component I use _all the time_ is this refresh component:
 
-<FullWidth>
+<ArticleBleed>
   <RefreshComponent />
-</FullWidth>
+</ArticleBleed>
 
 When the refresh button is clicked, the component remounts, causing the mount animation to play again. I've found this to be super handy when working on a component's mount animation!
 
 Again, this works because we change the key of the `<div />` element, thereby telling React to unmount the existing component and mount a new instance.
+
+</Section>
+
+<Section>
 
 ## Animating Text Changes
 
@@ -188,9 +213,9 @@ In the Japanese app I'm working on, I have this button that changes its text con
 
 Using what we know about keys, how do you think we should implement this?
 
-<FullWidth>
+<ArticleBleed>
   <NextButtonSandbox />
-</FullWidth>
+</ArticleBleed>
 
 <Spoiler>
 
@@ -203,6 +228,10 @@ By adding a key to the `<motion.span />` element!
 When we toggle the state, we simultaneously change the key of the `<motion.span />` element, causing it to replay its mount animation.
 
 </Spoiler>
+
+</Section>
+
+<Section>
 
 ## Infinite Carousel
 
@@ -232,6 +261,10 @@ The `key` in this case is serving a double purpose:
 1. First, it tells React to remount the component when the word changes;
 2. Second, it tells `AnimatePresence` that the child has changed, triggering the exit animation of the old word and the mount animation of the new word.
 
+</Section>
+
+<Section>
+
 ### Another Solution
 
 Now you don't _technically_ need keys to implement this. If you know the number of items in your carousel ahead of time and you don't want your items to loop, you could technically line them all up and slide them across:
@@ -252,6 +285,10 @@ Now you don't _technically_ need keys to implement this. If you know the number 
 ```
 
 As with everything in computer science, there are multiple ways to solve a problem! Use the one that fits your use case the best.
+
+</Section>
+
+<Section>
 
 ## Summary
 

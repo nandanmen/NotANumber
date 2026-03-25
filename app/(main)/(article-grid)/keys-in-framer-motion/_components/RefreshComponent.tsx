@@ -1,3 +1,5 @@
+"use client";
+
 import { Sandbox } from "~/components/Sandbox";
 
 const css = `

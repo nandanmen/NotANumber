@@ -11,7 +11,7 @@ export function ArticleTitle({
   description: ReactNode;
 }) {
   return (
-    <header className="text-center space-y-4">
+    <header className="text-left md:text-center space-y-4">
       <h1 className="text-[52px] md:text-[72px] font-serif leading-[1] text-balance">
         {title}
       </h1>

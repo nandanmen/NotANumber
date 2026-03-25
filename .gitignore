@@ -35,3 +35,7 @@ yarn-error.log*
 # generated files
 _dist-content/
 old-src/
+
+.open-next/
+.wrangler/
+.pnpm-store/

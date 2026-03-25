@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { BackgroundStripes } from "~/components/stripe-pattern";
+import { Prototyper } from "../../prototyper/prototyper";
 
 export const viewport: Viewport = {
   themeColor: "#ededed",
@@ -37,5 +37,10 @@ export default function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen isolate">{children}</div>;
+  return (
+    <div className="min-h-screen isolate">
+      {children}
+      {process.env.NODE_ENV === "development" ? <Prototyper /> : null}
+    </div>
+  );
 }
