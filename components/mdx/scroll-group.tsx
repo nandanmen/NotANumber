@@ -13,7 +13,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { ColumnRight, Columns } from "./columns";
 import styles from "./scroll-group.module.css";
 
 type EventEmitter<
