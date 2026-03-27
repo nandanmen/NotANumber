@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { ToggleButton } from "./toggle-button";
-import { cn } from "~/lib/cn";
+import { useState } from "react";
 import { FullWidth } from "~/components/mdx/full-width";
+import { cn } from "~/lib/cn";
+import { ToggleButton } from "./toggle-button";
 
 const NEW_CONTENT_WIDTH = 106;
 

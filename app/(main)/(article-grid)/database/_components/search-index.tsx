@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { motion, useAnimate } from "motion/react";
-import { ToggleButton } from "./toggle-button";
-import { CommandList } from "./mutable-database";
-import { sleep } from "~/lib/utils";
-import { cn } from "~/lib/cn";
+import { useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
+import { cn } from "~/lib/cn";
+import { sleep } from "~/lib/utils";
+import { CommandList } from "./mutable-database";
+import { ToggleButton } from "./toggle-button";
 import { pick } from "./utils";
 
 const records = [

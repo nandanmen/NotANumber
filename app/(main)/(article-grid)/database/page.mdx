@@ -16,6 +16,9 @@ import { SearchIndex } from "./_components/search-index";
 import { UpdateIndex } from "./_components/update-index";
 import { SparseIndex, SearchSparseIndex } from "./_components/sparse-index";
 import { LSM, LSMVisual, MobileWrapper, CompactionControls } from "./_components/lsm";
+import { Section } from "../how-computers-talk/_components/grid-snapped-section";
+
+<Section>
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -35,7 +38,8 @@ Credit where credit is due: This post is largely based off Martin Kleppmann's bo
 
 </Callout>
 
----
+</Section>
+
 
 <ScrollGroup 
   figure={<FileDatabaseVisualizer />}
@@ -98,7 +102,8 @@ Easy! We're done right?
 
 </ScrollGroup>
 
----
+<Section>
+
 
 ### Mutable Updates
 
@@ -114,7 +119,8 @@ When we go to update or delete a record, we're currently updating that record in
 
 In this case, updating the record `005` to "`adipiscing␣elit.␣vel␣mauris`" means moving all of the records that come after it by 11 bytes (the length of the added string "`␣vel␣mauris`"). This can quickly get really costly, especially as our database grows in size!
 
----
+</Section>
+
 
 <ScrollGroup
   figure={<FileDatabaseVisualizer />}
@@ -162,7 +168,8 @@ And there we have it! We have a key-value database that uses a file as its stora
 
 </ScrollGroup>
 
----
+<Section>
+
 
 Now this implementation isn't perfect; right now, there are two major issues:
 
@@ -171,7 +178,8 @@ Now this implementation isn't perfect; right now, there are two major issues:
 
 How can we fix these problems?
 
----
+</Section>
+
 
 <ScrollGroup figure={<FileDatabaseVisualizer />} state={createStore([
     { type: "set", key: 1, value: "Lorem ipsum" },
@@ -206,7 +214,8 @@ Our database file has six entries, but only two represent actual records—the r
 
 </ScrollGroup>
 
----
+<Section>
+
 
 ### Segments and Compaction
 
@@ -427,7 +436,8 @@ The fix here is thankfully pretty straightforward—every time we add a record t
 
 The append-only file doesn't need to be sorted nor does it need to have every record in the database; only the ones that are currently in memory.
 
----
+</Section>
+
 
 <ScrollGroup
   state={{
@@ -493,7 +503,8 @@ Treating updates and deletes as new records means our file will only ever grow l
 
 </ScrollGroup>
 
----
+<Section>
+
 
 ## LSM Trees
 
@@ -506,3 +517,5 @@ LSM trees are the underlying data structure used for large-scale key-value datab
 Now, LSM trees aren't perfect, and they're certainly not the only way to structure a database. In fact, relational databases like PostgreSQL or MySQL use a completely different structure called a **B-Tree** to store their data—but that's a deep dive for another post.
 
 For now, thanks for reading!
+
+</Section>

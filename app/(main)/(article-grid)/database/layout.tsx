@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Header } from "../header";
+import { ArticleTitle } from "../how-computers-talk/header";
 
 export const metadata: Metadata = {
   title: "Build Your Own Database",
@@ -28,14 +28,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BuildADatabasePage({
+export default function BuildYourOwnDatabaseLayout({
   children,
 }: {
   children: ReactNode;
 }) {
   return (
     <>
-      <Header
+      <ArticleTitle
         title="Build Your Own Database"
         description="A step-by-step guide to building a key-value database from scratch."
       />

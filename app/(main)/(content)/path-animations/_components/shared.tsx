@@ -9,7 +9,7 @@ import { CodeBlockTemplate } from "~/components/mdx/code-block-template";
 import { type ReactNode, useMemo, useState } from "react";
 import { cn } from "~/lib/cn";
 import { Figure } from "./figure";
-import { ToggleButton } from "../../database/_components/toggle-button";
+import { ToggleButton } from "../../../(article-grid)/database/_components/toggle-button";
 
 const CHECK_STROKE = "M7 13L10 16L17 8";
 const CHECK_FILL =
