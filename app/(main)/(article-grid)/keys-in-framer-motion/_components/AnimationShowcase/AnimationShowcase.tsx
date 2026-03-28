@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 import useInterval from "@use-it/interval";
-import { ArticleBleed } from "../article-bleed";
+import React from "react";
 import { Content, Visualizer } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { Wide } from "~/components/mdx/Wide";
 import { KanjiViewer } from "../KanjiCarousel";
 import { Button } from "../NextButton";
 
@@ -20,43 +19,19 @@ export const AnimationShowcase = ({ speed = 1500 }) => {
   }, speed);
 
   return (
-    <ArticleBleed>
-      <Wrapper>
-        <Box css={{ display: "flex", gap: "$4", width: "100%" }}>
-          <VisualWrapper>
-            <ContentWrapper>
-              <KanjiViewer showOverflow={false} index={currentIndex} />
-            </ContentWrapper>
-          </VisualWrapper>
-          <VisualWrapper>
-            <ContentWrapper>
-              <Button toggled={toggled} />
-            </ContentWrapper>
-          </VisualWrapper>
-        </Box>
-        <Box css={{ height: "100%", width: "$4", "@md": { display: "none" } }} />
-      </Wrapper>
-    </ArticleBleed>
+    <Wide>
+      <div className="grid grid-cols-2 gap-4 w-full overflow-x-auto px-[var(--content-padding)]">
+        <Visualizer>
+          <Content className="flex py-10 items-center justify-center h-full">
+            <KanjiViewer showOverflow={false} index={currentIndex} />
+          </Content>
+        </Visualizer>
+        <Visualizer>
+          <Content className="flex py-10 items-center justify-center h-full">
+            <Button toggled={toggled} />
+          </Content>
+        </Visualizer>
+      </div>
+    </Wide>
   );
 };
-
-const Wrapper = styled("figure", {
-  overflowX: "auto",
-  width: "100%",
-  display: "flex",
-});
-
-const VisualWrapper = styled(Visualizer, {
-  minWidth: 300,
-  flex: 1,
-});
-
-const ContentWrapper = styled(Content, {
-  display: "flex",
-  padding: "$10 0",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100%",
-});
-
-const Box = styled("div", {});

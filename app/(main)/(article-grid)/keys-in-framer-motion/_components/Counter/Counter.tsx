@@ -1,156 +1,60 @@
 "use client";
 
+import { ToggleButton } from "app/(main)/(article-grid)/database/_components/toggle-button";
 import React from "react";
-import { motion } from "framer-motion";
-import { ArticleBleed } from "../article-bleed";
-import { Content, ToggleButton, Visualizer } from "~/components/Visualizer";
-import { darkTheme, styled } from "~/stitches.config";
+import { Wide } from "~/components/mdx/Wide";
 
 export const Counter = ({ withKey = false, children }) => {
   const [name, setName] = React.useState("John");
   return (
-    <ArticleBleed>
-      <Visualizer
-        childBorders={false}
-        css={{
-          "--border-color": "$colors$gray8",
-
-          border: "1px solid var(--border-color)",
-          borderRadius: "$base",
-
-          [`.${darkTheme} &`]: {
-            "--border-color": "$colors$gray6",
-          },
-        }}
-      >
-        <Box
-          css={{
-            display: "flex",
-            flexWrap: "wrap",
-          }}
-        >
-          <BlockWrapper className="overflow-x-auto p-4">{children}</BlockWrapper>
-          <BlockWrapper css={{ display: "flex", flexDirection: "column" }}>
-            <Content
-              css={{
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "$10 0",
-              }}
-            >
-              <_Counter name={name} key={withKey ? name : undefined} />
-            </Content>
-            <Box
-              css={{
-                padding: "$2",
-                display: "flex",
-                justifyContent: "center",
-                borderTop: "1px solid var(--border-color)",
-              }}
-            >
-              <ToggleButton
-                onClick={() => setName(name === "Jane" ? "John" : "Jane")}
-              >
-                Change Name
-              </ToggleButton>
-            </Box>
-          </BlockWrapper>
-        </Box>
-      </Visualizer>
-    </ArticleBleed>
+    <Wide>
+      <div className="md:grid grid-cols-2 md:rounded-lg border-y md:border-x border-black/15 [&>div:first-child]:ring-0 [&>div:first-child]:shadow-none [&>div:first-child]:rounded-none overflow-hidden divide-y md:divide-y-0 md:divide-x divide-black/15">
+        {children}
+        <div className="min-h-[200px] grid grid-rows-[auto_min-content] bg-gray5 shadow-inner py-4 gap-6">
+          <div className="flex items-center justify-center">
+            <_Counter name={name} key={withKey ? name : undefined} />
+          </div>
+          <ToggleButton
+            className="mx-auto"
+            onClick={() => setName(name === "Jane" ? "John" : "Jane")}
+          >
+            Change Name
+          </ToggleButton>
+        </div>
+      </div>
+    </Wide>
   );
 };
 
 const _Counter = ({ name }) => {
   const [count, setCount] = React.useState(0);
   return (
-    <Box
-      css={{
-        width: 200,
-        margin: "0 auto",
-        height: "fit-content",
-        border: "1px solid var(--border-color)",
-        boxShadow: "$md",
-        borderRadius: "$base",
-        background: "$gray4",
-        fontFamily: "$mono",
-
-        [`.${darkTheme} &`]: {
-          background: "$gray2",
-        },
-      }}
-    >
-      <Box
-        as="p"
-        css={{
-          padding: "$4",
-          borderBottom: "1px solid var(--border-color)",
-          textAlign: "center",
+    <div className="flex items-center justify-between gap-2 bg-gray3 rounded-full w-[160px] p-2 pl-5">
+      <p>
+        {name}: {count}
+      </p>
+      <ToggleButton
+        className="w-8 p-0 flex items-center justify-center rounded-full"
+        onClick={() => {
+          setCount(count + 1);
         }}
       >
-        <motion.span
-          key={name}
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 16 }}
-          transition={{ type: "spring", damping: 20 }}
-          style={{ display: "block" }}
+        <span className="sr-only">Increment</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          width="24"
+          aria-hidden="true"
         >
-          {name}
-        </motion.span>
-      </Box>
-      <Box
-        as="h1"
-        css={{
-          padding: "$4",
-          borderBottom: "1px solid var(--border-color)",
-          background: "$gray2",
-          fontSize: "$xl",
-          textAlign: "center",
-
-          [`.${darkTheme} &`]: {
-            background: "$gray1",
-          },
-        }}
-      >
-        {count}
-      </Box>
-      <Box
-        css={{
-          padding: "$4",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <ToggleButton
-          onClick={() => {
-            setCount(count + 1);
-          }}
-        >
-          Increment
-        </ToggleButton>
-      </Box>
-    </Box>
+          <path
+            d="M12 7V12M12 12V17M12 12H7M12 12H17"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      </ToggleButton>
+    </div>
   );
 };
-
-const BlockWrapper = styled("div", {
-  flex: `1 1 300px`,
-
-  "&:first-child": {
-    borderBottom: "1px solid var(--border-color)",
-
-    "@md": {
-      borderBottom: "none",
-      borderRight: "1px solid var(--border-color)",
-    },
-  },
-
-  pre: {
-    border: `0 !important`,
-    margin: `0 !important`,
-  },
-});
-
-const Box = styled("div", {});

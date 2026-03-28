@@ -21,11 +21,11 @@ function AnswerButton({
     <button
       type="button"
       className={cn(
-        "bg-gray2 relative ring-1 ring-black/15 shadow-sm rounded-xl font-mono grid grid-cols-[min-content_auto] text-left gap-3 p-4 border-b-[3px] border-gray5 group",
+        "bg-gray1 relative ring-1 ring-black/15 shadow-sm rounded-xl font-mono grid grid-cols-[min-content_auto] text-left gap-3 p-4 border-b-[3px] border-gray5 group",
         showAnswer &&
           !isCorrect &&
           "pointer-events-none bg-gray3 text-gray10 border-gray3 shadow-none",
-        !showAnswer && "hover:bg-gradient-to-b from-gray2 to-gray3",
+        !showAnswer && "hover:bg-gradient-to-b from-gray1 to-gray2",
       )}
       onClick={onClick}
     >
