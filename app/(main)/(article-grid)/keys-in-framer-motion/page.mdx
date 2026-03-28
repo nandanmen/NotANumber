@@ -1,14 +1,11 @@
 import { Spoiler } from "~/components/Spoiler";
 import { ArticleBleed } from "./_components/article-bleed";
-import { Section } from "../how-computers-talk/_components/grid-snapped-section";
 import { CodeQuiz } from "./_components/CodeQuiz";
 import { Counter } from "./_components/Counter";
 import { RefreshComponent } from "./_components/RefreshComponent";
 import { AnimationShowcase } from "./_components/AnimationShowcase";
 import { NextButton, NextButtonSandbox } from "./_components/NextButton";
 import { KanjiCarousel, KanjiCarouselSlide } from "./_components/KanjiCarousel";
-
-<Section>
 
 What do these animations have in common?
 
@@ -22,9 +19,7 @@ Well, they're both written in Framer Motion, but more importantly, they both **t
 
 You see, the `key` prop is a lot more powerful than it seems, and in this post, we'll explore exactly what it is and how you can use it to create some pretty cool animations.
 
-</Section>
-
-<Section>
+---
 
 ## A Primer on Keys
 
@@ -34,9 +29,7 @@ The purpose of the `key` prop is to **uniquely identify a React component**. If 
 
 **The implication of this is we can use keys to explicitly tell React to "re-mount" a component**.
 
-</Section>
-
-<Section>
+---
 
 ### A Counter Component
 
@@ -111,15 +104,11 @@ This time, clicking on "Change Name" resets the counter to 0!
 
 This state reset is just a byproduct, however; under the hood, React is unmounting the old instance of `<Counter />` and mounting a new one in its place.
 
-</Section>
-
-<Section>
+---
 
 ### Short Quiz
 
 Let's take a short quiz. Take a look at the following code and try to answer the question:
-
-<CodeQuiz caption={`When MyComponent mounts for the first time, its effect will run, printing "mounted" to the console. When we click on "Change Key", MyComponent will rerender, but since the effect has no dependencies, it won't run again!`}>
 
 ```jsx
 const MyComponent = () => {
@@ -142,11 +131,13 @@ const App = () => {
 };
 ```
 
+<CodeQuiz>
+
+When `MyComponent` mounts for the first time, its effect will run, printing `mounted` to the console. When we click on "Change Key", `MyComponent` will rerender, but since the effect has no dependencies, it won't run again!
+
 </CodeQuiz>
 
 Now let's change the key of the component when we click on "Change Key":
-
-<CodeQuiz caption={`This time, clicking on "Change Key" causes MyComponent to remount, printing "unmounted" when it unmounts then "mounted" when it mounts one more time. This happens because we changed the key.`} useKey>
 
 ```jsx
 const MyComponent = () => {
@@ -169,13 +160,13 @@ const App = () => {
 };
 ```
 
+<CodeQuiz useKey>
+
+This time, clicking on "Change Key" causes `MyComponent` to remount, printing `unmounted` when it unmounts then `mounted` when it mounts one more time. This happens because we changed the key.
+
 </CodeQuiz>
 
 ---
-
-</Section>
-
-<Section>
 
 **But how is this useful to Framer Motion?**
 
@@ -183,9 +174,7 @@ In Framer Motion, we can make mount animations using the `animate` prop and unmo
 
 Let's take a look at a few examples.
 
-</Section>
-
-<Section>
+---
 
 ## Refresh Component
 
@@ -199,9 +188,7 @@ When the refresh button is clicked, the component remounts, causing the mount an
 
 Again, this works because we change the key of the `<div />` element, thereby telling React to unmount the existing component and mount a new instance.
 
-</Section>
-
-<Section>
+---
 
 ## Animating Text Changes
 
@@ -229,9 +216,7 @@ When we toggle the state, we simultaneously change the key of the `<motion.span 
 
 </Spoiler>
 
-</Section>
-
-<Section>
+---
 
 ## Infinite Carousel
 
@@ -261,9 +246,7 @@ The `key` in this case is serving a double purpose:
 1. First, it tells React to remount the component when the word changes;
 2. Second, it tells `AnimatePresence` that the child has changed, triggering the exit animation of the old word and the mount animation of the new word.
 
-</Section>
-
-<Section>
+---
 
 ### Another Solution
 
@@ -286,9 +269,7 @@ Now you don't _technically_ need keys to implement this. If you know the number 
 
 As with everything in computer science, there are multiple ways to solve a problem! Use the one that fits your use case the best.
 
-</Section>
-
-<Section>
+---
 
 ## Summary
 
@@ -297,5 +278,3 @@ To summarize, the `key` prop is a special prop in React that lets you uniquely i
 In Framer Motion, we can exploit this behavior to trigger animations. For example, we can use keys to trigger mount animations by changing the key of the component you want to animate.
 
 That's all for today; thanks for reading!
-
-</Section>
