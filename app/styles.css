@@ -11,7 +11,7 @@
 }
 
 .article-layout {
-  @apply grid grid-cols-[1fr_min(65ch,100%)_1fr];
+  @apply grid grid-cols-[1fr_min(65ch,100%)_1fr] auto-rows-min;
 }
 
 .full-width {

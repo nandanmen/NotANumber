@@ -174,7 +174,7 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
           />
         )}
       </div>
-      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong -mx-6 lg:hidden overflow-hidden">
+      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong -mx-[var(--content-padding)] lg:hidden overflow-hidden">
         {children}
       </div>
     </Figure>
