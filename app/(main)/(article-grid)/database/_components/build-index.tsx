@@ -6,7 +6,7 @@ import { Figure } from "~/components/mdx/figure";
 import { FullWidth } from "~/components/mdx/full-width";
 import { TRANSITIONS } from "~/lib/transitions";
 import { DotAnimation } from "./dot-animation";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 
 const records = [
   { uuid: "1", id: 1, value: "Lorem ipsum" },
@@ -55,7 +55,7 @@ export function BuildIndex() {
   return (
     <Figure>
       <div className="w-fit">
-        <ToggleButton
+        <Button
           onClick={async () => {
             if (index === records.length) {
               await animate("[data-record-cover]", {
@@ -90,7 +90,7 @@ export function BuildIndex() {
           }}
         >
           {index === records.length ? "Reset" : "Add record"}
-        </ToggleButton>
+        </Button>
       </div>
       <FullWidth>
         <div

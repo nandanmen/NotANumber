@@ -1,12 +1,12 @@
 "use client";
 
-import { motion, type HTMLMotionProps } from "framer-motion";
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-} from "react";
+import { type ComponentPropsWithoutRef, forwardRef } from "react";
 import { FaPlay, FaUndo } from "react-icons/fa";
 import { cn } from "~/lib/cn";
+import {
+  Button as ChromeButton,
+  IconButton as ChromeIconButton,
+} from "../Button";
 import { GridBackground, type GridBackgroundProps } from "../Grid";
 
 type VisualizerProps = React.ComponentPropsWithoutRef<"div"> & {
@@ -19,7 +19,7 @@ export const Visualizer = forwardRef<HTMLDivElement, VisualizerProps>(
       <div
         ref={ref}
         className={cn(
-          "overflow-hidden rounded-md border border-gray8",
+          "overflow-hidden md:rounded-lg border-y md:border-x border-borderStrong",
           childBorders
             ? "[&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-gray8"
             : "[&>*:not(:first-child)]:border-t-0",
@@ -38,7 +38,10 @@ export const Controls = forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("relative flex justify-between bg-gray5 p-2", className)}
+      className={cn(
+        "relative flex justify-between bg-gray4 px-[var(--content-padding)] py-3 md:px-3",
+        className,
+      )}
       {...props}
     />
   );
@@ -70,64 +73,73 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
   },
 );
 
-export type ToggleButtonProps = HTMLMotionProps<"button"> & {
+export type ToggleButtonProps = Omit<
+  ComponentPropsWithoutRef<typeof ChromeButton>,
+  "variant"
+> & {
   secondary?: boolean;
 };
 
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
   function ToggleButton({ className, secondary, ...props }, ref) {
     return (
-      <motion.button
+      <ChromeButton
         ref={ref}
-        type="button"
-        className={cn(
-          "cursor-pointer rounded border border-gray8 bg-gray1 px-2 py-1 text-sm",
-          "hover:border-gray12",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray8",
-          "disabled:border-gray7 disabled:bg-gray5 disabled:text-gray11 disabled:cursor-not-allowed",
-          secondary &&
-            "border-0 bg-transparent hover:bg-gray7 disabled:pointer-events-none disabled:text-gray8",
-          className,
-        )}
+        variant={secondary ? "secondary" : "default"}
+        className={className}
         {...props}
       />
     );
   },
 );
 
+type VisualizerIconButtonProps = Omit<
+  ComponentPropsWithoutRef<typeof ChromeIconButton>,
+  "variant"
+> & {
+  secondary?: boolean;
+  label?: string;
+};
+
 export const IconButton = forwardRef<
   HTMLButtonElement,
-  ComponentPropsWithoutRef<typeof ToggleButton>
->(function IconButton({ className, secondary: _s, ...props }, ref) {
+  VisualizerIconButtonProps
+>(function IconButton(
+  { className, secondary: _secondary, label = "Action", ...props },
+  ref,
+) {
   return (
-    <ToggleButton
+    <ChromeIconButton
       ref={ref}
-      {...props}
-      secondary
+      variant="ghost"
+      label={label}
       className={cn(
         "flex h-[22px] items-center justify-center text-gray10",
         className,
       )}
+      {...props}
     />
   );
 });
 
-export const PlayButton = (
-  props: ComponentPropsWithoutRef<typeof IconButton>,
-) => {
+export const PlayButton = forwardRef<
+  HTMLButtonElement,
+  Omit<ComponentPropsWithoutRef<typeof IconButton>, "children" | "label">
+>(function PlayButton(props, ref) {
   return (
-    <IconButton {...props}>
+    <IconButton ref={ref} label="Play" {...props}>
       <FaPlay />
     </IconButton>
   );
-};
+});
 
-export const UndoButton = (
-  props: ComponentPropsWithoutRef<typeof IconButton>,
-) => {
+export const UndoButton = forwardRef<
+  HTMLButtonElement,
+  Omit<ComponentPropsWithoutRef<typeof IconButton>, "children" | "label">
+>(function UndoButton(props, ref) {
   return (
-    <IconButton {...props}>
+    <IconButton ref={ref} label="Undo" {...props}>
       <FaUndo />
     </IconButton>
   );
-};
+});

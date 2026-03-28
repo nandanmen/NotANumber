@@ -9,7 +9,7 @@ import { Figure } from "~/components/mdx/figure";
 import { cn } from "~/lib/cn";
 import { DotAnimation } from "./dot-animation";
 import { FileDatabase } from "./file-database";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 
 const records = [
   { uuid: "1", id: 1, value: "Lorem ipsum", isStale: true },
@@ -69,7 +69,7 @@ export function Compaction({ className }: { className?: string }) {
   return (
     <Figure>
       <div className="w-fit">
-        <ToggleButton onClick={play}>Add</ToggleButton>
+        <Button onClick={play}>Add</Button>
       </div>
       <Wide
         className={cn(

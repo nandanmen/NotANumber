@@ -7,7 +7,7 @@ import { Wide } from "~/components/mdx/Wide";
 import { cn } from "~/lib/cn";
 import { sleep } from "~/lib/utils";
 import { CommandList } from "./mutable-database";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 import { pick } from "./utils";
 
 const records = [
@@ -75,7 +75,7 @@ export function SearchIndex() {
   return (
     <Figure>
       <div className="flex h-8 items-center">
-        <ToggleButton
+        <Button
           loading={playing}
           onClick={async () => {
             const keyToSearch = pick<number>([
@@ -145,7 +145,7 @@ export function SearchIndex() {
           }}
         >
           Search
-        </ToggleButton>
+        </Button>
       </div>
       <Wide>
         <div

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Fragment, type ReactNode, useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
 import { Figure } from "~/components/mdx/figure";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 
 export function Script({
   mode = "in-memory",
@@ -15,7 +15,7 @@ export function Script({
   return (
     <Figure>
       <div className="w-fit">
-        <ToggleButton
+        <Button
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           onClick={() => {
@@ -27,7 +27,7 @@ export function Script({
           }}
         >
           {runs > 1 ? "Reset" : "Run"}
-        </ToggleButton>
+        </Button>
       </div>
       <Wide className="bg-gray4 rounded-lg mx-0 w-full">
         <div className="text-xs text-gray11 font-mono py-1 px-4 border border-[hsl(0_0%_79.8%)] rounded-t-lg border-b-0 -mx-px -mb-1.5 pb-2.5">

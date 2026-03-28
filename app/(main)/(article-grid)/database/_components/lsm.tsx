@@ -15,7 +15,7 @@ import { delay, sleep } from "~/lib/utils";
 import { CompactionInner, useCompactionAnimation } from "./compaction";
 import { FileDatabase } from "./file-database";
 import { getNextRecord } from "./mutable-database";
-import { ResetButton, ToggleButton } from "./toggle-button";
+import { ResetButton, Button } from "~/components/Button";
 import { DatabaseIndex, getIndexRecords } from "./update-index";
 
 const MEMORY_LIMIT = 3;
@@ -122,7 +122,7 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
     <Figure>
       <div className="flex gap-2">
         {index < 2 && (
-          <ToggleButton
+          <Button
             onClick={() => {
               events.notify("add", index);
               setPressCount(pressCount + 1);
@@ -130,11 +130,11 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
             disabled={index === 0 && pressCount >= MEMORY_LIMIT - 1}
           >
             Add
-          </ToggleButton>
+          </Button>
         )}
         {index === 3 && (
           <>
-            <ToggleButton
+            <Button
               onClick={() => {
                 events.notify("update");
                 setUpdateCount(updateCount + 1);
@@ -142,8 +142,8 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
               disabled={updateCount > 0}
             >
               Update
-            </ToggleButton>
-            <ToggleButton
+            </Button>
+            <Button
               onClick={() => {
                 events.notify("delete");
                 setDeleteCount(deleteCount + 1);
@@ -151,17 +151,17 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
               disabled={deleteCount > 0}
             >
               Delete
-            </ToggleButton>
+            </Button>
           </>
         )}
         {index === 2 && (
-          <ToggleButton
+          <Button
             onClick={() => {
               events.notify("search", index);
             }}
           >
             Search
-          </ToggleButton>
+          </Button>
         )}
         {index !== 2 && (
           <ResetButton
@@ -298,7 +298,7 @@ export function CompactionControls() {
   const events = useLSMEvents();
   return (
     <div className="hidden lg:flex gap-2">
-      <ToggleButton onClick={() => events.notify("add")}>Add</ToggleButton>
+      <Button onClick={() => events.notify("add")}>Add</Button>
     </div>
   );
 }
@@ -603,7 +603,7 @@ export function LSM({ showLog = false }) {
   return (
     <Figure>
       <div className="flex gap-2 h-8 items-center">
-        <ToggleButton
+        <Button
           loading={loading}
           onClick={async () => {
             const nextRecord = getNextRecord(memoryRecords);
@@ -649,7 +649,7 @@ export function LSM({ showLog = false }) {
           }}
         >
           Add
-        </ToggleButton>
+        </Button>
         <ResetButton
           onClick={() => {
             setMemoryRecords([{ key: 10, value: "Lorem ipsum" }]);

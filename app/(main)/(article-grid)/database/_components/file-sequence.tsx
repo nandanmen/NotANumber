@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Figure } from "~/components/mdx/figure";
 import { FullWidth } from "~/components/mdx/full-width";
 import { cn } from "~/lib/cn";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 
 const NEW_CONTENT_WIDTH = 106;
 
@@ -16,9 +16,9 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
     <Figure>
       {updateable && (
         <div className="w-fit">
-          <ToggleButton onClick={() => setUpdated(!updated)}>
+          <Button onClick={() => setUpdated(!updated)}>
             Update
-          </ToggleButton>
+          </Button>
         </div>
       )}
       <FullWidth>

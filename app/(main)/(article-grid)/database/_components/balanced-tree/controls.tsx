@@ -1,7 +1,7 @@
 "use client";
 
 import { atom, useAtom } from "jotai";
-import { ResetButton, ToggleButton } from "../toggle-button";
+import { ResetButton, Button } from "~/components/Button";
 import produce from "immer";
 import { pick, randomUnique } from "../utils";
 import { CommandList } from "../mutable-database";
@@ -146,7 +146,7 @@ export function TreeControls({
     <div className="space-y-3">
       <div className="flex gap-2">
         {mode === "add" && (
-          <ToggleButton
+          <Button
             onClick={() => {
               const key = randomUnique(0, 20, Array.from(values));
               const snapshots = [];
@@ -164,10 +164,10 @@ export function TreeControls({
             disabled={values.size >= 10}
           >
             Add key
-          </ToggleButton>
+          </Button>
         )}
         {mode === "find" && (
-          <ToggleButton
+          <Button
             onClick={() => {
               const key = pick(
                 Array.from(values),
@@ -188,7 +188,7 @@ export function TreeControls({
             disabled={values.size >= 10}
           >
             Find key
-          </ToggleButton>
+          </Button>
         )}
 
         <ResetButton

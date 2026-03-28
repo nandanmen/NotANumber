@@ -12,7 +12,7 @@ import {
   type ExecutableDatabaseCommand,
 } from "../_lib/use-file-database";
 import { useMemo, useState } from "react";
-import { ToggleButton } from "./toggle-button";
+import { Button } from "~/components/Button";
 import { useInterval } from "~/lib/use-interval";
 
 const records: ExecutableDatabaseCommand[] = [
@@ -94,7 +94,7 @@ export function SearchSparseIndex() {
   return (
     <Figure>
       <div className="flex h-8 items-center">
-        <ToggleButton
+        <Button
           onClick={() => {
             reset();
             setPlaying(true);
@@ -102,7 +102,7 @@ export function SearchSparseIndex() {
           loading={playing}
         >
           Search
-        </ToggleButton>
+        </Button>
       </div>
       <Wide>
         <div

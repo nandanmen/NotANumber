@@ -9,7 +9,6 @@
     "build": "pnpm build:content && next build",
     "build:content": "rm -rf ./_dist-content && babel ./content --out-dir ./_dist-content --copy-files --extensions .ts,.tsx",
     "start": "next start",
-    "stories": "node bin/stories.js",
     "test": "vitest"
   },
   "dependencies": {

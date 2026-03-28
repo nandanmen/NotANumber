@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { ArticleTitle } from "../how-computers-talk/header";
+import { ArticleTitle } from "../article-title";
 
 export const metadata: Metadata = {
   title: "Build Your Own Database",

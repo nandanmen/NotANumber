@@ -10,7 +10,7 @@ import {
   useScrollGroupEvents,
 } from "~/components/mdx/scroll-group";
 import { cn } from "~/lib/cn";
-import { ToggleButton } from "../../database/_components/toggle-button";
+import { Button } from "~/components/Button";
 import { useGridSize } from "../../grid-context";
 import { GridPath, Path } from "./connectors";
 import { GridCell } from "./grid-cell";
@@ -343,14 +343,14 @@ function BGPThreeRoutersDiagram() {
       <div className="fixed bottom-8 flex gap-4">
         {[-1, 0, 1, 2, 3].map((i) => {
           return (
-            <ToggleButton
+            <Button
               className="w-8 justify-center bg-gray1"
               type="button"
               onClick={() => setIndex(i)}
               key={i}
             >
               {i}
-            </ToggleButton>
+            </Button>
           );
         })}
       </div>

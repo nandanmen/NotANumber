@@ -6,7 +6,7 @@ import { Wide } from "~/components/mdx/Wide";
 import { cn } from "~/lib/cn";
 import { useInterval } from "~/lib/use-interval";
 import { Slider, SliderMarker } from "../slider";
-import { IconButton } from "../toggle-button";
+import { IconButton } from "~/components/Button";
 
 type Snapshot = {
   items: number[];

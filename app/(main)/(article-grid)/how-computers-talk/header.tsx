@@ -3,23 +3,6 @@ import { Connectors } from "./_components/connectors";
 import { GridCell } from "./_components/grid-cell";
 import { Computer, Router, Server } from "./_components/network-devices";
 
-export function ArticleTitle({
-  title,
-  description,
-}: {
-  title: ReactNode;
-  description: ReactNode;
-}) {
-  return (
-    <header className="full-width text-left md:text-center space-y-4 mb-16">
-      <h1 className="text-[52px] md:text-[72px] font-serif leading-[1] text-balance">
-        {title}
-      </h1>
-      <p className="text-gray11">{description}</p>
-    </header>
-  );
-}
-
 export function PageHeader({ children }: { children: ReactNode }) {
   return (
     <div className="!col-start-1 col-span-4 grid grid-cols-subgrid relative min-h-[round(up,60vh,var(--grid-size))]">

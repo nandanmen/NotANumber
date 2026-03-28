@@ -11,7 +11,7 @@ import {
   useFileDatabase,
 } from "../_lib/use-file-database";
 import { FileDatabase as FileDatabaseComponent } from "./file-database";
-import { ResetButton, ToggleButton } from "./toggle-button";
+import { ResetButton, Button } from "~/components/Button";
 import { pick, random, randomUnique, texts } from "./utils";
 
 type Mode = "add" | "update" | "delete" | "search";
@@ -237,22 +237,22 @@ function Controls({
   return (
     <div className="flex gap-2">
       {showButton("add") && (
-        <ToggleButton onClick={() => on("add")}>Add</ToggleButton>
+        <Button onClick={() => on("add")}>Add</Button>
       )}
       {showButton("update") && (
-        <ToggleButton onClick={() => on("update")} disabled={isEmpty}>
+        <Button onClick={() => on("update")} disabled={isEmpty}>
           Update
-        </ToggleButton>
+        </Button>
       )}
       {showButton("delete") && (
-        <ToggleButton onClick={() => on("delete")} disabled={isEmpty}>
+        <Button onClick={() => on("delete")} disabled={isEmpty}>
           Delete
-        </ToggleButton>
+        </Button>
       )}
       {showButton("search") && (
-        <ToggleButton onClick={() => on("search")} disabled={isEmpty}>
+        <Button onClick={() => on("search")} disabled={isEmpty}>
           Search
-        </ToggleButton>
+        </Button>
       )}
       <ResetButton onClick={() => on("reset")} />
     </div>

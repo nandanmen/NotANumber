@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -5,7 +7,7 @@ import { styled } from "~/stitches.config";
 
 export const QuizContext = React.createContext(null);
 
-export const Quiz = ({ label, answer, children }) => {
+const QuizRoot = ({ label, answer, children }) => {
   const [selected, select] = React.useState(null);
   const isCorrect = selected === answer;
 
@@ -14,9 +16,9 @@ export const Quiz = ({ label, answer, children }) => {
       const spoilers = document.querySelectorAll(
         `[data-spoiler-for="${label}"]`
       );
-      spoilers.forEach((spoiler) =>
-        spoiler.setAttribute("data-revealed", "true")
-      );
+      for (const spoiler of spoilers) {
+        spoiler.setAttribute("data-revealed", "true");
+      }
     }
   }, [isCorrect, label]);
 
@@ -40,7 +42,7 @@ const QuizWrapper = styled(motion.div, {
   },
 });
 
-const Question = (props) => {
+export const QuizQuestion = (props) => {
   return <div>{props.children}</div>;
 };
 
@@ -53,7 +55,7 @@ const OptionsWrapper = styled("div", {
   gap: "$2",
 });
 
-const Option = ({ label, children }) => {
+export const QuizOption = ({ label, children }) => {
   const { selected, select } = React.useContext(QuizContext);
   return (
     <OptionWrapper
@@ -81,7 +83,7 @@ const OptionWrapper = styled(motion.button, {
   },
 });
 
-const Tip = ({ htmlFor, children }) => {
+export const QuizTip = ({ htmlFor, children }) => {
   const { selected, answer } = React.useContext(QuizContext);
 
   if (selected !== htmlFor) {
@@ -116,7 +118,7 @@ const TipWrapper = styled(motion.div, {
   },
 });
 
-const Spoiler = ({ htmlFor, children }) => {
+export const QuizSpoiler = ({ htmlFor, children }) => {
   const [revealed, setRevealed] = React.useState(false);
 
   React.useEffect(() => {
@@ -154,8 +156,12 @@ const SpoilerWrapper = styled("button", {
   },
 });
 
-Quiz.Question = Question;
-Quiz.Option = Option;
-Quiz.Options = Options;
-Quiz.Tip = Tip;
-Quiz.Spoiler = Spoiler;
+export const QuizOptions = Options;
+
+export const Quiz = Object.assign(QuizRoot, {
+  Question: QuizQuestion,
+  Option: QuizOption,
+  Options: QuizOptions,
+  Tip: QuizTip,
+  Spoiler: QuizSpoiler,
+});

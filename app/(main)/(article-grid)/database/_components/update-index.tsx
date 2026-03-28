@@ -2,7 +2,7 @@
 
 import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
-import { ResetButton, ToggleButton } from "./toggle-button";
+import { ResetButton, Button } from "~/components/Button";
 import { FileDatabase } from "./file-database";
 import { AnimatePresence, motion, useIsPresent } from "motion/react";
 import {
@@ -49,9 +49,9 @@ export function UpdateIndex() {
   return (
     <Figure>
       <div className="flex gap-2">
-        <ToggleButton onClick={controls.add}>Add</ToggleButton>
-        <ToggleButton onClick={controls.update}>Update</ToggleButton>
-        <ToggleButton onClick={controls.delete}>Delete</ToggleButton>
+        <Button onClick={controls.add}>Add</Button>
+        <Button onClick={controls.update}>Update</Button>
+        <Button onClick={controls.delete}>Delete</Button>
         <ResetButton
           onClick={() =>
             setStore(

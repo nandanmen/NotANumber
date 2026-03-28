@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { CodeBlockMain } from "~/components/mdx/code-block";
-import { ArticleTitle, PageHeader } from "./header";
+import { ArticleTitle } from "../article-title";
+import { PageHeader } from "./header";
 
 const code = `fetch("https://nan.fyi")
   .then((response) => response.text())

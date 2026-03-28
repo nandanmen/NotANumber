@@ -1,6 +1,6 @@
 "use client";
 
-import { ToggleButton } from "app/(main)/(article-grid)/database/_components/toggle-button";
+import { Button } from "~/components/Button";
 import React from "react";
 import { Wide } from "~/components/mdx/Wide";
 
@@ -14,12 +14,12 @@ export const Counter = ({ withKey = false, children }) => {
           <div className="flex items-center justify-center">
             <_Counter name={name} key={withKey ? name : undefined} />
           </div>
-          <ToggleButton
+          <Button
             className="mx-auto"
             onClick={() => setName(name === "Jane" ? "John" : "Jane")}
           >
             Change Name
-          </ToggleButton>
+          </Button>
         </div>
       </div>
     </Wide>
@@ -33,7 +33,7 @@ const _Counter = ({ name }) => {
       <p>
         {name}: {count}
       </p>
-      <ToggleButton
+      <Button
         className="w-8 p-0 flex items-center justify-center rounded-full"
         onClick={() => {
           setCount(count + 1);
@@ -54,7 +54,7 @@ const _Counter = ({ name }) => {
             strokeLinecap="round"
           />
         </svg>
-      </ToggleButton>
+      </Button>
     </div>
   );
 };

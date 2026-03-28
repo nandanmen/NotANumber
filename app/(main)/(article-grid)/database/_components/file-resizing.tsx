@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ResetButton, ToggleButton } from "./toggle-button";
+import { ResetButton, Button } from "~/components/Button";
 
 export function FileResizing() {
   const [updated, setUpdated] = useState(false);
   return (
     <>
       <div className="flex gap-1">
-        <ToggleButton onClick={() => setUpdated(true)}>Update</ToggleButton>
+        <Button onClick={() => setUpdated(true)}>Update</Button>
         <ResetButton onClick={() => setUpdated(false)} />
       </div>
       <p className="rounded-lg bg-gray3 border border-gray8 p-5 font-mono text-sm">
