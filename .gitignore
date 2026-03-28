@@ -36,5 +36,6 @@ yarn-error.log*
 _dist-content/
 old-src/
 
-# OpenNext
-.open-next
+.open-next/
+.wrangler/
+.pnpm-store/

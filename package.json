@@ -24,6 +24,7 @@
     "@base-ui-components/react": "1.0.0-beta.4",
     "@codesandbox/sandpack-react": "^1.18.4",
     "@codesandbox/sandpack-themes": "^1.17.0",
+    "@floating-ui/react": "^0.27.19",
     "@mdx-js/esbuild": "^3.1.1",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",

@@ -22,12 +22,7 @@ export const InverseSizeSlider = () => {
     <FullWidth>
       <Visualizer>
         <Content
-          css={{
-            height: 300,
-            display: "flex",
-            alignItems: "center",
-            padding: `calc($space$8 - 2px)`,
-          }}
+          className="flex h-[300px] items-center p-[calc(2rem-2px)]"
         >
           <RulerWrapper style={{ transform: "translateY(-90px)" }}>
             <RulerText>120px</RulerText>

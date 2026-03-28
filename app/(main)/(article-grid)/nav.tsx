@@ -7,13 +7,11 @@ import { Subscribe } from "../(content)/subscribe";
 
 export function Navbar({ showNotesLabel = false }) {
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [isCovered, setIsCovered] = useState(false);
 
-  /* useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setHasScrolled(scrollY >= 24);
-      setIsCovered(scrollY >= 88);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -23,23 +21,17 @@ export function Navbar({ showNotesLabel = false }) {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []); */
+  }, []);
 
   return (
-    <header className="sticky px-9 top-0 z-20 max-w-[var(--content-width)] mx-auto w-full">
+    <header className="sticky p-0 md:p-2 top-0 w-full z-10">
       <div
         className={cn(
-          "flex items-center gap-2 h-16 mx-px",
-          hasScrolled && "border-b border-borderSoft",
-          isCovered && "bg-gray2",
+          "flex items-center gap-2 h-16 -mx-5 px-5 md:px-0 bg-gray3 md:mx-0 md:bg-transparent",
+          hasScrolled && "border-b border-borderSoft md:border-b-0",
         )}
       >
-        <h1
-          className={cn(
-            "font-serif text-2xl translate-y-0.5 text-gray11 hover:text-green9 transition-transform",
-            isCovered && "translate-x-4",
-          )}
-        >
+        <h1 className="font-serif text-2xl translate-y-0.5 text-gray11 hover:text-green9 transition-transform">
           <Link href="/">NaN</Link>
         </h1>
         {showNotesLabel && (
@@ -49,10 +41,7 @@ export function Navbar({ showNotesLabel = false }) {
             viewBox="0 0 55 18"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={cn(
-              "text-gray10 translate-y-0.5 transition-transform",
-              isCovered && "translate-x-4",
-            )}
+            className="text-gray10 translate-y-0.5 transition-transform"
           >
             <title>notes</title>
             <path
@@ -61,12 +50,7 @@ export function Navbar({ showNotesLabel = false }) {
             />
           </svg>
         )}
-        <div
-          className={cn(
-            "ml-auto transition-transform",
-            isCovered && "-translate-x-4",
-          )}
-        >
+        <div className="ml-auto">
           <Subscribe />
         </div>
       </div>

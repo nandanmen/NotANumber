@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import Link from "next/link";
 import { Content, ToggleButton, UndoButton } from "~/components/Visualizer";
+import { cn } from "~/lib/cn";
 import { styled } from "~/stitches.config";
 import { Row } from "./Row";
 
@@ -18,7 +19,7 @@ const experiments = [
 export function ExperimentsPage({ children, page }) {
   return (
     <Wrapper>
-      <ContentWrapper>
+      <Content className="flex h-full flex-col justify-center p-16">
         <Row as={NavWrapper} css={{ flexDirection: "column", gap: "$4" }}>
           <LinkWrapper>
             <Link href="/">NaN</Link>
@@ -37,7 +38,7 @@ export function ExperimentsPage({ children, page }) {
           </ExperimentsList>
         </Row>
         {children}
-      </ContentWrapper>
+      </Content>
     </Wrapper>
   );
 }
@@ -115,19 +116,17 @@ export const Controls = ({ debug, onDebugChange, onReset, children }) => {
   return (
     <_Controls layout style={{ borderRadius: "12px" }}>
       <ControlHeader layout>
-        <DebugButton
+        <ToggleButton
           layout
           onClick={() => onDebugChange(!debug)}
           secondary
-          active={debug}
-          css={{
-            fontWeight: "bold",
-            fontFamily: "$mono",
-            color: "$gray10",
-          }}
+          className={cn(
+            "font-bold font-mono text-gray10",
+            debug && "rounded-b-none bg-gray5",
+          )}
         >
           Debug
-        </DebugButton>
+        </ToggleButton>
         <UndoButton layout onClick={onReset} />
       </ControlHeader>
       {debug && <DebugControls>{children}</DebugControls>}
@@ -154,14 +153,6 @@ const Wrapper = styled("div", {
   height: "100vh",
 });
 
-const ContentWrapper = styled(Content, {
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  padding: "$16",
-});
-
 const _Controls = styled(motion.div, {
   border: "1px solid $gray8",
   boxShadow: "$md",
@@ -176,18 +167,6 @@ const DebugControls = styled(motion.div, {
   padding: "$4",
   borderRadius: 4,
   borderTopLeftRadius: 0,
-});
-
-const DebugButton = styled(ToggleButton, {
-  variants: {
-    active: {
-      true: {
-        background: "$gray5",
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-      },
-    },
-  },
 });
 
 export const DebugFieldButton = styled("button", {

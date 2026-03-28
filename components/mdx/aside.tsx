@@ -3,9 +3,9 @@ export function Aside({
   children,
 }: { label: string; children: React.ReactNode }) {
   return (
-    <details className="!col-start-1 !col-span-3 !max-w-[initial] -m-4 rounded-xl bg-gray5 group">
-      <summary className="p-4 md:p-6 list-none">
-        <div className="flex items-center gap-2 w-[min(60ch,100%)] lg:w-[min(900px,100%)] mx-auto">
+    <details className="full-width rounded-xl bg-gray4 group open:-mx-[var(--content-padding)] open:px-[var(--content-padding)] md:open:mx-0 md:open:px-0 my-5">
+      <summary className="p-4 md:p-6 list-none group-open:px-0 group-open:pb-5 group-open:pt-6 md:group-open:py-6 md:group-open:px-6">
+        <div className="flex items-center gap-2 w-full max-w-[65ch] mx-auto">
           <svg
             aria-hidden="true"
             width="20"
@@ -26,9 +26,7 @@ export function Aside({
           <h3 className="text-xl font-medium">{label}</h3>
         </div>
       </summary>
-      <div className="grid auto-rows-min gap-y-5 grid-cols-[1fr_min(60ch,100%)_1fr] lg:grid-cols-[1fr_min(900px,100%)_1fr] leading-relaxed [&>*]:col-start-2 [&>*]:max-w-[60ch] -mt-1 mb-6 px-4 md:px-6">
-        {children}
-      </div>
+      <div className="article-layout article pb-10">{children}</div>
     </details>
   );
 }

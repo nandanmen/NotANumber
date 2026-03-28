@@ -7,6 +7,7 @@ import {
   ToggleButton,
   PlayButton,
 } from "~/components/Visualizer";
+import { cn } from "~/lib/cn";
 import { styled } from "~/stitches.config";
 
 export const ControllableAnimation = () => {
@@ -22,14 +23,17 @@ export const ControllableAnimation = () => {
 
   return (
     <Visualizer>
-      <Content css={{ paddingTop: "$10", overflow: "hidden", height: 400 }}>
+      <Content
+        className="overflow-hidden pt-10"
+        style={{ height: 400 }}
+      >
         <File>
           <Item style={{ y }}>Hello world!</Item>
         </File>
       </Content>
-      <Controls css={{ padding: "$2" }}>
+      <Controls className="p-2">
         <PlayButton
-          css={{ marginRight: "$2" }}
+          className="mr-2"
           onClick={() => animateProgress()}
         />
         <Slider
@@ -37,21 +41,25 @@ export const ControllableAnimation = () => {
           max={100}
           onValueChange={([value]) => progress.set(value / 100)}
         />
-        <Button secondary css={{ marginLeft: "$2" }}>
+        <ToggleButton
+          secondary
+          className={cn("ml-2 font-bold text-gray11")}
+        >
           0.1x
-        </Button>
-        <Button secondary>0.5x</Button>
-        <Button secondary>1x</Button>
-        <Button secondary>2x</Button>
+        </ToggleButton>
+        <ToggleButton secondary className="font-bold text-gray11">
+          0.5x
+        </ToggleButton>
+        <ToggleButton secondary className="font-bold text-gray11">
+          1x
+        </ToggleButton>
+        <ToggleButton secondary className="font-bold text-gray11">
+          2x
+        </ToggleButton>
       </Controls>
     </Visualizer>
   );
 };
-
-const Button = styled(ToggleButton, {
-  fontWeight: "bold",
-  color: "$gray11",
-});
 
 const File = styled("ul", {
   border: "1px solid $gray8",

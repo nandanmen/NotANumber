@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import React from "react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
-import { Command, createPath, parsePath, Path } from "../lib/path";
+import React from "react";
+import { type Command, type Path, createPath, parsePath } from "../lib/path";
 import { useStateContext } from "./state-context";
 
 const mapCodeToHint = {
@@ -52,14 +52,14 @@ export const CommandListFromSource = ({ source }: { source: string }) => {
 
 export const CommandList = ({
   path: initialPath,
-  onChange = () => { },
+  onChange = () => {},
   collapseAfter,
   active,
   index = null,
   expanded = false,
   highlight = [],
   blocklist = [],
-  slice = [0, Infinity],
+  slice = [0, Number.POSITIVE_INFINITY],
 }: {
   path: Path | string;
   active?: CommandKey[];
@@ -78,7 +78,7 @@ export const CommandList = ({
     return initialPath;
   }, [initialPath]);
 
-  const [start, end = Infinity] = slice;
+  const [start, end = Number.POSITIVE_INFINITY] = slice;
   const pathSlice = createPath(path.commands.slice(start, end));
   const _commands = expanded
     ? pathSlice.commands
@@ -95,7 +95,7 @@ export const CommandList = ({
               index === i + start && "bg-gray5",
               highlight.includes(i + start)
                 ? "bg-gray6 border-gray8 border-l-4 px-3"
-                : "px-4"
+                : "px-4",
             )}
             onHoverStart={() => onChange({ index: i + start })}
             onHoverEnd={() => onChange({ index: null })}
@@ -272,7 +272,7 @@ const Highlight = ({
       className={clsx(
         "transition-all",
         variant === "active" && "bg-gray12 text-gray1 -mx-1 px-1 rounded-[4px]",
-        variant === "blocked" && "text-gray9"
+        variant === "blocked" && "text-gray9",
       )}
     >
       {value.toFixed(1)}

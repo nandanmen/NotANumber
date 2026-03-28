@@ -112,7 +112,7 @@ export const FlipOverview = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow ref={widthRef}>
+        <Content noOverflow ref={widthRef} style={{ height: CONTENT_HEIGHT }}>
           <svg width="100%" height="100%">
             <Square ref={initialRef} x={PADDING} type="secondary" />
             <Square ref={finalRef} x={finalX} type="secondary" />
@@ -160,8 +160,8 @@ export const FlipOverview = () => {
               <TranslateText ref={textRef} visible={showTransformVisuals} />
             </motion.g>
           </svg>
-        </ContentWrapper>
-        <Controls css={{ alignItems: "center" }}>
+        </Content>
+        <Controls className="items-center">
           <IconButton onClick={() => setPlaying(!playing)} secondary>
             {playing ? <FaPause /> : <FaPlay />}
           </IconButton>
@@ -233,10 +233,6 @@ const TranslateText = styled(motion.text, {
       },
     },
   },
-});
-
-const ContentWrapper = styled(Content, {
-  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {

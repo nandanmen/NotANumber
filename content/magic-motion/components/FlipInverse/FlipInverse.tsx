@@ -51,7 +51,7 @@ export const FlipInverse = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow ref={widthRef}>
+        <Content noOverflow ref={widthRef} style={{ height: CONTENT_HEIGHT }}>
           <svg width="100%" height="100%">
             <Square x={PADDING} type="secondary" />
             <TranslateText
@@ -97,8 +97,8 @@ export const FlipInverse = () => {
               <TranslateText ref={textRef}>translateX(0px)</TranslateText>
             </motion.g>
           </svg>
-        </ContentWrapper>
-        <Controls css={{ alignItems: "center" }}>
+        </Content>
+        <Controls className="items-center">
           <ToggleButton onClick={() => animate(x, -distance, { duration: 3 })}>
             Invert
           </ToggleButton>
@@ -116,10 +116,6 @@ const TranslateText = styled(motion.text, {
   [`.${darkTheme} &`]: {
     fill: "$gray12",
   },
-});
-
-const ContentWrapper = styled(Content, {
-  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {

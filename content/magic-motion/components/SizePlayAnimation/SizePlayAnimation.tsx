@@ -19,7 +19,7 @@ export const SizePlayAnimation = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <Content css={{ height: 300 }} noOverflow>
+        <Content noOverflow style={{ height: 300 }}>
           <SizeDiagram
             scale={scale}
             onWidthChange={(width) => {

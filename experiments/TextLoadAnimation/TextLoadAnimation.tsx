@@ -21,7 +21,7 @@ export const TextLoadAnimation = () => {
         <Content padding="md">
           <TextScramble key={key} text={text} times={times} />
         </Content>
-        <Controls css={{ padding: "$2" }}>
+        <Controls className="p-2">
           <Input
             type="text"
             value={text}
@@ -46,18 +46,13 @@ export const TextLoadAnimationWindow = () => {
       <Visualizer>
         <Content
           padding="md"
-          css={{
-            height: 100,
-            display: "flex",
-            alignItems: "center",
-            fontFamily: "$mono",
-          }}
+          className="flex h-[100px] items-center font-mono"
         >
           <TextScrambleWindow key={key}>
             Fast, unstyled, composable command menu for React
           </TextScrambleWindow>
         </Content>
-        <Controls css={{ padding: "$2" }}>
+        <Controls className="p-2">
           <UndoButton onClick={() => setKey(key + 1)} />
         </Controls>
       </Visualizer>

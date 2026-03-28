@@ -159,7 +159,7 @@ export const InverseScaleFormulaSandbox = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <VisualizerContent css={{ height: 220 }}>
+        <VisualizerContent style={{ height: 220 }}>
           <InverseScaleFormula corrected={corrected} scale={scale} />
         </VisualizerContent>
         <Controls>

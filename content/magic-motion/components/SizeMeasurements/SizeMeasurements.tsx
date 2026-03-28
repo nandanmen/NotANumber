@@ -38,7 +38,7 @@ export const SizeMeasurements = () => {
     <FullWidth>
       <Visualizer>
         <Content
-          css={{ height: 300, display: "flex", alignItems: "center" }}
+          className="flex h-[300px] items-center"
           padding="lg"
         >
           <RulerWrapper key={key} style={{ transform: "translateY(-90px)" }}>
@@ -56,7 +56,7 @@ export const SizeMeasurements = () => {
             </>
           )}
         </Content>
-        <Controls css={{ alignItems: "center" }}>
+        <Controls className="items-center">
           <FlipStateList>
             <FlipState active={step === "first"}>First</FlipState>
             <FlipState active={step === "last"}>Last</FlipState>

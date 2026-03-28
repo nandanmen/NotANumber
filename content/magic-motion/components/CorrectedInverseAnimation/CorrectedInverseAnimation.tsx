@@ -158,7 +158,7 @@ export const CorrectedInverseAnimation = ({
             </svg>
           </ContentWrapper>
         </Content>
-        <Controls css={{ alignItems: "center", gap: "$4" }}>
+        <Controls className="items-center gap-4">
           <PlayButton
             onClick={() => {
               setShowScaleRulers(false);

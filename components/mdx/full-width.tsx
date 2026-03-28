@@ -8,7 +8,12 @@ export function FullWidth({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("!col-start-1 col-span-3 !max-w-full", className)}>
+    <div
+      className={cn(
+        "full-width -mx-[var(--content-padding)] md:mx-0",
+        className,
+      )}
+    >
       {children}
     </div>
   );

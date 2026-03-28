@@ -8,6 +8,7 @@ import { Annotation } from "./components/mdx/annotation";
 import { Aside } from "./components/mdx/aside";
 import { CodeBlock } from "./components/mdx/code-block";
 import { ColumnRight, Columns } from "./components/mdx/columns";
+import { Figure } from "./components/mdx/figure";
 import { FullWidth } from "./components/mdx/full-width";
 import { Heading } from "./components/mdx/heading";
 import { InlineNote, Note } from "./components/mdx/note";
@@ -75,7 +76,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Annotation,
     Callout: (props) => (
       <div
-        className="bg-gray3 border border-borderStrong border-dashed rounded-lg px-4 py-3.5 relative"
+        className="bg-gray2 border border-borderStrong border-dashed rounded-lg px-4 py-3.5 relative"
         {...props}
       />
     ),
@@ -87,7 +88,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
               Problem
             </h4>
           </header>
-          <div className="bg-gray2 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
+          <div className="bg-gray1 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
             {props.children}
           </div>
         </div>
@@ -98,6 +99,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <div className={cn("lg:hidden", className)} {...props} />
     ),
     FullWidth,
+    Figure,
     ScrollGroup,
     ScrollGroupSection,
     ScrollFigure,

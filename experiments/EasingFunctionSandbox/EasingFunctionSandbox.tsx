@@ -89,7 +89,7 @@ export const EasingFunctionSandbox = () => {
 
   return (
     <FullWidth>
-      <Visualizer css={{ display: "flex" }}>
+      <Visualizer className="flex">
         <Aside>
           <CodeBlock>
             {easing.map((value, index) => {
@@ -222,10 +222,14 @@ export const EasingFunctionSandbox = () => {
           </SvgWrapper>
         </Aside>
         <ContentWrapper>
-          <Content padding="lg" ref={containerRef} css={{ height: "100%" }}>
+          <Content
+            padding="lg"
+            ref={containerRef}
+            className="h-full min-h-0"
+          >
             <Ball animate={controls} />
           </Content>
-          <Controls css={{ borderTop: "1px solid $gray8" }}>
+          <Controls className="border-t border-gray8">
             <select
               value={Object.keys(easingFunctions).find((key) =>
                 easingFunctions[key].every((n, i) => n === easing[i])

@@ -119,7 +119,7 @@ export function ScrollGroup({
   return (
     <section
       data-scroll-group
-      className="grid grid-cols-2 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
+      className="full-width lg:grid grid-cols-2 my-8 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
     >
       <ScrollGroupContext.Provider
         value={{
@@ -134,8 +134,8 @@ export function ScrollGroup({
           lastIndex,
         }}
       >
-        <div className="ring-1 ring-black/15 shadow-sm bg-gray2 flex px-7">
-          <div className="border-x border-borderSoft w-full pt-16">
+        <div className="lg:ring-1 ring-black/15 lg:shadow-sm lg:bg-gray2 flex lg:px-7">
+          <div className="lg:border-x border-borderSoft w-full lg:py-10 xl:py-12 lg:px-6 xl:px-10">
             {Children.map(children, (child, i) => {
               return cloneElement(
                 child as React.ReactElement<{ index: number }>,
@@ -246,13 +246,7 @@ export function ScrollGroupSection({
 
   return (
     <ScrollSectionContext.Provider value={{ index }}>
-      <div
-        className={clsx(
-          styles.article,
-          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[round(up,45vh,var(--grid-size))]",
-        )}
-        ref={ref}
-      >
+      <div className="article article-layout min-h-[45vh]" ref={ref}>
         {children}
       </div>
     </ScrollSectionContext.Provider>
