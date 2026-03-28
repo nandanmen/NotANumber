@@ -39,3 +39,5 @@ old-src/
 .open-next/
 .wrangler/
 .pnpm-store/
+
+.tsconfig.tsbuildinfo
