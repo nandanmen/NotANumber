@@ -4,30 +4,19 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArticleBleed } from "../article-bleed";
 import { Content, Visualizer } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export const Button = ({ toggled, onClick = () => {} }) => {
   return (
-    <Box
-      as={motion.button}
+    <motion.button
+      type="button"
       layout
       onClick={onClick}
-      css={{
-        "--border-color": "$colors$gray8",
-
-        background: "$gray1",
-        border: "1px solid var(--border-color)",
-        borderRadius: "$base",
-        padding: "$2 $4",
-
-        "&:hover": {
-          "--border-color": "$colors$gray12",
-        },
-
-        "&:focus-visible": {
-          outline: "2px solid var(--border-color)",
-        },
-      }}
+      className={cn(
+        "rounded-md border border-gray8 bg-gray1 py-2 px-4",
+        "hover:border-gray12",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray8",
+      )}
     >
       <motion.span
         animate={{ opacity: 1 }}
@@ -37,7 +26,7 @@ export const Button = ({ toggled, onClick = () => {} }) => {
       >
         {toggled ? "Next" : "Show Answer"}
       </motion.span>
-    </Box>
+    </motion.button>
   );
 };
 
@@ -46,19 +35,10 @@ export const NextButton = () => {
   return (
     <ArticleBleed>
       <Visualizer>
-        <Content
-          css={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "$10",
-          }}
-        >
+        <Content className="flex items-center justify-center p-10">
           <Button toggled={toggled} onClick={toggle} />
         </Content>
       </Visualizer>
     </ArticleBleed>
   );
 };
-
-const Box = styled("div", {});

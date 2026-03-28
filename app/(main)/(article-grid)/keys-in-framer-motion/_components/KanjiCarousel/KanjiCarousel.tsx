@@ -9,31 +9,18 @@ import {
   ToggleButton,
   Visualizer,
 } from "~/components/Visualizer";
-import { styled, darkTheme } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 import { FaArrowRight } from "react-icons/fa";
 
 const KANJI = ["中", "学", "校"];
 
 export const KanjiViewer = ({ showOverflow, index }) => {
   return (
-    <Box
-      css={{
-        background: "$gray4",
-        border: "1px solid $gray8",
-        fontSize: "8rem",
-        fontWeight: "bold",
-        padding: "$4 0",
-        borderRadius: "$base",
-        position: "relative",
-        overflow: showOverflow ? undefined : "hidden",
-        width: 200,
-        textAlign: "center",
-
-        [`.${darkTheme} &`]: {
-          background: "$gray1",
-          borderColor: "$gray6",
-        },
-      }}
+    <div
+      className={cn(
+        "relative w-[200px] border border-gray8 bg-gray4 py-4 text-center text-[8rem] font-bold rounded-md",
+        !showOverflow && "overflow-hidden",
+      )}
     >
       <AnimatePresence mode="popLayout">
         <motion.p
@@ -46,7 +33,7 @@ export const KanjiViewer = ({ showOverflow, index }) => {
           {KANJI[index]}
         </motion.p>
       </AnimatePresence>
-    </Box>
+    </div>
   );
 };
 
@@ -59,45 +46,23 @@ export const KanjiCarousel = () => {
   return (
     <ArticleBleed>
       <Visualizer>
-        <Content
-          css={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "$16 0",
-          }}
-        >
-          <Box css={{ display: "flex", alignItems: "center" }}>
+        <Content className="flex items-center justify-center py-16">
+          <div className="flex items-center">
             <KanjiViewer showOverflow={hasOverflow} index={currentIndex} />
-            <Box
-              as="button"
+            <motion.button
+              type="button"
               onClick={next}
-              css={{
-                aspectRatio: 1,
-                background: "$gray2",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "$3",
-                borderRadius: "50%",
-                border: "1px solid $gray8",
-                boxShadow: "$md",
-                transform: "translateX(-14px)",
-
-                "&:focus-visible, &:hover": {
-                  outline: "3px solid $gray8",
-                },
-
-                [`.${darkTheme} &`]: {
-                  background: "$gray2",
-                },
-              }}
+              className={cn(
+                "flex aspect-square -translate-x-[14px] items-center justify-center rounded-full border border-gray8 bg-gray2 p-3 shadow-md",
+                "hover:outline hover:outline-[3px] hover:outline-gray8",
+                "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-gray8",
+              )}
             >
               <FaArrowRight size="1.5rem" />
-            </Box>
-          </Box>
+            </motion.button>
+          </div>
         </Content>
-        <Controls css={{ justifyContent: "center" }}>
+        <Controls className="justify-center">
           <ToggleButton onClick={toggle}>
             {hasOverflow ? "Hide" : "Show"} Overflow
           </ToggleButton>
@@ -106,5 +71,3 @@ export const KanjiCarousel = () => {
     </ArticleBleed>
   );
 };
-
-const Box = styled("div", {});

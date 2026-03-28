@@ -16,6 +16,7 @@ import {
   ToggleButton,
 } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
+import { cn } from "~/lib/cn";
 import { styled } from "~/stitches.config";
 
 import {
@@ -72,7 +73,7 @@ export const BezierCurveQuiz = ({
 
   return (
     <FullWidth>
-      <Visualizer childBorders={false} css={{ display: "flex" }}>
+      <Visualizer childBorders={false} className="flex">
         <Aside>
           <EasingCurveEditor
             easing={easing}
@@ -101,28 +102,31 @@ export const BezierCurveQuiz = ({
               target={target}
               example
             />
-            <Content ref={container} css={{ flex: 1 }}>
+            <Content ref={container} className="min-h-0 flex-1">
               <Animation easing={easing} controls={controls} target={target} />
             </Content>
           </AnimationStack>
-          <Controls css={{ borderTop: "1px solid $gray8 !important" }}>
+          <Controls className="border-t border-gray8">
             <Stack>
               <PlayButton onClick={() => play(speed)} />
               <UndoButton onClick={reset} />
             </Stack>
             <Stack>
               {[0.25, 0.5, 1].map((_speed) => (
-                <Button
+                <ToggleButton
                   key={_speed}
                   secondary
                   onClick={() => {
                     setSpeed(_speed);
                     play(_speed);
                   }}
-                  active={speed === _speed}
+                  className={cn(
+                    "font-bold font-mono text-gray11",
+                    speed === _speed && "bg-gray7",
+                  )}
                 >
                   {_speed}x
-                </Button>
+                </ToggleButton>
               ))}
             </Stack>
             <ToggleButton onClick={() => setShowLine(true)}>Check</ToggleButton>
@@ -149,20 +153,6 @@ const AnimationStack = styled("div", {
   display: "flex",
   flexDirection: "column",
   height: "calc(100% - 47px)",
-});
-
-const Button = styled(ToggleButton, {
-  fontWeight: "bold",
-  fontFamily: "$mono",
-  color: "$gray11",
-
-  variants: {
-    active: {
-      true: {
-        background: "$gray7",
-      },
-    },
-  },
 });
 
 const Stack = styled("div", {

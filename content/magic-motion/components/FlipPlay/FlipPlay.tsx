@@ -52,7 +52,7 @@ export const FlipPlay = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper noOverflow ref={widthRef}>
+        <Content noOverflow ref={widthRef} style={{ height: CONTENT_HEIGHT }}>
           <svg width="100%" height="100%">
             <Square x={PADDING} type="secondary" />
             <TranslateText
@@ -100,8 +100,8 @@ export const FlipPlay = () => {
               </TranslateText>
             </motion.g>
           </svg>
-        </ContentWrapper>
-        <Controls css={{ alignItems: "center" }}>
+        </Content>
+        <Controls className="items-center">
           <PlayButton onClick={() => animate(x, 0, { duration: 3 })} />
           <UndoButton onClick={() => x.set(-1 * distance)} />
         </Controls>
@@ -117,10 +117,6 @@ const TranslateText = styled(motion.text, {
   [`.${darkTheme} &`]: {
     fill: "$gray12",
   },
-});
-
-const ContentWrapper = styled(Content, {
-  height: CONTENT_HEIGHT,
 });
 
 const AnchorCircle = styled(motion.circle, {

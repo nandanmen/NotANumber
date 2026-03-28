@@ -16,7 +16,7 @@ export const LayoutChangeExample = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <Content padding="md" css={{ height: 220 }}>
+        <Content padding="md" style={{ height: 220 }}>
           <Wrapper>
             <Square />
             <Square active toggled={toggled} />
@@ -37,7 +37,7 @@ export const JustifyContentExample = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <Content padding="md" css={{ height: 280 }}>
+        <Content padding="md" style={{ height: 280 }}>
           <Wrapper column>
             <SubText>
               justify-content: {toggled ? "flex-end" : "flex-start"}
@@ -62,7 +62,7 @@ export const TransformExample = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <Content padding="md" css={{ height: 220 }}>
+        <Content padding="md" style={{ height: 220 }}>
           <Wrapper>
             <Square />
             <TransformSquare active toggled={toggled} />

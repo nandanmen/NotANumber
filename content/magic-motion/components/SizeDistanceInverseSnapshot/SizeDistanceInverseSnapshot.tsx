@@ -28,15 +28,19 @@ export const SizeDistanceInverseSnapshot = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <ContentWrapper ref={containerRef}>
+        <Content
+          ref={containerRef}
+          style={{ height: 300 }}
+          className="flex items-center justify-between p-8"
+        >
           <Square ref={initialRef} secondary striped />
           <Square ref={finalRef} large striped />
           <Square
             large
-            css={{ position: "absolute", right: "$8" }}
+            className="absolute right-8"
             style={transform}
           />
-        </ContentWrapper>
+        </Content>
       </Visualizer>
     </FullWidth>
   );
@@ -53,14 +57,6 @@ function invert({ from, to }) {
     scaleY: height / fromHeight,
   };
 }
-
-const ContentWrapper = styled(Content, {
-  height: 300,
-  padding: "$8",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-});
 
 const Square = styled(motion.div, {
   "--background": "$colors$blue6",

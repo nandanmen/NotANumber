@@ -1,6 +1,5 @@
 import React from "react";
 
-import { styled } from "~/stitches.config";
 import { FullWidth } from "~/components/FullWidth";
 import { Content, Visualizer, Controls } from "~/components/Visualizer";
 
@@ -27,7 +26,7 @@ export const SizeDistanceRelationship = () => {
   return (
     <FullWidth>
       <Visualizer>
-        <Controls css={{ justifyContent: "center" }}>
+        <Controls className="justify-center">
           <Counter
             value={width}
             onChange={setWidth}
@@ -36,7 +35,11 @@ export const SizeDistanceRelationship = () => {
             step={20}
           />
         </Controls>
-        <ContentWrapper ref={containerRef} noOverflow>
+        <Content
+          ref={containerRef}
+          noOverflow
+          style={{ height: 300 }}
+        >
           <svg width="100%" height="100%">
             <SvgSquare
               width={SQUARE_RADIUS * 2}
@@ -79,8 +82,8 @@ export const SizeDistanceRelationship = () => {
               />
             </g>
           </svg>
-        </ContentWrapper>
-        <ContentWrapper noOverflow>
+        </Content>
+        <Content noOverflow style={{ height: 300 }}>
           <svg width="100%" height="100%">
             <SvgSquare
               width={SQUARE_RADIUS * 2}
@@ -126,12 +129,9 @@ export const SizeDistanceRelationship = () => {
               />
             </g>
           </svg>
-        </ContentWrapper>
+        </Content>
       </Visualizer>
     </FullWidth>
   );
 };
 
-const ContentWrapper = styled(Content, {
-  height: 300,
-});
