@@ -1,3 +1,3 @@
 "use client";
 
-export * from './LayoutChangeExample'
+export * from "./LayoutChangeExample";

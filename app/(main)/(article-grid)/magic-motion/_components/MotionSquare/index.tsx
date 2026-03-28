@@ -1,3 +1,3 @@
 "use client";
 
-export * from './MotionSquare'
+export * from "./MotionSquare";

@@ -1,16 +1,19 @@
 "use client";
 
+import { type MotionValue, motion } from "framer-motion";
 import React from "react";
-import { motion, MotionValue } from "framer-motion";
 
-import { darkTheme, styled } from "~/stitches.config";
-import { SQUARE_RADIUS, PADDING, SvgSquare } from "../styles";
+import { cn } from "~/lib/cn";
+
+import { PADDING, SQUARE_RADIUS, SvgSquare } from "../styles";
 
 export type SizeDiagramProps = {
   scale: MotionValue<number>;
   onWidthChange?: (width: number) => void;
   padding?: number;
 };
+
+const squareY = `calc(50% - ${SQUARE_RADIUS}px)`;
 
 export const SizeDiagram = ({
   scale,
@@ -23,7 +26,9 @@ export const SizeDiagram = ({
   const finalRef = React.useRef<SVGRectElement>(null);
 
   React.useEffect(() => {
-    const { width } = svgRef.current.getBoundingClientRect();
+    const el = svgRef.current;
+    if (!el) return;
+    const { width } = el.getBoundingClientRect();
     setWidth(width - padding * 2);
   }, [padding]);
 
@@ -39,7 +44,7 @@ export const SizeDiagram = ({
         textRef.current.textContent = `scale(${value.toFixed(2)})`;
       }
     },
-    [width]
+    [width],
   );
 
   React.useEffect(() => {
@@ -54,55 +59,45 @@ export const SizeDiagram = ({
   }, [updateRefs, scale]);
 
   return (
-    <svg ref={svgRef} width="100%" height="100%">
-      <OriginalSquareWrapper width={width} x={padding}>
-        <OriginalSquare />
-      </OriginalSquareWrapper>
-      <Square ref={finalRef} x={padding} />
-      <motion.g style={{ x: padding, y: `calc(50% - ${SQUARE_RADIUS}px)` }}>
-        <AnchorLine ref={lineRef} x1="2" y1="2" y2="118" />
-        <TranslateText ref={textRef} y={64} textAnchor="middle" />
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      role="img"
+      aria-label="Size and scale diagram"
+    >
+      <foreignObject
+        width={width}
+        x={padding}
+        y={squareY}
+        height={SQUARE_RADIUS * 2}
+        className="drop-shadow-sm"
+      >
+        <div
+          className={cn(
+            "h-full w-full rounded-md border border-gray8",
+            "bg-[repeating-linear-gradient(-45deg,theme(colors.gray8),theme(colors.gray8)_8px,transparent_8px,transparent_16px)]",
+          )}
+        />
+      </foreignObject>
+      <SvgSquare ref={finalRef} x={padding} y={squareY} />
+      <motion.g style={{ x: padding, y: squareY }}>
+        <line
+          ref={lineRef}
+          x1="2"
+          y1="2"
+          y2="118"
+          className="stroke-blue8 stroke-1 [stroke-dasharray:6]"
+        />
+        <motion.text
+          ref={textRef}
+          y={64}
+          textAnchor="middle"
+          className="fill-blue11 font-mono text-sm"
+        >
+          scale(1.00)
+        </motion.text>
       </motion.g>
     </svg>
   );
 };
-
-const Square = styled(SvgSquare, {
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
-});
-
-const OriginalSquareWrapper = styled("foreignObject", {
-  height: SQUARE_RADIUS * 2,
-  rx: "$radii$base",
-  y: `calc(50% - ${SQUARE_RADIUS}px)`,
-  filter: "drop-shadow($shadows$sm)",
-});
-
-const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient(-45deg, $colors$gray8, $colors$gray8 8px, transparent 8px, transparent 16px)`,
-  border: "1px solid $gray8",
-  height: SQUARE_RADIUS * 2,
-  width: "100%",
-  borderRadius: "$base",
-
-  [`.${darkTheme} &`]: {
-    background: `repeating-linear-gradient(-45deg, $colors$gray5, $colors$gray5 8px, transparent 8px, transparent 16px)`,
-    border: "1px solid $gray5",
-  },
-});
-
-const TranslateText = styled(motion.text, {
-  fontFamily: "$mono",
-  fontSize: "$sm",
-  fill: "$blue11",
-
-  [`.${darkTheme} &`]: {
-    fill: "$blueDark12",
-  },
-});
-
-const AnchorLine = styled("line", {
-  stroke: "$blue8",
-  strokeWidth: 1,
-  strokeDasharray: "6",
-});

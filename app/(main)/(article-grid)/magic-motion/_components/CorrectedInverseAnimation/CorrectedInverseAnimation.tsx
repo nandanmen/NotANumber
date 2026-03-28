@@ -1,29 +1,28 @@
 "use client";
 
-import React from "react";
 import {
-  useMotionValue,
+  type MotionValue,
   animate,
   motion,
-  MotionValue,
+  useMotionValue,
   useTransform,
 } from "framer-motion";
+import React from "react";
 
-import { styled, darkTheme } from "~/stitches.config";
-import { Wide } from "~/components/mdx/Wide";
 import { useSharedState } from "~/components/SharedState";
 import {
-  Visualizer,
   Content,
   Controls,
   PlayButton,
   UndoButton,
+  Visualizer,
 } from "~/components/Visualizer";
+import { Wide } from "~/components/mdx/Wide";
 
-import { SvgSquare, SQUARE_RADIUS } from "../shared/styles";
 import { MotionSquare, ScaleRulers } from "../MotionSquare";
-import { Line, LineEndpoint } from "../shared/HorizontalRuler";
 import { Counter } from "../shared";
+import { Line, LineEndpoint } from "../shared/HorizontalRuler";
+import { SQUARE_RADIUS, SvgSquare } from "../shared/styles";
 
 const CONTENT_HEIGHT = 300;
 const MAX_HEIGHT_DELTA = 100;
@@ -122,8 +121,13 @@ export const CorrectedInverseAnimation = ({
     <Wide>
       <Visualizer>
         <Content noOverflow ref={containerRef}>
-          <ContentWrapper>
-            <svg width="100%" height="100%">
+          <div className="h-[300px]">
+            <svg
+              width="100%"
+              height="100%"
+              role="img"
+              aria-label="Corrected inverse scale animation"
+            >
               <mask id={`react-mask-${id}`}>
                 <rect x="0" y="0" width="100%" height="100%" fill="black" />
                 <motion.g style={squarePos}>
@@ -158,7 +162,7 @@ export const CorrectedInverseAnimation = ({
                 </g>
               )}
             </svg>
-          </ContentWrapper>
+          </div>
         </Content>
         <Controls className="items-center gap-4">
           <PlayButton
@@ -217,7 +221,9 @@ export const CorrectedInverseAnimation = ({
               width.set(BASE_WIDTH);
             }}
           />
-          {isPlaying && <DisabledOverlay />}
+          {isPlaying && (
+            <div className="absolute inset-0 cursor-not-allowed bg-black/5" />
+          )}
         </Controls>
       </Visualizer>
     </Wide>
@@ -260,44 +266,19 @@ const PatternMask = ({ maskId }: { maskId: string }) => {
           patternUnits="userSpaceOnUse"
           patternTransform="rotate(45 50 50)"
         >
-          <StripeLine y2="10" />
+          <line y2="10" className="stroke-blue7 [stroke-width:10]" />
         </pattern>
       </defs>
-      <StripedSquare mask={`url(#${maskId})`} />
+      <rect
+        width={SQUARE_RADIUS * 2}
+        height={SQUARE_RADIUS * 2}
+        x={PADDING}
+        y={CONTENT_HEIGHT / 2 - SQUARE_RADIUS}
+        rx={6}
+        fill="url(#pattern)"
+        mask={`url(#${maskId})`}
+        className="stroke-blue7"
+      />
     </>
   );
 };
-
-const DisabledOverlay = styled("div", {
-  position: "absolute",
-  inset: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.05)",
-  cursor: "not-allowed",
-});
-
-const ContentWrapper = styled("div", {
-  height: CONTENT_HEIGHT,
-});
-
-const StripedSquare = styled("rect", {
-  width: SQUARE_RADIUS * 2,
-  height: SQUARE_RADIUS * 2,
-  x: PADDING,
-  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
-  rx: 6,
-  fill: "url(#pattern)",
-  stroke: "$blue7",
-
-  [`.${darkTheme} &`]: {
-    stroke: "$blue11",
-  },
-});
-
-const StripeLine = styled("line", {
-  stroke: "$blue7",
-  strokeWidth: 10,
-
-  [`.${darkTheme} &`]: {
-    stroke: "$blue11",
-  },
-});

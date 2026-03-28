@@ -1,3 +1,3 @@
 "use client";
 
-export * from './HorizontalRuler'
+export * from "./HorizontalRuler";

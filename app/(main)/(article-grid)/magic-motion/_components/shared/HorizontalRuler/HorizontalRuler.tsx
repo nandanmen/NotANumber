@@ -1,13 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { keyframes, styled, darkTheme } from "~/stitches.config";
+import * as React from "react";
+
+import { cn } from "~/lib/cn";
 
 export const HorizontalRuler = ({
   from,
   to,
   showLine = true,
   small = false,
+}: {
+  from: number;
+  to: number;
+  showLine?: boolean;
+  small?: boolean;
 }) => {
   const distance = to - from;
   return (
@@ -17,20 +24,23 @@ export const HorizontalRuler = ({
       <LineEndpoint cx={to} small={small} cy="0" />
       <g style={{ transform: `translateX(${(to - from) / 2 + from}px)` }}>
         <RulerTextBackground small={small} />
-        <RulerText
+        <RulerTextSvg
           x="0"
           textAnchor="middle"
           dominantBaseline="middle"
           small={small}
         >
           {distance.toFixed(1)}
-        </RulerText>
+        </RulerTextSvg>
       </g>
     </g>
   );
 };
 
-export const RulerTextBackground = ({ small = false, ...props }) => {
+export const RulerTextBackground = ({
+  small = false,
+  ...props
+}: React.SVGProps<SVGRectElement> & { small?: boolean }) => {
   const smallProps = small
     ? {
         x: -25,
@@ -41,91 +51,58 @@ export const RulerTextBackground = ({ small = false, ...props }) => {
         y: -15,
       };
   return (
-    <RulerTextBackgroundRect rx="4" small={small} {...smallProps} {...props} />
+    <rect
+      rx="4"
+      className={cn(
+        "fill-blue2 stroke-blue8",
+        small ? "h-[25px] w-[50px]" : "h-[30px] w-[60px]",
+      )}
+      {...smallProps}
+      {...props}
+    />
   );
 };
 
-const RulerTextBackgroundRect = styled("rect", {
-  width: 60,
-  fill: "$blue2",
-  height: 30,
-  stroke: "$blue8",
+function RulerTextSvg({
+  small = false,
+  className,
+  ...props
+}: React.SVGProps<SVGTextElement> & { small?: boolean }) {
+  return (
+    <text
+      className={cn(
+        "fill-blue10 font-mono text-sm",
+        small && "text-xs",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-  [`.${darkTheme} &`]: {
-    fill: "$blueDark2",
-    stroke: "$blueDark8",
-  },
-
-  variants: {
-    small: {
-      true: {
-        width: 50,
-        height: 25,
-      },
-    },
-  },
+export const Line = React.forwardRef<
+  SVGLineElement,
+  React.ComponentPropsWithoutRef<typeof motion.line>
+>(function Line({ className, ...props }, ref) {
+  return (
+    <motion.line
+      ref={ref}
+      className={cn("stroke-blue8 [stroke-dasharray:4] stroke-2", className)}
+      {...props}
+    />
+  );
 });
 
-const RulerText = styled("text", {
-  fill: "$blue10",
-  fontFamily: "$mono",
-  fontSize: "$sm",
-
-  [`.${darkTheme} &`]: {
-    fill: "$blueDark10",
-  },
-
-  variants: {
-    small: {
-      true: {
-        fontSize: 12,
-      },
-    },
-  },
-});
-
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-});
-
-export const Line = styled(motion.line, {
-  stroke: "$blue8",
-  strokeDasharray: "4",
-  animationName: `${fadeIn}`,
-  animationDuration: "500ms",
-  animationFillMode: "forwards",
-  animationTimingFunction: "ease-out",
-  strokeWidth: 2,
-
-  [`.${darkTheme} &`]: {
-    stroke: "$blueDark10",
-  },
-});
-
-export const LineEndpoint = styled(motion.circle, {
-  r: "6px",
-  fill: "$blue2",
-  stroke: "$blue8",
-  animationName: `${fadeIn}`,
-  animationDuration: "500ms",
-  animationFillMode: "forwards",
-  animationTimingFunction: "ease-out",
-
-  [`.${darkTheme} &`]: {
-    stroke: "$blueDark8",
-    fill: "$blueDark4",
-  },
-
-  variants: {
-    small: {
-      true: {
-        r: "4px",
-      },
-    },
-  },
+export const LineEndpoint = React.forwardRef<
+  SVGCircleElement,
+  React.ComponentPropsWithoutRef<typeof motion.circle> & { small?: boolean }
+>(function LineEndpoint({ small, className, ...props }, ref) {
+  return (
+    <motion.circle
+      ref={ref}
+      r={small ? 4 : 6}
+      className={cn("fill-blue2 stroke-blue8", className)}
+      {...props}
+    />
+  );
 });

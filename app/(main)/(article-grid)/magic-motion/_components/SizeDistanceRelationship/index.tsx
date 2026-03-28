@@ -1,3 +1,3 @@
 "use client";
 
-export * from './SizeDistanceRelationship'
+export * from "./SizeDistanceRelationship";

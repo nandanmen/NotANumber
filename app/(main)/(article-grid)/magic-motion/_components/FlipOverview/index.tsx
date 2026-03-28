@@ -1,3 +1,3 @@
 "use client";
 
-export * from './FlipOverview'
+export * from "./FlipOverview";

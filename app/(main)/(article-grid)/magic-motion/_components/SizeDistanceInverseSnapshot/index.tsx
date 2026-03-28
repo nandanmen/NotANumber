@@ -1,3 +1,3 @@
 "use client";
 
-export * from './SizeDistanceInverseSnapshot'
+export * from "./SizeDistanceInverseSnapshot";

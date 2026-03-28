@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
 import {
   Content,
   Controls,
-  Visualizer,
   ToggleButton,
+  Visualizer,
 } from "~/components/Visualizer";
 import { Wide } from "~/components/mdx/Wide";
-import { darkTheme, styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export const LayoutChangeExample = () => {
   const [toggled, toggle] = React.useReducer((state) => !state, false);
@@ -19,11 +19,11 @@ export const LayoutChangeExample = () => {
     <Wide>
       <Visualizer>
         <Content padding="md" style={{ height: 220 }}>
-          <Wrapper>
+          <div className="flex h-full items-center justify-center gap-4">
             <Square />
             <Square active toggled={toggled} />
             <Square />
-          </Wrapper>
+          </div>
         </Content>
         <Controls>
           <ToggleButton onClick={toggle}>Toggle</ToggleButton>
@@ -40,15 +40,20 @@ export const JustifyContentExample = () => {
     <Wide>
       <Visualizer>
         <Content padding="md" style={{ height: 280 }}>
-          <Wrapper column>
-            <SubText>
+          <div className="flex h-full flex-col items-center justify-center gap-4">
+            <p className="font-mono text-sm">
               justify-content: {toggled ? "flex-end" : "flex-start"}
-            </SubText>
-            <JustifyWrapper toggled={toggled}>
+            </p>
+            <div
+              className={cn(
+                "flex max-w-[400px] w-full gap-2 rounded-md border border-gray8 bg-gray7 p-4",
+                toggled ? "justify-end" : "justify-start",
+              )}
+            >
               <Square active layout transition={{ duration: 0.5 }} />
               <Square active layout transition={{ duration: 0.5 }} />
-            </JustifyWrapper>
-          </Wrapper>
+            </div>
+          </div>
         </Content>
         <Controls>
           <ToggleButton onClick={toggle}>Toggle</ToggleButton>
@@ -65,11 +70,11 @@ export const TransformExample = () => {
     <Wide>
       <Visualizer>
         <Content padding="md" style={{ height: 220 }}>
-          <Wrapper>
+          <div className="flex h-full items-center justify-center gap-4">
             <Square />
             <TransformSquare active toggled={toggled} />
             <Square />
-          </Wrapper>
+          </div>
         </Content>
         <Controls>
           <ToggleButton onClick={toggle}>Toggle</ToggleButton>
@@ -79,95 +84,53 @@ export const TransformExample = () => {
   );
 };
 
-const SubText = styled("p", {
-  fontFamily: "$mono",
-  fontSize: "$sm",
-});
+function baseSquareClass(active?: boolean) {
+  return cn(
+    "h-[90px] w-[90px] rounded-md border border-gray8 bg-gray7",
+    active && "border-blue8 bg-blue6 shadow-md",
+  );
+}
 
-const BaseSquare = styled(motion.div, {
-  background: "$gray7",
-  border: "1px solid $gray8",
-  borderRadius: "$base",
+function Square({
+  active,
+  toggled,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.div> & {
+  active?: boolean;
+  toggled?: boolean;
+}) {
+  return (
+    <motion.div
+      className={cn(
+        baseSquareClass(active),
+        toggled && "w-[180px]",
+        "transition-[width] duration-500 ease-out",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-  [`.${darkTheme} &`]: {
-    background: "$gray3",
-    border: "1px solid $gray6",
-  },
-
-  variants: {
-    active: {
-      true: {
-        background: "$blue6",
-        border: "1px solid $blue8",
-        boxShadow: "$md",
-
-        [`.${darkTheme} &`]: {
-          background: "$blueDark8",
-          border: "1px solid $blueDark10",
-        },
-      },
-    },
-  },
-});
-
-const JustifyWrapper = styled(BaseSquare, {
-  padding: "$4",
-  width: "100%",
-  display: "flex",
-  justifyContent: "flex-start",
-  gap: "$2",
-  maxWidth: 400,
-
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: "flex-end",
-      },
-    },
-  },
-});
-
-const Wrapper = styled("div", {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100%",
-  gap: "$4",
-
-  variants: {
-    column: {
-      true: {
-        flexDirection: "column",
-      },
-    },
-  },
-});
-
-const TransformSquare = styled(BaseSquare, {
-  height: 90,
-  width: 90,
-  transition: "transform 0.5s ease-out",
-  transform: "scaleX(1)",
-
-  variants: {
-    toggled: {
-      true: {
-        transform: "scaleX(2)",
-      },
-    },
-  },
-});
-
-const Square = styled(BaseSquare, {
-  height: 90,
-  width: 90,
-  transition: "width 0.5s ease-out",
-
-  variants: {
-    toggled: {
-      true: {
-        width: 180,
-      },
-    },
-  },
-});
+function TransformSquare({
+  active,
+  toggled,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.div> & {
+  active?: boolean;
+  toggled?: boolean;
+}) {
+  return (
+    <motion.div
+      className={cn(
+        baseSquareClass(active),
+        toggled && "scale-x-[2]",
+        "origin-center transition-transform duration-500 ease-out",
+        className,
+      )}
+      {...props}
+    />
+  );
+}

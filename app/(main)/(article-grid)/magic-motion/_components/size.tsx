@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
+
 import { Square } from "./shared";
 
 export const SizeExample = React.forwardRef<
@@ -13,61 +14,29 @@ export const SizeExample = React.forwardRef<
   return (
     <>
       {layout && (
-        <FakeBorder
+        <motion.div
           layout={layout}
           transition={{ duration: 1 }}
-          toggled={toggled}
+          className={cn(
+            "absolute h-[122px] w-[122px] bg-blue8",
+            "left-[calc(2rem-1px)] md:left-[calc(3rem-1px)]",
+            toggled && "w-[calc(100%-6rem+2px)]",
+          )}
           style={{ borderRadius: 7 }}
         />
       )}
-      <DisplayOnlySquare
+      <Square
         ref={ref}
         layout={layout}
         transition={{ duration: 1 }}
         toggled={toggled}
         style={{ borderRadius: 6 }}
-        noBorder={layout}
+        className={cn(
+          "relative h-[120px] pointer-events-none",
+          toggled && "aspect-auto w-full",
+          layout && "border-none shadow-none",
+        )}
       />
     </>
   );
-});
-
-const FakeBorder = styled(motion.div, {
-  position: "absolute",
-  left: `calc($space$8 - 1px)`,
-  background: "$blue8",
-  width: 122,
-  height: 122,
-
-  "@md": {
-    left: `calc($space$12 - 1px)`,
-  },
-
-  variants: {
-    toggled: {
-      true: {
-        width: "calc(100% - $space$12 * 2 + 2px)",
-      },
-    },
-  },
-});
-
-const DisplayOnlySquare = styled(Square, {
-  position: "relative",
-  pointerEvents: "none",
-  height: 120,
-
-  variants: {
-    toggled: {
-      true: {
-        width: "100%",
-        aspectRatio: "auto",
-      },
-    },
-    noBorder: {
-      true: {
-        border: "none",
-      },
-    },
-  },
 });

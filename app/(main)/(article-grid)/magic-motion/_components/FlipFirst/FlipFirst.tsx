@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
 import { useMachine } from "@xstate/react";
+import React from "react";
 import { assign } from "xstate";
 
 import { GridBackground } from "~/components/Grid";
 import { Wide } from "~/components/mdx/Wide";
 
-import { Tooltip, ContentWrapper, Square, XLine, YLine } from "../shared";
+import { ContentWrapper, Square, Tooltip, XLine, YLine } from "../shared";
 import { machine } from "./machine";
 
 export const FlipFirst = () => {

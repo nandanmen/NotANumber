@@ -1,3 +1,3 @@
 "use client";
 
-export * from './CorrectedInverseAnimation'
+export * from "./CorrectedInverseAnimation";

@@ -1,45 +1,25 @@
 "use client";
 
-import React from "react";
 import useInterval from "@use-it/interval";
 import { motion, useAnimation } from "framer-motion";
+import React from "react";
 
-import { Wide } from "~/components/mdx/Wide";
 import {
-  Visualizer,
   Content,
   Controls,
   ToggleButton,
+  Visualizer,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
-
+import { Wide } from "~/components/mdx/Wide";
 import { InverseScaleFormula } from "../InverseScaleFormula";
 
 const points = [
-  {
-    scale: 1,
-    inverse: 1,
-  },
-  {
-    scale: 1.4000000000000004,
-    inverse: 0.7142857142857141,
-  },
-  {
-    scale: 1.8000000000000007,
-    inverse: 0.5555555555555554,
-  },
-  {
-    scale: 2.1999999999999966,
-    inverse: 0.45454545454545525,
-  },
-  {
-    scale: 2.599999999999988,
-    inverse: 0.38461538461538636,
-  },
-  {
-    scale: 3,
-    inverse: 0.3333333333333333,
-  },
+  { scale: 1, inverse: 1 },
+  { scale: 1.4000000000000004, inverse: 0.7142857142857141 },
+  { scale: 1.8000000000000007, inverse: 0.5555555555555554 },
+  { scale: 2.1999999999999966, inverse: 0.45454545454545525 },
+  { scale: 2.599999999999988, inverse: 0.38461538461538636 },
+  { scale: 3, inverse: 0.3333333333333333 },
 ];
 
 const path = points.reduce((commands, point, index) => {
@@ -59,47 +39,60 @@ export const InverseScaleGraph = () => {
         setPlaying(false);
       }
     },
-    playing ? 10 : null
+    playing ? 10 : null,
   );
 
   return (
     <Wide>
       <Visualizer>
         <Content padding="lg">
-          <Wrapper>
-            <GraphWrapper>
-              <svg viewBox="-0.5 -3.5 4 4">
-                <ScaleLine
+          <div className="grid gap-8 md:grid-cols-[1fr_3fr] md:gap-2">
+            <div className="aspect-square rounded border border-gray8 bg-gray4 md:col-start-1">
+              <svg
+                viewBox="-0.5 -3.5 4 4"
+                role="img"
+                aria-label="Scale versus inverse scale graph"
+              >
+                <motion.line
                   x1="0"
                   x2="3"
                   y1="-1"
                   y2="-3"
                   animate={controls}
                   initial={{ pathLength: 0 }}
+                  className="stroke-blue8 [stroke-width:0.05]"
                 />
-                <InverseScalePath
+                <motion.path
                   d={path}
                   animate={controls}
                   initial={{ pathLength: 0 }}
+                  fill="none"
+                  className="stroke-yellow8 [stroke-width:0.05]"
                 />
                 {points.map((point, index) => {
                   return (
-                    <React.Fragment key={index}>
-                      <GraphPoint
+                    <React.Fragment key={`${point.scale}-${point.inverse}`}>
+                      <circle
                         cx={(index * 3) / 5}
                         cy={point.inverse * -1}
-                        secondary
+                        r={0.05}
+                        className="fill-yellow8"
                       />
-                      <GraphPoint cx={(index * 3) / 5} cy={point.scale * -1} />
+                      <circle
+                        cx={(index * 3) / 5}
+                        cy={point.scale * -1}
+                        r={0.05}
+                        className="fill-blue8"
+                      />
                     </React.Fragment>
                   );
                 })}
               </svg>
-            </GraphWrapper>
-            <InverseScaleVisualWrapper>
+            </div>
+            <div className="md:col-start-2">
               <InverseScaleFormula scale={scale} corrected />
-            </InverseScaleVisualWrapper>
-          </Wrapper>
+            </div>
+          </div>
         </Content>
         <Controls>
           <ToggleButton
@@ -123,51 +116,3 @@ export const InverseScaleGraph = () => {
     </Wide>
   );
 };
-
-const ScaleLine = styled(motion.line, {
-  stroke: "$blue8",
-  strokeWidth: 0.05,
-});
-
-const InverseScalePath = styled(motion.path, {
-  stroke: "$yellow8",
-  strokeWidth: 0.05,
-  fill: "none",
-});
-
-const GraphPoint = styled("circle", {
-  r: "0.05px",
-  fill: "$blue8",
-
-  variants: {
-    secondary: {
-      true: {
-        fill: "$yellow8",
-      },
-    },
-  },
-});
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gap: "$8",
-
-  "@md": {
-    gridTemplateColumns: "1fr 3fr",
-    gap: "$2",
-  },
-});
-
-const GraphWrapper = styled("div", {
-  gridColumn: 1,
-  background: "$gray4",
-  border: "1px solid $gray8",
-  borderRadius: 4,
-  aspectRatio: 1,
-});
-
-const InverseScaleVisualWrapper = styled("div", {
-  "@md": {
-    gridColumn: 2,
-  },
-});

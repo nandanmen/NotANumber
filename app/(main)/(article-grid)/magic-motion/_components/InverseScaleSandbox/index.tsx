@@ -1,3 +1,3 @@
 "use client";
 
-export * from './InverseScaleSandbox'
+export * from "./InverseScaleSandbox";

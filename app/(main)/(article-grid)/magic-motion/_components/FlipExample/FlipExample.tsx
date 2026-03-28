@@ -2,13 +2,12 @@
 
 import React from "react";
 
-import { Visualizer, Content, ToggleButton } from "~/components/Visualizer";
-import { Wide } from "~/components/mdx/Wide";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { Content, ToggleButton, Visualizer } from "~/components/Visualizer";
+import { Wide } from "~/components/mdx/Wide";
 import { cn } from "~/lib/cn";
-import { styled } from "~/stitches.config";
 
-import { Square, Controls, AlignmentText } from "../shared";
+import { AlignmentText, Controls, Square } from "../shared";
 
 export const FlipExample = () => {
   const [toggled, toggle] = React.useReducer((state) => !state, false);
@@ -28,19 +27,16 @@ export const FlipExample = () => {
       </Controls>
       <Visualizer>
         <Content
-          className={cn(
-            "flex",
-            toggled ? "justify-end" : "justify-start",
-          )}
+          className={cn("flex", toggled ? "justify-end" : "justify-start")}
           padding="lg"
         >
-          <DisplayOnlySquare layout transition={{ duration: 1 }} />
+          <Square
+            layout
+            transition={{ duration: 1 }}
+            className="pointer-events-none"
+          />
         </Content>
       </Visualizer>
     </Wide>
   );
 };
-
-const DisplayOnlySquare = styled(Square, {
-  pointerEvents: "none",
-});

@@ -1,41 +1,37 @@
 "use client";
 
-import React from "react";
 import { useMachine } from "@xstate/react";
-import { assign } from "xstate";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import * as React from "react";
 import { FaArrowLeft, FaArrowRight, FaPause, FaPlay } from "react-icons/fa";
+import { assign } from "xstate";
 
 import {
-  Visualizer,
   Content,
   Controls,
   IconButton,
+  Visualizer,
 } from "~/components/Visualizer";
 import { Wide } from "~/components/mdx/Wide";
-import { darkTheme, styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
-import { machine, STATE_ORDER } from "./machine";
-import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
+import { PADDING, SQUARE_RADIUS, SvgSquare } from "../shared/styles";
+import { STATE_ORDER, machine } from "./machine";
 
 const CONTENT_HEIGHT = 300;
+const squareY = CONTENT_HEIGHT / 2 - SQUARE_RADIUS;
 
 export const FlipOverview = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
 
-  // --
-
   const [width, setWidth] = React.useState(0);
   const widthRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    setWidth(widthRef.current?.offsetWidth);
+    setWidth(widthRef.current?.offsetWidth ?? 0);
   }, []);
 
-  // --
-
-  // Playing states
   const [playing, setPlaying] = React.useState(false);
 
   const initialRef = React.useRef<SVGRectElement>(null);
@@ -44,10 +40,12 @@ export const FlipOverview = () => {
   const [state, send] = useMachine(machine, {
     actions: {
       measureFirst: assign({
-        firstBox: () => initialRef.current.getBoundingClientRect(),
+        firstBox: () =>
+          initialRef.current?.getBoundingClientRect() ?? new DOMRect(),
       }),
       measureLast: assign({
-        lastBox: () => finalRef.current.getBoundingClientRect(),
+        lastBox: () =>
+          finalRef.current?.getBoundingClientRect() ?? new DOMRect(),
       }),
       invert: () => {
         const startX = state.context.firstBox?.x ?? 0;
@@ -87,21 +85,20 @@ export const FlipOverview = () => {
   const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
   const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
 
-  /**
-   * Updating the line and text with the motion value
-   */
   const lineRef = React.useRef<SVGLineElement>(null);
   const textRef = React.useRef<SVGTextElement>(null);
 
   React.useEffect(() => {
     return x.onChange((val) => {
-      const distance =
+      const dist =
         (state.context.lastBox?.x ?? 0) - (state.context.firstBox?.x ?? 0);
       lineRef.current?.setAttribute(
         "x1",
-        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + dist}`,
       );
-      textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+      if (textRef.current) {
+        textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+      }
     });
   }, [x, state]);
 
@@ -115,7 +112,12 @@ export const FlipOverview = () => {
     <Wide>
       <Visualizer>
         <Content noOverflow ref={widthRef} style={{ height: CONTENT_HEIGHT }}>
-          <svg width="100%" height="100%">
+          <svg
+            width="100%"
+            height="100%"
+            role="img"
+            aria-label="FLIP steps overview"
+          >
             <Square ref={initialRef} x={PADDING} type="secondary" />
             <Square ref={finalRef} x={finalX} type="secondary" />
             <TranslateText
@@ -134,6 +136,7 @@ export const FlipOverview = () => {
             </TranslateText>
             <AnchorLine
               ref={lineRef}
+              x1={PADDING + SQUARE_RADIUS * 2}
               x2={width}
               y1={midY}
               y2={midY}
@@ -177,7 +180,7 @@ export const FlipOverview = () => {
             <FlipState active={state.matches("inverse")}>Inverse</FlipState>
             <FlipState active={state.matches("play")}>Play</FlipState>
           </FlipStateList>
-          <StepControls>
+          <div className="flex gap-1">
             <IconButton
               onClick={() => send("prev")}
               disabled={!state.can("prev")}
@@ -194,78 +197,92 @@ export const FlipOverview = () => {
             >
               <FaArrowRight />
             </IconButton>
-          </StepControls>
+          </div>
         </Controls>
       </Visualizer>
     </Wide>
   );
 };
 
-const StepControls = styled("div", {
-  display: "flex",
+function FlipStateList({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"ol">) {
+  return <ol className={cn("flex list-none gap-2", className)} {...props} />;
+}
+
+function FlipState({
+  active,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & { active?: boolean }) {
+  return (
+    <li
+      className={cn(active ? "opacity-100" : "opacity-20", className)}
+      {...props}
+    />
+  );
+}
+
+function TranslateText({
+  visible = true,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.text> & {
+  visible?: boolean;
+}) {
+  return (
+    <motion.text
+      className={cn(
+        "fill-gray12 font-mono text-sm",
+        visible ? "opacity-100" : "opacity-0",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function AnchorCircle({
+  hidden,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.circle> & {
+  hidden?: boolean;
+}) {
+  return (
+    <motion.circle
+      cx="100%"
+      cy="50%"
+      r={10}
+      className={cn(
+        "fill-gray5 stroke-gray8 stroke-2 [stroke-dasharray:12_2]",
+        hidden ? "opacity-0" : "opacity-100",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+const AnchorLine = React.forwardRef<
+  SVGLineElement,
+  React.ComponentPropsWithoutRef<"line">
+>(function AnchorLine({ className, ...props }, ref) {
+  return (
+    <line
+      ref={ref}
+      className={cn("stroke-gray8 stroke-2", className)}
+      {...props}
+    />
+  );
 });
 
-const FlipStateList = styled("ol", {
-  listStyle: "none",
-  display: "flex",
-  gap: "$2",
-});
-
-const FlipState = styled("li", {
-  opacity: 0.2,
-  transition: "opacity 0.3s ease-out",
-
-  variants: {
-    active: {
-      true: {
-        opacity: 1,
-      },
-    },
-  },
-});
-
-const TranslateText = styled(motion.text, {
-  fontFamily: "$mono",
-  fontSize: "$sm",
-  opacity: 0,
-  transition: "opacity 0.3s ease-out",
-
-  [`.${darkTheme} &`]: {
-    fill: "$gray12",
-  },
-
-  variants: {
-    visible: {
-      true: {
-        opacity: 1,
-      },
-    },
-  },
-});
-
-const AnchorCircle = styled(motion.circle, {
-  cx: "100%",
-  cy: "50%",
-  fill: "$gray5",
-  stroke: "$gray8",
-  strokeWidth: 2,
-  strokeDasharray: "12 2",
-  r: "10px",
-  variants: {
-    hidden: {
-      true: {
-        opacity: 0,
-      },
-    },
-  },
-});
-
-const AnchorLine = styled("line", {
-  stroke: "$gray8",
-  strokeWidth: 2,
-});
-
-const Square = styled(SvgSquare, {
-  width: 120,
-  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
-});
+function Square({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof SvgSquare>) {
+  return (
+    <SvgSquare y={squareY} className={cn("w-[120px]", className)} {...props} />
+  );
+}

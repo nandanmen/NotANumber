@@ -1,3 +1,3 @@
 "use client";
 
-export * from './InverseSizeSlider'
+export * from "./InverseSizeSlider";

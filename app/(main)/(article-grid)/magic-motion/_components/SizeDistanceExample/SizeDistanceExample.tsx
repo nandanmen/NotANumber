@@ -2,14 +2,14 @@
 
 import React from "react";
 
-import { Wide } from "~/components/mdx/Wide";
 import {
-  Visualizer,
   Content,
   Controls,
   ToggleButton,
+  Visualizer,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { Wide } from "~/components/mdx/Wide";
+import { cn } from "~/lib/cn";
 
 import { Motion } from "../Motion";
 
@@ -19,11 +19,16 @@ export const SizeDistanceExample = ({ text = null, corrected = false }) => {
     <Wide>
       <Visualizer>
         <Content>
-          <Wrapper toggled={toggled}>
+          <div
+            className={cn(
+              "flex h-[300px] items-center p-8",
+              toggled ? "justify-end" : "justify-start",
+            )}
+          >
             <Motion size={toggled ? 200 : 120} corrected={corrected}>
               {text}
             </Motion>
-          </Wrapper>
+          </div>
         </Content>
         <Controls>
           <ToggleButton onClick={() => setToggled(!toggled)}>
@@ -41,9 +46,9 @@ export const NaiveScaleCorrection = () => {
     <Wide>
       <Visualizer>
         <Content>
-          <Wrapper center>
+          <div className="flex h-[300px] items-center justify-center p-8">
             <Motion
-              css={
+              style={
                 toggled
                   ? { width: "100%", height: 200 }
                   : { width: 120, height: 120 }
@@ -52,7 +57,7 @@ export const NaiveScaleCorrection = () => {
             >
               Hello
             </Motion>
-          </Wrapper>
+          </div>
         </Content>
         <Controls>
           <ToggleButton onClick={() => setToggled(!toggled)}>
@@ -63,23 +68,3 @@ export const NaiveScaleCorrection = () => {
     </Wide>
   );
 };
-
-const Wrapper = styled("div", {
-  padding: "$8",
-  display: "flex",
-  alignItems: "center",
-  height: 300,
-
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: "flex-end",
-      },
-    },
-    center: {
-      true: {
-        justifyContent: "center",
-      },
-    },
-  },
-});

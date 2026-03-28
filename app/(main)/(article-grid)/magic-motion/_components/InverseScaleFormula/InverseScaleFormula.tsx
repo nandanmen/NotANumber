@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
+import useInterval from "@use-it/interval";
 import { motion } from "framer-motion";
+import React from "react";
 
-import { darkTheme, styled } from "~/stitches.config";
-import { Wide } from "~/components/mdx/Wide";
+import { Checkbox } from "~/components/Checkbox";
 import {
-  Visualizer,
-  Content as VisualizerContent,
   Controls,
   PlayButton,
   UndoButton,
+  Visualizer,
+  Content as VisualizerContent,
 } from "~/components/Visualizer";
-import { Checkbox } from "~/components/Checkbox";
-import useInterval from "@use-it/interval";
+import { Wide } from "~/components/mdx/Wide";
+import { cn } from "~/lib/cn";
 
 type InverseScaleFormulaProps = {
   corrected: boolean;
@@ -25,120 +25,61 @@ export const InverseScaleFormula = ({
   scale,
 }: InverseScaleFormulaProps) => {
   return (
-    <Content>
-      <Square style={{ transform: `scaleX(${scale})` }}>
-        <Text style={{ transform: `scaleX(${corrected ? 1 / scale : 1})` }}>
+    <div className="relative flex h-full items-center justify-center">
+      <div
+        className="relative flex h-[120px] w-[120px] items-center justify-center rounded-md border border-blue8 bg-blue6 shadow-sm"
+        style={{ transform: `scaleX(${scale})` }}
+      >
+        <span
+          className="relative border border-yellow7 bg-yellow4 px-2 py-0.5"
+          style={{ transform: `scaleX(${corrected ? 1 / scale : 1})` }}
+        >
           Hello
           {corrected && (
             <ScaleTooltip
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              css={{ position: "absolute", top: -1, left: "100%" }}
+              className="absolute -top-px left-full"
               secondary
             >
               scaleX: {(1 / scale).toFixed(2)}
             </ScaleTooltip>
           )}
-        </Text>
-      </Square>
-      <TooltipWrapper
+        </span>
+      </div>
+      <div
+        className="absolute"
         style={{ transform: `translate(${60 * scale}px, -60px)` }}
       >
-        <ScaleTooltip css={{ transform: `translate(50%, 50%)` }}>
+        <ScaleTooltip className="translate-x-1/2 translate-y-1/2">
           scaleX: {scale.toFixed(2)}
         </ScaleTooltip>
-      </TooltipWrapper>
-    </Content>
+      </div>
+    </div>
   );
 };
 
-const Content = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  height: "100%",
-});
-
-const TooltipWrapper = styled("div", {
-  position: "absolute",
-});
-
-const ScaleTooltip = styled(motion.div, {
-  $$borderColor: "$colors$blue8",
-
-  color: "$blue11",
-  fontSize: "$sm",
-  fontFamily: "$mono",
-  background: "$blue1",
-  border: "1px solid $$borderColor",
-  padding: "$1",
-  whiteSpace: "nowrap",
-  marginLeft: "$4",
-  lineHeight: 1,
-
-  [`.${darkTheme} &`]: {
-    background: "$blueDark3",
-    color: "$blueDark11",
-    $$borderColor: "$colors$blueDark10",
-  },
-
-  "&:before": {
-    content: '""',
-    height: "1px",
-    width: "$6",
-    background: "$$borderColor",
-    position: "absolute",
-    left: "-$6",
-    top: -1,
-  },
-
-  variants: {
-    secondary: {
-      true: {
-        color: "$yellow11",
-        background: "$yellow1",
-        $$borderColor: "$colors$yellow7",
-
-        [`.${darkTheme} &`]: {
-          background: "$yellowDark3",
-          color: "$yellowDark11",
-          $$borderColor: "$colors$yellowDark10",
-        },
-      },
-    },
-  },
-});
-
-const Text = styled("span", {
-  background: "$yellow4",
-  border: "1px solid $yellow7",
-  padding: "$2",
-  position: "relative",
-
-  [`.${darkTheme} &`]: {
-    background: "$yellowDark8",
-    color: "$yellowDark12",
-    border: "1px solid $yellowDark10",
-  },
-});
-
-const Square = styled("div", {
-  width: 120,
-  height: 120,
-  background: "$blue6",
-  border: "1px solid $blue8",
-  borderRadius: "$base",
-  boxShadow: "$sm",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  position: "relative",
-
-  [`.${darkTheme} &`]: {
-    background: "$blueDark8",
-    border: "1px solid $blueDark10",
-  },
-});
+function ScaleTooltip({
+  secondary,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.div> & {
+  secondary?: boolean;
+}) {
+  return (
+    <motion.div
+      className={cn(
+        "relative ml-4 whitespace-nowrap border px-1 py-0 font-mono text-sm leading-none",
+        "before:absolute before:-left-6 before:top-[-1px] before:h-px before:w-6 before:content-['']",
+        secondary
+          ? "border-yellow7 bg-yellow1 text-yellow11 before:bg-yellow7"
+          : "border-blue8 bg-blue1 text-blue11 before:bg-blue8",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // --
 
@@ -155,7 +96,7 @@ export const InverseScaleFormulaSandbox = () => {
         setPlaying(false);
       }
     },
-    playing ? 100 : null
+    playing ? 100 : null,
   );
 
   return (

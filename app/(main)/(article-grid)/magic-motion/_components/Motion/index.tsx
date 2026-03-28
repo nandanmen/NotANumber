@@ -1,3 +1,3 @@
 "use client";
 
-export * from './Motion'
+export * from "./Motion";

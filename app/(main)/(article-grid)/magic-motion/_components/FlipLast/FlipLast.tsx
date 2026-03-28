@@ -1,23 +1,23 @@
 "use client";
 
-import React from "react";
 import { useMachine } from "@xstate/react";
+import React from "react";
 import { assign } from "xstate";
 
-import { GridBackground } from "~/components/Grid";
-import { Wide } from "~/components/mdx/Wide";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { GridBackground } from "~/components/Grid";
 import { ToggleButton } from "~/components/Visualizer";
+import { Wide } from "~/components/mdx/Wide";
 
 import {
-  Tooltip,
-  Square,
-  PositionText,
+  AlignmentText,
   ContentWrapper,
+  Controls,
+  PositionText,
+  Square,
+  Tooltip,
   XLine,
   YLine,
-  Controls,
-  AlignmentText,
 } from "../shared";
 import { machine } from "./machine";
 
@@ -71,7 +71,7 @@ export const FlipLast = () => {
           <Square
             ref={originalRef}
             outline
-            css={{ left: "$8", "@md": { left: "$12" } }}
+            className="absolute left-8 md:left-12"
           >
             <PositionText>x: {state.context.origin?.x.toFixed(1)}</PositionText>
             <PositionText>y: {state.context.origin?.y.toFixed(1)}</PositionText>

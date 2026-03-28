@@ -1,3 +1,3 @@
 "use client";
 
-export * from './SizeDistanceExample'
+export * from "./SizeDistanceExample";

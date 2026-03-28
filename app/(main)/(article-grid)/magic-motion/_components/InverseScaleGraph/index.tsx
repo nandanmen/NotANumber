@@ -1,3 +1,3 @@
 "use client";
 
-export * from './InverseScaleGraph'
+export * from "./InverseScaleGraph";

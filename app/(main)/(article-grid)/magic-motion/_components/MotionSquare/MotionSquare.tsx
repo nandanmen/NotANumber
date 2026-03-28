@@ -1,10 +1,10 @@
 "use client";
 
+import { type MotionValue, useTransform } from "framer-motion";
 import React from "react";
-import { MotionValue, useTransform } from "framer-motion";
 
+import { Line, LineEndpoint } from "../shared/HorizontalRuler";
 import { BaseSvgSquare } from "../shared/styles";
-import { LineEndpoint, Line } from "../shared/HorizontalRuler";
 
 export type MotionSquareProps = {
   width: MotionValue<number>;
@@ -67,7 +67,7 @@ export const ScaleRulers = ({
       />
       <LineEndpoint
         style={{ x: topLeft ? 0 : radius, y: topLeft ? 0 : radius }}
-        css={{ fill: "$blue8", stroke: "$blue2" }}
+        className="fill-blue8 stroke-blue2"
       />
       <LineEndpoint style={{ x: width, y: topLeft ? width : 0 }} />
     </g>

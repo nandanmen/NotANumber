@@ -1,36 +1,33 @@
 "use client";
 
-import React from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import * as React from "react";
 
-import { Wide } from "~/components/mdx/Wide";
 import {
-  Visualizer,
   Content,
   Controls,
-  UndoButton,
   ToggleButton,
+  UndoButton,
+  Visualizer,
 } from "~/components/Visualizer";
-import { styled, darkTheme } from "~/stitches.config";
+import { Wide } from "~/components/mdx/Wide";
+import { cn } from "~/lib/cn";
 
-import { SvgSquare, PADDING, SQUARE_RADIUS } from "../shared/styles";
+import { PADDING, SQUARE_RADIUS, SvgSquare } from "../shared/styles";
 
 const CONTENT_HEIGHT = 300;
+const squareY = CONTENT_HEIGHT / 2 - SQUARE_RADIUS;
 
 export const FlipInverse = () => {
   const x = useMotionValue(0);
   const squareTranslateX = useTransform(x, (val) => -(SQUARE_RADIUS * 2) + val);
 
-  // -- width
-
   const [width, setWidth] = React.useState(0);
   const widthRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    setWidth(widthRef.current?.offsetWidth);
+    setWidth(widthRef.current?.offsetWidth ?? 0);
   }, []);
-
-  // --
 
   const distance = width - PADDING - SQUARE_RADIUS * 2 - PADDING;
   const textTranslateX = useTransform(x, (val) => val + PADDING + distance);
@@ -41,9 +38,11 @@ export const FlipInverse = () => {
     return x.onChange((val) => {
       lineRef.current?.setAttribute(
         "x1",
-        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`
+        `${(SQUARE_RADIUS + PADDING) * 2 + val + distance}`,
       );
-      textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+      if (textRef.current) {
+        textRef.current.textContent = `translateX(${val.toFixed(0)}px)`;
+      }
     });
   }, [x, distance]);
 
@@ -54,7 +53,12 @@ export const FlipInverse = () => {
     <Wide>
       <Visualizer>
         <Content noOverflow ref={widthRef} style={{ height: CONTENT_HEIGHT }}>
-          <svg width="100%" height="100%">
+          <svg
+            width="100%"
+            height="100%"
+            role="img"
+            aria-label="FLIP inverse layout animation"
+          >
             <Square x={PADDING} type="secondary" />
             <TranslateText
               x={PADDING}
@@ -73,7 +77,7 @@ export const FlipInverse = () => {
                 transform: `translateX(-${SQUARE_RADIUS + PADDING}px)`,
               }}
             />
-            {width && (
+            {width ? (
               <motion.g
                 style={{
                   x: width - SQUARE_RADIUS - PADDING,
@@ -82,7 +86,7 @@ export const FlipInverse = () => {
               >
                 <AnchorCircle cy="0" cx="0" style={{ rotate: x }} />
               </motion.g>
-            )}
+            ) : null}
             <Square
               x={width - PADDING}
               style={{ translateX: squareTranslateX }}
@@ -111,29 +115,48 @@ export const FlipInverse = () => {
   );
 };
 
-const TranslateText = styled(motion.text, {
-  fontFamily: "$mono",
-  fontSize: "$sm",
+function TranslateText({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.text>) {
+  return (
+    <motion.text
+      className={cn("fill-gray12 font-mono text-sm", className)}
+      {...props}
+    />
+  );
+}
 
-  [`.${darkTheme} &`]: {
-    fill: "$gray12",
-  },
+function AnchorCircle(
+  props: React.ComponentPropsWithoutRef<typeof motion.circle>,
+) {
+  return (
+    <motion.circle
+      r={10}
+      className="fill-gray5 stroke-gray8 stroke-2 [stroke-dasharray:12_2]"
+      {...props}
+    />
+  );
+}
+
+const AnchorLine = React.forwardRef<
+  SVGLineElement,
+  React.ComponentPropsWithoutRef<"line">
+>(function AnchorLine({ className, ...props }, ref) {
+  return (
+    <line
+      ref={ref}
+      className={cn("stroke-gray8 stroke-2", className)}
+      {...props}
+    />
+  );
 });
 
-const AnchorCircle = styled(motion.circle, {
-  fill: "$gray5",
-  stroke: "$gray8",
-  strokeWidth: 2,
-  strokeDasharray: "12 2",
-  r: "10px",
-});
-
-const AnchorLine = styled("line", {
-  stroke: "$gray8",
-  strokeWidth: 2,
-});
-
-const Square = styled(SvgSquare, {
-  width: SQUARE_RADIUS * 2,
-  y: CONTENT_HEIGHT / 2 - SQUARE_RADIUS,
-});
+function Square({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof SvgSquare>) {
+  return (
+    <SvgSquare y={squareY} className={cn("w-[120px]", className)} {...props} />
+  );
+}

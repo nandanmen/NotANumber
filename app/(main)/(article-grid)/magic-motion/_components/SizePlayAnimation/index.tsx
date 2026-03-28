@@ -1,3 +1,3 @@
 "use client";
 
-export * from './SizePlayAnimation'
+export * from "./SizePlayAnimation";

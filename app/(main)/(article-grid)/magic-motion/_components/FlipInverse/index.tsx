@@ -1,3 +1,3 @@
 "use client";
 
-export * from './FlipInverse'
+export * from "./FlipInverse";

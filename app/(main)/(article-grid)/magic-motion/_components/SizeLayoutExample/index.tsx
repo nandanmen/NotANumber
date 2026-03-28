@@ -1,3 +1,3 @@
 "use client";
 
-export * from './SizeLayoutExample'
+export * from "./SizeLayoutExample";

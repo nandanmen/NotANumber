@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
+import { Content, Visualizer } from "~/components/Visualizer";
 import { Wide } from "~/components/mdx/Wide";
-import { Visualizer, Content } from "~/components/Visualizer";
-import { styled, darkTheme } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export const SizeDistanceInverseSnapshot = () => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -33,14 +33,16 @@ export const SizeDistanceInverseSnapshot = () => {
         <Content
           ref={containerRef}
           style={{ height: 300 }}
-          className="flex items-center justify-between p-8"
+          className="relative flex items-center justify-between p-8"
         >
-          <Square ref={initialRef} secondary striped />
-          <Square ref={finalRef} large striped />
-          <Square
+          <SnapshotSquare ref={initialRef} secondary striped />
+          <SnapshotSquare ref={finalRef} large striped />
+          <SnapshotSquare
             large
             className="absolute right-8"
-            style={transform}
+            style={{
+              transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scaleX}, ${transform.scaleY})`,
+            }}
           />
         </Content>
       </Visualizer>
@@ -48,7 +50,16 @@ export const SizeDistanceInverseSnapshot = () => {
   );
 };
 
-function invert({ from, to }) {
+function invert({
+  from,
+  to,
+}: {
+  from?: DOMRect;
+  to?: DOMRect;
+}) {
+  if (!from || !to) {
+    return { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+  }
   const { x: fromX, y: fromY, width: fromWidth, height: fromHeight } = from;
   const { x, y, width, height } = to;
 
@@ -60,44 +71,35 @@ function invert({ from, to }) {
   };
 }
 
-const Square = styled(motion.div, {
-  "--background": "$colors$blue6",
-
-  background: `var(--background)`,
-  border: "1px solid $blue8",
-  width: 120,
-  aspectRatio: 1,
-  borderRadius: "$base",
-  boxShadow: "$sm",
-
-  [`.${darkTheme} &`]: {
-    "--background": "$colors$blueDark8",
-    border: "1px solid $blueDark10",
-  },
-
-  variants: {
-    large: {
-      true: {
-        width: 200,
-      },
-    },
-    secondary: {
-      true: {
-        "--background": "$colors$gray6",
-        border: "1px solid $gray7",
-        boxShadow: "none",
-
-        [`.${darkTheme} &`]: {
-          "--background": "$colors$gray4",
-          border: "1px solid $gray6",
-        },
-      },
-    },
-    striped: {
-      true: {
-        background: `repeating-linear-gradient(-45deg, var(--background), var(--background) 5px, transparent 5px, transparent 10px)`,
-        boxShadow: "none",
-      },
-    },
-  },
+const SnapshotSquare = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof motion.div> & {
+    large?: boolean;
+    secondary?: boolean;
+    striped?: boolean;
+  }
+>(function SnapshotSquare(
+  { large, secondary, striped, className, ...props },
+  ref,
+) {
+  return (
+    <motion.div
+      ref={ref}
+      className={cn(
+        "aspect-square rounded-md border shadow-sm",
+        large ? "w-[200px]" : "w-[120px]",
+        secondary
+          ? "border-gray7 bg-gray6 shadow-none"
+          : "border-blue8 bg-blue6",
+        striped &&
+          !secondary &&
+          "shadow-none bg-[repeating-linear-gradient(-45deg,theme(colors.blue6),theme(colors.blue6)_5px,transparent_5px,transparent_10px)]",
+        striped &&
+          secondary &&
+          "shadow-none bg-[repeating-linear-gradient(-45deg,theme(colors.gray6),theme(colors.gray6)_5px,transparent_5px,transparent_10px)]",
+        className,
+      )}
+      {...props}
+    />
+  );
 });

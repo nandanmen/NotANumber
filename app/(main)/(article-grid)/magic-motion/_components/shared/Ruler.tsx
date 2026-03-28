@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
-import { styled, keyframes } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export const Ruler = () => {
   const [toggled, setToggled] = React.useState(false);
@@ -15,9 +15,18 @@ export const Ruler = () => {
 
   return (
     <Measurement toggled={toggled}>
-      <Bar layout transition={{ duration: 0.5 }} />
-      <Bar layout transition={{ duration: 0.5 }} />
-      <Line
+      <motion.div
+        layout
+        transition={{ duration: 0.5 }}
+        className="h-2.5 w-0.5 bg-gray9"
+      />
+      <motion.div
+        layout
+        transition={{ duration: 0.5 }}
+        className="h-2.5 w-0.5 bg-gray9"
+      />
+      <motion.div
+        className="absolute top-1 h-0.5 w-full origin-left bg-gray9"
         animate={{ scaleX: toggled ? 1 : 0 }}
         transition={{ duration: 0.5 }}
         initial={{ scaleX: 0 }}
@@ -26,67 +35,49 @@ export const Ruler = () => {
   );
 };
 
-export const RulerWrapper = styled("div", {
-  width: 120,
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  position: "absolute",
+export function RulerWrapper({
+  full,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div"> & { full?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "absolute flex w-[120px] flex-col items-center",
+        full && "w-[calc(100%-4rem)]",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-  variants: {
-    full: {
-      true: {
-        width: "calc(100% - $space$8 * 2)",
-      },
-    },
-  },
+export const RulerText = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<typeof motion.p>
+>(function RulerText({ className, ...props }, ref) {
+  return (
+    <motion.p
+      ref={ref}
+      className={cn("font-mono text-sm text-gray11 opacity-100", className)}
+      {...props}
+    />
+  );
 });
 
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-});
-
-export const RulerText = styled(motion.p, {
-  fontFamily: "$mono",
-  color: "$gray11",
-  fontSize: "$sm",
-  opacity: 0,
-  animationName: `${fadeIn}`,
-  animationDuration: "500ms",
-  animationFillMode: "forwards",
-  animationTimingFunction: "ease-out",
-});
-
-const Line = styled(motion.div, {
-  height: 2,
-  width: "100%",
-  background: "$gray9",
-  position: "absolute",
-  top: 4,
-});
-
-const Bar = styled(motion.div, {
-  height: 10,
-  width: 2,
-  background: "$gray9",
-});
-
-const Measurement = styled("div", {
-  display: "flex",
-  justifyContent: "center",
-  position: "relative",
-  width: "100%",
-
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: "space-between",
-      },
-    },
-  },
-});
+function Measurement({
+  toggled,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div"> & { toggled?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "relative flex w-full justify-center",
+        toggled && "justify-between",
+        className,
+      )}
+      {...props}
+    />
+  );
+}

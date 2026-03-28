@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
 import { animate, useMotionValue } from "framer-motion";
-import { FaUndo, FaPlay } from "react-icons/fa";
+import React from "react";
+import { FaPlay, FaUndo } from "react-icons/fa";
 
 import {
-  Visualizer,
   Content,
   Controls,
   PlayButton,
   UndoButton,
+  Visualizer,
 } from "~/components/Visualizer";
 import { Wide } from "~/components/mdx/Wide";
 

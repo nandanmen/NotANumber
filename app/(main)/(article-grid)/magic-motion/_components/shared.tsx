@@ -1,172 +1,146 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { type HTMLMotionProps, motion } from "framer-motion";
+import * as React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { blueDark } from "@radix-ui/colors";
-import { darkTheme, styled } from "~/stitches.config";
+
 import { IconButton } from "~/components/Visualizer";
+import { cn } from "~/lib/cn";
 
-const SQUARE_WIDTH = 120;
+export type TooltipProps = HTMLMotionProps<"div"> & {
+  align?: "left" | "right";
+};
 
-export const Tooltip = styled(motion.div, {
-  position: "relative",
-  padding: "$4",
-  fontFamily: "$mono",
-  background: "$gray2",
-  borderRadius: "$base",
-  border: "1px solid $gray9",
-  boxShadow: "$sm",
-
-  "&:after": {
-    content: "",
-    width: 10,
-    aspectRatio: 1,
-    background: "inherit",
-    position: "absolute",
-    border: "inherit",
-    top: "calc(50% - 5px)",
-    transform: "rotate(45deg)",
+export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
+  function Tooltip({ align = "left", className, ...props }, ref) {
+    return (
+      <motion.div
+        ref={ref}
+        className={cn(
+          "relative rounded-md border border-gray9 bg-gray2 p-4 font-mono shadow-sm",
+          "after:absolute after:aspect-square after:w-2.5 after:rotate-45 after:border after:border-inherit after:bg-inherit after:content-[''] after:top-[calc(50%-5px)]",
+          align === "left" &&
+            "after:-right-1.5 after:border-b-0 after:border-l-0",
+          align === "right" &&
+            "after:-left-1.5 after:border-t-0 after:border-r-0",
+          className,
+        )}
+        {...props}
+      />
+    );
   },
+);
 
-  variants: {
-    align: {
-      left: {
-        "&:after": {
-          borderBottom: "none",
-          borderLeft: "none",
-          right: -6,
-        },
-      },
-      right: {
-        "&:after": {
-          borderTop: "none",
-          borderRight: "none",
-          left: -6,
-        },
-      },
-    },
-  },
+export function ContentWrapper({
+  toggled,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div"> & { toggled?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "relative flex items-center gap-4 p-8 md:p-12",
+        toggled && "justify-end",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export type LineProps = HTMLMotionProps<"div"> & { active?: boolean };
+
+export const XLine = React.forwardRef<HTMLDivElement, LineProps>(function XLine(
+  { active, className, ...props },
+  ref,
+) {
+  return (
+    <motion.div
+      ref={ref}
+      className={cn(
+        "absolute left-0 top-1/2 w-full border-b border-dashed border-gray10",
+        active && "border-blue10",
+        className,
+      )}
+      {...props}
+    />
+  );
 });
 
-export const ContentWrapper = styled("div", {
-  position: "relative",
-  padding: "$8",
-  display: "flex",
-  alignItems: "center",
-  gap: "$4",
+export type YLineProps = LineProps & {
+  align?: "left" | "right";
+};
 
-  "@md": {
-    padding: "$12",
+export const YLine = React.forwardRef<HTMLDivElement, YLineProps>(
+  function YLine({ active, align, className, ...props }, ref) {
+    return (
+      <motion.div
+        ref={ref}
+        className={cn(
+          "absolute top-0 h-full border-l border-dashed border-gray10",
+          active && "border-blue10",
+          align === "left" && "translate-x-[60px]",
+          align === "right" && "-translate-x-[60px]",
+          !align && "-translate-x-[60px]",
+          className,
+        )}
+        {...props}
+      />
+    );
   },
+);
 
-  variants: {
-    toggled: {
-      true: {
-        justifyContent: "flex-end",
-      },
-    },
+export type SquareProps = HTMLMotionProps<"button"> & {
+  active?: boolean;
+  outline?: boolean;
+  toggled?: boolean;
+};
+
+export const Square = React.forwardRef<HTMLButtonElement, SquareProps>(
+  function Square({ active, outline, toggled, className, ...props }, ref) {
+    return (
+      <motion.button
+        ref={ref}
+        type="button"
+        className={cn(
+          "relative aspect-square w-[120px] rounded-md border border-blue8 bg-blue6 text-center text-blue11 shadow-sm",
+          "hover:border-blue10",
+          active && "border-blue10",
+          outline && "pointer-events-none absolute bg-gray5 border-gray8",
+          toggled && "aspect-auto w-full max-w-none",
+          className,
+        )}
+        {...props}
+      />
+    );
   },
-});
+);
 
-export const XLine = styled(motion.div, {
-  position: "absolute",
-  borderBottom: "1px dashed $gray10",
-  width: "100%",
-  left: 0,
-  top: "50%",
+export function PositionText({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"p">) {
+  return <p className={cn("font-mono text-gray11", className)} {...props} />;
+}
 
-  variants: {
-    active: {
-      true: {
-        borderColor: "$blue10",
-      },
-    },
-  },
-});
+export function Controls({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
+  return (
+    <div
+      className={cn("mb-3 flex items-center justify-between", className)}
+      {...props}
+    />
+  );
+}
 
-export const YLine = styled(motion.div, {
-  position: "absolute",
-  borderLeft: "1px dashed $gray10",
-  height: "100%",
-  top: 0,
-  transform: `translateX(-${SQUARE_WIDTH / 2}px)`,
-
-  variants: {
-    active: {
-      true: {
-        borderColor: "$blue10",
-      },
-    },
-    align: {
-      left: {
-        transform: `translateX(${SQUARE_WIDTH / 2}px)`,
-      },
-      right: {
-        transform: `translateX(-${SQUARE_WIDTH / 2}px)`,
-      },
-    },
-  },
-});
-
-export const Square = styled(motion.button, {
-  position: "relative",
-  width: SQUARE_WIDTH,
-  aspectRatio: 1,
-  background: "$blue6",
-  borderRadius: "$base",
-  border: "1px solid $blue8",
-  textAlign: "center",
-  color: "$blue11",
-  boxShadow: "$sm",
-
-  [`.${darkTheme} &`]: {
-    background: "$blueDark8",
-    borderColor: "$blueDark10",
-    color: "$blueDark12",
-  },
-
-  "&:hover": {
-    borderColor: "$blue10",
-  },
-
-  variants: {
-    active: {
-      true: {
-        borderColor: "$blue10",
-      },
-    },
-    outline: {
-      true: {
-        position: "absolute",
-        pointerEvents: "none",
-        background: "$gray5",
-        borderColor: "$gray8",
-
-        [`.${darkTheme} &`]: {
-          background: "$gray4",
-          borderColor: "$gray7",
-        },
-      },
-    },
-  },
-});
-
-export const PositionText = styled("p", {
-  color: "$gray11",
-  fontFamily: "$mono",
-});
-
-export const Controls = styled("div", {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: "$3",
-});
-
-export const AlignmentText = styled("p", {
-  fontFamily: "$mono",
-  fontSize: "$sm",
-});
+export function AlignmentText({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"p">) {
+  return <p className={cn("font-mono text-sm", className)} {...props} />;
+}
 
 // --
 
@@ -186,7 +160,7 @@ export const Counter = ({
   step = 1,
 }: CounterProps) => {
   return (
-    <CounterWrapper>
+    <div className="flex items-center gap-2">
       <IconButton
         secondary
         label="Decrease"
@@ -194,7 +168,7 @@ export const Counter = ({
       >
         <FaMinus />
       </IconButton>
-      <Value>{value}px</Value>
+      <div className="font-mono text-gray11">{value}px</div>
       <IconButton
         secondary
         label="Increase"
@@ -202,17 +176,6 @@ export const Counter = ({
       >
         <FaPlus />
       </IconButton>
-    </CounterWrapper>
+    </div>
   );
 };
-
-const CounterWrapper = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  gap: "$2",
-});
-
-const Value = styled("div", {
-  fontFamily: "$mono",
-  color: "$gray11",
-});

@@ -1,3 +1,3 @@
 "use client";
 
-export * from './WidthTransitionSandbox'
+export * from "./WidthTransitionSandbox";

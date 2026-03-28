@@ -2,12 +2,12 @@
 
 import React from "react";
 
-import { GridBackground } from "~/components/Grid";
-import { Wide } from "~/components/mdx/Wide";
 import { ChangeIndicator } from "~/components/ChangeIndicator";
+import { GridBackground } from "~/components/Grid";
 import { ToggleButton } from "~/components/Visualizer";
+import { Wide } from "~/components/mdx/Wide";
 
-import { ContentWrapper, Controls, AlignmentText } from "../shared";
+import { AlignmentText, ContentWrapper, Controls } from "../shared";
 import { SizeExample } from "../size";
 
 export const SizeLayoutExample = () => {

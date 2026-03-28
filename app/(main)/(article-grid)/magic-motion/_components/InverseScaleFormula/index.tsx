@@ -1,3 +1,3 @@
 "use client";
 
-export * from './InverseScaleFormula'
+export * from "./InverseScaleFormula";

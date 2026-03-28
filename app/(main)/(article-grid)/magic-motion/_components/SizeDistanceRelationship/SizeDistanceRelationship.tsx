@@ -2,12 +2,12 @@
 
 import React from "react";
 
+import { Content, Controls, Visualizer } from "~/components/Visualizer";
 import { Wide } from "~/components/mdx/Wide";
-import { Content, Visualizer, Controls } from "~/components/Visualizer";
 
 import { Counter } from "../shared";
-import { SvgSquare, SQUARE_RADIUS, BaseSvgSquare } from "../shared/styles";
 import { HorizontalRuler } from "../shared/HorizontalRuler";
+import { BaseSvgSquare, SQUARE_RADIUS, SvgSquare } from "../shared/styles";
 
 const BASE_WIDTH = SQUARE_RADIUS * 2;
 const CONTENT_HEIGHT = 300;
@@ -37,12 +37,13 @@ export const SizeDistanceRelationship = () => {
             step={20}
           />
         </Controls>
-        <Content
-          ref={containerRef}
-          noOverflow
-          style={{ height: 300 }}
-        >
-          <svg width="100%" height="100%">
+        <Content ref={containerRef} noOverflow style={{ height: 300 }}>
+          <svg
+            width="100%"
+            height="100%"
+            role="img"
+            aria-label="Size and distance relationship"
+          >
             <SvgSquare
               width={SQUARE_RADIUS * 2}
               type="secondary"
@@ -86,7 +87,12 @@ export const SizeDistanceRelationship = () => {
           </svg>
         </Content>
         <Content noOverflow style={{ height: 300 }}>
-          <svg width="100%" height="100%">
+          <svg
+            width="100%"
+            height="100%"
+            role="img"
+            aria-label="Size and distance relationship"
+          >
             <SvgSquare
               width={SQUARE_RADIUS * 2}
               type="secondary"
@@ -136,4 +142,3 @@ export const SizeDistanceRelationship = () => {
     </Wide>
   );
 };
-

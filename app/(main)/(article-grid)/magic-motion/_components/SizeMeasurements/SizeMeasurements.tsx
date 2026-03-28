@@ -3,30 +3,30 @@
 import React from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-import { Wide } from "~/components/mdx/Wide";
 import {
-  Visualizer,
   Content,
   Controls,
   IconButton,
+  Visualizer,
 } from "~/components/Visualizer";
-import { styled, keyframes, darkTheme } from "~/stitches.config";
+import { Wide } from "~/components/mdx/Wide";
 import { useStepPlayer } from "~/lib/algorithm";
+import { cn } from "~/lib/cn";
 
-import { Ruler, RulerWrapper, RulerText } from "../shared/Ruler";
+import { Ruler, RulerText, RulerWrapper } from "../shared/Ruler";
 import { SizeExample } from "../size";
 
 export const SizeMeasurements = () => {
   const boxRef = React.useRef<HTMLButtonElement>(null);
 
   const [step, player] = useStepPlayer(["first", "last"]);
-  const [box, setBox] = React.useState(null);
+  const [box, setBox] = React.useState<DOMRect | null>(null);
   const [key, setKey] = React.useState(0);
 
   React.useEffect(() => {
     if (step === "last") {
       const box = boxRef.current?.getBoundingClientRect();
-      setBox(box);
+      setBox(box ?? null);
     }
   }, [step]);
 
@@ -39,10 +39,7 @@ export const SizeMeasurements = () => {
   return (
     <Wide>
       <Visualizer>
-        <Content
-          className="flex h-[300px] items-center"
-          padding="lg"
-        >
+        <Content className="flex h-[300px] items-center" padding="lg">
           <RulerWrapper key={key} style={{ transform: "translateY(-90px)" }}>
             <RulerText>120px</RulerText>
             <Ruler />
@@ -50,7 +47,12 @@ export const SizeMeasurements = () => {
           <SizeExample toggled={step === "last"} ref={boxRef} layout={false} />
           {step === "last" && (
             <>
-              <OriginalSquare />
+              <div
+                className={cn(
+                  "absolute h-[120px] w-[120px] rounded-md border border-blue8",
+                  "bg-[repeating-linear-gradient(-45deg,theme(colors.blue8),theme(colors.blue8)_5px,transparent_5px,transparent_10px)]",
+                )}
+              />
               <RulerWrapper full style={{ transform: "translateY(90px)" }}>
                 <Ruler />
                 <RulerText>{box?.width}px</RulerText>
@@ -59,11 +61,15 @@ export const SizeMeasurements = () => {
           )}
         </Content>
         <Controls className="items-center">
-          <FlipStateList>
-            <FlipState active={step === "first"}>First</FlipState>
-            <FlipState active={step === "last"}>Last</FlipState>
-          </FlipStateList>
-          <StateControls>
+          <ol className="flex list-none gap-1">
+            <li className={cn(step === "first" ? "opacity-100" : "opacity-20")}>
+              First
+            </li>
+            <li className={cn(step === "last" ? "opacity-100" : "opacity-20")}>
+              Last
+            </li>
+          </ol>
+          <div className="flex gap-1">
             <IconButton
               onClick={player.prev}
               disabled={player.currentStep === 0}
@@ -80,60 +86,9 @@ export const SizeMeasurements = () => {
             >
               <FaArrowRight />
             </IconButton>
-          </StateControls>
+          </div>
         </Controls>
       </Visualizer>
     </Wide>
   );
 };
-
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-});
-
-const OriginalSquare = styled("div", {
-  background: `repeating-linear-gradient( -45deg, $colors$blue8, $colors$blue8 5px, transparent 5px, transparent 10px )`,
-  width: 120,
-  height: 120,
-  borderRadius: "$base",
-  border: "1px solid $blue8",
-  position: "absolute",
-  animationName: `${fadeIn}`,
-  animationDuration: "500ms",
-  animationFillMode: "forwards",
-  animationTimingFunction: "ease-out",
-
-  [`.${darkTheme} &`]: {
-    background: `repeating-linear-gradient( -45deg, $colors$blueDark9, $colors$blueDark9 5px, transparent 5px, transparent 10px )`,
-    border: "1px solid $blueDark9",
-  },
-});
-
-const StateControls = styled("div", {
-  display: "flex",
-  gap: "$1",
-});
-
-const FlipStateList = styled("ol", {
-  listStyle: "none",
-  display: "flex",
-  gap: "$1",
-});
-
-const FlipState = styled("li", {
-  opacity: 0.2,
-  transition: "opacity 0.3s ease-out",
-
-  variants: {
-    active: {
-      true: {
-        opacity: 1,
-      },
-    },
-  },
-});

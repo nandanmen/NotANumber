@@ -1,3 +1,3 @@
 "use client";
 
-export * from './FlipLastReact'
+export * from "./FlipLastReact";
