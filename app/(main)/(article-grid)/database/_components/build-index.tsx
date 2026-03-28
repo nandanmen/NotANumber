@@ -1,11 +1,12 @@
 "use client";
 
-import { FullWidth } from "~/components/mdx/full-width";
-import { ToggleButton } from "./toggle-button";
+import { motion, useAnimate, useMotionValue, useTransform } from "motion/react";
 import { useMemo, useState } from "react";
-import { useAnimate, motion, useTransform, useMotionValue } from "motion/react";
-import { DotAnimation } from "./dot-animation";
+import { Figure } from "~/components/mdx/figure";
+import { FullWidth } from "~/components/mdx/full-width";
 import { TRANSITIONS } from "~/lib/transitions";
+import { DotAnimation } from "./dot-animation";
+import { ToggleButton } from "./toggle-button";
 
 const records = [
   { uuid: "1", id: 1, value: "Lorem ipsum" },
@@ -52,7 +53,7 @@ export function BuildIndex() {
   }, [activeRecords]);
 
   return (
-    <>
+    <Figure>
       <div className="w-fit">
         <ToggleButton
           onClick={async () => {
@@ -93,10 +94,10 @@ export function BuildIndex() {
       </div>
       <FullWidth>
         <div
-          className="border-y border-gray8 md:rounded-lg grid grid-rows-[repeat(2,250px)] md:grid-rows-[250px] md:grid-cols-2 lg:grid-cols-[3fr_2fr] overflow-hidden font-mono text-sm divide-y md:divide-y-0 md:divide-x divide-gray8 -mx-6 md:mx-0 md:border-x"
+          className="border-y border-gray8 md:rounded-lg grid grid-rows-[repeat(2,250px)] md:grid-rows-[250px] md:grid-cols-2 lg:grid-cols-[3fr_2fr] overflow-hidden font-mono text-sm divide-y md:divide-y-0 md:divide-x divide-gray8 md:border-x"
           ref={scope}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col bg-gray2">
             <p className="text-gray10 text-sm font-medium font-sans p-3 pb-0">
               file.txt
             </p>
@@ -130,10 +131,10 @@ export function BuildIndex() {
                 <div className="absolute text-gray8 italic">
                   <DotAnimation>Waiting</DotAnimation>
                 </div>
-                <motion.div className="bg-gray4 grow overflow-hidden">
+                <motion.div className="bg-gray2 grow overflow-hidden">
                   {nextRecord && (
                     <motion.p
-                      className="border-r border-gray9 h-12 flex items-center overflow-hidden -translate-x-px bg-gray4"
+                      className="border-r border-gray9 h-12 flex items-center overflow-hidden -translate-x-px bg-gray2"
                       data-name="next-record"
                       data-file
                       initial={{ width: 0 }}
@@ -154,7 +155,7 @@ export function BuildIndex() {
               <p className="text-gray10 text-sm font-medium font-sans py-3">
                 Index
               </p>
-              <ul className="px-5 py-4 bg-gray3 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
+              <ul className="px-5 py-4 bg-gray2 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
                 {activeRecords.map((record, index) => {
                   const offset = getOffsetAtIndex(index);
                   return (
@@ -174,7 +175,7 @@ export function BuildIndex() {
               <p className="text-gray10 text-sm font-medium font-sans py-3">
                 Database
               </p>
-              <ul className="px-5 py-4 bg-gray3 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
+              <ul className="px-5 py-4 bg-gray2 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
                 {activeRecords.map((record, index) => (
                   <RecordItem
                     record={record}
@@ -187,7 +188,7 @@ export function BuildIndex() {
           </div>
         </div>
       </FullWidth>
-    </>
+    </Figure>
   );
 }
 
@@ -199,7 +200,7 @@ function RecordItem({ record, isNext }: { record: Record; isNext?: boolean }) {
         <p>{record.value}</p>
       </div>
       <div
-        className="absolute inset-0 bg-gray3 origin-right"
+        className="absolute inset-0 bg-gray2 origin-right"
         data-record-cover
         data-name={isNext ? "next-record-cover" : undefined}
       />

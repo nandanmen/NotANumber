@@ -1,14 +1,15 @@
 "use client";
 
-import { ToggleButton } from "./toggle-button";
-import { FileDatabase } from "./file-database";
-import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { cn } from "~/lib/cn";
 import useInterval from "@use-it/interval";
-import { DotAnimation } from "./dot-animation";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 import { match } from "ts-pattern";
 import { Wide } from "~/components/mdx/Wide";
+import { Figure } from "~/components/mdx/figure";
+import { cn } from "~/lib/cn";
+import { DotAnimation } from "./dot-animation";
+import { FileDatabase } from "./file-database";
+import { ToggleButton } from "./toggle-button";
 
 const records = [
   { uuid: "1", id: 1, value: "Lorem ipsum", isStale: true },
@@ -66,8 +67,8 @@ export const useCompactionAnimation = () => {
 export function Compaction({ className }: { className?: string }) {
   const { step, index, play } = useCompactionAnimation();
   return (
-    <>
-      <div className="w-fit -mb-2">
+    <Figure>
+      <div className="w-fit">
         <ToggleButton onClick={play}>Add</ToggleButton>
       </div>
       <Wide
@@ -78,7 +79,7 @@ export function Compaction({ className }: { className?: string }) {
       >
         <CompactionInner step={step} index={index} />
       </Wide>
-    </>
+    </Figure>
   );
 }
 
@@ -111,7 +112,7 @@ export function CompactionInner({
         <motion.ul
           layout="position"
           className={cn(
-            "row-start-1 font-mono text-sm px-5 py-4 w-[var(--card-width,300px)] h-[250px] bg-gray3 rounded-lg relative ring-1 ring-neutral-950/15 shadow-sm",
+            "row-start-1 font-mono text-sm px-5 py-4 w-[var(--card-width,300px)] h-[250px] bg-gray2 rounded-lg relative ring-1 ring-neutral-950/15 shadow-sm",
             state === "record-added" &&
               "max-md:absolute max-md:left-[calc(100%-24px)]",
             state === "record-added" || state === "compacted"
@@ -164,7 +165,7 @@ export function CompactionInner({
         />
       </div>
       {showConsole && (
-        <div className="bg-gray4 py-2.5 text-center font-mono text-sm text-gray11 border-t border-gray8 italic relative z-10">
+        <div className="bg-gray3 py-2.5 text-center font-mono text-sm text-gray11 border-t border-gray8 italic relative z-10">
           {match(state)
             .with("initial", () => <DotAnimation>waiting</DotAnimation>)
             .with("record-added", () => (

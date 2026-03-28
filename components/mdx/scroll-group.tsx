@@ -120,7 +120,7 @@ export function ScrollGroup({
   return (
     <section
       data-scroll-group
-      className="grid grid-cols-2 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
+      className="full-width grid grid-cols-2 my-8 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
     >
       <ScrollGroupContext.Provider
         value={{
@@ -136,7 +136,7 @@ export function ScrollGroup({
         }}
       >
         <div className="ring-1 ring-black/15 shadow-sm bg-gray2 flex px-7">
-          <div className="border-x border-borderSoft w-full pt-16">
+          <div className="border-x border-borderSoft w-full py-12">
             {Children.map(children, (child, i) => {
               return cloneElement(
                 child as React.ReactElement<{ index: number }>,

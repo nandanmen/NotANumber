@@ -16,9 +16,6 @@ import { SearchIndex } from "./_components/search-index";
 import { UpdateIndex } from "./_components/update-index";
 import { SparseIndex, SearchSparseIndex } from "./_components/sparse-index";
 import { LSM, LSMVisual, MobileWrapper, CompactionControls } from "./_components/lsm";
-import { Section } from "../how-computers-talk/_components/grid-snapped-section";
-
-<Section>
 
 If you were to build your own database today, not knowing that databases exist already, how would you do it? In this post, we'll explore how to build a **key-value database** from the ground up.
 
@@ -37,8 +34,6 @@ Let's find out how they work!
 Credit where credit is due: This post is largely based off Martin Kleppmann's book [Designing Data-Intensive Applications](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321), specifically Chapter 3, "Data Structures that Power Your Database". I encourage you to give it a read! It's easily the best computer science book I've read.
 
 </Callout>
-
-</Section>
 
 
 <ScrollGroup 
@@ -102,9 +97,6 @@ Easy! We're done right?
 
 </ScrollGroup>
 
-<Section>
-
-
 ### Mutable Updates
 
 This approach, simple as it is, doesn't actually work very well in practice. The problem lies with the way we're doing updates and deletes—they're wholly inefficient.
@@ -118,8 +110,6 @@ When we go to update or delete a record, we're currently updating that record in
 <FileSequence updateable />
 
 In this case, updating the record `005` to "`adipiscing␣elit.␣vel␣mauris`" means moving all of the records that come after it by 11 bytes (the length of the added string "`␣vel␣mauris`"). This can quickly get really costly, especially as our database grows in size!
-
-</Section>
 
 
 <ScrollGroup
@@ -168,17 +158,12 @@ And there we have it! We have a key-value database that uses a file as its stora
 
 </ScrollGroup>
 
-<Section>
-
-
 Now this implementation isn't perfect; right now, there are two major issues:
 
 1. **The file can get very large**. Since we're only appending to the file, the file will grow infinitely over time. Not good!
 2. **Searching is slow**. To search for a specific key, we have to potentially iterate through all records in the database. For a database with millions of records, this can take a while!
 
 How can we fix these problems?
-
-</Section>
 
 
 <ScrollGroup figure={<FileDatabaseVisualizer />} state={createStore([
@@ -213,9 +198,6 @@ Our database file has six entries, but only two represent actual records—the r
 </ScrollGroupSection>
 
 </ScrollGroup>
-
-<Section>
-
 
 ### Segments and Compaction
 
@@ -270,8 +252,6 @@ const value = hashTable["hello"]; // "world"
 
 It doesn't matter how many records there are—the time it takes to look up and retrieve a value in a hash table is more or less constant. The catch is they must live _in memory_.
 
----
-
 <Aside label="In-Memory vs. On-Disk">
 
 When you write a variable in your code, the computer will "remember" the value of that variable only for as long as the program is running.
@@ -317,8 +297,6 @@ This time, `x` will print `2` and `3` the first run, and `4` and `5` the second 
 The tradeoff to persistence is performance—accessing data from memory is about 80x faster on average than accessing it from disk.
 
 </Aside>
-
----
 
 Here's how the index will work. For every record that we have in our database, we'll store that record's **offset**—the number of bytes from the beginning of the file to the start of the record—in the index:
 
@@ -436,8 +414,6 @@ The fix here is thankfully pretty straightforward—every time we add a record t
 
 The append-only file doesn't need to be sorted nor does it need to have every record in the database; only the ones that are currently in memory.
 
-</Section>
-
 
 <ScrollGroup
   state={{
@@ -503,9 +479,6 @@ Treating updates and deletes as new records means our file will only ever grow l
 
 </ScrollGroup>
 
-<Section>
-
-
 ## LSM Trees
 
 What we just built actually exists in the real world—it's called **an LSM or Log-Structured Merge Tree**.
@@ -517,5 +490,3 @@ LSM trees are the underlying data structure used for large-scale key-value datab
 Now, LSM trees aren't perfect, and they're certainly not the only way to structure a database. In fact, relational databases like PostgreSQL or MySQL use a completely different structure called a **B-Tree** to store their data—but that's a deep dive for another post.
 
 For now, thanks for reading!
-
-</Section>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
 import { ResetButton, ToggleButton } from "./toggle-button";
 import { FileDatabase } from "./file-database";
@@ -46,8 +47,8 @@ export function UpdateIndex() {
   const controls = getFileDatabaseControls({ store, db });
 
   return (
-    <>
-      <div className="flex gap-2 -mb-1">
+    <Figure>
+      <div className="flex gap-2">
         <ToggleButton onClick={controls.add}>Add</ToggleButton>
         <ToggleButton onClick={controls.update}>Update</ToggleButton>
         <ToggleButton onClick={controls.delete}>Delete</ToggleButton>
@@ -78,7 +79,7 @@ export function UpdateIndex() {
           </div>
         </div>
       </Wide>
-    </>
+    </Figure>
   );
 }
 

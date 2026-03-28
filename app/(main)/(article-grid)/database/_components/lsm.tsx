@@ -1,21 +1,22 @@
 "use client";
 
-import { Wide } from "~/components/mdx/Wide";
-import { ResetButton, ToggleButton } from "./toggle-button";
-import { FileDatabase } from "./file-database";
-import { useEffect, useState } from "react";
 import { motion, stagger, useAnimate } from "motion/react";
-import { getNextRecord } from "./mutable-database";
-import { cn } from "~/lib/cn";
-import { delay, sleep } from "~/lib/utils";
+import { nanoid } from "nanoid";
+import { useEffect, useState } from "react";
+import { Wide } from "~/components/mdx/Wide";
+import { Figure } from "~/components/mdx/figure";
 import {
   useActiveIndex,
   useScrollGroupEvents,
   useSectionIndex,
 } from "~/components/mdx/scroll-group";
-import { DatabaseIndex, getIndexRecords } from "./update-index";
-import { nanoid } from "nanoid";
+import { cn } from "~/lib/cn";
+import { delay, sleep } from "~/lib/utils";
 import { CompactionInner, useCompactionAnimation } from "./compaction";
+import { FileDatabase } from "./file-database";
+import { getNextRecord } from "./mutable-database";
+import { ResetButton, ToggleButton } from "./toggle-button";
+import { DatabaseIndex, getIndexRecords } from "./update-index";
 
 const MEMORY_LIMIT = 3;
 
@@ -31,7 +32,7 @@ function MemoryBackground({ align }: { align?: "center" | "left" }) {
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
           key={index}
-          className="w-[54px] h-[54px] ring-1 bg-gray5 ring-borderSoft"
+          className="w-[54px] h-[54px] ring-1 bg-gray3 ring-borderSoft"
         />
       ))}
     </div>
@@ -118,8 +119,8 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
   const events = useLSMEvents();
   const index = useSectionIndex();
   return (
-    <>
-      <div className="-mb-2 flex gap-2">
+    <Figure>
+      <div className="flex gap-2">
         {index < 2 && (
           <ToggleButton
             onClick={() => {
@@ -173,10 +174,10 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
           />
         )}
       </div>
-      <figure className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong -mx-6 lg:hidden overflow-hidden">
+      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong -mx-6 lg:hidden overflow-hidden">
         {children}
-      </figure>
-    </>
+      </div>
+    </Figure>
   );
 }
 
@@ -450,10 +451,9 @@ export function LSMVisual({ index }: { index?: number }) {
     <div
       ref={scope}
       className={cn(
-        "grid grid-rows-[230px] md:grid-rows-[300px] divide-y divide-borderStrong lg:max-w-[500px] lg:mx-auto border-borderStrong",
-        i === 0 && "lg:grid-rows-[250px] lg:border-b lg:border-r",
-        i > 0 &&
-          "grid-rows-[repeat(2,230px)] md:grid-rows-[230px_300px] lg:border-r",
+        "grid grid-rows-[230px] md:grid-rows-[300px] divide-y divide-borderStrong lg:max-w-[500px] lg:mx-auto border border-borderStrong rounded-xl overflow-hidden mt-8",
+        i === 0 && "lg:grid-rows-[250px]",
+        i > 0 && "grid-rows-[repeat(2,230px)] md:grid-rows-[230px_300px]",
       )}
     >
       <div
@@ -601,8 +601,8 @@ export function LSM({ showLog = false }) {
   );
 
   return (
-    <>
-      <div className="flex gap-2 -mb-2 h-8 items-center">
+    <Figure>
+      <div className="flex gap-2 h-8 items-center">
         <ToggleButton
           loading={loading}
           onClick={async () => {
@@ -687,7 +687,7 @@ export function LSM({ showLog = false }) {
           )}
         </div>
       </Wide>
-    </>
+    </Figure>
   );
 }
 

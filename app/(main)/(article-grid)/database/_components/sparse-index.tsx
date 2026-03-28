@@ -1,6 +1,7 @@
 "use client";
 
 import { useAnimate } from "motion/react";
+import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
 import { FileDatabase } from "./file-database";
 import { createStore } from "../_lib/file-database";
@@ -91,8 +92,8 @@ export function SearchSparseIndex() {
   };
 
   return (
-    <>
-      <div className="flex -mb-2 h-8 items-center">
+    <Figure>
+      <div className="flex h-8 items-center">
         <ToggleButton
           onClick={() => {
             reset();
@@ -146,6 +147,6 @@ export function SearchSparseIndex() {
           </div>
         </div>
       </Wide>
-    </>
+    </Figure>
   );
 }

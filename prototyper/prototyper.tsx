@@ -10,6 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "~/lib/cn";
+import { getComponent } from "./get-component";
 import { type CSSDeclaration, resolveClass } from "./tailwindClassMap";
 
 // ── Spacing consolidation (padding + margin) ──────────────────────────────────
@@ -551,6 +552,8 @@ const TRANSPARENT = new Set(["transparent", "rgba(0, 0, 0, 0)", ""]);
 type StyleRow = { prop: string; value: string };
 
 type InspectedElement = {
+  componentName: string;
+  filePath: string;
   tailwindStyles: Array<{ className: string; rows: StyleRow[] }>;
   computedStyles: Array<{ group: string; rows: StyleRow[] }>;
 };
@@ -586,7 +589,13 @@ function getComputedStyles(el: Element): InspectedElement["computedStyles"] {
 }
 
 function inspectElement(el: Element): InspectedElement {
+  const fromReact =
+    el instanceof HTMLElement
+      ? getComponent(el)
+      : { componentName: "", filePath: "" };
   return {
+    componentName: fromReact.componentName,
+    filePath: fromReact.filePath,
     tailwindStyles: getTailwindStyles(el),
     computedStyles: getComputedStyles(el),
   };
@@ -770,6 +779,9 @@ export const Prototyper = () => {
           }}
         >
           <ul className="overflow-y-auto grow ml-0">
+            <li className="px-3.5 py-2 border-b border-neutral-200 font-mono">
+              {inspected.componentName ? `<${inspected.componentName} />` : "—"}
+            </li>
             {/* Tailwind classes — grouped under a single "Tailwind" header */}
             <li>
               <div className="sticky top-0 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3.5 py-2 font-medium text-neutral-500 dark:text-neutral-400">

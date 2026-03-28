@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "motion/react";
+import { useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
-import { IconButton } from "../toggle-button";
-import { useInterval } from "~/lib/use-interval";
 import { cn } from "~/lib/cn";
+import { useInterval } from "~/lib/use-interval";
 import { Slider, SliderMarker } from "../slider";
+import { IconButton } from "../toggle-button";
 
 type Snapshot = {
   items: number[];
@@ -48,7 +48,7 @@ export function RangeQueryClient({
   const currentUnsortedSnapshot = snapshots.unsorted[index];
   return (
     <>
-      <Wide className="flex items-center gap-3 px-8">
+      <Wide className="flex items-center gap-3 px-5 md:px-0">
         <IconButton
           label={isPlaying ? "Pause" : "Play"}
           className="shrink-0"

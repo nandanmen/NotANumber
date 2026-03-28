@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import type { CSSProperties } from "react";
-import { GridBackground } from "./grid-background";
 import { GridSizeProvider } from "./grid-context";
 import { Navbar } from "./nav";
 
@@ -11,18 +10,23 @@ export default async function ArticleGridLayout({
 }) {
   return (
     <div
-      className="bg-gray3 min-h-screen pb-32 px-5 space-y-16"
+      className="bg-gray3 min-h-screen pb-32 px-[var(--content-padding)] space-y-16"
       style={
         {
-          "--content-width": "1600px",
+          "--content-width": "1480px",
+          "--content-padding": "20px",
         } as CSSProperties
       }
     >
       <Navbar />
       <GridSizeProvider>
         <article
-          className="mx-auto max-w-[var(--content-width)] grow space-y-16 w-full"
-          style={{ "--grid-size": "48px" } as CSSProperties}
+          className="article article-layout grow w-full max-w-[var(--content-width)] mx-auto grid"
+          style={
+            {
+              "--grid-size": "48px",
+            } as CSSProperties
+          }
         >
           {children}
         </article>

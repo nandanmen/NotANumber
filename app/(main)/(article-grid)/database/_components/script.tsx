@@ -1,7 +1,9 @@
 "use client";
 
-import { Fragment, type ReactNode, useState } from "react";
 import { motion } from "motion/react";
+import { Fragment, type ReactNode, useState } from "react";
+import { Wide } from "~/components/mdx/Wide";
+import { Figure } from "~/components/mdx/figure";
 import { ToggleButton } from "./toggle-button";
 
 export function Script({
@@ -11,8 +13,8 @@ export function Script({
   const [runs, setRuns] = useState(0);
   const [hovering, setHovering] = useState(false);
   return (
-    <>
-      <div className="w-fit -mb-2">
+    <Figure>
+      <div className="w-fit">
         <ToggleButton
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
@@ -27,11 +29,11 @@ export function Script({
           {runs > 1 ? "Reset" : "Run"}
         </ToggleButton>
       </div>
-      <div className="!max-w-[initial] bg-gray4 rounded-lg">
+      <Wide className="bg-gray4 rounded-lg mx-0 w-full">
         <div className="text-xs text-gray11 font-mono py-1 px-4 border border-[hsl(0_0%_79.8%)] rounded-t-lg border-b-0 -mx-px -mb-1.5 pb-2.5">
           script.js
         </div>
-        <div className="grid grid-cols-2 bg-gray3 rounded-lg ring-1 ring-neutral-950/15 overflow-hidden [&>:first-child]:rounded-r-none [&>:first-child]:shadow-none [&>:first-child]:ring-0 divide-x divide-neutral-950/15 shadow">
+        <div className="grid grid-rows-2 grid-cols-1 md:grid-cols-2 md:grid-rows-1 bg-gray3 rounded-lg ring-1 ring-neutral-950/15 overflow-hidden [&>:first-child]:rounded-none [&>:first-child]:shadow-none [&>:first-child]:ring-0 divide-y md:divide-y-0 md:divide-x divide-neutral-950/15 shadow">
           {children}
           <div className="font-mono p-4 text-sm">
             {Array.from({ length: runs }).map((_, i) => {
@@ -74,7 +76,7 @@ export function Script({
             </span>
           </div>
         </div>
-      </div>
-    </>
+      </Wide>
+    </Figure>
   );
 }

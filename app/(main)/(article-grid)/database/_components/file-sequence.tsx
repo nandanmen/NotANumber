@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Figure } from "~/components/mdx/figure";
 import { FullWidth } from "~/components/mdx/full-width";
 import { cn } from "~/lib/cn";
 import { ToggleButton } from "./toggle-button";
@@ -12,15 +13,15 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
   const [updated, setUpdated] = useState(false);
   const [animating, setAnimating] = useState(false);
   return (
-    <>
+    <Figure>
       {updateable && (
-        <div className="w-fit -mb-2">
+        <div className="w-fit">
           <ToggleButton onClick={() => setUpdated(!updated)}>
             Update
           </ToggleButton>
         </div>
       )}
-      <FullWidth className="-mx-6 md:mx-0 !max-w-[initial]">
+      <FullWidth>
         <div className="p-4 bg-gray5 md:rounded-lg overflow-hidden border-y md:border-x border-borderStrong">
           <p
             className={cn(
@@ -74,6 +75,6 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
           </p>
         </div>
       </FullWidth>
-    </>
+    </Figure>
   );
 }

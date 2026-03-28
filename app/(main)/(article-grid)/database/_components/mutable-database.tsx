@@ -156,7 +156,7 @@ export function CommandList({
   return (
     <div
       className={cn(
-        "rounded-lg bg-gray3 ring-1 shadow ring-neutral-950/15 relative",
+        "rounded-lg bg-gray1 ring-1 shadow ring-neutral-950/15 relative",
         className,
       )}
       style={{
@@ -194,7 +194,7 @@ export function CommandList({
         {empty && commands.length === 0 && <>{empty}</>}
       </ol>
       <div
-        className="absolute h-10 top-0 left-0 right-0 rounded-t-lg bg-gray3 pointer-events-none"
+        className="absolute h-10 top-0 left-0 right-0 rounded-t-lg bg-gray1 pointer-events-none"
         style={{
           maskImage: `linear-gradient(
   to bottom,
@@ -279,7 +279,7 @@ export const toFileDatabaseRecords = (store: DatabaseState) => {
 export function FileDatabaseVisualizer() {
   const [store] = useScrollGroupState<DatabaseState>();
   return (
-    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-6 md:border-x lg:mx-0 border-borderStrong md:rounded-xl h-[300px] lg:h-[max(30vh,400px)] overflow-hidden relative px-6">
+    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-6 md:border-x border-borderStrong md:rounded-xl h-[300px] lg:h-[400px] lg:m-8 overflow-hidden relative px-6">
       <p className="text-gray11 font-mono text-sm my-3">db.txt</p>
       <FileDatabaseComponent
         className="md:max-w-[300px] mx-auto"

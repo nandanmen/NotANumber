@@ -15,7 +15,7 @@ export function ToggleButton({
     <div className="h-8 flex items-center">
       <motion.button
         className={cn(
-          "bg-gray3 ring-1 shadow ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray4 disabled:opacity-60 disabled:hover:bg-gray3 disabled:cursor-not-allowed",
+          "bg-gray1 ring-1 shadow ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray3 disabled:opacity-60 disabled:hover:bg-gray1 disabled:cursor-not-allowed",
           loading && "overflow-hidden shadow-none",
           className,
         )}
@@ -72,7 +72,7 @@ export function IconButton({
   return (
     <button
       className={cn(
-        "h-8 w-8 rounded-lg bg-gray3 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray4 text-gray11",
+        "h-8 w-8 rounded-lg bg-gray1 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray3 text-gray11",
         className,
       )}
       onClick={onClick}

@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+.article {
+  @apply gap-y-5;
+}
+
+.article > :where(*) {
+  @apply col-start-2;
+}
+
+.article-layout {
+  @apply grid grid-cols-[1fr_min(65ch,100%)_1fr];
+}
+
+.full-width {
+  @apply col-start-1 col-end-[-1];
+}
+
 .inline-code:not(pre > code) {
   @apply bg-gray7 px-1 text-sm;
 }

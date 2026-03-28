@@ -2,6 +2,7 @@
 
 import { motion, useAnimate } from "motion/react";
 import { useState } from "react";
+import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
 import { cn } from "~/lib/cn";
 import { sleep } from "~/lib/utils";
@@ -72,8 +73,8 @@ export function SearchIndex() {
   };
 
   return (
-    <>
-      <div className="flex -mb-2 h-8 items-center">
+    <Figure>
+      <div className="flex h-8 items-center">
         <ToggleButton
           loading={playing}
           onClick={async () => {
@@ -285,6 +286,6 @@ export function SearchIndex() {
           </div>
         </div>
       </Wide>
-    </>
+    </Figure>
   );
 }
