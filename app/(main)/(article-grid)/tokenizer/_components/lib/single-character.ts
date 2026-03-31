@@ -1,10 +1,11 @@
-import { knownSingleCharacters } from "./tokenize";
 import snapshot from "~/lib/algorithm/snapshot.macro";
+
+import { knownSingleCharacters } from "./tokenize";
 
 export const singleCharacter = snapshot(function tokenize(input) {
   let phase = "Starting... ⚙️";
   let current = 0;
-  let tokens = [];
+  const tokens = [];
 
   debugger;
 

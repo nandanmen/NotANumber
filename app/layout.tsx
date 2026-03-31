@@ -115,7 +115,7 @@ export default function RootLayout({
           serif.variable,
           sans.variable,
           // mono.variable,
-          "font-sans antialiased bg-gray4",
+          "font-sans antialiased bg-gray4 leading-relaxed",
         )}
       >
         <AuthProvider>

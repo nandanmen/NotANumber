@@ -1,15 +1,16 @@
-import { useAlgorithm } from "~/lib/algorithm";
-import { styled } from "~/stitches.config";
-import snapshot from "~/lib/algorithm/snapshot.macro";
+"use client";
+
 import { GridBackground } from "~/components/Grid";
 import { PlayButton } from "~/components/PlayButton";
+import { useAlgorithm } from "~/lib/algorithm";
+import snapshot from "~/lib/algorithm/snapshot.macro";
 
-import type { Token } from "./lib/tokenize";
 import { CharacterList } from "./CharacterList";
+import type { Token } from "./lib/tokenize";
 
 const boilerplate = snapshot(function tokenize(input: string) {
   let current = 0;
-  let tokens: Token[] = [];
+  const tokens: Token[] = [];
 
   while (current < input.length) {
     // parse tokens
@@ -37,26 +38,12 @@ export function Boilerplate() {
   });
   return (
     <GridBackground>
-      <Wrapper>
+      <div className="flex flex-col items-center justify-center py-12">
         <CharacterList state={state} />
-      </Wrapper>
-      <ControlsWrapper>
+      </div>
+      <div className="absolute bottom-2 left-2">
         <PlayButton isPlaying={ctx.isPlaying} onClick={ctx.toggle} secondary />
-      </ControlsWrapper>
+      </div>
     </GridBackground>
   );
 }
-
-const Wrapper = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "$12 0",
-});
-
-const ControlsWrapper = styled("div", {
-  position: "absolute",
-  left: "$2",
-  bottom: "$2",
-});

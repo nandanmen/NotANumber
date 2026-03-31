@@ -189,7 +189,7 @@ export const knownSingleCharacters = new Map<SingleCharacterToken, () => Token>(
     [".", token.dot],
     [";", token.semicolon],
     ["=", token.equals],
-  ]
+  ],
 );
 
 function isSingleCharacter(char: string): char is SingleCharacterToken {
@@ -198,5 +198,8 @@ function isSingleCharacter(char: string): char is SingleCharacterToken {
 
 function getCharToken(char: SingleCharacterToken) {
   const builder = knownSingleCharacters.get(char);
-  return builder!();
+  if (!builder) {
+    throw new Error(`Unknown single-character token: ${char}`);
+  }
+  return builder();
 }
