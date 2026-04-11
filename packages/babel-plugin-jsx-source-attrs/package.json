@@ -1,0 +1,11 @@
+{
+  "name": "babel-plugin-jsx-source-attrs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Inject data-source-file and data-source-component on JSX elements for Next.js / React",
+  "main": "index.js",
+  "keywords": ["babel-plugin", "jsx", "nextjs", "react"],
+  "peerDependencies": {
+    "@babel/core": "^7.0.0"
+  }
+}
