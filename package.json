@@ -9,7 +9,6 @@
     "build": "pnpm build:content && next build",
     "build:content": "rm -rf ./_dist-content && babel ./content --out-dir ./_dist-content --copy-files --extensions .ts,.tsx",
     "start": "next start",
-    "stories": "node bin/stories.js",
     "test": "vitest"
   },
   "dependencies": {
@@ -20,6 +19,7 @@
     "@base-ui-components/react": "1.0.0-beta.4",
     "@codesandbox/sandpack-react": "^1.18.4",
     "@codesandbox/sandpack-themes": "^1.17.0",
+    "@floating-ui/react": "^0.27.19",
     "@mdx-js/esbuild": "^3.1.1",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
@@ -78,6 +78,7 @@
     "@babel/cli": "^7.18.9",
     "@babel/core": "^7.18.9",
     "@babel/plugin-syntax-jsx": "^7.18.6",
+    "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.18.6",
     "@biomejs/biome": "1.9.4",
     "@types/babel__generator": "^7.27.0",

@@ -1,5 +1,5 @@
-import { BackgroundStripes } from "~/components/stripe-pattern";
 import type { Metadata, Viewport } from "next";
+import { Prototyper } from "../../prototyper/prototyper";
 
 export const viewport: Viewport = {
   themeColor: "#ededed",
@@ -39,10 +39,8 @@ export default function MainLayout({
 }) {
   return (
     <div className="min-h-screen isolate">
-      <BackgroundStripes className="fixed inset-0" />
-      <div className="relative z-10 mx-auto md:px-4 w-full max-w-[1450px]">
-        {children}
-      </div>
+      {children}
+      {process.env.NODE_ENV === "development" ? <Prototyper /> : null}
     </div>
   );
 }

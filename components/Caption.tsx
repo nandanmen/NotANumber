@@ -1,3 +1,5 @@
+"use client";
+
 import { styled } from "~/stitches.config";
 
 export const Caption = styled("figcaption", {

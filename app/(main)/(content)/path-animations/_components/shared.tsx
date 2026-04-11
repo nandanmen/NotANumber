@@ -9,7 +9,7 @@ import { CodeBlockTemplate } from "~/components/mdx/code-block-template";
 import { type ReactNode, useMemo, useState } from "react";
 import { cn } from "~/lib/cn";
 import { Figure } from "./figure";
-import { ToggleButton } from "../../database/_components/toggle-button";
+import { Button } from "~/components/Button";
 
 const CHECK_STROKE = "M7 13L10 16L17 8";
 const CHECK_FILL =
@@ -30,7 +30,7 @@ export function CheckAnimationWrapper({
       className="overflow-hidden"
       variant="grid"
       controls={
-        <ToggleButton
+        <Button
           onClick={async () => {
             setPlaying(true);
             await onPlay();
@@ -39,7 +39,7 @@ export function CheckAnimationWrapper({
           loading={playing}
         >
           Play
-        </ToggleButton>
+        </Button>
       }
     >
       <div

@@ -1,0 +1,92 @@
+## control flow graphs
+
+Before we get into it, a bit of context: Cloudflare Workflows is an engine for running asynchronous JavaScript code. By grouping sections of code into atomic blocks called _steps_, you can create a workflow that you can run on demand and carefully control the execution of.
+
+```ts
+await step.do('my first step', () => { ... })
+
+await Promise.all([
+  step.waitForEvent('request-approval', () => { ... }),
+  parseApi(),
+  step.do('do something else', () => { ... }),
+])
+
+await step.do('make a call to write', () => { ... })
+```
+
+---
+
+## code layout
+
+Since workflows are defined in code, there's pretty much no limit to how complex they can get. How do we even begin to visualize something like this?
+
+### sequential layout
+
+Let's start with the simplest sequence possible: one step followed by another.
+
+```ts
+await step.do('step 1', () => { ... })
+await step.do('step 2', () => { ... })
+```
+
+Here, the steps execute sequentially, with step 1 finishing before step 2 begins. A natural way of visualizing this is to render the step 1 node above the step 2 node, with a line connecting them.
+
+How might we build this in code? Assuming that the nodes are written using HTML elements, we don't have to do anything to accomplish this layout. By rendering the component one after the other, we get the desired layout by default:
+
+```html
+<div>
+  <div>step 1</div>
+  <div>step 2</div>
+</div>
+```
+
+We can use an SVG to render the connector, but since it's a straight line, we don't actually have to. We can accomplish the same visual effect using a div with a fixed height and width:
+
+```html
+<div>
+  <div>step 1</div>
+  <div class="h-4 w-0.5 bg-gray10" />
+  <div>step 2</div>
+</div>
+```
+
+---
+
+### parallel layout
+
+What if steps are running concurrently?
+
+```ts
+await Promise.all([
+  step.do('step 1', () => { ... }),
+  step.do('step 2', () => { ... }),
+])
+```
+
+Here, both step 1 and step 2 start at the same time, which means we'll need to put them side by side. With the DOM, we can accomplish this by using flexbox or grids:
+
+```html
+<div class="flex">
+  <div>step 1</div>
+  <div>step 2</div>
+</div>
+```
+
+SVGs make more sense here for the connectors since they're not straight lines. Having said that, SVGs are quite annoying to work with in this case because SVG shapes need explicit coordinates and we don't have them here (because we're letting the DOM position the nodes for us).
+
+We certainly could measure the size and position of the nodes, but what if we don't have to? That's right—what if we again use HTML and CSS to render the connectors?
+
+Above each node, we'll add a `div` that's:
+
+- Half the width of the node
+- Has a single rounded corner
+- Has borders on two sides
+
+```html
+<div>
+  <div class="w-1/2 h-8 bg-gray10 rounded-tr-xl border-r border-b border-gray10" />
+  <div>step 1</div>
+</div>
+```
+
+The rounded corner and the border will need to be flipped for the other side. But how do we know which side is which?

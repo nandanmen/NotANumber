@@ -1,5 +1,7 @@
 const createMDX = require("@next/mdx");
 
+// MDX is compiled via the MDX loader; TSX still goes through root `babel.config.js`. See babel.config.jsx-source.example.js for a `next/babel`-only variant.
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,

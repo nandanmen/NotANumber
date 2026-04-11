@@ -1,32 +1,32 @@
 "use client";
 
 import clsx from "clsx";
-import styles from "./scroll-group.module.css";
+import produce from "immer";
 import {
-  createContext,
+  Children,
   type Dispatch,
   type SetStateAction,
-  useContext,
-  useRef,
-  useEffect,
-  useState,
-  Children,
   cloneElement,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
-import produce from "immer";
 import { ColumnRight, Columns } from "./columns";
+import styles from "./scroll-group.module.css";
 
 type EventEmitter<
   Types extends string,
-  Payloads extends { [K in Types]: unknown }
+  Payloads extends { [K in Types]: unknown },
 > = {
   on: <TEvent extends Types>(
     event: TEvent,
-    cb: (args: Payloads[TEvent]) => void
+    cb: (args: Payloads[TEvent]) => void,
   ) => () => void;
   notify: <TEvent extends Types>(
     event: TEvent,
-    args?: Payloads[TEvent]
+    args?: Payloads[TEvent],
   ) => void;
 };
 
@@ -53,7 +53,7 @@ const createEventEmitter = () => {
 
 export function useScrollGroupEvents<
   Types extends string,
-  Payloads extends { [K in Types]: unknown } = { [K in Types]: never }
+  Payloads extends { [K in Types]: unknown } = { [K in Types]: never },
 >() {
   const ctx = useScrollGroupContext();
   if (!ctx) {
@@ -118,7 +118,10 @@ export function ScrollGroup({
   const [_state, setState] = useState(state);
 
   return (
-    <Columns>
+    <section
+      data-scroll-group
+      className="full-width lg:grid grid-cols-2 my-8 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
+    >
       <ScrollGroupContext.Provider
         value={{
           activeIndex,
@@ -132,19 +135,21 @@ export function ScrollGroup({
           lastIndex,
         }}
       >
-        <div className="space-y-5">
-          {Children.map(children, (child, i) => {
-            return cloneElement(
-              child as React.ReactElement<{ index: number }>,
-              {
-                index: i,
-              }
-            );
-          })}
+        <div className="lg:ring-1 ring-black/15 lg:shadow-sm lg:bg-gray2 flex lg:px-7">
+          <div className="lg:border-x border-borderSoft w-full lg:py-10 xl:py-12 lg:px-6 xl:px-10">
+            {Children.map(children, (child, i) => {
+              return cloneElement(
+                child as React.ReactElement<{ index: number }>,
+                {
+                  index: i,
+                },
+              );
+            })}
+          </div>
         </div>
         <ScrollFigure>{figure}</ScrollFigure>
       </ScrollGroupContext.Provider>
-    </Columns>
+    </section>
   );
 }
 
@@ -242,13 +247,7 @@ export function ScrollGroupSection({
 
   return (
     <ScrollSectionContext.Provider value={{ index }}>
-      <div
-        className={clsx(
-          styles.article,
-          "[&>*:not(figure)]:max-w-[60ch] md:max-w-[60ch] md:min-h-[45vh]"
-        )}
-        ref={ref}
-      >
+      <div className="article article-layout min-h-[45vh]" ref={ref}>
         {children}
       </div>
     </ScrollSectionContext.Provider>
@@ -264,7 +263,7 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
     const updateTop = () => {
       setTop(
         window.innerHeight * 0.35 -
-          figureRef.current.getBoundingClientRect().height / 2
+          figureRef.current.getBoundingClientRect().height / 2,
       );
     };
     updateTop();
@@ -275,16 +274,17 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ColumnRight>
-      <div className="h-full bg-gray5 py-10 shadow-inner">
-        <div
-          ref={figureRef}
-          className="sticky px-10 overflow-hidden"
-          style={{ top }}
-        >
+    <figure
+      className="hidden lg:block col-start-2 row-start-1 h-[calc(100%-15px)] ml-px mt-2 border border-l-0 border-borderStrong px-7"
+      style={{
+        background: "hsl(0 0% 95% / var(--tw-bg-opacity, 1))",
+      }}
+    >
+      <div className="h-full border-x border-borderStrong border-dashed">
+        <div ref={figureRef} className="sticky overflow-hidden" style={{ top }}>
           {children}
         </div>
       </div>
-    </ColumnRight>
+    </figure>
   );
 }

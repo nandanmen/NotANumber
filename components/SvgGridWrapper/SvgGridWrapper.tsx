@@ -12,11 +12,11 @@ export const SvgGridWrapper = React.forwardRef<
   HTMLDivElement,
   SvgGridWrapperProps
 >(function SvgGridWrapper(
-  { height = DEFAULT_HEIGHT, children, ...props },
+  { height = DEFAULT_HEIGHT, children, style, ...props },
   ref
 ) {
   return (
-    <GridBackground css={{ height }} ref={ref} {...props}>
+    <GridBackground style={{ height, ...style }} ref={ref} {...props}>
       <svg width="100%" height="100%">
         {children}
       </svg>

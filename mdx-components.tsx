@@ -1,23 +1,24 @@
 // @ts-nocheck
 
 import type { MDXComponents } from "mdx/types";
-import { Annotation } from "./components/mdx/annotation";
-import { InlineNote, Note } from "./components/mdx/note";
-import { CodeBlock } from "./components/mdx/code-block";
+import Link from "next/link";
 import { OrderedList } from "./components/OrderedList";
+import { Wide } from "./components/mdx/Wide";
+import { Annotation } from "./components/mdx/annotation";
+import { Aside } from "./components/mdx/aside";
+import { CodeBlock } from "./components/mdx/code-block";
+import { ColumnRight, Columns } from "./components/mdx/columns";
+import { Figure } from "./components/mdx/figure";
+import { FullWidth } from "./components/mdx/full-width";
+import { Heading } from "./components/mdx/heading";
+import { InlineNote, Note } from "./components/mdx/note";
 import {
-  ScrollGroup,
   ScrollFigure,
+  ScrollGroup,
   ScrollGroupSection,
 } from "./components/mdx/scroll-group";
-import { FullWidth } from "./components/mdx/full-width";
-import { Columns, ColumnRight } from "./components/mdx/columns";
-import { Heading } from "./components/mdx/heading";
 import { SkipLink } from "./components/mdx/skip-link";
-import { Wide } from "./components/mdx/Wide";
-import { Aside } from "./components/mdx/aside";
 import { cn } from "./lib/cn";
-import Link from "next/link";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -32,7 +33,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <Heading level="h3" className="text-xl font-medium" {...props} />
     ),
     strong: (props) => <strong className="font-medium" {...props} />,
-    code: (props) => <code className="inline-code" {...props} />,
+    code: (props) => (
+      <code
+        className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded ring-neutral-950/15"
+        {...props}
+      />
+    ),
     pre: CodeBlock,
     ul: (props) => (
       <ul
@@ -42,7 +48,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     ol: OrderedList,
     hr: () => (
-      <hr className="border-gray7 border-dashed md:-mx-10 my-5 !col-span-3 !max-w-[calc(100%+80px)]" />
+      <hr className="border-gray7 border-dashed my-5 !col-start-1 col-span-3 !max-w-full" />
     ),
     a: ({ href, ...props }) => {
       const isExternal = href?.startsWith("http");
@@ -70,7 +76,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Annotation,
     Callout: (props) => (
       <div
-        className="bg-gray3 border border-borderStrong border-dashed rounded-lg px-4 py-3.5 relative"
+        className="bg-gray2 border border-borderStrong border-dashed rounded-lg px-4 py-3.5 relative"
         {...props}
       />
     ),
@@ -82,7 +88,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
               Problem
             </h4>
           </header>
-          <div className="bg-gray2 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
+          <div className="bg-gray1 ring-1 shadow ring-neutral-950/15 rounded-lg px-4 py-3 relative">
             {props.children}
           </div>
         </div>
@@ -93,6 +99,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <div className={cn("lg:hidden", className)} {...props} />
     ),
     FullWidth,
+    Figure,
     ScrollGroup,
     ScrollGroupSection,
     ScrollFigure,

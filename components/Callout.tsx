@@ -1,3 +1,5 @@
+"use client";
+
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { styled } from "~/stitches.config";
 import { Row } from "./layout/Row";

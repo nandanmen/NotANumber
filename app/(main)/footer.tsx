@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { posts, XIcon } from "./posts";
 import { usePathname } from "next/navigation";
+import { XIcon, posts } from "./posts";
 
 export function PostsFooter() {
   const pathname = usePathname();

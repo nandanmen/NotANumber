@@ -20,4 +20,5 @@
   width: 26px;
   font-weight: 500;
   flex-shrink: 0;
+  position: relative;
 }

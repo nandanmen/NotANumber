@@ -1,7 +1,9 @@
-import { darkTheme, styled } from "~/stitches.config";
+"use client";
+
+import { motion, type HTMLMotionProps } from "framer-motion";
+import React from "react";
+import { cn } from "~/lib/cn";
 import { range } from "~/lib/utils";
-import { Row } from "./layout/Row";
-import { motion } from "framer-motion";
 
 const CELL_SIZE = 8;
 
@@ -30,7 +32,7 @@ export const Grid = ({
       preserveAspectRatio="none"
       className={className}
     >
-      <Wrapper>
+      <g className="text-gray6">
         {range(rows)
           .slice(1)
           .map((index) => (
@@ -57,56 +59,47 @@ export const Grid = ({
               strokeWidth="0.2"
             />
           ))}
-      </Wrapper>
+      </g>
       {children}
     </svg>
   );
 };
 
-const Wrapper = styled("g", {
-  color: "$gray6",
-});
+export type GridBackgroundProps = Omit<
+  HTMLMotionProps<"div">,
+  "children" | "ref"
+> & {
+  noOverflow?: boolean;
+  children?: React.ReactNode;
+};
 
-export const GridBackground = styled(motion.div, {
-  position: "relative",
-  border: "1px solid $gray8",
-  borderRadius: "$base",
-  backgroundImage: "url(/grid.svg)",
-  backgroundSize: "40px 40px",
-  overflow: "auto",
-
-  [`.${darkTheme} &`]: {
-    backgroundImage: "url(/grid-dark.svg)",
-  },
-
-  variants: {
-    noOverflow: {
-      true: {
-        overflow: "hidden",
-      },
-    },
-  },
-});
-
-export const GridOverflowBox = ({ children }) => (
-  <GridBackground>
-    <ContentWrapper>
+export const GridBackground = React.forwardRef<
+  HTMLDivElement,
+  GridBackgroundProps
+>(function GridBackground(
+  { className, noOverflow, children, ...props },
+  ref,
+) {
+  return (
+    <motion.div
+      ref={ref}
+      className={cn(
+        "relative border border-gray8 rounded-md bg-[url(/grid.svg)] bg-[length:40px_40px]",
+        noOverflow ? "overflow-hidden" : "overflow-auto",
+        className,
+      )}
+      {...props}
+    >
       {children}
-      <Spacer />
-    </ContentWrapper>
+    </motion.div>
+  );
+});
+
+export const GridOverflowBox = ({ children }: { children: React.ReactNode }) => (
+  <GridBackground>
+    <div className="flex p-8 pr-0 md:justify-center">
+      {children}
+      <div className="w-8 shrink-0" />
+    </div>
   </GridBackground>
 );
-
-const Spacer = styled("div", {
-  width: "$8",
-  flexShrink: 0,
-});
-
-const ContentWrapper = styled(Row, {
-  padding: "$8",
-  paddingRight: 0,
-
-  "@md": {
-    justifyContent: "center",
-  },
-});

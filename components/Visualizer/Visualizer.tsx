@@ -1,132 +1,145 @@
-import { motion } from "framer-motion";
-import { ComponentPropsWithoutRef } from "react";
+"use client";
+
+import { type ComponentPropsWithoutRef, forwardRef } from "react";
 import { FaPlay, FaUndo } from "react-icons/fa";
-import { styled, darkTheme } from "~/stitches.config";
-import { GridBackground } from "../Grid";
+import { cn } from "~/lib/cn";
+import {
+  Button as ChromeButton,
+  IconButton as ChromeIconButton,
+} from "../Button";
+import { GridBackground, type GridBackgroundProps } from "../Grid";
 
-export const Visualizer = styled("div", {
-  $$border: "1px solid $colors$gray8",
+type VisualizerProps = React.ComponentPropsWithoutRef<"div"> & {
+  childBorders?: boolean;
+};
 
-  border: "$$border",
-  borderRadius: "$base",
-  overflow: "hidden",
-
-  "> :not(:first-child)": {
-    borderTop: "$$border",
+export const Visualizer = forwardRef<HTMLDivElement, VisualizerProps>(
+  function Visualizer({ className, childBorders = true, ...props }, ref) {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "overflow-hidden md:rounded-lg border-y md:border-x border-borderStrong",
+          childBorders
+            ? "[&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-gray8"
+            : "[&>*:not(:first-child)]:border-t-0",
+          className,
+        )}
+        {...props}
+      />
+    );
   },
+);
 
-  [`.${darkTheme} &`]: {
-    $$border: "1px solid $colors$gray6",
-  },
-
-  variants: {
-    childBorders: {
-      false: {
-        "> :not(:first-child)": {
-          border: "initial",
-        },
-      },
-    },
-  },
-});
-
-export const Controls = styled("div", {
-  background: "$gray5",
-  position: "relative",
-  padding: "$2",
-  display: "flex",
-  justifyContent: "space-between",
-
-  [`.${darkTheme} &`]: {
-    background: "$gray2",
-  },
-});
-
-export const Content = styled(GridBackground, {
-  border: "none",
-  borderRadius: 0,
-
-  variants: {
-    padding: {
-      sm: {
-        padding: "$4",
-      },
-      md: {
-        padding: "$6",
-      },
-      lg: {
-        padding: "$8",
-      },
-    },
-  },
-});
-
-export const ToggleButton = styled(motion.button, {
-  border: "1px solid $gray8",
-  background: "$gray1",
-  padding: "$1 $2",
-  borderRadius: 4,
-  fontSize: "$sm",
-
-  "&:hover": {
-    borderColor: "$gray12",
-  },
-
-  "&:focus-visible": {
-    outline: "2px solid $gray8",
-  },
-
-  "&:disabled": {
-    borderColor: "$gray7",
-    background: "$gray5",
-    color: "$gray11",
-    cursor: "not-allowed",
-  },
-
-  variants: {
-    secondary: {
-      true: {
-        background: "none",
-        border: "none",
-
-        "&:hover": {
-          background: "$gray7",
-        },
-
-        "&:disabled": {
-          color: "$gray8",
-          cursor: "not-allowed",
-          pointerEvents: "none",
-        },
-      },
-    },
-  },
-});
-
-export const IconButton = styled(ToggleButton, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "$gray10",
-  height: 22,
-});
-
-export const PlayButton = (
-  props: ComponentPropsWithoutRef<typeof IconButton>
-) => {
+export const Controls = forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"div">
+>(function Controls({ className, ...props }, ref) {
   return (
-    <IconButton secondary {...props}>
+    <div
+      ref={ref}
+      className={cn(
+        "relative flex justify-between bg-gray4 px-[var(--content-padding)] py-3 md:px-3",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+
+const paddingClass = {
+  sm: "p-4",
+  md: "p-6",
+  lg: "p-8",
+} as const;
+
+export type ContentProps = GridBackgroundProps & {
+  padding?: keyof typeof paddingClass;
+};
+
+export const Content = forwardRef<HTMLDivElement, ContentProps>(
+  function Content({ className, padding, ...props }, ref) {
+    return (
+      <GridBackground
+        ref={ref}
+        className={cn(
+          "rounded-none border-0",
+          padding && paddingClass[padding],
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+
+export type ToggleButtonProps = Omit<
+  ComponentPropsWithoutRef<typeof ChromeButton>,
+  "variant"
+> & {
+  secondary?: boolean;
+};
+
+export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
+  function ToggleButton({ className, secondary, ...props }, ref) {
+    return (
+      <ChromeButton
+        ref={ref}
+        variant={secondary ? "secondary" : "default"}
+        className={className}
+        {...props}
+      />
+    );
+  },
+);
+
+type VisualizerIconButtonProps = Omit<
+  ComponentPropsWithoutRef<typeof ChromeIconButton>,
+  "variant"
+> & {
+  secondary?: boolean;
+  label?: string;
+};
+
+export const IconButton = forwardRef<
+  HTMLButtonElement,
+  VisualizerIconButtonProps
+>(function IconButton(
+  { className, secondary: _secondary, label = "Action", ...props },
+  ref,
+) {
+  return (
+    <ChromeIconButton
+      ref={ref}
+      variant="ghost"
+      label={label}
+      className={cn(
+        "flex h-[22px] items-center justify-center text-gray10",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+
+export const PlayButton = forwardRef<
+  HTMLButtonElement,
+  Omit<ComponentPropsWithoutRef<typeof IconButton>, "children" | "label">
+>(function PlayButton(props, ref) {
+  return (
+    <IconButton ref={ref} label="Play" {...props}>
       <FaPlay />
     </IconButton>
   );
-};
+});
 
-export const UndoButton = (
-  props: ComponentPropsWithoutRef<typeof IconButton>
-) => {
+export const UndoButton = forwardRef<
+  HTMLButtonElement,
+  Omit<ComponentPropsWithoutRef<typeof IconButton>, "children" | "label">
+>(function UndoButton(props, ref) {
   return (
-    <IconButton secondary {...props}>
+    <IconButton ref={ref} label="Undo" {...props}>
       <FaUndo />
     </IconButton>
   );
-};
+});
