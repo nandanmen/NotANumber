@@ -70,6 +70,32 @@ Renders the toolbar with the inspect and add buttons. Responsible for the curren
   - adds a `activeProp` prop to state, set to null (see StylePanel for definitions)
   - renders `StylePanel`
 
+Pseudo-code:
+
+```tsx
+const Prototyper = () => {
+  return (
+    <>
+      <Toolbar />
+      {state !== 'start' && <ElementHighlighter />}
+      {state === 'editing' && <StylePanel />}
+    </>
+  )
+}
+```
+
+### Toolbar
+
+```tsx
+const ToolbarProps = {
+  /**
+   * Indicates which button to highlight. When state === editing, assume mode is inspect.
+   */ 
+  activeTool: "add" | "inspect"
+  onClick: (tool: "add" | "inspect") => void;
+}
+```
+
 ### StylePanel
 
 Renders an interactive panel that allows the user to update the styles of the selected element.
@@ -85,8 +111,11 @@ const StylePanelProps = {
 
 ### ElementHighlighter
 
+The blue overlay that goes on top of the currently selected element.
+
 ```tsx
 const ElementHighlighterProps = {
-
+  selectedElement: HTMLElement
+  activeProp: string | null
 }
 ```

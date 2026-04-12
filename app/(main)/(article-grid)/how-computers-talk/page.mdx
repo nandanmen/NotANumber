@@ -108,7 +108,7 @@ send button
 
 </ScrollGroup>
 
-<Section>
+
 
 ## Path Finding
 
@@ -127,7 +127,7 @@ For data from router 1 to make it to router 3, router 1 needs to know that:
 
 But how can router 1 know this?
 
-</Section>
+
 
 <ScrollGroup figure={<BGPScrollVisual />}>
 
@@ -175,7 +175,7 @@ What should router 1 do in this case?
 
 </ScrollGroup>
 
-<Section>
+
 
 ### Autonomous Systems
 
@@ -190,9 +190,9 @@ router prefix visual
 ```
 
 
-</Section>
 
-<Section>
+
+
 
 Unlike the routers in our little internet, not every router in the Internet is connected to every other router. Instead, each AS has a group of routers called **border routers** that are connected to the routers of other ASes.
 
@@ -205,9 +205,9 @@ border router visual
 This frees up our other router to focus on handling traffic within the AS.
 
 
-</Section>
 
-<Section>
+
+
 
 Another difference with our little internet model is that **not every AS is connected to every other AS**. It's possible, and often very likely, that a data packet has to travel through multiple ASes to get to its destination.
 
@@ -218,9 +218,9 @@ visual with multiple AS hops
 This lack of a direct connection means border routers don't necessarily store the destination router for every prefix. For the prefixes it can't directly reach, border routers store the **next hop**—the router that brings the data packet _closer_ to its destination.
 
 
-</Section>
 
-<Section>
+
+
 
 ## Domain Name Resolution
 
@@ -236,9 +236,9 @@ Try entering `142.250.73.110` into your browser's address bar. You'll end up on 
 
 This conversion process is called **domain name resolution** and it's handled by a system called, rather appropriately, the **Domain Name System** (DNS for short).
 
-</Section>
 
-<Section>
+
+
 
 ### The DNS Lookup Process
 
@@ -265,7 +265,7 @@ How do we organize our table to handle _tens of millions_ of requests per second
 </ProblemStatement>
 
 
-</Section>
+
 
 <ScrollGroup figure={<DNSScrollVisual />}>
 
@@ -297,7 +297,7 @@ One way to fix this is to have an unchanging set of **root servers** that _point
 
 </ScrollGroup>
 
-<Section>
+
 
 Putting everything together, we get our final lookup algorithm:
 
@@ -306,9 +306,9 @@ Putting everything together, we get our final lookup algorithm:
 
 <DNSVisual />
 
-</Section>
 
-<Section>
+
+
 
 <Aside label="Resolvers and Authoritative Servers">
 
@@ -341,9 +341,9 @@ This additional layer of indirection exists because there's more to DNS than jus
 
 </Aside>
 
-</Section>
 
-<Section>
+
+
 
 ## Border Gateway Protocol
 
@@ -355,7 +355,7 @@ This routing system works under the big assumption that every border router inhe
 
 </ProblemStatement>
 
-</Section>
+
 
 <ScrollGroup>
 
@@ -411,14 +411,14 @@ With this, Network 1 can drop the Network 2 announcement because it knows that t
 
 </ScrollGroup>
 
-<Section>
+
 
 This algorithm we just saw is called the **Border Gateway Protocol** (BGP for short). It's _the_ algorithm responsible for keeping the Internet together.
 
 
-</Section>
 
-<Section>
+
+
 
 <Aside label="Facebook's BGP Outage">
 
@@ -441,9 +441,9 @@ Cloudflare and Facebook wrote extensive blog posts on this outage if you're inte
 
 </Aside>
 
-</Section>
 
-<Section>
+
+
 
 ## How Data Flows Through the Internet
 
@@ -458,4 +458,4 @@ Of course, this is a very simplified view of how the entire process works. I've 
 
 For now, thanks for reading!
 
-</Section>
+
