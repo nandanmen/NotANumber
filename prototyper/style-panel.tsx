@@ -1,8 +1,5 @@
-"use client";
-
 import { type ReactNode, useCallback, useState } from "react";
 import { cn } from "~/lib/cn";
-import type { InspectedElement } from "./types";
 
 // ── Spacing consolidation (padding + margin) ──────────────────────────────────
 
@@ -226,12 +223,10 @@ function SpacingBlock({
   label,
   sides,
   onEdit,
-  tailwindClasses,
 }: {
   label: string;
   sides: SpacingSides;
   onEdit: (side: EditableSide, value: string) => void;
-  tailwindClasses?: string[];
 }) {
   return (
     <li className="border-b border-neutral-200 dark:border-neutral-700 px-3.5 py-2.5 space-y-1.5">
@@ -239,18 +234,6 @@ function SpacingBlock({
         <span className="text-xs font-medium capitalize text-neutral-500 dark:text-neutral-400">
           {label}
         </span>
-        {tailwindClasses && tailwindClasses.length > 0 && (
-          <span className="flex flex-wrap justify-end gap-1">
-            {tailwindClasses.map((cls) => (
-              <span
-                key={cls}
-                className="rounded font-mono text-[10px] text-neutral-500 dark:text-neutral-400"
-              >
-                {cls}
-              </span>
-            ))}
-          </span>
-        )}
       </div>
       <div className="grid grid-cols-2 grid-rows-2 gap-1.5">
         <SpacingInput
@@ -429,22 +412,26 @@ const TRANSPARENT = new Set(["transparent", "rgba(0, 0, 0, 0)", ""]);
 // ── StylePanel ──────────────────────────────────────────────────────────────
 
 type StylePanelProps = {
-  inspected: InspectedElement;
+  className?: string;
+  componentName: string;
+  styles: Record<string, string>;
   onStyleChange: (prop: string, value: string) => void;
   activeProp: string | null;
   onActivePropChange: (prop: string | null) => void;
 };
 
-export function StylePanel({ inspected, onStyleChange }: StylePanelProps) {
+export function StylePanel({
+  className,
+  componentName,
+  styles,
+  onStyleChange,
+}: StylePanelProps) {
   const makeEditor =
     (prefix: "padding" | "margin") => (side: EditableSide, value: string) => {
       onStyleChange(`${prefix}-${side}`, value);
     };
 
-  const allRows = inspected.tailwindStyles.flatMap(({ rows }) => rows);
-
-  const displayDecl = allRows.find((r) => r.prop === "display");
-  const display = displayDecl?.value ?? "";
+  const display = styles.display ?? "";
   const isFlex = display === "flex" || display === "inline-flex";
   const isGrid = display === "grid" || display === "inline-grid";
   const isFlexOrGrid = isFlex || isGrid;
@@ -455,38 +442,42 @@ export function StylePanel({ inspected, onStyleChange }: StylePanelProps) {
     ...(isGrid ? [...GRID_LAYOUT_PROPS] : []),
     ...(isFlexOrGrid ? [...GAP_PROPS] : []),
   ]);
-  const displayDecls = allRows.filter((r) => displayGroupProps.has(r.prop));
-  const otherRows = allRows.filter(
-    (r) =>
-      !displayGroupProps.has(r.prop) &&
-      !PADDING_PROPS.has(r.prop) &&
-      !MARGIN_PROPS.has(r.prop),
-  );
 
-  const computedSpacing =
-    inspected.computedStyles.find((g) => g.group === "Spacing")?.rows ?? [];
+  const displayDecls: CSSDeclaration[] = [...displayGroupProps]
+    .map((prop) => ({ prop, value: styles[prop] ?? "" }))
+    .filter((d) => d.value);
+
+  const otherRows = Object.entries(styles)
+    .filter(
+      ([prop]) =>
+        !displayGroupProps.has(prop) &&
+        !PADDING_PROPS.has(prop) &&
+        !MARGIN_PROPS.has(prop),
+    )
+    .map(([prop, value]) => ({ prop, value }))
+    .sort((a, b) => a.prop.localeCompare(b.prop));
+
   const paddingSides = consolidateSpacing(
-    computedSpacing.filter((r) => PADDING_PROPS.has(r.prop)),
+    Object.entries(styles)
+      .filter(([prop]) => PADDING_PROPS.has(prop))
+      .map(([prop, value]) => ({ prop, value })),
     "padding",
   );
   const marginSides = consolidateSpacing(
-    computedSpacing.filter((r) => MARGIN_PROPS.has(r.prop)),
+    Object.entries(styles)
+      .filter(([prop]) => MARGIN_PROPS.has(prop))
+      .map(([prop, value]) => ({ prop, value })),
     "margin",
   );
 
-  const paddingClasses = inspected.tailwindStyles
-    .filter(({ rows }) => rows.some((r) => PADDING_PROPS.has(r.prop)))
-    .map(({ className }) => className);
-  const marginClasses = inspected.tailwindStyles
-    .filter(({ rows }) => rows.some((r) => MARGIN_PROPS.has(r.prop)))
-    .map(({ className }) => className);
-
   return (
-    <ul className="overflow-y-auto grow ml-0">
-      {/* Tailwind classes */}
+    <ul className={cn("overflow-y-auto grow", className)}>
+      <li className="px-3.5 py-2 border-b border-neutral-200 font-mono">
+        {componentName ? `<${componentName} />` : "—"}
+      </li>
       <li>
         <div className="sticky top-0 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3.5 py-2 font-medium text-neutral-500 dark:text-neutral-400">
-          Tailwind
+          Styles
         </div>
         <ul className="ml-0 font-mono">
           {displayDecls.length > 0 && <DisplayBlock decls={displayDecls} />}
@@ -494,13 +485,11 @@ export function StylePanel({ inspected, onStyleChange }: StylePanelProps) {
             label="padding"
             sides={paddingSides}
             onEdit={makeEditor("padding")}
-            tailwindClasses={paddingClasses}
           />
           <SpacingBlock
             label="margin"
             sides={marginSides}
             onEdit={makeEditor("margin")}
-            tailwindClasses={marginClasses}
           />
           {otherRows.map(({ prop, value }) => (
             <li
@@ -523,64 +512,6 @@ export function StylePanel({ inspected, onStyleChange }: StylePanelProps) {
           ))}
         </ul>
       </li>
-
-      {/* Computed styles — collapsible */}
-      {inspected.computedStyles.length > 0 && (
-        <li>
-          <details>
-            <summary className="sticky top-0 cursor-pointer border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3.5 py-2 font-medium text-neutral-500 dark:text-neutral-400 list-none flex items-center justify-between">
-              Computed
-              <span className="normal-case font-normal tracking-normal text-neutral-500 dark:text-neutral-400">
-                {inspected.computedStyles.reduce(
-                  (n, g) =>
-                    n +
-                    g.rows.filter(
-                      (r) =>
-                        !PADDING_PROPS.has(r.prop) && !MARGIN_PROPS.has(r.prop),
-                    ).length,
-                  0,
-                )}{" "}
-                properties
-              </span>
-            </summary>
-            {inspected.computedStyles.map(({ group, rows }) => {
-              const filteredRows = rows.filter(
-                (r) => !PADDING_PROPS.has(r.prop) && !MARGIN_PROPS.has(r.prop),
-              );
-              if (filteredRows.length === 0) return null;
-              return (
-                <div key={group}>
-                  <div className="border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3.5 py-2 font-medium text-neutral-500 dark:text-neutral-400">
-                    {group}
-                  </div>
-                  <ul className="ml-0 font-mono">
-                    {filteredRows.map(({ prop, value }) => (
-                      <li
-                        key={prop}
-                        className="grid border-b border-neutral-200 dark:border-neutral-700 px-3.5 py-2"
-                        style={{ gridTemplateColumns: "1fr 1fr" }}
-                      >
-                        <span className="text-neutral-500 dark:text-neutral-400">
-                          {prop}
-                        </span>
-                        <span className="flex items-center justify-end gap-1 break-all text-right">
-                          {COLOR_PROPS.has(prop) && !TRANSPARENT.has(value) && (
-                            <span
-                              className="inline-block h-2.5 w-2.5 shrink-0 rounded-sm border border-neutral-200 dark:border-neutral-700"
-                              style={{ background: value }}
-                            />
-                          )}
-                          {value}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </details>
-        </li>
-      )}
     </ul>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { flip, offset, shift, size, useFloating } from "@floating-ui/react";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ElementHighlighter } from "./element-highlighter";
 import { getComponent } from "./get-component";
+import { Positioner } from "./positioner";
 import { StylePanel } from "./style-panel";
 import { resolveClass } from "./tailwindClassMap";
 import { Toolbar } from "./toolbar";
@@ -12,6 +12,18 @@ import type { InspectedElement } from "./types";
 // ── Style property groups shown in the inspector panel ───────────────────────
 
 type StyleGroup = { title: string; props: string[] };
+
+const VISIBLE_PROPS = [
+  "display",
+  "margin-top",
+  "margin-right",
+  "margin-bottom",
+  "margin-left",
+  "padding-top",
+  "padding-right",
+  "padding-bottom",
+  "padding-left",
+];
 
 const STYLE_GROUPS: StyleGroup[] = [
   {
@@ -115,32 +127,40 @@ const STYLE_GROUPS: StyleGroup[] = [
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function getTailwindStyles(el: Element): InspectedElement["tailwindStyles"] {
+type UtilityDeclaration = { prop: string; value: string };
+
+/** Tailwind (or other) utilities expanded to declarations; later classes win per property. */
+function getUtilityDeclarations(el: Element): UtilityDeclaration[] {
   const classes =
     typeof el.className === "string"
       ? el.className.trim().split(/\s+/).filter(Boolean)
       : [];
 
-  return classes
-    .map((cls) => {
-      const decls = resolveClass(cls);
-      if (!decls || decls.length === 0) return null;
-      return {
-        className: cls,
-        rows: decls.map((d) => ({ prop: d.prop, value: d.value })),
-      };
-    })
-    .filter((x): x is NonNullable<typeof x> => x !== null);
+  const styles: Record<string, string> = {};
+  for (const cls of classes) {
+    const decls = resolveClass(cls);
+    if (!decls || decls.length === 0) continue;
+    for (const d of decls) {
+      styles[d.prop] = d.value;
+    }
+  }
+  return Object.entries(styles).map(([prop, value]) => ({ prop, value }));
 }
 
-function getComputedStyles(el: Element): InspectedElement["computedStyles"] {
+/** Merges utility-expanded CSS with `getComputedStyle` for tracked properties (computed wins). */
+function getMergedStyles(el: Element): Record<string, string> {
+  const styles: Record<string, string> = {};
+  for (const { prop, value } of getUtilityDeclarations(el)) {
+    styles[prop] = value;
+  }
   const computed = getComputedStyle(el);
-  return STYLE_GROUPS.map((group) => ({
-    group: group.title,
-    rows: group.props
-      .map((prop) => ({ prop, value: computed.getPropertyValue(prop).trim() }))
-      .filter((r) => r.value),
-  })).filter((g) => g.rows.length > 0);
+  for (const group of STYLE_GROUPS) {
+    for (const prop of group.props) {
+      const value = computed.getPropertyValue(prop).trim();
+      if (value) styles[prop] = value;
+    }
+  }
+  return styles;
 }
 
 function inspectElement(el: Element): InspectedElement {
@@ -151,78 +171,30 @@ function inspectElement(el: Element): InspectedElement {
   return {
     componentName: fromReact.componentName,
     filePath: fromReact.filePath,
-    tailwindStyles: getTailwindStyles(el),
-    computedStyles: getComputedStyles(el),
+    styles: getMergedStyles(el),
   };
 }
 
 // ── State machine ───────────────────────────────────────────────────────────
 
-type Mode = "start" | "inspect" | "editing";
-
-// ── Positioner (floating UI anchor for panels) ──────────────────────────────
-
-type PositionerProps = {
-  referenceElement: HTMLElement;
-  children: ReactNode;
-};
-
-function Positioner({ referenceElement, children }: PositionerProps) {
-  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
-  const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined);
-
-  const { refs, floatingStyles, update } = useFloating({
-    placement: "left",
-    middleware: [
-      offset(8),
-      flip(),
-      shift({ padding: 8 }),
-      size({
-        padding: 8,
-        apply({ availableHeight, availableWidth }) {
-          setMaxHeight(availableHeight);
-          setMaxWidth(availableWidth);
-        },
-      }),
-    ],
-  });
-
-  useEffect(() => {
-    refs.setReference({
-      getBoundingClientRect: () => referenceElement.getBoundingClientRect(),
-    });
-    update();
-  }, [referenceElement, refs, update]);
-
-  return (
-    <div
-      ref={refs.setFloating}
-      data-prototyper
-      className="z-[99998] overflow-hidden flex flex-col rounded-xl ring-1 ring-black/15 dark:ring-neutral-800 bg-white dark:bg-neutral-900 shadow-2xl text-sm"
-      style={{
-        ...floatingStyles,
-        width: 320,
-        maxWidth: maxWidth,
-        maxHeight: Math.min(maxHeight ?? 480, 480),
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+type PrototyperPhase =
+  | { kind: "start" }
+  | { kind: "inspect"; hover: HTMLElement | null }
+  | {
+      kind: "editing";
+      element: HTMLElement;
+      /** Merged styles reflecting the element after local edits. */
+      styles: Record<string, string>;
+      /** Snapshot of merged styles when editing began (before inline edits). */
+      initialStyles: Record<string, string>;
+      componentName: string;
+      activeProp: string | null;
+    };
 
 // ── Component ───────────────────────────────────────────────────────────────
 
 export const Prototyper = () => {
-  const [mode, setMode] = useState<Mode>("start");
-  const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(
-    null,
-  );
-  const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(
-    null,
-  );
-  const [inspected, setInspected] = useState<InspectedElement | null>(null);
-  const [activeProp, setActiveProp] = useState<string | null>(null);
+  const [phase, setPhase] = useState<PrototyperPhase>({ kind: "start" });
 
   const isPrototyperEl = useCallback((el: EventTarget | null): boolean => {
     if (!(el instanceof Element)) return false;
@@ -230,48 +202,47 @@ export const Prototyper = () => {
   }, []);
 
   const enterInspect = useCallback(() => {
-    setMode("inspect");
-    setHoveredElement(null);
-    setSelectedElement(null);
-    setInspected(null);
-    setActiveProp(null);
+    setPhase({ kind: "inspect", hover: null });
     document.body.style.cursor = "crosshair";
   }, []);
 
   const goToStart = useCallback(() => {
-    setMode("start");
-    setHoveredElement(null);
-    setSelectedElement(null);
-    setInspected(null);
-    setActiveProp(null);
+    setPhase({ kind: "start" });
     document.body.style.cursor = "";
   }, []);
 
   const enterEditing = useCallback((el: HTMLElement) => {
-    setMode("editing");
-    setSelectedElement(el);
-    setInspected(inspectElement(el));
-    setActiveProp(null);
+    const { componentName, styles } = inspectElement(el);
+    setPhase({
+      kind: "editing",
+      element: el,
+      styles,
+      initialStyles: { ...styles },
+      componentName,
+      activeProp: null,
+    });
     document.body.style.cursor = "";
   }, []);
 
   // Attach / detach document-level listeners for inspect mode
   useEffect(() => {
-    if (mode !== "inspect") return;
+    if (phase.kind !== "inspect") return;
 
     const onMouseOver = (e: MouseEvent) => {
       if (isPrototyperEl(e.target)) {
-        setHoveredElement(null);
+        setPhase((p) => (p.kind === "inspect" ? { ...p, hover: null } : p));
         return;
       }
       if (e.target instanceof HTMLElement) {
-        setHoveredElement(e.target);
+        setPhase((p) =>
+          p.kind === "inspect" ? { ...p, hover: e.target as HTMLElement } : p,
+        );
       }
     };
 
     const onMouseOut = (e: MouseEvent) => {
       if (isPrototyperEl(e.relatedTarget)) {
-        setHoveredElement(null);
+        setPhase((p) => (p.kind === "inspect" ? { ...p, hover: null } : p));
       }
     };
 
@@ -294,7 +265,7 @@ export const Prototyper = () => {
       document.removeEventListener("mouseout", onMouseOut);
       document.removeEventListener("click", onClick, true);
     };
-  }, [mode, isPrototyperEl, enterEditing]);
+  }, [phase.kind, isPrototyperEl, enterEditing]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -303,7 +274,7 @@ export const Prototyper = () => {
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
       if (e.key === "i" || e.key === "I") {
-        if (mode === "inspect") {
+        if (phase.kind === "inspect") {
           goToStart();
         } else {
           enterInspect();
@@ -317,57 +288,69 @@ export const Prototyper = () => {
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [mode, goToStart, enterInspect]);
+  }, [phase.kind, goToStart, enterInspect]);
 
   const handleToolbarClick = useCallback(
     (tool: "add" | "inspect") => {
       if (tool === "inspect") {
-        if (mode === "inspect") {
+        if (phase.kind === "inspect") {
           goToStart();
         } else {
           enterInspect();
         }
       }
     },
-    [mode, goToStart, enterInspect],
+    [phase.kind, goToStart, enterInspect],
   );
 
-  const handleStyleChange = useCallback(
-    (prop: string, value: string) => {
-      if (!selectedElement) return;
-      selectedElement.style.setProperty(prop, value);
-      setInspected(inspectElement(selectedElement));
-    },
-    [selectedElement],
-  );
+  const handleStyleChange = useCallback((prop: string, value: string) => {
+    setPhase((prev) => {
+      if (prev.kind !== "editing") return prev;
+      prev.element.style.setProperty(prop, value);
+      const { componentName, styles } = inspectElement(prev.element);
+      return { ...prev, componentName, styles };
+    });
+  }, []);
 
-  // Determine which element to highlight
   const highlightedElement =
-    mode === "inspect"
-      ? hoveredElement
-      : mode === "editing"
-        ? selectedElement
+    phase.kind === "inspect"
+      ? phase.hover
+      : phase.kind === "editing"
+        ? phase.element
         : null;
 
   return (
     <>
       <Toolbar
-        activeTool={mode === "start" ? null : "inspect"}
+        activeTool={phase.kind === "start" ? null : "inspect"}
         onClick={handleToolbarClick}
       />
       {highlightedElement && (
         <ElementHighlighter
           selectedElement={highlightedElement}
-          activeProp={activeProp}
+          activeProp={phase.kind === "editing" ? phase.activeProp : null}
         />
       )}
-      {mode === "editing" && inspected && selectedElement && (
-        <Positioner referenceElement={selectedElement}>
+      {phase.kind === "editing" && (
+        <Positioner
+          referenceElement={phase.element}
+          className="z-[99998] flex flex-col"
+        >
           <StylePanel
-            inspected={inspected}
+            className="rounded-xl ring-1 ring-black/15 dark:ring-neutral-800 bg-white dark:bg-neutral-900 shadow-2xl text-sm overflow-y-auto m-4 mb-[88px]"
+            componentName={phase.componentName}
+            styles={Object.fromEntries(
+              Object.entries(phase.styles).filter(([prop]) =>
+                VISIBLE_PROPS.includes(prop),
+              ),
+            )}
             onStyleChange={handleStyleChange}
-            activeProp={activeProp}
-            onActivePropChange={setActiveProp}
+            activeProp={phase.activeProp}
+            onActivePropChange={(next) =>
+              setPhase((p) =>
+                p.kind === "editing" ? { ...p, activeProp: next } : p,
+              )
+            }
           />
         </Positioner>
       )}

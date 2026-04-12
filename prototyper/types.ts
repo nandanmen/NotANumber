@@ -1,8 +1,6 @@
-export type StyleRow = { prop: string; value: string };
-
 export type InspectedElement = {
   componentName: string;
   filePath: string;
-  tailwindStyles: Array<{ className: string; rows: StyleRow[] }>;
-  computedStyles: Array<{ group: string; rows: StyleRow[] }>;
+  /** Resolved CSS declarations (property name → value) for the inspector. */
+  styles: Record<string, string>;
 };
