@@ -413,7 +413,6 @@ const TRANSPARENT = new Set(["transparent", "rgba(0, 0, 0, 0)", ""]);
 
 type StylePanelProps = {
   className?: string;
-  componentName: string;
   styles: Record<string, string>;
   onStyleChange: (prop: string, value: string) => void;
   activeProp: string | null;
@@ -422,7 +421,6 @@ type StylePanelProps = {
 
 export function StylePanel({
   className,
-  componentName,
   styles,
   onStyleChange,
 }: StylePanelProps) {
@@ -472,9 +470,6 @@ export function StylePanel({
 
   return (
     <ul className={cn("overflow-y-auto grow", className)}>
-      <li className="px-3.5 py-2 border-b border-neutral-200 font-mono">
-        {componentName ? `<${componentName} />` : "—"}
-      </li>
       <li>
         <div className="sticky top-0 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3.5 py-2 font-medium text-neutral-500 dark:text-neutral-400">
           Styles

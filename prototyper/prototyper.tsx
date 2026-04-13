@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { DOMPanel } from "./dom-panel";
 import { ElementHighlighter } from "./element-highlighter";
 import { getComponent } from "./get-component";
 import { Positioner } from "./positioner";
@@ -336,22 +337,26 @@ export const Prototyper = () => {
           referenceElement={phase.element}
           className="z-[99998] flex flex-col"
         >
-          <StylePanel
-            className="rounded-xl ring-1 ring-black/15 dark:ring-neutral-800 bg-white dark:bg-neutral-900 shadow-2xl text-sm overflow-y-auto m-4 mb-[88px]"
-            componentName={phase.componentName}
-            styles={Object.fromEntries(
-              Object.entries(phase.styles).filter(([prop]) =>
-                VISIBLE_PROPS.includes(prop),
-              ),
-            )}
-            onStyleChange={handleStyleChange}
-            activeProp={phase.activeProp}
-            onActivePropChange={(next) =>
-              setPhase((p) =>
-                p.kind === "editing" ? { ...p, activeProp: next } : p,
-              )
-            }
-          />
+          <div className="rounded-xl ring-1 ring-black/15 dark:ring-neutral-800 bg-white dark:bg-neutral-900 shadow-2xl text-sm overflow-y-auto m-4 mb-[88px] grow grid grid-rows-[min-content_1fr_1fr] divide-y divide-neutral-200">
+            <div className="px-3.5 py-2 font-mono">
+              {phase.componentName ? `<${phase.componentName} />` : "—"}
+            </div>
+            <DOMPanel element={phase.element} />
+            <StylePanel
+              styles={Object.fromEntries(
+                Object.entries(phase.styles).filter(([prop]) =>
+                  VISIBLE_PROPS.includes(prop),
+                ),
+              )}
+              onStyleChange={handleStyleChange}
+              activeProp={phase.activeProp}
+              onActivePropChange={(next) =>
+                setPhase((p) =>
+                  p.kind === "editing" ? { ...p, activeProp: next } : p,
+                )
+              }
+            />
+          </div>
         </Positioner>
       )}
     </>
