@@ -196,6 +196,7 @@ type PrototyperPhase =
 
 export const Prototyper = () => {
   const [phase, setPhase] = useState<PrototyperPhase>({ kind: "start" });
+  const [domPanelHover, setDomPanelHover] = useState<HTMLElement | null>(null);
 
   const isPrototyperEl = useCallback((el: EventTarget | null): boolean => {
     if (!(el instanceof Element)) return false;
@@ -291,6 +292,10 @@ export const Prototyper = () => {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [phase.kind, goToStart, enterInspect]);
 
+  useEffect(() => {
+    if (phase.kind !== "editing") setDomPanelHover(null);
+  }, [phase.kind]);
+
   const handleToolbarClick = useCallback(
     (tool: "add" | "inspect") => {
       if (tool === "inspect") {
@@ -313,12 +318,10 @@ export const Prototyper = () => {
     });
   }, []);
 
-  const highlightedElement =
-    phase.kind === "inspect"
-      ? phase.hover
-      : phase.kind === "editing"
-        ? phase.element
-        : null;
+  const selectElementFromDomPanel = useCallback((el: HTMLElement) => {
+    setDomPanelHover(null);
+    enterEditing(el);
+  }, [enterEditing]);
 
   return (
     <>
@@ -326,11 +329,26 @@ export const Prototyper = () => {
         activeTool={phase.kind === "start" ? null : "inspect"}
         onClick={handleToolbarClick}
       />
-      {highlightedElement && (
+      {phase.kind === "inspect" && phase.hover && (
         <ElementHighlighter
-          selectedElement={highlightedElement}
-          activeProp={phase.kind === "editing" ? phase.activeProp : null}
+          selectedElement={phase.hover}
+          activeProp={null}
         />
+      )}
+      {phase.kind === "editing" && (
+        <>
+          <ElementHighlighter
+            selectedElement={phase.element}
+            activeProp={phase.activeProp}
+          />
+          {domPanelHover && domPanelHover !== phase.element && (
+            <ElementHighlighter
+              selectedElement={domPanelHover}
+              activeProp={null}
+              variant="dom-hover"
+            />
+          )}
+        </>
       )}
       {phase.kind === "editing" && (
         <Positioner
@@ -341,7 +359,6 @@ export const Prototyper = () => {
             <div className="px-3.5 py-2 font-mono">
               {phase.componentName ? `<${phase.componentName} />` : "—"}
             </div>
-            <DOMPanel element={phase.element} />
             <StylePanel
               styles={Object.fromEntries(
                 Object.entries(phase.styles).filter(([prop]) =>
@@ -355,6 +372,11 @@ export const Prototyper = () => {
                   p.kind === "editing" ? { ...p, activeProp: next } : p,
                 )
               }
+            />
+            <DOMPanel
+              element={phase.element}
+              onHoverElement={setDomPanelHover}
+              onSelectElement={selectElementFromDomPanel}
             />
           </div>
         </Positioner>

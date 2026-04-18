@@ -8,10 +8,13 @@ type Rect = { top: number; left: number; width: number; height: number };
 type ElementHighlighterProps = {
   selectedElement: HTMLElement;
   activeProp: string | null;
+  /** `dom-hover` draws above `selected` so both are visible when they differ. */
+  variant?: "selected" | "dom-hover";
 };
 
 export function ElementHighlighter({
   selectedElement,
+  variant = "selected",
 }: ElementHighlighterProps) {
   const [rect, setRect] = useState<Rect | null>(null);
 
@@ -27,6 +30,8 @@ export function ElementHighlighter({
 
   if (!rect) return null;
 
+  const isDomHover = variant === "dom-hover";
+
   return createPortal(
     <div
       style={{
@@ -35,9 +40,11 @@ export function ElementHighlighter({
         left: rect.left,
         width: rect.width,
         height: rect.height,
-        outline: "2px solid rgb(37 99 235)",
+        outline: isDomHover
+          ? "2px dashed rgb(217 119 6)"
+          : "2px solid rgb(37 99 235)",
         pointerEvents: "none",
-        zIndex: 99997,
+        zIndex: isDomHover ? 99999 : 99997,
       }}
     />,
     document.body,

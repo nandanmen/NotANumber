@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { cn } from "~/lib/cn";
 
 type DOMNode = {
+  element: HTMLElement;
   tag: string;
   classes: string[];
   isSelected: boolean;
@@ -33,6 +34,7 @@ function buildTree(target: HTMLElement): DOMNode {
         : [];
 
     return {
+      element: el,
       tag: el.tagName.toLowerCase(),
       classes,
       isSelected: el === target,
@@ -53,6 +55,7 @@ function buildTree(target: HTMLElement): DOMNode {
   return path[0]
     ? buildNode(path[0])
     : {
+        element: target,
         tag: target.tagName.toLowerCase(),
         classes:
           typeof target.className === "string"
@@ -65,35 +68,73 @@ function buildTree(target: HTMLElement): DOMNode {
       };
 }
 
-function TreeNode({ node, depth }: { node: DOMNode; depth: number }) {
+function TreeNode({
+  className,
+  node,
+  depth,
+  onHoverElement,
+  onSelectElement,
+}: {
+  className?: string;
+  node: DOMNode;
+  depth: number;
+  onHoverElement: (el: HTMLElement | null) => void;
+  onSelectElement: (el: HTMLElement) => void;
+}) {
   const [open, setOpen] = useState(node.isOnPath);
 
   return (
-    <div>
-      <button
-        type="button"
+    <div className={className}>
+      <div
         className={cn(
-          "flex items-center gap-1 px-2 py-0.5 font-mono text-xs w-full text-left",
+          "flex items-center gap-1 px-2 py-0.5 font-mono text-xs w-full text-left rounded-sm",
           node.isSelected
-            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium"
-            : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800",
+            ? "bg-blue-500/10"
+            : "hover:bg-neutral-100 dark:hover:bg-neutral-800",
         )}
         style={{ paddingLeft: depth * 16 + 8 }}
-        onClick={() => node.hasChildren && setOpen((o) => !o)}
+        onMouseEnter={() => onHoverElement(node.element)}
       >
-        <span className="text-neutral-400 dark:text-neutral-500 select-none w-3 text-center">
-          {node.hasChildren ? (open ? "▾" : "▸") : "·"}
-        </span>
-        <span className="truncate">
+        {node.hasChildren ? (
+          <button
+            type="button"
+            className="shrink-0 w-3 text-center text-neutral-400 dark:text-neutral-500 select-none rounded-sm hover:bg-neutral-200/80 dark:hover:bg-neutral-700/80"
+            aria-expanded={open}
+            aria-label={open ? "Collapse" : "Expand"}
+            onClick={() => setOpen((o) => !o)}
+          >
+            {open ? "▾" : "▸"}
+          </button>
+        ) : (
+          <span className="shrink-0 w-3 text-center text-neutral-400 dark:text-neutral-500 select-none">
+            ·
+          </span>
+        )}
+        <button
+          type="button"
+          className={cn(
+            "min-w-0 flex-1 text-left whitespace-nowrap rounded-sm py-0 -my-0.5",
+            node.isSelected
+              ? "text-blue-600 dark:text-blue-400 font-medium"
+              : "text-neutral-900 dark:text-neutral-100",
+          )}
+          onClick={() => onSelectElement(node.element)}
+        >
           {node.tag}
-          <span className={cn(!open && "text-gray10")}>
+          <span className={cn(!node.isSelected && "text-gray10")}>
             {node.classes.map((cls) => `.${cls}`).join("")}
           </span>
-        </span>
-      </button>
+        </button>
+      </div>
       {open &&
         node.children.map((child, i) => (
-          <TreeNode key={i} node={child} depth={depth + 1} />
+          <TreeNode
+            key={i}
+            node={child}
+            depth={depth + 1}
+            onHoverElement={onHoverElement}
+            onSelectElement={onSelectElement}
+          />
         ))}
     </div>
   );
@@ -101,14 +142,29 @@ function TreeNode({ node, depth }: { node: DOMNode; depth: number }) {
 
 type DOMPanelProps = {
   element: HTMLElement;
+  onHoverElement: (el: HTMLElement | null) => void;
+  onSelectElement: (el: HTMLElement) => void;
 };
 
-export function DOMPanel({ element }: DOMPanelProps) {
+export function DOMPanel({
+  element,
+  onHoverElement,
+  onSelectElement,
+}: DOMPanelProps) {
   const root = useMemo(() => buildTree(element), [element]);
 
   return (
-    <div className="py-2 overflow-y-auto">
-      <TreeNode node={root} depth={0} />
+    <div
+      className="py-2 overflow-y-auto"
+      onMouseLeave={() => onHoverElement(null)}
+    >
+      <TreeNode
+        node={root}
+        depth={0}
+        className="w-max"
+        onHoverElement={onHoverElement}
+        onSelectElement={onSelectElement}
+      />
     </div>
   );
 }
