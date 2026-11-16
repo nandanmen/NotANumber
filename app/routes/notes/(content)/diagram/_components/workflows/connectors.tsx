@@ -266,7 +266,7 @@ interface ParallelNodeWrapperProps {
 
 export function Pill({ children }: { children: ReactNode }) {
   return (
-    <div className="text-xs whitespace-nowrap text-muted w-fit mx-auto bg-surface px-1.5 py-0.5 ring ring-black/15 shadow-xs rounded-full">
+    <div className="text-xs whitespace-nowrap text-muted w-fit mx-auto bg-surface px-1.5 py-0.5 ring-3 ring-black/15 shadow-2xs rounded-full">
       {children}
     </div>
   );

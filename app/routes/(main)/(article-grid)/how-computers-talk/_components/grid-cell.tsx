@@ -1,5 +1,3 @@
-"use client";
-
 import { transitions } from "~/routes/notes/(content)/diagram/_components/workflows/transitions";
 import { type TargetAndTransition, motion } from "motion/react";
 import type { CSSProperties, ComponentPropsWithoutRef, ReactNode } from "react";

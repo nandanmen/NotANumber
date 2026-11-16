@@ -1,5 +1,3 @@
-"use client";
-
 import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
 import { ResetButton, Button } from "~/components/Button";
@@ -64,14 +62,14 @@ export function UpdateIndex() {
         />
       </div>
       <Wide>
-        <div className="md:h-[300px] overflow-hidden md:rounded-lg border-y md:border-x border-borderStrong shadow-inner bg-gray5 grid grid-rows-[repeat(2,200px)] md:grid-rows-none md:grid-cols-[2fr_1fr]">
+        <div className="md:h-[300px] overflow-hidden md:rounded-lg border-y md:border-x border-border-strong shadow-inner bg-gray5 grid grid-rows-[repeat(2,200px)] md:grid-rows-none md:grid-cols-[2fr_1fr]">
           <div className="p-6 pb-0 overflow-hidden">
             <FileDatabase
               className="md:max-w-[300px] mx-auto translate-y-4"
               records={toFileDatabaseRecords(store)}
             />
           </div>
-          <div className="p-6 pb-0 border-t md:border-l md:border-t-0 border-borderStrong">
+          <div className="p-6 pb-0 border-t md:border-l md:border-t-0 border-border-strong">
             <DatabaseIndex
               className="h-full md:max-w-[200px] mx-auto translate-y-4"
               items={getIndexRecords(store.records)}
@@ -98,7 +96,7 @@ export function DatabaseIndex({
       )}
       {...props}
     >
-      <div className="h-full py-3 border border-borderSoft border-dashed rounded-md">
+      <div className="h-full py-3 border border-border-soft border-dashed rounded-md">
         <AnimatePresence>
           {items.map(({ key, offset }) => (
             <IndexItem keyValue={key} offset={offset} key={key} />

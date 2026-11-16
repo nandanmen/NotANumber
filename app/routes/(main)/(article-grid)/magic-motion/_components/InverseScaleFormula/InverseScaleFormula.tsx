@@ -1,5 +1,3 @@
-"use client";
-
 import useInterval from "@use-it/interval";
 import { motion } from "framer-motion";
 import React from "react";
@@ -27,7 +25,7 @@ export const InverseScaleFormula = ({
   return (
     <div className="relative flex h-full items-center justify-center">
       <div
-        className="relative flex h-[120px] w-[120px] items-center justify-center rounded-md border border-blue8 bg-blue6 shadow-sm"
+        className="relative flex h-[120px] w-[120px] items-center justify-center rounded-md border border-blue8 bg-blue6 shadow-xs"
         style={{ transform: `scaleX(${scale})` }}
       >
         <span
@@ -70,7 +68,7 @@ function ScaleTooltip({
     <motion.div
       className={cn(
         "relative ml-4 whitespace-nowrap border px-1 py-0 font-mono text-sm leading-none",
-        "before:absolute before:-left-6 before:top-[-1px] before:h-px before:w-6 before:content-['']",
+        "before:absolute before:-left-6 before:-top-px before:h-px before:w-6 before:content-['']",
         secondary
           ? "border-yellow7 bg-yellow1 text-yellow11 before:bg-yellow7"
           : "border-blue8 bg-blue1 text-blue11 before:bg-blue8",

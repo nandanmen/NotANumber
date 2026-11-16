@@ -1,4 +1,4 @@
-import snapshot from "~/lib/algorithm/snapshot.macro";
+import snapshot from "~/lib/algorithm/snapshot.macro.cjs";
 
 const capitalize = (str: string) => {
   return str[0].toUpperCase() + str.slice(1);

@@ -1,5 +1,3 @@
-"use client";
-
 import useInterval from "@use-it/interval";
 import { motion, useAnimation } from "framer-motion";
 import React from "react";
@@ -47,7 +45,7 @@ export const InverseScaleGraph = () => {
       <Visualizer>
         <Content padding="lg">
           <div className="grid gap-8 md:grid-cols-[1fr_3fr] md:gap-2">
-            <div className="aspect-square rounded border border-gray8 bg-gray4 md:col-start-1">
+            <div className="aspect-square rounded-sm border border-gray8 bg-gray4 md:col-start-1">
               <svg
                 viewBox="-0.5 -3.5 4 4"
                 role="img"
@@ -60,14 +58,14 @@ export const InverseScaleGraph = () => {
                   y2="-3"
                   animate={controls}
                   initial={{ pathLength: 0 }}
-                  className="stroke-blue8 [stroke-width:0.05]"
+                  className="stroke-blue8 stroke-[0.05]"
                 />
                 <motion.path
                   d={path}
                   animate={controls}
                   initial={{ pathLength: 0 }}
                   fill="none"
-                  className="stroke-yellow8 [stroke-width:0.05]"
+                  className="stroke-yellow8 stroke-[0.05]"
                 />
                 {points.map((point, index) => {
                   return (

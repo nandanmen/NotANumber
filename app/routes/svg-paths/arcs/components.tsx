@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 import { CommandText } from "../components/command-list";
 import { Button } from "../components/button";

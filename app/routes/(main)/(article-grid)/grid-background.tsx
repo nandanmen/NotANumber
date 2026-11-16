@@ -1,5 +1,3 @@
-"use client";
-
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import { useGridSize } from "./grid-context";
 
@@ -42,10 +40,10 @@ export function GridBackground() {
   return (
     <div
       ref={containerRef}
-      className="absolute !col-start-4 col-span-2 row-start-1 border-l border-borderSoft top-0 bottom-0 !max-w-full -translate-x-px"
+      className="absolute col-start-4! col-span-2 row-start-1 border-l border-border-soft top-0 bottom-0 max-w-full! -translate-x-px"
     >
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none text-borderSoft"
+        className="absolute inset-0 w-full h-full pointer-events-none text-border-soft"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >

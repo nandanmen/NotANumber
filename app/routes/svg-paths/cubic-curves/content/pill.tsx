@@ -1,5 +1,3 @@
-'use client'
-
 import { Circle } from "~/routes/svg-paths/components/svg/circle";
 import { Line as BaseLine } from "~/routes/svg-paths/components/svg/line";
 import { Path } from "~/routes/svg-paths/components/svg/path";

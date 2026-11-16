@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/cn";
 import { Subscribe } from "../(content)/subscribe";
@@ -28,11 +26,11 @@ export function Navbar({ showNotesLabel = false }) {
       <div
         className={cn(
           "flex items-center gap-2 h-16 -mx-5 px-5 md:px-0 bg-gray3 md:mx-0 md:bg-transparent",
-          hasScrolled && "border-b border-borderSoft md:border-b-0",
+          hasScrolled && "border-b border-border-soft md:border-b-0",
         )}
       >
         <h1 className="font-serif text-2xl translate-y-0.5 text-gray11 hover:text-green9 transition-transform">
-          <Link href="/">NaN</Link>
+          <Link to="/">NaN</Link>
         </h1>
         {showNotesLabel && (
           <svg

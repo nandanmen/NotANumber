@@ -1,5 +1,3 @@
-'use client'
-
 import { useStateContext } from "../state";
 import { CubicPlayground } from "./cubic-playground";
 

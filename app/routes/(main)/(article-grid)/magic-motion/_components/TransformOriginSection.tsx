@@ -1,5 +1,3 @@
-"use client";
-
 import { SharedState } from "~/components/SharedState";
 import { CorrectedInverseAnimation } from "./CorrectedInverseAnimation";
 import { SizeDistanceRelationship } from "./SizeDistanceRelationship";
@@ -31,7 +29,7 @@ export function TransformOriginSection() {
         left instead so that it lines up with the translation...
       </p>
 
-      <pre className="overflow-x-auto -mx-[var(--content-padding)] px-[var(--content-padding)]">
+      <pre className="overflow-x-auto -mx-(--content-padding) px-(--content-padding)">
         <code className="language-ts">
           {`squareRef.current.style.transformOrigin = "top left";`}
         </code>
@@ -51,7 +49,7 @@ export function TransformOriginSection() {
 
       <p>Would you look at that; it works!</p>
 
-      <hr className="border-gray7 border-dashed my-5 !col-start-1 col-span-3 !max-w-full" />
+      <hr className="border-gray7 border-dashed my-5 col-start-1! col-span-3 max-w-full!" />
 
       <h3>What if Transform Origins Change?</h3>
 
@@ -66,7 +64,7 @@ export function TransformOriginSection() {
         distance between the <em>transform origins</em> of the two squares. To
         put it another way, the bug is happening because of a discrepancy
         between the measured distance and the transform origins:{" "}
-        <code className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded ring-neutral-950/15">
+        <code className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded-sm ring-neutral-950/15">
           getBoundingClientRect()
         </code>{" "}
         returns the <em>top left</em> point of the element whereas the transform

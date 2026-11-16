@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import { type Metadata, toMeta } from "~/lib/meta";
+import ogImage from "../../opengraph-image.png";
+import MDXContent from "./page.mdx";
 import { ArticleTitle } from "../article-title";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "The Power of Keys in Framer Motion",
   description:
     "Exploring how to use the React key prop to power your Framer Motion animations.",
@@ -28,18 +29,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function KeysInFramerMotionLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function meta() {
+  return toMeta(metadata, { image: ogImage, themeColor: "#ededed" });
+}
+
+export default function KeysInFramerMotionLayout() {
   return (
     <>
       <ArticleTitle
         title="The Power of Keys in Framer Motion"
         description="Exploring how to use the React key prop to power your Framer Motion animations."
       />
-      {children}
+      <MDXContent />
     </>
   );
 }

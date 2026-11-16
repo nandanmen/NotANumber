@@ -1,16 +1,13 @@
+import { Outlet } from "react-router";
 import type { ReactNode } from "react";
 import type { CSSProperties } from "react";
 import { GridSizeProvider } from "./grid-context";
 import { Navbar } from "./nav";
 
-export default async function ArticleGridLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function ArticleGridLayout() {
   return (
     <div
-      className="bg-gray3 min-h-screen pb-32 px-[var(--content-padding)] space-y-16"
+      className="bg-gray3 min-h-screen pb-32 px-(--content-padding) space-y-16"
       style={
         {
           "--content-width": "1480px",
@@ -21,14 +18,14 @@ export default async function ArticleGridLayout({
       <Navbar />
       <GridSizeProvider>
         <article
-          className="article article-layout grow w-full max-w-[var(--content-width)] mx-auto grid"
+          className="article article-layout grow w-full max-w-(--content-width) mx-auto grid"
           style={
             {
               "--grid-size": "48px",
             } as CSSProperties
           }
         >
-          {children}
+          <Outlet />
         </article>
       </GridSizeProvider>
     </div>

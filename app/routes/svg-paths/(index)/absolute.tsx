@@ -1,5 +1,3 @@
-'use client'
-
 import { Text } from "../components/svg/text";
 import { Circle } from "../components/svg/circle";
 import { Line } from "../components/svg/line";

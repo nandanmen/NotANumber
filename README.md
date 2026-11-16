@@ -1,34 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Not a Number
 
-## Getting Started
+Interactive blog posts on computer science and web development, at [nan.fyi](https://nan.fyi).
 
-First, run the development server:
+Built with [React Router](https://reactrouter.com) (framework mode), [MDX](https://mdxjs.com) and Tailwind CSS, and deployed to [Cloudflare Workers](https://developers.cloudflare.com/workers/) — the same stack as the `nan` repo.
 
-```bash
-npm run dev
-# or
-yarn dev
+```sh
+pnpm install
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Layout
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- `app/routes.ts` lists every route. Pages live under `app/routes/`, each with a `route.tsx` (meta + layout) and usually a `page.mdx` (the post).
+- `app/mdx-components.tsx` maps the components every MDX page can use.
+- `app/routes/api/` holds the newsletter, comments and GitHub sign-in endpoints.
+- `workers/app.ts` is the Worker entry; `wrangler.json` configures it.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+See `migration.md` for how to add an article.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Secrets
 
-## Learn More
+The API routes need these secrets. For local development copy `.dev.vars.example` to `.dev.vars` and fill it in; in production set each with `wrangler secret put <NAME>`.
 
-To learn more about Next.js, take a look at the following resources:
+| Name | Used by |
+|------|---------|
+| `LOOPS_API_KEY`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Newsletter sign-up (`/api/subscribe`, `/api/verify`) |
+| `POSTGRES_URL` | SVG paths comments (`/api/comments`) |
+| `GITHUB_ID`, `GITHUB_SECRET`, `AUTH_SECRET` | GitHub sign-in for comments (`/api/auth/*`). The GitHub OAuth app's callback URL is `https://nan.fyi/api/auth/callback/github`. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+| Script | |
+|------|---|
+| `pnpm dev` | Dev server |
+| `pnpm build` | Production build |
+| `pnpm preview` | Build, then serve the built Worker locally |
+| `pnpm deploy` | Deploy to Cloudflare (`wrangler deploy`) |
+| `pnpm typecheck` | Generate types and run `tsc` |
+| `pnpm test` | Vitest |

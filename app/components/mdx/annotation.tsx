@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useEffect } from "react";
 import { useInView } from "framer-motion";
 import { annotate } from "rough-notation";

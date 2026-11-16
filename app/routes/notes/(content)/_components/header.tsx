@@ -1,7 +1,5 @@
-"use client";
-
 import { Subscribe } from "~/routes/(main)/(content)/subscribe";
-import Link from "next/link";
+import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/cn";
 
@@ -30,7 +28,7 @@ export function NotesHeader() {
       <div
         className={cn(
           "flex items-center gap-2 h-16 mx-px",
-          hasScrolled && "border-b border-borderSoft",
+          hasScrolled && "border-b border-border-soft",
           isCovered && "bg-gray2",
         )}
       >
@@ -40,7 +38,7 @@ export function NotesHeader() {
             isCovered && "translate-x-4",
           )}
         >
-          <Link href="/">NaN</Link>
+          <Link to="/">NaN</Link>
         </h1>
         <svg
           width="55"

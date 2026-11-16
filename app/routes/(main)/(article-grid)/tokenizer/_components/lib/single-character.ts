@@ -1,4 +1,4 @@
-import snapshot from "~/lib/algorithm/snapshot.macro";
+import snapshot from "~/lib/algorithm/snapshot.macro.cjs";
 
 import { knownSingleCharacters } from "./tokenize";
 

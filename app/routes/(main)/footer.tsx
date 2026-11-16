@@ -1,11 +1,9 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "react-router";
+import { useLocation } from "react-router";
 import { XIcon, posts } from "./posts";
 
 export function PostsFooter() {
-  const pathname = usePathname();
+  const { pathname } = useLocation();
   const current = pathname.split("/").pop();
   return (
     <footer className="relative mx-auto px-4 mt-8 max-w-[1250px] w-full">
@@ -17,13 +15,13 @@ export function PostsFooter() {
           .filter((post) => post.slug !== current)
           .map((post) => (
             <li
-              className="grid grid-cols-[60px_1fr] p-4 gap-5 items-center md:[&:nth-child(2n)]:border-l border-gray7 border-b last-of-type:border-b-0 last-of-type:md:[&:not(:nth-child(2n))]:border-r last-of-type:md:[&:not(:nth-child(2n))]:-mr-px -mb-px"
+              className="grid grid-cols-[60px_1fr] p-4 gap-5 items-center md:nth-[2n]:border-l border-gray7 border-b last-of-type:border-b-0 md:last-of-type:not-nth-[2n]:border-r md:last-of-type:not-nth-[2n]:-mr-px -mb-px"
               key={post.slug}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="shrink-0 h-min"
-                src={post.image.src}
+                src={post.image}
                 width="60"
                 height="60"
                 alt=""
@@ -31,7 +29,7 @@ export function PostsFooter() {
               <article className="grid gap-1">
                 <Link
                   className="font-medium leading-tight block"
-                  href={post.slug}
+                  to={post.slug.startsWith("http") ? post.slug : `/${post.slug}`}
                 >
                   {post.title}
                 </Link>

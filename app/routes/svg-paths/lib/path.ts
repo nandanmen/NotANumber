@@ -5,7 +5,9 @@ import {
   parseSVG,
   makeAbsolute,
 } from "svg-path-parser";
-import { v4 } from "uuid";
+// Workers disallow crypto randomness at module scope, where several paths are
+// parsed, so use the Math.random-based generator.
+import { nanoid } from "nanoid/non-secure";
 import { getArcCenter } from "../components/utils";
 
 export type CommandCode = BaseCommand["code"];
@@ -73,7 +75,7 @@ export function parsePath(path: string): Path {
   const commands = parseSVG(path).map((command) => {
     return {
       ...command,
-      id: v4(),
+      id: nanoid(),
       toPathString: () => commandToString(command),
     };
   });

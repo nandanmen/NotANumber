@@ -1,7 +1,7 @@
-"use client";
-
 import { motion, stagger, useAnimate } from "motion/react";
-import { nanoid } from "nanoid";
+// Non-secure nanoid: `initial` is built at module scope, where Workers disallow
+// crypto randomness.
+import { nanoid } from "nanoid/non-secure";
 import { useEffect, useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
 import { Figure } from "~/components/mdx/figure";
@@ -32,7 +32,7 @@ function MemoryBackground({ align }: { align?: "center" | "left" }) {
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
           key={index}
-          className="w-[54px] h-[54px] ring-1 bg-gray3 ring-borderSoft"
+          className="w-[54px] h-[54px] ring-1 bg-gray3 ring-border-soft"
         />
       ))}
     </div>
@@ -174,7 +174,7 @@ export function MobileWrapper({ children }: { children: React.ReactNode }) {
           />
         )}
       </div>
-      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong -mx-[var(--content-padding)] lg:hidden overflow-hidden">
+      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-border-strong -mx-(--content-padding) lg:hidden overflow-hidden">
         {children}
       </div>
     </Figure>
@@ -451,7 +451,7 @@ export function LSMVisual({ index }: { index?: number }) {
     <div
       ref={scope}
       className={cn(
-        "grid grid-rows-[230px] md:grid-rows-[300px] divide-y divide-borderStrong lg:max-w-[500px] lg:mx-auto border border-borderStrong rounded-xl overflow-hidden mt-8",
+        "grid grid-rows-[230px] md:grid-rows-[300px] divide-y divide-border-strong lg:max-w-[500px] lg:mx-auto border border-border-strong rounded-xl overflow-hidden mt-8",
         i === 0 && "lg:grid-rows-[250px]",
         i > 0 && "grid-rows-[repeat(2,230px)] md:grid-rows-[230px_300px]",
       )}
@@ -459,7 +459,7 @@ export function LSMVisual({ index }: { index?: number }) {
       <div
         className={cn(
           // "w-screen md:w-full overflow-hidden",
-          "grid grid-cols-2 divide-x divide-borderStrong",
+          "grid grid-cols-2 divide-x divide-border-strong",
           i === 2 && "grid-cols-1",
         )}
       >
@@ -487,7 +487,7 @@ export function LSMVisual({ index }: { index?: number }) {
         <div
           className={cn(
             //"w-screen overflow-hidden",
-            "grid grid-cols-2 divide-x divide-borderStrong",
+            "grid grid-cols-2 divide-x divide-border-strong",
           )}
         >
           <LSMSection
@@ -660,7 +660,7 @@ export function LSM({ showLog = false }) {
       </div>
       <Wide>
         <div
-          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong grid grid-rows-[repeat(2,230px)] md:grid-rows-[250px] md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-borderStrong overflow-hidden"
+          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-border-strong grid grid-rows-[repeat(2,230px)] md:grid-rows-[250px] md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-strong overflow-hidden"
           ref={scope}
         >
           <div className="px-6 pt-3 pb-0 overflow-hidden relative">
@@ -670,7 +670,7 @@ export function LSM({ showLog = false }) {
             <MemoryVisual records={memoryRecords} />
           </div>
           {showLog ? (
-            <div className="grid grid-cols-2 divide-x divide-borderStrong">
+            <div className="grid grid-cols-2 divide-x divide-border-strong">
               {disk}
               <div className="px-6 pt-3 pb-0 overflow-hidden">
                 <p className="text-sm font-medium text-gray11 mb-3 text-center">

@@ -1,4 +1,4 @@
-import { useTheme } from "next-themes";
+import { useTheme } from "./theme";
 import { BiSun } from "react-icons/bi";
 import { styled } from "~/stitches.config";
 

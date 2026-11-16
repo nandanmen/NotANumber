@@ -12,7 +12,7 @@ function Label({ label, labelColor, labelSide = "left" }: LabelProps) {
       : "left-0 -translate-x-1/2";
   return (
     <div
-      className={`absolute top-0 ${sideClass} -translate-y-1/2 h-5 min-w-5 px-1 rounded ${labelColor} text-white flex items-center justify-center font-medium text-sm`}
+      className={`absolute top-0 ${sideClass} -translate-y-1/2 h-5 min-w-5 px-1 rounded-sm ${labelColor} text-white flex items-center justify-center font-medium text-sm`}
     >
       {label}
     </div>
@@ -27,7 +27,7 @@ export function Computer({ label, labelColor, labelSide }: LabelProps) {
           <div className="h-full flex items-center bg-gray4 rounded-lg border-4 border-gray1" />
         </div>
         <div className="h-1.5 w-4 bg-gray8 mx-auto" />
-        <div className="h-2 w-2/3 mx-auto bg-gray1 shadow-md shadow-black/7 rounded-sm ring-1 ring-black/10" />
+        <div className="h-2 w-2/3 mx-auto bg-gray1 shadow-md shadow-black/7 rounded-xs ring-1 ring-black/10" />
       </div>
       <Label label={label} labelColor={labelColor} labelSide={labelSide} />
     </div>
@@ -58,7 +58,7 @@ export function Router({ label }: { label?: number }) {
         <div className="relative h-1/2">
           {label != null && (
             <div
-              className={`absolute bottom-full left-1/2 -translate-x-1/2 -translate-y-0.5 h-5 min-w-5 px-1 rounded ${color.bg} text-white flex items-center justify-center font-medium text-sm z-10`}
+              className={`absolute bottom-full left-1/2 -translate-x-1/2 -translate-y-0.5 h-5 min-w-5 px-1 rounded-sm ${color.bg} text-white flex items-center justify-center font-medium text-sm z-10`}
             >
               {label}
             </div>

@@ -11,7 +11,7 @@
   padding-top: 0;
 }
 
-@media (min-width: theme(screens.lg)) {
+@media (min-width: 1024px) {
   .section > figure,
   .section > svg {
     display: none;

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import IsEmail from "isemail";
 import clsx from "clsx";
@@ -34,7 +32,7 @@ export const subscribe = async (email: string) => {
     },
   );
   if (!response.ok) {
-    const body = await response.json();
+    const body = (await response.json()) as { code?: string };
     if (body.code === "email_already_exists" || body.code === "loops_error") {
       return {
         error:
@@ -101,7 +99,7 @@ function SubscribeForm({ onCancel }: { onCancel: () => void }) {
           </span>
           <input
             name="email"
-            className="bg-transparent border-b py-1 focus-visible:outline-none focus-visible:border-blue9 border-gray12/25"
+            className="bg-transparent border-b py-1 focus-visible:outline-hidden focus-visible:border-blue9 border-gray12/25"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

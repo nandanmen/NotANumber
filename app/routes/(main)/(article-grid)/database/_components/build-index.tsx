@@ -1,5 +1,3 @@
-"use client";
-
 import { motion, useAnimate, useMotionValue, useTransform } from "motion/react";
 import { useMemo, useState } from "react";
 import { Figure } from "~/components/mdx/figure";
@@ -155,7 +153,7 @@ export function BuildIndex() {
               <p className="text-gray10 text-sm font-medium font-sans py-3">
                 Index
               </p>
-              <ul className="px-5 py-4 bg-gray2 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
+              <ul className="px-5 py-4 bg-gray2 shadow-sm rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
                 {activeRecords.map((record, index) => {
                   const offset = getOffsetAtIndex(index);
                   return (
@@ -175,7 +173,7 @@ export function BuildIndex() {
               <p className="text-gray10 text-sm font-medium font-sans py-3">
                 Database
               </p>
-              <ul className="px-5 py-4 bg-gray2 shadow rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
+              <ul className="px-5 py-4 bg-gray2 shadow-sm rounded-md rounded-b-none ring-1 ring-neutral-950/15 grow relative">
                 {activeRecords.map((record, index) => (
                   <RecordItem
                     record={record}

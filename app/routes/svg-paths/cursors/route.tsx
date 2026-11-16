@@ -1,8 +1,11 @@
-import { Metadata } from "next";
-import { readPage } from "../lib/fs";
+import { type Metadata, toMeta } from "~/lib/meta";
+import { countSections } from "../lib/fs";
+import ogImage from "./opengraph-image.png";
+import MDXContent from "./page.mdx";
+import source from "./page.mdx?raw";
 import { CursorsContent } from "./content";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "SVG Path Commands | Cursors",
   description: `The cursor is the "pen" that draws the path - but how does it work, and how does each command affect it?`,
   authors: [
@@ -25,7 +28,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function CursorsPage({ children }) {
-  const { length } = await readPage("cursors", "svg-paths", true);
-  return <CursorsContent length={length}>{children}</CursorsContent>;
+export function meta() {
+  return toMeta(metadata, { image: ogImage });
+}
+
+const length = countSections(source);
+
+export default function CursorsPage() {
+  return <CursorsContent length={length}><MDXContent /></CursorsContent>;
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import useInterval from "@use-it/interval";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
@@ -73,7 +71,7 @@ export function Compaction({ className }: { className?: string }) {
       </div>
       <Wide
         className={cn(
-          "bg-gray5 border-y md:border-x border-borderStrong md:rounded-lg shadow-inner overflow-hidden relative",
+          "bg-gray5 border-y md:border-x border-border-strong md:rounded-lg shadow-inner overflow-hidden relative",
           className,
         )}
       >
@@ -112,7 +110,7 @@ export function CompactionInner({
         <motion.ul
           layout="position"
           className={cn(
-            "row-start-1 font-mono text-sm px-5 py-4 w-[var(--card-width,300px)] h-[250px] bg-gray2 rounded-lg relative ring-1 ring-neutral-950/15 shadow-sm",
+            "row-start-1 font-mono text-sm px-5 py-4 w-(--card-width,300px) h-[250px] bg-gray2 rounded-lg relative ring-1 ring-neutral-950/15 shadow-xs",
             state === "record-added" &&
               "max-md:absolute max-md:left-[calc(100%-24px)]",
             state === "record-added" || state === "compacted"
@@ -142,7 +140,7 @@ export function CompactionInner({
         </motion.ul>
         <FileDatabase
           className={cn(
-            "w-[var(--card-width,300px)] h-[250px] mx-[initial] row-start-1 col-start-1 md:opacity-0 transition-opacity duration-500 z-10 relative",
+            "w-(--card-width,300px) h-[250px] mx-[initial] row-start-1 col-start-1 md:opacity-0 transition-opacity duration-500 z-10 relative",
             state === "initial" && "absolute right-[calc(100%+4px)]",
             state !== "initial" && "md:opacity-100",
             state === "compacting" && "absolute right-[calc(100%-24px)]",

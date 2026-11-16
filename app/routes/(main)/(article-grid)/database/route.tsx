@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import { type Metadata, toMeta } from "~/lib/meta";
+import ogImage from "./opengraph-image.png";
+import MDXContent from "./page.mdx";
 import { ArticleTitle } from "../article-title";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Build Your Own Database",
   description:
     "A step-by-step guide to building a key-value database from scratch.",
@@ -28,18 +29,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BuildYourOwnDatabaseLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function meta() {
+  return toMeta(metadata, { image: ogImage, themeColor: "#ededed" });
+}
+
+export default function BuildYourOwnDatabaseLayout() {
   return (
     <>
       <ArticleTitle
         title="Build Your Own Database"
         description="A step-by-step guide to building a key-value database from scratch."
       />
-      {children}
+      <MDXContent />
     </>
   );
 }

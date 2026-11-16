@@ -1,9 +1,10 @@
-import Link from "next/link";
+import "~/app.css";
+import { Link } from "react-router";
 import { Icon } from "./_icon";
 
-export const metadata = {
-  title: "Not a Number | Experiments",
-};
+export function meta() {
+  return [{ title: "Not a Number | Experiments" }];
+}
 
 export default function FamilyBrowserIconPage() {
   return (
@@ -11,7 +12,7 @@ export default function FamilyBrowserIconPage() {
       <main className="w-[900px] aspect-square space-y-8">
         <header className="text-gray11">
           <h1 className="font-serif text-2xl">
-            <Link href="/">NaN</Link>
+            <Link to="/">NaN</Link>
           </h1>
         </header>
         <Icon />

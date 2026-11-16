@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "~/components/Button";
 import React from "react";
 import { Wide } from "~/components/mdx/Wide";

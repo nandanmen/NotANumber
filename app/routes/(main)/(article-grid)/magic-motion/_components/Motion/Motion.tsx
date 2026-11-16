@@ -1,5 +1,3 @@
-"use client";
-
 import { type HTMLMotionProps, motion } from "framer-motion";
 import { animate } from "popmotion";
 import * as React from "react";
@@ -79,7 +77,7 @@ export function Motion({
     <motion.div
       ref={ref}
       className={cn(
-        "relative flex items-center justify-center rounded-md border border-blue8 bg-blue6 shadow-sm",
+        "relative flex items-center justify-center rounded-md border border-blue8 bg-blue6 shadow-xs",
         className,
       )}
       style={{ width: size, height: size, ...style }}

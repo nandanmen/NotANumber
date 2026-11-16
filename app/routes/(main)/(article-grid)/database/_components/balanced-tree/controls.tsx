@@ -1,5 +1,3 @@
-"use client";
-
 import { atom, useAtom } from "jotai";
 import { ResetButton, Button } from "~/components/Button";
 import produce from "immer";

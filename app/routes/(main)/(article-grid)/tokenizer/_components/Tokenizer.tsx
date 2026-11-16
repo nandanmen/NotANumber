@@ -1,5 +1,3 @@
-"use client";
-
 import { type HTMLMotionProps, motion } from "framer-motion";
 
 import { AlgorithmControls } from "~/components/AlgorithmControls";
@@ -75,7 +73,7 @@ export function Tokenizer({
                       <li
                         key={char}
                         className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-md border border-gray8 bg-gray2 text-xs shadow-sm",
+                          "flex h-8 w-8 items-center justify-center rounded-md border border-gray8 bg-gray2 text-xs shadow-xs",
                           state.currentChar === char &&
                             "border-gray12 bg-gray12 text-gray1",
                         )}
@@ -94,7 +92,7 @@ export function Tokenizer({
                       <li
                         key={char}
                         className={cn(
-                          "flex h-8 min-w-8 items-center justify-center rounded-md border border-gray8 bg-gray2 px-2 text-xs shadow-sm",
+                          "flex h-8 min-w-8 items-center justify-center rounded-md border border-gray8 bg-gray2 px-2 text-xs shadow-xs",
                           isKeywordActive(char) &&
                             "border-gray12 bg-gray12 text-gray1",
                         )}
@@ -108,7 +106,7 @@ export function Tokenizer({
             </div>
           )}
           {state.tokens.length > 0 && (
-            <ul className="grid list-none gap-2 [grid-template-columns:repeat(2,8rem)] md:[grid-template-columns:repeat(3,8rem)]">
+            <ul className="grid list-none gap-2 grid-cols-[repeat(2,8rem)] md:grid-cols-[repeat(3,8rem)]">
               {state.tokens.map((token, index) => (
                 <TokenBlock
                   // biome-ignore lint/suspicious/noArrayIndexKey: token list grows monotonically in the viz; index matches animation frame
@@ -140,10 +138,10 @@ function TokenBlock({
 }: TokenBlockProps) {
   return (
     <motion.li className="font-mono text-sm" {...props}>
-      <p className="mb-[-1px] ml-2 w-fit translate-y-[3px] border border-b-0 border-gray8 bg-gray4 p-1 text-xs [border-radius:4px_4px_0_0]">
+      <p className="-mb-px ml-2 w-fit translate-y-[3px] border border-b-0 border-gray8 bg-gray4 p-1 text-xs rounded-[4px_4px_0_0]">
         {type}
       </p>
-      <p className="relative min-h-10 rounded-md border border-gray8 bg-gray1 p-2 shadow-sm">
+      <p className="relative min-h-10 rounded-md border border-gray8 bg-gray1 p-2 shadow-xs">
         {name || value}
       </p>
     </motion.li>

@@ -1,5 +1,3 @@
-"use client";
-
 import { Hello } from "./hello";
 import { Figure } from "./figure";
 import { useMotionValue, animate } from "motion/react";

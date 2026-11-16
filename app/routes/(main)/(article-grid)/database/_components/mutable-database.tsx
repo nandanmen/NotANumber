@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useScrollGroupState } from "~/components/mdx/scroll-group";
@@ -156,7 +154,7 @@ export function CommandList({
   return (
     <div
       className={cn(
-        "rounded-lg bg-gray1 ring-1 shadow ring-neutral-950/15 relative",
+        "rounded-lg bg-gray1 ring-1 shadow-sm ring-neutral-950/15 relative",
         className,
       )}
       style={{
@@ -279,7 +277,7 @@ export const toFileDatabaseRecords = (store: DatabaseState) => {
 export function FileDatabaseVisualizer() {
   const [store] = useScrollGroupState<DatabaseState>();
   return (
-    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-[var(--content-padding)] md:border-x border-borderStrong md:rounded-xl h-[300px] lg:h-[400px] lg:m-8 overflow-hidden relative px-6">
+    <div className="bg-gray5 lg:bg-gray4 shadow-inner lg:shadow-none border-y -mx-(--content-padding) md:border-x border-border-strong md:rounded-xl h-[300px] lg:h-[400px] lg:m-8 overflow-hidden relative px-6">
       <p className="text-gray11 font-mono text-sm my-3">db.txt</p>
       <FileDatabaseComponent
         className="md:max-w-[300px] mx-auto"

@@ -1,5 +1,3 @@
-"use client";
-
 import { Wide } from "~/components/mdx/Wide";
 import { MotionSandbox } from "../MotionSandbox";
 

@@ -1,8 +1,11 @@
-import { Metadata } from "next";
-import { readPage } from "../lib/fs";
+import { type Metadata, toMeta } from "~/lib/meta";
+import { countSections } from "../lib/fs";
+import ogImage from "./opengraph-image.png";
+import MDXContent from "./page.mdx";
+import source from "./page.mdx?raw";
 import { LinesContent } from "./content";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "SVG Path Commands | Lines",
   description: `The L, or line, command is the simplest command out of all the path commands. Let's take a look at how it works.`,
   authors: [
@@ -25,7 +28,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function LinesPage({ children }) {
-  const { length } = await readPage("lines", "svg-paths", true);
-  return <LinesContent length={length}>{children}</LinesContent>;
+export function meta() {
+  return toMeta(metadata, { image: ogImage });
+}
+
+const length = countSections(source);
+
+export default function LinesPage() {
+  return <LinesContent length={length}><MDXContent /></LinesContent>;
 }

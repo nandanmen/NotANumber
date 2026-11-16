@@ -1,5 +1,3 @@
-"use client";
-
 import { type HTMLMotionProps, motion } from "framer-motion";
 import * as React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
@@ -17,7 +15,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       <motion.div
         ref={ref}
         className={cn(
-          "relative rounded-md border border-gray9 bg-gray2 p-4 font-mono shadow-sm",
+          "relative rounded-md border border-gray9 bg-gray2 p-4 font-mono shadow-xs",
           "after:absolute after:aspect-square after:w-2.5 after:rotate-45 after:border after:border-inherit after:bg-inherit after:content-[''] after:top-[calc(50%-5px)]",
           align === "left" &&
             "after:-right-1.5 after:border-b-0 after:border-l-0",
@@ -103,7 +101,7 @@ export const Square = React.forwardRef<HTMLButtonElement, SquareProps>(
         ref={ref}
         type="button"
         className={cn(
-          "relative aspect-square w-[120px] rounded-md border border-blue8 bg-blue6 text-center text-blue11 shadow-sm",
+          "relative aspect-square w-[120px] rounded-md border border-blue8 bg-blue6 text-center text-blue11 shadow-xs",
           "hover:border-blue10",
           active && "border-blue10",
           outline && "pointer-events-none absolute bg-gray5 border-gray8",

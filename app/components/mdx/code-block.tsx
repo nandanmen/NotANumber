@@ -1,18 +1,40 @@
-import { type BundledLanguage, type TokensResult, codeToTokens } from "shiki";
+import { createHighlighterCoreSync, type ThemedToken } from "shiki/core";
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
+import bash from "shiki/langs/bash.mjs";
+import css from "shiki/langs/css.mjs";
+import html from "shiki/langs/html.mjs";
+import javascript from "shiki/langs/javascript.mjs";
+import json from "shiki/langs/json.mjs";
+import jsx from "shiki/langs/jsx.mjs";
+import tsx from "shiki/langs/tsx.mjs";
+import typescript from "shiki/langs/typescript.mjs";
+import githubLight from "shiki/themes/github-light.mjs";
 import { cn } from "~/lib/cn";
 
-export type Token = TokensResult["tokens"][number][number];
+export type Token = ThemedToken;
 
-export async function getTokens(
+/**
+ * A synchronous highlighter (JavaScript regex engine, no WASM) with only the
+ * languages the posts use, so code blocks render highlighted on the server
+ * and the client alike. In Next.js this was an async server component.
+ */
+const highlighter = createHighlighterCoreSync({
+  themes: [githubLight],
+  langs: [bash, css, html, javascript, json, jsx, tsx, typescript],
+  engine: createJavaScriptRegexEngine(),
+});
+
+const loadedLanguages = new Set(highlighter.getLoadedLanguages());
+
+export function getTokens(
   code: string,
-  lang: BundledLanguage,
+  lang: string,
   theme = "github-light",
-): Promise<Token[][]> {
-  const result = await codeToTokens(code, {
-    lang,
+): Token[][] {
+  return highlighter.codeToTokens(code, {
+    lang: lang && loadedLanguages.has(lang) ? lang : "text",
     theme,
-  });
-  return result.tokens;
+  }).tokens;
 }
 
 type Diff = {
@@ -20,7 +42,7 @@ type Diff = {
   deletions?: number[];
 };
 
-export async function CodeBlockRaw({
+export function CodeBlockRaw({
   children,
   lang,
   theme,
@@ -28,12 +50,12 @@ export async function CodeBlockRaw({
   highlight,
 }: {
   children: string;
-  lang: BundledLanguage;
+  lang: string;
   theme?: string;
   diff?: Diff;
   highlight?: number[];
 }) {
-  const tokens = await getTokens(children.trim(), lang, theme);
+  const tokens = getTokens(children.trim(), lang, theme);
   return (
     <>
       {tokens.map((line, index) => {
@@ -88,13 +110,13 @@ export function CodeBlockMain({
 }: {
   diff?: Diff;
   children: string;
-  lang: BundledLanguage;
+  lang: string;
   highlight?: number[];
 }) {
   return (
     <div
       className={cn(
-        "rounded-lg ring-1 ring-neutral-950/15 shadow overflow-x-auto bg-gray1",
+        "rounded-lg ring-1 ring-neutral-950/15 shadow-sm overflow-x-auto bg-gray1",
         diff && "-ml-4 pl-4",
       )}
     >

@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { siteMetadata, toMeta } from "~/lib/meta";
+import ogImage from "../../opengraph-image.png";
+import MDXContent from "./page.mdx";
 import { CodeBlockMain } from "~/components/mdx/code-block";
 import { ArticleTitle } from "../article-title";
 import { PageHeader } from "./header";
@@ -7,23 +9,23 @@ const code = `fetch("https://nan.fyi")
   .then((response) => response.text())
   .then((html) => console.log(html)); // html of this web page!`;
 
-export default async function HowComputersTalkLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function meta() {
+  return toMeta(siteMetadata, { image: ogImage, themeColor: "#ededed" });
+}
+
+export default function HowComputersTalkLayout() {
   return (
     <>
       <ArticleTitle
         title="How Computers Talk to Each Other"
         description="A deep dive into how computers talk to each other."
       />
-      <header className="grid grid-cols-[1fr_min(65ch,100%)_1fr] [&>*]:col-start-2 gap-y-5 leading-relaxed">
+      <header className="grid grid-cols-[1fr_min(65ch,100%)_1fr] *:col-start-2 gap-y-5 leading-relaxed">
         <p>
           It's really easy to overlook the way the internet works. In
           JavaScript, we can make software that talks to other computers on the
           internet simply using a{" "}
-          <code className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded ring-neutral-950/15">
+          <code className="bg-gray1 ring-1 text-[0.875em] px-1 py-0.5 rounded-sm ring-neutral-950/15">
             fetch
           </code>{" "}
           call:
@@ -35,7 +37,7 @@ export default async function HowComputersTalkLayout({
           find out by remaking our own mini-version of the Internet.
         </p>
       </header>
-      {children}
+      <MDXContent />
     </>
   );
 }

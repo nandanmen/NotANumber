@@ -1,5 +1,3 @@
-"use client";
-
 import { useMachine } from "@xstate/react";
 import React from "react";
 import { assign } from "xstate";

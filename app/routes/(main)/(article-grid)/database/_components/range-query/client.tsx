@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 import { useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
@@ -152,8 +150,8 @@ function List({
         return (
           <motion.li
             className={cn(
-              "w-12 h-12 bg-gray2 flex items-center justify-center rounded-lg shadow ring-1 ring-neutral-950/15 text-lg font-mono transition-colors",
-              !isCurrent && !isInSnapshot && "bg-gray4 shadow-xs text-gray10",
+              "w-12 h-12 bg-gray2 flex items-center justify-center rounded-lg shadow-sm ring-1 ring-neutral-950/15 text-lg font-mono transition-colors",
+              !isCurrent && !isInSnapshot && "bg-gray4 shadow-2xs text-gray10",
               /* isInSnapshot && "bg-gray12 text-white ring-2 ring-gray8", */
             )}
             key={number}

@@ -1,5 +1,3 @@
-'use client'
-
 import { CubicPlayground } from "./cubic-playground";
 import { useStateContext } from "../state";
 import { Path } from "~/routes/svg-paths/components/svg/path";

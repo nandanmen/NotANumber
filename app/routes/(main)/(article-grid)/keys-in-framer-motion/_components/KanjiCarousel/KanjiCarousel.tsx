@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArticleBleed } from "../article-bleed";
@@ -54,8 +52,8 @@ export const KanjiCarousel = () => {
               onClick={next}
               className={cn(
                 "flex aspect-square -translate-x-[14px] items-center justify-center rounded-full border border-gray8 bg-gray2 p-3 shadow-md",
-                "hover:outline hover:outline-[3px] hover:outline-gray8",
-                "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-gray8",
+                "hover:outline-solid hover:outline-[3px] hover:outline-gray8",
+                "focus-visible:outline-solid focus-visible:outline-[3px] focus-visible:outline-gray8",
               )}
             >
               <FaArrowRight size="1.5rem" />

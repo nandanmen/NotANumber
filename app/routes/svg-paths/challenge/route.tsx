@@ -1,9 +1,11 @@
-import { Metadata } from "next";
-import { readPage } from "../lib/fs";
+import { type Metadata, toMeta } from "~/lib/meta";
+import { countSections } from "../lib/fs";
+import ogImage from "./opengraph-image.png";
+import MDXContent from "./page.mdx";
+import source from "./page.mdx?raw";
 import { Content } from "./content";
-import { ReactNode } from "react";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "SVG Path Commands | Challenges",
   description: `Build a better intuition of SVG paths by tracing over eight beautiful icons courtesy of the Iconist's Central icon system.`,
   authors: [
@@ -26,7 +28,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ChallengeLayout({ children }: { children: ReactNode }) {
-  const { length } = await readPage("challenge", "svg-paths", true);
-  return <Content length={length}>{children}</Content>;
+export function meta() {
+  return toMeta(metadata, { image: ogImage });
+}
+
+const length = countSections(source);
+
+export default function ChallengeLayout() {
+  return <Content length={length}><MDXContent /></Content>;
 }

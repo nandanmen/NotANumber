@@ -1,5 +1,3 @@
-"use client";
-
 import { motion, useAnimate } from "motion/react";
 import { useState } from "react";
 import { Figure } from "~/components/mdx/figure";
@@ -149,11 +147,11 @@ export function SearchIndex() {
       </div>
       <Wide>
         <div
-          className="md:grid grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] md:h-[300px] border-y md:border-x border-borderStrong md:rounded-lg overflow-hidden"
+          className="md:grid grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] md:h-[300px] border-y md:border-x border-border-strong md:rounded-lg overflow-hidden"
           ref={scope}
         >
           <CommandList
-            className="ring-0 shadow-none rounded-none border-b md:border-b-0 md:border-r border-borderStrong md:h-full h-[150px] overflow-y-auto"
+            className="ring-0 shadow-none rounded-none border-b md:border-b-0 md:border-r border-border-strong md:h-full h-[150px] overflow-y-auto"
             commands={commands}
             empty={
               <p className="text-gray10 italic">$ Waiting for commands...</p>
@@ -177,7 +175,7 @@ export function SearchIndex() {
                 >
                   <div
                     className={cn(
-                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]",
+                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow-sm origin-top h-[164px]",
                       "index second",
                     )}
                   >
@@ -206,7 +204,7 @@ export function SearchIndex() {
                 >
                   <div
                     className={cn(
-                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min overflow-hidden",
+                      "grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow-sm origin-top h-[164px] auto-rows-min overflow-hidden",
                       "index first",
                     )}
                   >
@@ -240,7 +238,7 @@ export function SearchIndex() {
                   }}
                   transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                 >
-                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px]">
+                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow-sm origin-top h-[164px]">
                     {secondSection.map((record) => {
                       return (
                         <span className="relative" key={record.key}>
@@ -264,7 +262,7 @@ export function SearchIndex() {
                   }}
                   transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                 >
-                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow origin-top h-[164px] auto-rows-min">
+                  <div className="grid font-mono text-sm gap-2 bg-gray2 rounded-md px-5 py-4 ring-1 ring-neutral-950/15 shadow-sm origin-top h-[164px] auto-rows-min">
                     {firstSection.map((record) => {
                       return (
                         <span className="relative" key={record.key}>

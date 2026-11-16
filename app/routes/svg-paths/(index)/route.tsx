@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import { type Metadata, toMeta } from "~/lib/meta";
+import { countSections } from "../lib/fs";
+import ogImage from "../opengraph-image.png";
+import MDXContent from "./page.mdx";
+import source from "./page.mdx?raw";
 import { IndexContent } from "./content";
-import { readPage } from "../lib/fs";
-import { ReactNode } from "react";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
     title: "A Deep Dive Into SVG Path Commands",
     description:
         "An interactive guide to understanding SVG paths and path commands.",
@@ -29,7 +31,16 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function SvgPathsLayout({ children }: { children: ReactNode }) {
-    const { length } = await readPage("(index)", "svg-paths", true);
-    return <IndexContent length={length}>{children}</IndexContent>
+export function meta() {
+  return toMeta(metadata, { image: ogImage });
+}
+
+const length = countSections(source);
+
+export default function SvgPathsPage() {
+  return (
+    <IndexContent length={length}>
+      <MDXContent />
+    </IndexContent>
+  );
 }

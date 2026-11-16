@@ -1,5 +1,3 @@
-"use client";
-
 import { transitions } from "~/routes/notes/(content)/diagram/_components/workflows/transitions";
 import { motion } from "motion/react";
 import { CONNECTOR_MARKER_ID } from "../../grid-background";

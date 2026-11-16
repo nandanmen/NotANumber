@@ -1,5 +1,3 @@
-"use client";
-
 import { type ReactNode, useContext } from "react";
 import {
   type SliderProps,
@@ -18,11 +16,11 @@ export function Slider(props: SliderProps & { children?: ReactNode }) {
           {({ state }) => (
             <>
               <div
-                className="absolute h-full rounded bg-gray12"
+                className="absolute h-full rounded-sm bg-gray12"
                 style={{ width: `${state.getThumbPercent(0) * 100}%` }}
               />
               {props.children}
-              <SliderThumb className="size-5 rounded-full bg-gray2 hover:bg-gray3 ring-1 ring-neutral-950/15 shadow select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800 top-1/2" />
+              <SliderThumb className="size-5 rounded-full bg-gray2 hover:bg-gray3 ring-1 ring-neutral-950/15 shadow-sm select-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-blue-800 top-1/2" />
             </>
           )}
         </SliderTrack>

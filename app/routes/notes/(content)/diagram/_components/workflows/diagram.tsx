@@ -1,5 +1,3 @@
-"use client";
-
 import { AnimatePresence, motion } from "motion/react";
 import {
   type CSSProperties,
@@ -153,7 +151,7 @@ function ExpandableStep({
           }}
           initial={{ marginTop: -6 }}
           transition={transitions.swift}
-          className="size-3 border border-neutral-300 bg-surface rounded relative z-10 mx-auto"
+          className="size-3 border border-neutral-300 bg-surface rounded-sm relative z-10 mx-auto"
         />
       )}
     </div>
@@ -185,7 +183,7 @@ function WorkflowFunctionNode({
           >
             <span className="grow flex items-center gap-2">
               <span className="font-mono">{node.name}()</span>
-              <span className="text-xs rounded bg-neutral-500 text-white w-4 h-4 shrink-0">
+              <span className="text-xs rounded-sm bg-neutral-500 text-white w-4 h-4 shrink-0">
                 {functionDef.nodes.length}
               </span>
             </span>
@@ -417,7 +415,7 @@ function WorkflowLoopNode({ node }: { node: LoopNode }) {
       />
       <Button
         className={cn(
-          "w-fit mx-auto h-8 gap-2.5 relative z-10 ring ring-black/20",
+          "w-fit mx-auto h-8 gap-2.5 relative z-10 ring-3 ring-black/20",
           expanded && "-mb-6",
         )}
         onClick={() => setExpanded(!expanded)}
@@ -425,7 +423,7 @@ function WorkflowLoopNode({ node }: { node: LoopNode }) {
         <span className="absolute w-[5px] h-2.5 rounded-l-xs right-full bg-(--color-connector)" />
         <span className="grow flex items-center gap-2">
           <span className="font-mono">loop</span>
-          <span className="text-xs rounded bg-neutral-500 text-white w-4 h-4 shrink-0">
+          <span className="text-xs rounded-sm bg-neutral-500 text-white w-4 h-4 shrink-0">
             {node.nodes.length}
           </span>
         </span>
@@ -448,7 +446,7 @@ function WorkflowLoopNode({ node }: { node: LoopNode }) {
         >
           <WorkflowNodeList showFirst nodes={node.nodes} />
           <div className="w-0.5 h-3 bg-(--color-connector) mx-auto" />
-          <div className="size-3 border border-neutral-300 bg-surface rounded relative z-10 mx-auto" />
+          <div className="size-3 border border-neutral-300 bg-surface rounded-sm relative z-10 mx-auto" />
         </div>
       )}
     </div>
@@ -555,13 +553,13 @@ export function WorkflowDiagram({
         }
       >
         <div>
-          <div className="size-3 border border-neutral-300 bg-surface rounded relative z-10 mx-auto" />
+          <div className="size-3 border border-neutral-300 bg-surface rounded-sm relative z-10 mx-auto" />
           <div className="w-0.5 h-3 bg-(--color-connector) mx-auto" />
         </div>
         <WorkflowNodeList nodes={populatedNodes} />
         <div>
           <div className="w-0.5 h-3 bg-(--color-connector) mx-auto" />
-          <div className="size-2.5 border border-current bg-current text-(--color-connector) rounded relative z-10 mx-auto" />
+          <div className="size-2.5 border border-current bg-current text-(--color-connector) rounded-sm relative z-10 mx-auto" />
         </div>
       </div>
     </FunctionsContext.Provider>

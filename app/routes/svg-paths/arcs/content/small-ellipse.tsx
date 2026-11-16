@@ -1,5 +1,3 @@
-'use client'
-
 import { useStateContext } from "../state";
 import { useSvgContext } from "~/routes/svg-paths/components/svg";
 import { Tooltip } from "~/routes/svg-paths/components/svg/tooltip";

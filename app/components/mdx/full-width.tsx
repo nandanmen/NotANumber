@@ -10,7 +10,7 @@ export function FullWidth({
   return (
     <div
       className={cn(
-        "full-width -mx-[var(--content-padding)] md:mx-0",
+        "full-width -mx-(--content-padding) md:mx-0",
         className,
       )}
     >

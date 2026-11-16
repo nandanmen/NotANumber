@@ -1,46 +1,12 @@
-import type { Metadata, Viewport } from "next";
+import "~/app.css";
+import { Outlet } from "react-router";
 import { Prototyper } from "../../prototyper/prototyper";
 
-export const viewport: Viewport = {
-  themeColor: "#ededed",
-};
-
-export const metadata: Metadata = {
-  title: "Not a Number",
-  description:
-    "An interactive blog on computer science and web development, by Nanda Syahrasyad.",
-  authors: [
-    {
-      name: "Nanda Syahrasyad",
-      url: "https://twitter.com/nandafyi",
-    },
-  ],
-  twitter: {
-    card: "summary_large_image",
-    title: "Not a Number",
-    description:
-      "An interactive blog on computer science and web development, by Nanda Syahrasyad.",
-    creator: "@nandafyi",
-  },
-  openGraph: {
-    title: "Not a Number",
-    description:
-      "An interactive blog on computer science and web development, by Nanda Syahrasyad.",
-    url: "https://nan.fyi",
-    siteName: "Not a Number",
-  },
-  metadataBase: new URL("https://nan.fyi"),
-};
-
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout() {
   return (
     <div className="min-h-screen isolate">
-      {children}
-      {process.env.NODE_ENV === "development" ? <Prototyper /> : null}
+      <Outlet />
+      {import.meta.env.DEV ? <Prototyper /> : null}
     </div>
   );
 }

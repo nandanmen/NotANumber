@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 import { CommandListFromSource } from "./command-list";
 import { AbsoluteCommand, parsePath, Path as IPath } from "../lib/path";

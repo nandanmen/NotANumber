@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 import { Fragment, type ReactNode, useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
@@ -33,7 +31,7 @@ export function Script({
         <div className="text-xs text-gray11 font-mono py-1 px-4 border border-[hsl(0_0%_79.8%)] rounded-t-lg border-b-0 -mx-px -mb-1.5 pb-2.5">
           script.js
         </div>
-        <div className="grid grid-rows-2 grid-cols-1 md:grid-cols-2 md:grid-rows-1 bg-gray3 rounded-lg ring-1 ring-neutral-950/15 overflow-hidden [&>:first-child]:rounded-none [&>:first-child]:shadow-none [&>:first-child]:ring-0 divide-y md:divide-y-0 md:divide-x divide-neutral-950/15 shadow">
+        <div className="grid grid-rows-2 grid-cols-1 md:grid-cols-2 md:grid-rows-1 bg-gray3 rounded-lg ring-1 ring-neutral-950/15 overflow-hidden *:first:rounded-none *:first:shadow-none *:first:ring-0 divide-y md:divide-y-0 md:divide-x divide-neutral-950/15 shadow-sm">
           {children}
           <div className="font-mono p-4 text-sm">
             {Array.from({ length: runs }).map((_, i) => {

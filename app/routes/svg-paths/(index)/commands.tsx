@@ -1,5 +1,3 @@
-'use client'
-
 import { Circle } from "../components/svg/circle";
 import { Path } from "../components/svg/path";
 import { createPath } from "../lib/path";

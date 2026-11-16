@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
@@ -50,7 +48,7 @@ export const SizeMeasurements = () => {
               <div
                 className={cn(
                   "absolute h-[120px] w-[120px] rounded-md border border-blue8",
-                  "bg-[repeating-linear-gradient(-45deg,theme(colors.blue8),theme(colors.blue8)_5px,transparent_5px,transparent_10px)]",
+                  "bg-[repeating-linear-gradient(-45deg,var(--color-blue8),var(--color-blue8)_5px,transparent_5px,transparent_10px)]",
                 )}
               />
               <RulerWrapper full style={{ transform: "translateY(90px)" }}>

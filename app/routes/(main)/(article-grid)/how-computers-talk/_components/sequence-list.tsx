@@ -11,6 +11,20 @@ import { cn } from "~/lib/cn";
 
 const STEP_INTERVAL_MS = 1500;
 
+/**
+ * In Next.js this was a client component, so the MDX list (mapped to
+ * `OrderedList`, a server component) arrived already rendered as an <ol>.
+ * Render it the same way here so the items keep OrderedList's markup.
+ */
+function renderListComponent(children: ReactNode) {
+  const element = children as ReactElement<{ children: ReactNode }>;
+  if (typeof element.type === "function") {
+    const render = element.type as (props: unknown) => ReactNode;
+    return render(element.props) as ReactElement<{ children: ReactNode }>;
+  }
+  return element;
+}
+
 export function SequenceList({
   children,
   index,
@@ -32,7 +46,7 @@ export function SequenceList({
     };
   }, []);
 
-  const ol = children as ReactElement<{ children: ReactNode }>;
+  const ol = renderListComponent(children);
   const items = Children.toArray(ol.props.children).filter(
     isValidElement,
   ) as ReactElement<{
@@ -69,8 +83,8 @@ export function SequenceList({
   };
 
   return (
-    <ol className="rounded-xl border border-borderSoft bg-gray3 relative">
-      <div className="divide-y divide-borderSoft">
+    <ol className="rounded-xl border border-border-soft bg-gray3 relative">
+      <div className="divide-y divide-border-soft">
         {items.map((item, i) => {
           const isActive = i === index;
           return (
@@ -81,7 +95,7 @@ export function SequenceList({
             >
               <div
                 className={cn(
-                  "-my-2 -ml-[34px] mr-2 pl-[34px] py-2 rounded group-first:rounded-tl-md group-last:rounded-bl-md",
+                  "-my-2 -ml-[34px] mr-2 pl-[34px] py-2 rounded-sm group-first:rounded-tl-md group-last:rounded-bl-md",
                   isActive && "bg-gray4",
                 )}
               >
@@ -93,7 +107,7 @@ export function SequenceList({
       </div>
       <div className="absolute inset-2 left-auto w-2 bg-gray4 ring-1 ring-black/10 rounded-lg" />
       <button
-        className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow absolute top-0 right-3 -translate-y-1/2 translate-x-1/2 overflow-hidden text-gray10 group"
+        className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow-sm absolute top-0 right-3 -translate-y-1/2 translate-x-1/2 overflow-hidden text-gray10 group"
         type="button"
         onClick={handlePlay}
       >

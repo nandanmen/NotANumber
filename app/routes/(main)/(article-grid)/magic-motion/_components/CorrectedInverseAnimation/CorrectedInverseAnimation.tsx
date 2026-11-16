@@ -1,5 +1,3 @@
-"use client";
-
 import {
   type MotionValue,
   animate,
@@ -266,7 +264,7 @@ const PatternMask = ({ maskId }: { maskId: string }) => {
           patternUnits="userSpaceOnUse"
           patternTransform="rotate(45 50 50)"
         >
-          <line y2="10" className="stroke-blue7 [stroke-width:10]" />
+          <line y2="10" className="stroke-blue7 stroke-10" />
         </pattern>
       </defs>
       <rect

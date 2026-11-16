@@ -1,5 +1,3 @@
-"use client";
-
 import clsx from "clsx";
 import produce from "immer";
 import {
@@ -120,7 +118,7 @@ export function ScrollGroup({
   return (
     <section
       data-scroll-group
-      className="full-width lg:grid grid-cols-2 my-8 [[data-scroll-group]_+&]:!-mt-px [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
+      className="full-width lg:grid grid-cols-2 my-8 [[data-scroll-group]_+&]:-mt-px! [[data-scroll-group]_+&>figure]:-mt-px [[data-scroll-group]_+&>figure]:h-full"
     >
       <ScrollGroupContext.Provider
         value={{
@@ -135,8 +133,8 @@ export function ScrollGroup({
           lastIndex,
         }}
       >
-        <div className="lg:ring-1 ring-black/15 lg:shadow-sm lg:bg-gray2 flex lg:px-7">
-          <div className="lg:border-x border-borderSoft w-full lg:py-10 xl:py-12 lg:px-6 xl:px-10">
+        <div className="lg:ring-1 ring-black/15 lg:shadow-xs lg:bg-gray2 flex lg:px-7">
+          <div className="lg:border-x border-border-soft w-full lg:py-10 xl:py-12 lg:px-6 xl:px-10">
             {Children.map(children, (child, i) => {
               return cloneElement(
                 child as React.ReactElement<{ index: number }>,
@@ -275,12 +273,12 @@ export function ScrollFigure({ children }: { children: React.ReactNode }) {
 
   return (
     <figure
-      className="hidden lg:block col-start-2 row-start-1 h-[calc(100%-15px)] ml-px mt-2 border border-l-0 border-borderStrong px-7"
+      className="hidden lg:block col-start-2 row-start-1 h-[calc(100%-15px)] ml-px mt-2 border border-l-0 border-border-strong px-7"
       style={{
         background: "hsl(0 0% 95% / var(--tw-bg-opacity, 1))",
       }}
     >
-      <div className="h-full border-x border-borderStrong border-dashed">
+      <div className="h-full border-x border-border-strong border-dashed">
         <div ref={figureRef} className="sticky overflow-hidden" style={{ top }}>
           {children}
         </div>

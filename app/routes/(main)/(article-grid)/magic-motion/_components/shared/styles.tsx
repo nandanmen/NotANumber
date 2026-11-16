@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import React, { type ComponentPropsWithoutRef } from "react";
 
@@ -9,7 +7,7 @@ export const PADDING = 32;
 export const SQUARE_RADIUS = 60;
 
 const primarySquareClass =
-  "drop-shadow-sm fill-blue6 stroke-blue8 [vector-effect:non-scaling-stroke]";
+  "drop-shadow-xs fill-blue6 stroke-blue8 [vector-effect:non-scaling-stroke]";
 const secondarySquareClass =
   "fill-gray6 stroke-gray8 filter-none [vector-effect:non-scaling-stroke]";
 

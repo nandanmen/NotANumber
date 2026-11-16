@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 import { useIndexContext } from "~/routes/svg-paths/components/index-provider";
 import { Ripple } from "~/routes/svg-paths/components/ripple";

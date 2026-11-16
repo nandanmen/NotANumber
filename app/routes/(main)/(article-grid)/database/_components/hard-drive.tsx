@@ -1,5 +1,3 @@
-"use client";
-
 import {
   motion,
   useAnimationControls,
@@ -49,7 +47,7 @@ export const HardDrive = () => {
           });
         }}
       />
-      <div className="!col-span-2 w-2/3 border border-gray8 rounded-lg bg-gray5 py-6">
+      <div className="col-span-2! w-2/3 border border-gray8 rounded-lg bg-gray5 py-6">
         <svg
           className="stroke-gray9 mx-auto"
           width="600"

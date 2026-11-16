@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -67,7 +65,7 @@ export const TokenList = ({
       {toggleable && (
         <motion.button
           type="button"
-          className="absolute left-0 top-0 cursor-pointer rounded p-1 px-2 text-sm font-bold text-gray11 hover:bg-gray7"
+          className="absolute left-0 top-0 cursor-pointer rounded-sm p-1 px-2 text-sm font-bold text-gray11 hover:bg-gray7"
           layout
           onClick={toggle}
         >
@@ -108,7 +106,7 @@ export const TokenList = ({
                   <motion.li
                     layout
                     className={cn(
-                      "w-fit whitespace-nowrap rounded border border-gray8 bg-gray2 p-1 px-2",
+                      "w-fit whitespace-nowrap rounded-sm border border-gray8 bg-gray2 p-1 px-2",
                       vt === "keyword" && "border-red8 bg-red7",
                       vt === "identifier" && "border-blue8 bg-blue8",
                       vt === "single-character" && "bg-gray6",

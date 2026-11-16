@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import React from "react";
-import Link from "next/link";
+import { Link } from "react-router";
 import { Content, ToggleButton, UndoButton } from "~/components/Visualizer";
 import { cn } from "~/lib/cn";
 import { styled } from "~/stitches.config";
@@ -22,13 +22,15 @@ export function ExperimentsPage({ children, page }) {
       <Content className="flex h-full flex-col justify-center p-16">
         <Row as={NavWrapper} css={{ flexDirection: "column", gap: "$4" }}>
           <LinkWrapper>
-            <Link href="/">NaN</Link>
+            <Link to="/" reloadDocument>
+              NaN
+            </Link>
           </LinkWrapper>
           <ExperimentsList>
             {experiments.map((experiment) => (
               <li key={experiment}>
                 <ExperimentItem
-                  href={`/experiments/${experiment}`}
+                  to={`/experiments/${experiment}`}
                   active={page === experiment}
                 >
                   {`${page === experiment ? ">" : ""} ${experiment}`}

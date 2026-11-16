@@ -1,5 +1,3 @@
-"use client";
-
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "~/lib/cn";
 import { Path } from "./connectors";

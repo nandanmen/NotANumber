@@ -1,5 +1,3 @@
-"use client";
-
 import { transitions } from "~/routes/notes/(content)/diagram/_components/workflows/transitions";
 import { atom, useAtom } from "jotai";
 import { AnimatePresence, motion, useAnimate } from "motion/react";
@@ -74,7 +72,7 @@ function BGPThreeRoutersDiagram() {
           style={{ width: gridSize, height: gridSize, top: gridSize * 2 }}
         >
           <button
-            className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow overflow-hidden text-gray10 group"
+            className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow-sm overflow-hidden text-gray10 group"
             type="button"
             onClick={handleReplay}
           >
@@ -200,9 +198,9 @@ function BGPThreeRoutersDiagram() {
                   height: { delay: 0.8, ...transitions.swift },
                 }}
               >
-                <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
-                  <div className="absolute border-r border-borderSoft h-full left-1/2" />
-                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                <ul className="bg-gray1 ring-1 ring-black/10 rounded-sm h-full relative shadow-sm overflow-hidden">
+                  <div className="absolute border-r border-border-soft h-full left-1/2" />
+                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-border-soft text-gray10">
                     <p>Address</p>
                     <p>Router</p>
                   </li>
@@ -244,9 +242,9 @@ function BGPThreeRoutersDiagram() {
                 }}
                 id="table-2-contents"
               >
-                <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
-                  <div className="absolute border-r border-borderSoft h-full left-1/2" />
-                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                <ul className="bg-gray1 ring-1 ring-black/10 rounded-sm h-full relative shadow-sm overflow-hidden">
+                  <div className="absolute border-r border-border-soft h-full left-1/2" />
+                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-border-soft text-gray10">
                     <p>Address</p>
                     <p>Router</p>
                   </li>
@@ -302,9 +300,9 @@ function BGPThreeRoutersDiagram() {
                 className="ring-1 bg-gray3 p-1 ring-black/10 rounded-md origin-top scale-0 h-[57px]"
                 id="table-3-contents"
               >
-                <ul className="bg-gray1 ring-1 ring-black/10 rounded h-full relative shadow overflow-hidden">
-                  <div className="absolute border-r border-borderSoft h-full left-1/2" />
-                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-borderSoft text-gray10">
+                <ul className="bg-gray1 ring-1 ring-black/10 rounded-sm h-full relative shadow-sm overflow-hidden">
+                  <div className="absolute border-r border-border-soft h-full left-1/2" />
+                  <li className="grid grid-cols-2 place-items-center py-0.5 border-b border-border-soft text-gray10">
                     <p>Address</p>
                     <p>Router</p>
                   </li>
@@ -454,7 +452,7 @@ export function BGPPlayButton() {
   const events = useBGPEvents();
   return (
     <button
-      className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow overflow-hidden text-gray10 group"
+      className="size-8 bg-gray4 rounded-full ring-1 ring-black/10 shadow-sm overflow-hidden text-gray10 group"
       type="button"
       onClick={() => events.notify("play")}
     >

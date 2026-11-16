@@ -50,14 +50,14 @@ export function LightAnimation({ mask = true }: { mask?: boolean }) {
           fill={`url(#${id}gradient)`}
         />
       </g>
-      <g className="text-gray1 fill-current stroke-borderStrong">
+      <g className="text-gray1 fill-current stroke-border-strong">
         <rect
           x="50"
           width="50"
           height="25"
           rx="3"
           vectorEffect="non-scaling-stroke"
-          className="drop-shadow-sm"
+          className="drop-shadow-xs"
         />
         <rect
           y="75"
@@ -65,7 +65,7 @@ export function LightAnimation({ mask = true }: { mask?: boolean }) {
           height="25"
           rx="3"
           vectorEffect="non-scaling-stroke"
-          className="drop-shadow-sm"
+          className="drop-shadow-xs"
         />
         <circle cx="25" cy="75" r="2" vectorEffect="non-scaling-stroke" />
         <circle cx="75" cy="25" r="2" vectorEffect="non-scaling-stroke" />

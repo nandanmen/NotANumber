@@ -1,5 +1,3 @@
-"use client";
-
 import { styled } from "~/stitches.config";
 
 export function ProblemStatement({ children }) {

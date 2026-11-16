@@ -1,11 +1,7 @@
-"use client";
-
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { signOut } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { signOut } from "../lib/auth";
+import { Link, useLocation } from "react-router";
 import type React from "react";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { useSession } from "../provider";
@@ -43,14 +39,14 @@ export const ContentWrapper = ({
   prefix?: React.ReactNode;
   content: React.ReactNode;
 }) => {
-  const pathName = usePathname();
+  const { pathname: pathName } = useLocation();
   const session = useSession();
   return (
     <IndexProvider numSections={numSections}>
       <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[55ch] xl:w-[68ch] w-full lg:max-w-[50vw]">
         <header className="px-8 lg:px-16 pt-8 pb-2 sticky top-0 flex items-center z-50 text-gray11 bg-gray4 mb-8">
           <h1 className="font-serif text-xl  hover:text-blue9">
-            <Link href="/">NaN</Link>
+            <Link to="/">NaN</Link>
           </h1>
           <motion.div className="flex text-xl gap-2 ml-auto" layout>
             <a
@@ -78,7 +74,7 @@ export const ContentWrapper = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                 >
-                  <Image
+                  <img
                     width="24"
                     height="24"
                     className="rounded-full"
@@ -108,7 +104,7 @@ export const ContentWrapper = ({
         )}
         {content}
         <Footer />
-        <nav className="fixed lg:hidden bottom-0 w-[100vw] overflow-x-auto px-8 py-4 bg-gray4/70 border-t border-gray6 backdrop-blur-md">
+        <nav className="fixed lg:hidden bottom-0 w-screen overflow-x-auto px-8 py-4 bg-gray4/70 border-t border-gray6 backdrop-blur-md">
           <ul className="flex w-fit md:mx-auto">
             {sections.map((section) => {
               const href = toHref(section);
@@ -122,7 +118,7 @@ export const ContentWrapper = ({
                       : "text-gray10",
                   )}
                 >
-                  <Link href={href}>{section}</Link>
+                  <Link to={href}>{section}</Link>
                 </li>
               );
             })}
@@ -143,7 +139,7 @@ export const ContentWrapper = ({
                       href === pathName ? "bg-gray7" : "text-gray10",
                     )}
                   >
-                    <Link href={href}>{section}</Link>
+                    <Link to={href}>{section}</Link>
                   </li>
                 );
               })}
@@ -213,16 +209,16 @@ const CoffeeIcon = () => {
 };
 
 const Footer = () => {
-  const fullpath = usePathname();
+  const { pathname: fullpath } = useLocation();
   const path = fromHref(fullpath);
   const pathIndex = sections.indexOf(path);
   const prev = sections[pathIndex - 1];
   const next = sections[pathIndex + 1];
   return (
-    <footer className="w-[calc(60ch+theme(space.8)*2)] px-8 max-w-[100vw] mx-auto lg:px-16 mb-32 lg:mb-16 flex text-gray11">
+    <footer className="w-[calc(60ch+4rem)] px-8 max-w-[100vw] mx-auto lg:px-16 mb-32 lg:mb-16 flex text-gray11">
       {prev && (
         <Link
-          href={toHref(prev)}
+          to={toHref(prev)}
           className="flex gap-2 items-center capitalize"
         >
           <ArrowLeft />
@@ -231,7 +227,7 @@ const Footer = () => {
       )}
       {next && (
         <Link
-          href={toHref(next)}
+          to={toHref(next)}
           className="flex gap-2 items-center capitalize ml-auto"
         >
           <span>{next}</span>

@@ -1,5 +1,3 @@
-"use client";
-
 import { subscribe } from "~/routes/(main)/subscribe";
 import IsEmail from "isemail";
 import { motion } from "motion/react";
@@ -71,7 +69,7 @@ export function Subscribe() {
           <input
             ref={inputRef}
             className={cn(
-              "bg-transparent h-full flex items-center pl-4 text-sm placeholder:text-gray9 grow focus-visible:outline-none",
+              "bg-transparent h-full flex items-center pl-4 text-sm placeholder:text-gray9 grow focus-visible:outline-hidden",
               !isOpen && "hidden",
             )}
             type="email"

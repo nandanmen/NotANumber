@@ -1,9 +1,7 @@
-"use client";
-
 import { GridBackground } from "~/components/Grid";
 import { PlayButton } from "~/components/PlayButton";
 import { useAlgorithm } from "~/lib/algorithm";
-import snapshot from "~/lib/algorithm/snapshot.macro";
+import snapshot from "~/lib/algorithm/snapshot.macro.cjs";
 
 import { CharacterList } from "./CharacterList";
 import type { Token } from "./lib/tokenize";

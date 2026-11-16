@@ -1,5 +1,3 @@
-'use client'
-
 import { useIndexContext } from "./index-provider";
 import { type Config, Svg } from "./svg";
 

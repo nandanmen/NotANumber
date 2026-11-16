@@ -21,7 +21,7 @@ export function Popover({
       />
       <P.Portal>
         <P.Positioner sideOffset={10} collisionPadding={32}>
-          <P.Popup className="origin-[var(--transform-origin)] text-sm rounded-lg bg-gray1 px-3 py-2 shadow-lg ring-1 ring-black/10 transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 max-w-[180px] focus-visible:outline-none">
+          <P.Popup className="origin-(--transform-origin) text-sm rounded-lg bg-gray1 px-3 py-2 shadow-lg ring-1 ring-black/10 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 max-w-[180px] focus-visible:outline-hidden">
             <P.Arrow className="data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180">
               <ArrowSvg />
             </P.Arrow>

@@ -1,6 +1,6 @@
 export function InlineNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative [&_[data-note]]:mt-4 lg:[&_[data-note]]:mt-0 lg:[&_[data-note]]:absolute [&_[data-note]]:left-full [&_[data-note]]:top-0 lg:[&_[data-note]]:w-[200px] lg:[&_[data-note]]:ml-6">
+    <div className="relative **:data-note:mt-4 lg:**:data-note:mt-0 lg:**:data-note:absolute **:data-note:left-full **:data-note:top-0 lg:**:data-note:w-[200px] lg:**:data-note:ml-6">
       {children}
     </div>
   );

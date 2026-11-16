@@ -1,5 +1,3 @@
-"use client";
-
 import { initialState, useStateContext } from "./state";
 import { StateProvider } from "../components/state-context";
 import { ContentWrapper } from "../components/content-wrapper";

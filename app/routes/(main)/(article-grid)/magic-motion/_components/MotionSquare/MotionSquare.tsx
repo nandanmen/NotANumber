@@ -1,5 +1,3 @@
-"use client";
-
 import { type MotionValue, useTransform } from "framer-motion";
 import React from "react";
 

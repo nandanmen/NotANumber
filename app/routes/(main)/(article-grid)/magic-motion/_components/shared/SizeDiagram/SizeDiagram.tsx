@@ -1,5 +1,3 @@
-"use client";
-
 import { type MotionValue, motion } from "framer-motion";
 import React from "react";
 
@@ -71,12 +69,12 @@ export const SizeDiagram = ({
         x={padding}
         y={squareY}
         height={SQUARE_RADIUS * 2}
-        className="drop-shadow-sm"
+        className="drop-shadow-xs"
       >
         <div
           className={cn(
             "h-full w-full rounded-md border border-gray8",
-            "bg-[repeating-linear-gradient(-45deg,theme(colors.gray8),theme(colors.gray8)_8px,transparent_8px,transparent_16px)]",
+            "bg-[repeating-linear-gradient(-45deg,var(--color-gray8),var(--color-gray8)_8px,transparent_8px,transparent_16px)]",
           )}
         />
       </foreignObject>

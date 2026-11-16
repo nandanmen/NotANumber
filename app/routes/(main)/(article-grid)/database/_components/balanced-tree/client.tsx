@@ -1,5 +1,3 @@
-"use client";
-
 import { useAtomValue } from "jotai";
 import {
   type CSSProperties,
@@ -150,7 +148,7 @@ function BalancedTreeInner({
               </svg>
             )}
             <div
-              className="grid grid-cols-[repeat(var(--level-width),_minmax(0,_1fr))] justify-items-center font-mono"
+              className="grid grid-cols-[repeat(var(--level-width),minmax(0,1fr))] justify-items-center font-mono"
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={i}
               style={
@@ -171,13 +169,13 @@ function BalancedTreeInner({
                         "--index": index + 1,
                       } as CSSProperties
                     }
-                    className="aspect-square col-start-[--index] relative z-10"
+                    className="aspect-square col-start-(--index) relative z-10"
                   >
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className={cn(
-                        "rounded-xl h-full bg-gray3 ring-1 ring-neutral-950/15 shadow flex items-center justify-center font-medium text-lg transition-colors relative z-10",
+                        "rounded-xl h-full bg-gray3 ring-1 ring-neutral-950/15 shadow-sm flex items-center justify-center font-medium text-lg transition-colors relative z-10",
                         isCurrent && "bg-black text-white",
                         animationState.type === "idle" &&
                           animationState.selectedKey === node.key &&
@@ -192,7 +190,7 @@ function BalancedTreeInner({
                         scale: isCurrent ? 1 : 0.8,
                       }}
                       initial={{ y: -48, scale: 0.8 }}
-                      className="text-white bg-blue9 absolute text-sm w-7 h-7 flex items-center justify-center ring-1 ring-blue10 shadow rounded left-[calc(50%-14px)] -bottom-9"
+                      className="text-white bg-blue9 absolute text-sm w-7 h-7 flex items-center justify-center ring-1 ring-blue10 shadow-sm rounded-sm left-[calc(50%-14px)] -bottom-9"
                     >
                       {currentState?.key}
                     </motion.p>

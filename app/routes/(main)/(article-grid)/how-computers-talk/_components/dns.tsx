@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 import { Fragment, useState } from "react";
 import { Wide } from "~/components/mdx/Wide";
@@ -114,11 +112,11 @@ function DomainList({
             const [name, suffix] = domain.domain.split(".");
             return (
               <Fragment key={domain.domain}>
-                <p className="border-b border-r h-9 flex items-center px-3 [&:nth-last-child(2)]:border-b-0">
+                <p className="border-b border-r h-9 flex items-center px-3 nth-last-2:border-b-0">
                   <span>{name}</span>
                   <span className="text-gray10">.{suffix}</span>
                 </p>
-                <p className="font-mono text-sm border-b border-r flex items-center px-3 [&:nth-child(even)]:border-r-0 last:border-b-0">
+                <p className="font-mono text-sm border-b border-r flex items-center px-3 even:border-r-0 last:border-b-0">
                   {domain.ipAddress}
                 </p>
               </Fragment>

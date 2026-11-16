@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useSvgContext } from "./svg";
 import { motion } from "framer-motion";

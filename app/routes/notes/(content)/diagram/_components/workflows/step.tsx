@@ -75,7 +75,7 @@ export function StepWrapper({
       />
       <motion.div
         className={cn(
-          "bg-surface dark:bg-neutral-900 w-fit rounded-lg ring shadow-md text-base relative z-20 min-w-[100px]",
+          "bg-surface dark:bg-neutral-900 w-fit rounded-lg ring-3 shadow-md text-base relative z-20 min-w-[100px]",
           ringClass,
           variant === "skipped" &&
             "bg-neutral-50 dark:bg-neutral-950 text-muted dark:text-neutral-600 shadow-none ring-black/15",
@@ -96,7 +96,7 @@ export function StepWrapper({
       </motion.div>
       <div
         className={cn(
-          "size-3 border bg-surface dark:bg-neutral-800 rounded -mt-1.5 relative z-30 mx-auto transition-colors duration-200",
+          "size-3 border bg-surface dark:bg-neutral-800 rounded-sm -mt-1.5 relative z-30 mx-auto transition-colors duration-200",
           connectorClass,
         )}
       />

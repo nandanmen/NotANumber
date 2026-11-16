@@ -1,17 +1,14 @@
-'use client'
-
 import React from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "../lib/auth";
 import { clsx } from "clsx";
 import { useIndexContext } from "./index-provider";
 import styles from "./page-section.module.css";
+import { useLocation as useRouterLocation } from "react-router";
 import { useSession } from "../provider";
-import Image from "next/image";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { motion } from "framer-motion";
 import useSWR, { useSWRConfig } from "swr";
-import { usePathname } from "next/navigation";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -81,7 +78,9 @@ export function PageSection({
       className={clsx(
         styles.section,
         "group relative px-8 pb-8 max-w-[100vw] lg:px-16",
-        "gap-y-6 lg:space-y-[1.5em] lg:min-h-[50vh]",
+        // Tailwind 3's `space-y-[1.5em]` (top margins), which Tailwind 4
+        // changed to bottom margins; the em values differ per element.
+        "gap-y-6 lg:[&>:not([hidden])~:not([hidden])]:mt-[1.5em] lg:min-h-[50vh]",
         "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
       )}
     >
@@ -93,7 +92,7 @@ export function PageSection({
 }
 
 const useLocation = (index: number) => {
-  const path = usePathname();
+  const { pathname: path } = useRouterLocation();
   const match = path.split("/svg-paths/")[1];
   if (!match) return `index-${index}`;
   return `${match}-${index}`;
@@ -117,7 +116,7 @@ function CommentsList({ index }) {
   const { data } = useSWR<Comment[]>(
     `/api/comments?location=${encodeURIComponent(location)}`,
     (url) => {
-      return fetch(url).then((res) => res.json());
+      return fetch(url).then((res) => res.json() as Promise<Comment[]>);
     }
   );
   return (
@@ -156,7 +155,7 @@ function CommentsList({ index }) {
               >
                 <header className="flex gap-2 items-center">
                   <div className="w-6 h-6 bg-gray10 rounded-full shrink-0">
-                    <Image
+                    <img
                       width="24"
                       height="24"
                       className="rounded-full"
@@ -202,7 +201,7 @@ function AddCommentForm({ user, location }) {
   return (
     <>
       <header className="flex gap-2 items-center">
-        <Image
+        <img
           width="24"
           height="24"
           className="rounded-full shrink-0"

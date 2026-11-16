@@ -1,27 +1,5 @@
-import * as fs from "fs/promises";
-
-export const readPage = async (path: string, base = "svg-paths", isPage = false) => {
-  const source = await fs.readFile(
-    `${process.cwd()}/app/${base}/${path}/${isPage ? "page.mdx" : "index.mdx"}`,
-    "utf8"
-  );
-  return splitPage(source);
-};
-
 /**
- * Wraps each section of the page in a PageSection component. A section is
+ * Counts the sections of a page from its raw MDX source. A section is
  * delimited by "---".
  */
-const splitPage = (page: string) => {
-  const sections = page.split("---");
-  const parts = sections.flatMap((section, index) => {
-    if (index === sections.length - 1) return [section];
-    return [section, `</PageSection>\n\n<PageSection index={${index + 1}}>`];
-  });
-  parts.unshift("<PageSection index={0}>\n\n");
-  parts.push("\n</PageSection>");
-  return {
-    content: parts.join(""),
-    length: sections.length,
-  };
-};
+export const countSections = (source: string) => source.split("---").length;

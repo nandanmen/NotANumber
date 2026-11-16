@@ -19,7 +19,7 @@ export function Figure({
       {controls && <div className="flex gap-2 -mb-2">{controls}</div>}
       <Wide
         className={cn(
-          "relative border-y md:border-x border-borderStrong md:rounded-lg",
+          "relative border-y md:border-x border-border-strong md:rounded-lg",
           variant === "inset" && "bg-gray5 shadow-inner",
           className,
         )}

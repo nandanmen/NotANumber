@@ -1,5 +1,3 @@
-"use client";
-
 import { animate, motion, useMotionValue } from "motion/react";
 import { type ElementRef, useEffect, useRef } from "react";
 import { Wide } from "~/components/mdx/Wide";
@@ -30,7 +28,7 @@ export function PathBuckets() {
 
   return (
     <Figure variant="inset">
-      <div className="grid grid-cols-3 divide-x divide-borderStrong relative">
+      <div className="grid grid-cols-3 divide-x divide-border-strong relative">
         <div className="p-8">
           <LightAnimation />
         </div>

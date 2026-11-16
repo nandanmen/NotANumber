@@ -1,8 +1,11 @@
-import { Metadata } from "next";
-import { readPage } from "../lib/fs";
+import { type Metadata, toMeta } from "~/lib/meta";
+import { countSections } from "../lib/fs";
+import ogImage from "./opengraph-image.png";
+import MDXContent from "./page.mdx";
+import source from "./page.mdx?raw";
 import { Content } from "./content";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "SVG Path Commands | Bezier Curves",
   description: `The real power of SVG paths lies in its ability to draw curves. Let's take a look at the first type of curve: the quadratic bezier curve.`,
   authors: [
@@ -25,7 +28,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BezierCurvesPage({ children }) {
-  const { length } = await readPage("bezier-curves", "svg-paths", true);
-  return <Content length={length}>{children}</Content>;
+export function meta() {
+  return toMeta(metadata, { image: ogImage });
+}
+
+const length = countSections(source);
+
+export default function BezierCurvesPage() {
+  return <Content length={length}><MDXContent /></Content>;
 }

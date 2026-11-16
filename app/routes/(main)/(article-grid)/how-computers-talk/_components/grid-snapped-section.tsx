@@ -1,5 +1,3 @@
-"use client";
-
 import {
   type CSSProperties,
   type HTMLAttributes,
@@ -42,7 +40,7 @@ export function Section({ className, style, ...props }: SectionProps) {
     <section
       ref={sectionRef}
       className={cn(
-        "grid [&>*]:col-start-2 grid-cols-[auto_1fr_min(65ch,100%)_1fr_auto] auto-rows-min gap-y-5 leading-relaxed",
+        "grid *:col-start-2 grid-cols-[auto_1fr_min(65ch,100%)_1fr_auto] auto-rows-min gap-y-5 leading-relaxed",
         className,
       )}
       style={

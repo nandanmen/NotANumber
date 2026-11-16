@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import { type Metadata, toMeta } from "~/lib/meta";
+import ogImage from "../../opengraph-image.png";
+import MDXContent from "./page.mdx";
 import { ArticleTitle } from "../article-title";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Rebuilding Babel: The Tokenizer",
   description:
     "How do you build a modern JavaScript compiler from scratch? In this post, we'll rebuild the first piece of a compiler: the tokenizer.",
@@ -28,18 +29,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TokenizerLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function meta() {
+  return toMeta(metadata, { image: ogImage, themeColor: "#ededed" });
+}
+
+export default function TokenizerLayout() {
   return (
     <>
       <ArticleTitle
         title="Rebuilding Babel: The Tokenizer"
         description="Rebuilding the first piece of a compiler: the tokenizer."
       />
-      {children}
+      <MDXContent />
     </>
   );
 }

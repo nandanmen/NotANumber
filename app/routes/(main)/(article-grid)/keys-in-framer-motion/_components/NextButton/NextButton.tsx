@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { motion } from "framer-motion";
 import { ArticleBleed } from "../article-bleed";
@@ -15,7 +13,7 @@ export const Button = ({ toggled, onClick = () => {} }) => {
       className={cn(
         "rounded-md border border-gray8 bg-gray1 py-2 px-4",
         "hover:border-gray12",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray8",
+        "focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-gray8",
       )}
     >
       <motion.span

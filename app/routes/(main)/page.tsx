@@ -1,14 +1,18 @@
-"use client";
-
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { Link } from "react-router";
 import { useState } from "react";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import Balancer from "react-wrap-balancer";
 import { BackgroundStripes } from "~/components/stripe-pattern";
 import { XIcon, posts } from "./posts";
 import { SubscribeButton } from "./subscribe";
+import { siteMetadata, toMeta } from "~/lib/meta";
+import ogImage from "./opengraph-image.png";
+
+export function meta() {
+  return toMeta(siteMetadata, { image: ogImage, themeColor: "#ededed" });
+}
 
 function Post({
   post,
@@ -16,7 +20,11 @@ function Post({
   post: (typeof posts)[number];
 }) {
   const [active, setHovering] = useState(false);
-  const Component = post.slug.startsWith("https") ? "a" : Link;
+  const isExternal = post.slug.startsWith("https");
+  const Component = isExternal ? "a" : Link;
+  const linkProps = isExternal
+    ? { href: post.slug }
+    : { to: `/${post.slug}` };
   return (
     <motion.li
       className="relative"
@@ -43,7 +51,7 @@ function Post({
         )}
       />
       <Component
-        href={post.slug}
+        {...(linkProps as { href: string } & { to: string })}
         className={clsx(
           "lg:p-10 lg:gap-10 block space-y-4 md:flex md:space-y-0 md:gap-8 p-6 relative",
           active ? "bg-gray5" : "bg-gray4",
@@ -51,7 +59,7 @@ function Post({
       >
         <img
           className="shrink-0 h-min"
-          src={post.image.src}
+          src={post.image}
           width="80"
           height="80"
           alt=""
@@ -120,7 +128,7 @@ export default function HomePage() {
       <div className="relative z-10 mx-auto md:px-4 w-full max-w-[1450px]">
         <div className="lg:grid grid-cols-[320px_1fr] bg-gray4 md:border-x border-gray8 relative">
           <aside className="p-6 pt-12 lg:p-10 border-gray8 top-0 flex flex-col gap-6 relative bg-gray4 border-b lg:border-b-0 lg:border-r-0 lg:sticky lg:h-screen">
-            <h1 className="font-serif text-[64px] leading-[1]">Not a Number</h1>
+            <h1 className="font-serif text-[64px] leading-none">Not a Number</h1>
             <div className="md:flex lg:block lg:space-y-8 space-y-6 md:space-y-0 items-center justify-between">
               <p className="leading-relaxed">
                 <Balancer>

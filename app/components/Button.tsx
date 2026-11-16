@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 import {
   type ComponentPropsWithoutRef,
@@ -39,9 +37,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           disabled={disabled || loading}
           whileTap={whileTap ?? { scale: 0.93 }}
           className={cn(
-            "cursor-pointer rounded border border-gray8 bg-gray1 px-2 py-1 text-sm",
+            "cursor-pointer rounded-sm border border-gray8 bg-gray1 px-2 py-1 text-sm",
             "hover:border-gray12",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray8",
+            "focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-gray8",
             "disabled:border-gray7 disabled:bg-gray5 disabled:text-gray11 disabled:cursor-not-allowed",
             "border-0 bg-transparent hover:bg-gray7 disabled:pointer-events-none disabled:text-gray8",
             className,
@@ -58,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <motion.button
           ref={ref}
           className={cn(
-            "bg-gray1 ring-1 shadow ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray3 disabled:opacity-60 disabled:hover:bg-gray1 disabled:cursor-not-allowed",
+            "bg-gray1 ring-1 shadow-sm ring-neutral-950/15 flex items-center px-2.5 rounded-lg text-sm font-medium text-gray11 hover:bg-gray3 disabled:opacity-60 disabled:hover:bg-gray1 disabled:cursor-not-allowed",
             loading && "overflow-hidden shadow-none",
             className,
           )}
@@ -127,9 +125,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         onClick={onClick}
         className={cn(
           variant === "solid" &&
-            "h-8 w-8 rounded-lg bg-gray1 flex items-center justify-center ring-1 shadow ring-neutral-950/15 hover:bg-gray3 text-gray11",
+            "h-8 w-8 rounded-lg bg-gray1 flex items-center justify-center ring-1 shadow-sm ring-neutral-950/15 hover:bg-gray3 text-gray11",
           variant === "ghost" &&
-            "flex h-[22px] items-center justify-center text-gray10 cursor-pointer rounded border-0 bg-transparent px-2 py-1 hover:bg-gray7 disabled:pointer-events-none disabled:text-gray8",
+            "flex h-[22px] items-center justify-center text-gray10 cursor-pointer rounded-sm border-0 bg-transparent px-2 py-1 hover:bg-gray7 disabled:pointer-events-none disabled:text-gray8",
           className,
         )}
         {...props}

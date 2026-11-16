@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "../components/button";
@@ -33,7 +31,7 @@ export function Editor({ questionKey }: { questionKey: string }) {
                     data-open={showReference ? "true" : undefined}
                 >
                     <span>Reference</span>
-                    <span className="block transition-transform rotate-180 group-data-[open]:rotate-0">
+                    <span className="block transition-transform rotate-180 group-data-open:rotate-0">
                         <svg
                             width="24"
                             height="24"

@@ -1,5 +1,3 @@
-"use client";
-
 import { useMachine } from "@xstate/react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import * as React from "react";

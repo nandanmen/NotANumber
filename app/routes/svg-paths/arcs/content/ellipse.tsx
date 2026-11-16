@@ -1,5 +1,3 @@
-'use client'
-
 import { Ripple } from "~/routes/svg-paths/components/ripple";
 import { useStateContext } from "../state";
 import { useSvgContext } from "~/routes/svg-paths/components/svg";

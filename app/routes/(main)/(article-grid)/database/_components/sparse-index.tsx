@@ -1,5 +1,3 @@
-"use client";
-
 import { useAnimate } from "motion/react";
 import { Figure } from "~/components/mdx/figure";
 import { Wide } from "~/components/mdx/Wide";
@@ -31,7 +29,7 @@ export function SparseIndex({ sorted = false }: { sorted?: boolean }) {
   );
   return (
     <Wide>
-      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong h-[200px] md:h-[250px] grid grid-cols-[1fr_140px] md:grid-cols-[2fr_1fr] divide-x divide-borderStrong">
+      <div className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-border-strong h-[200px] md:h-[250px] grid grid-cols-[1fr_140px] md:grid-cols-[2fr_1fr] divide-x divide-border-strong">
         <div className="pl-6 pt-3 overflow-hidden h-full">
           <FileDatabase
             className="translate-y-4 w-[300px]"
@@ -106,7 +104,7 @@ export function SearchSparseIndex() {
       </div>
       <Wide>
         <div
-          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-borderStrong h-[200px] md:h-[250px] grid grid-cols-[1fr_140px] md:grid-cols-[2fr_1fr] divide-x divide-borderStrong"
+          className="bg-gray5 shadow-inner border-y md:border-x md:rounded-lg border-border-strong h-[200px] md:h-[250px] grid grid-cols-[1fr_140px] md:grid-cols-[2fr_1fr] divide-x divide-border-strong"
           ref={scope}
         >
           <div className="pl-6 pt-3 overflow-hidden h-full">
@@ -115,7 +113,7 @@ export function SearchSparseIndex() {
               <li className="flex gap-2 py-1 px-5">007: amet, consectetur</li>
               <li className="flex gap-2 py-1 px-5 relative">
                 <span
-                  className="h-[1lh] w-[1ch] bg-blue5 text-blue11 absolute ten-bg"
+                  className="h-lh w-[1ch] bg-blue5 text-blue11 absolute ten-bg"
                   style={{
                     translate: `${offset}ch`,
                   }}
@@ -127,7 +125,7 @@ export function SearchSparseIndex() {
               <div className="relative">
                 <li className="flex gap-2 py-1 px-5">
                   <span>018: dolor sit</span>
-                  <span className="h-[1lh] w-[1ch] bg-blue5 text-blue11 absolute opacity-0 eight-bg">
+                  <span className="h-lh w-[1ch] bg-blue5 text-blue11 absolute opacity-0 eight-bg">
                     0
                   </span>
                 </li>

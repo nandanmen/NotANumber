@@ -1,5 +1,3 @@
-"use client";
-
 import { animate, useMotionValue } from "motion/react";
 import { CheckAnimation, CheckAnimationWrapper } from "./shared";
 

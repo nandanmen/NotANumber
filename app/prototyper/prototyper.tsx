@@ -1,5 +1,3 @@
-"use client";
-
 import { flip, offset, shift, size, useFloating } from "@floating-ui/react";
 import {
   type ReactNode,

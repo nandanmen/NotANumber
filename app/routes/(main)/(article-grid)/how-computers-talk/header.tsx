@@ -5,7 +5,7 @@ import { Computer, Router, Server } from "./_components/network-devices";
 
 export function PageHeader({ children }: { children: ReactNode }) {
   return (
-    <div className="!col-start-1 col-span-4 grid grid-cols-subgrid relative min-h-[round(up,60vh,var(--grid-size))]">
+    <div className="col-start-1! col-span-4 grid grid-cols-subgrid relative min-h-[round(up,60vh,var(--grid-size))]">
       <section className="col-start-2 auto-rows-min gap-y-5 leading-relaxed grid">
         {children}
       </section>

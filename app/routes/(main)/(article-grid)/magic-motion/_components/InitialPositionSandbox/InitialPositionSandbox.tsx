@@ -1,5 +1,3 @@
-"use client";
-
 import { MotionSandbox } from "../MotionSandbox";
 
 const motionCode = `import React from 'react'

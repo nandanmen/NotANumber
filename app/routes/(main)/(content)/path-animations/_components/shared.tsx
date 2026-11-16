@@ -44,7 +44,7 @@ export function CheckAnimationWrapper({
     >
       <div
         className={cn(
-          "grid h-full grid-cols-2 divide-x divide-borderStrong",
+          "grid h-full grid-cols-2 divide-x divide-border-strong",
           className,
         )}
       >
@@ -93,7 +93,7 @@ export function CheckAnimation({
   );
 
   return (
-    <div className="relative flex flex-col divide-y divide-borderStrong">
+    <div className="relative flex flex-col divide-y divide-border-strong">
       <div className="flex justify-center grow">
         <svg
           xmlns="http://www.w3.org/2000/svg"

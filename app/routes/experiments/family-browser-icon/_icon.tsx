@@ -1,5 +1,3 @@
-"use client";
-
 import { Slider } from "~/routes/svg-paths/components/slider";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 

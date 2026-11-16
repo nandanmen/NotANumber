@@ -3,7 +3,7 @@ export function Aside({
   children,
 }: { label: string; children: React.ReactNode }) {
   return (
-    <details className="full-width rounded-xl bg-gray4 group open:-mx-[var(--content-padding)] open:px-[var(--content-padding)] md:open:mx-0 md:open:px-0 my-5">
+    <details className="full-width rounded-xl bg-gray4 group open:-mx-(--content-padding) open:px-(--content-padding) md:open:mx-0 md:open:px-0 my-5">
       <summary className="p-4 md:p-6 list-none group-open:px-0 group-open:pb-5 group-open:pt-6 md:group-open:py-6 md:group-open:px-6">
         <div className="flex items-center gap-2 w-full max-w-[65ch] mx-auto">
           <svg

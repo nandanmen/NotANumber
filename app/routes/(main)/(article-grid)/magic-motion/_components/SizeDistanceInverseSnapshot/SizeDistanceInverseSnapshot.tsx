@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -86,17 +84,17 @@ const SnapshotSquare = React.forwardRef<
     <motion.div
       ref={ref}
       className={cn(
-        "aspect-square rounded-md border shadow-sm",
+        "aspect-square rounded-md border shadow-xs",
         large ? "w-[200px]" : "w-[120px]",
         secondary
           ? "border-gray7 bg-gray6 shadow-none"
           : "border-blue8 bg-blue6",
         striped &&
           !secondary &&
-          "shadow-none bg-[repeating-linear-gradient(-45deg,theme(colors.blue6),theme(colors.blue6)_5px,transparent_5px,transparent_10px)]",
+          "shadow-none bg-[repeating-linear-gradient(-45deg,var(--color-blue6),var(--color-blue6)_5px,transparent_5px,transparent_10px)]",
         striped &&
           secondary &&
-          "shadow-none bg-[repeating-linear-gradient(-45deg,theme(colors.gray6),theme(colors.gray6)_5px,transparent_5px,transparent_10px)]",
+          "shadow-none bg-[repeating-linear-gradient(-45deg,var(--color-gray6),var(--color-gray6)_5px,transparent_5px,transparent_10px)]",
         className,
       )}
       {...props}

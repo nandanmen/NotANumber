@@ -1,5 +1,3 @@
-"use client";
-
 import useInterval from "@use-it/interval";
 import React from "react";
 import { Content, Visualizer } from "~/components/Visualizer";
@@ -20,7 +18,7 @@ export const AnimationShowcase = ({ speed = 1500 }) => {
 
   return (
     <Wide>
-      <div className="grid grid-cols-2 gap-4 w-full overflow-x-auto px-[var(--content-padding)]">
+      <div className="grid grid-cols-2 gap-4 w-full overflow-x-auto px-(--content-padding)">
         <Visualizer>
           <Content className="flex py-10 items-center justify-center h-full">
             <KanjiViewer showOverflow={false} index={currentIndex} />

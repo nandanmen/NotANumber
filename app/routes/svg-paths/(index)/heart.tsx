@@ -1,5 +1,3 @@
-"use client";
-
 import { PathVisualizer } from "../components/path-visualizer";
 import type { Page } from "../components/visual-wrapper";
 

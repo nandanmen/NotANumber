@@ -1,5 +1,3 @@
-"use client";
-
 import type { ComponentProps } from "react";
 import { useActiveIndex } from "~/components/mdx/scroll-group";
 import { useGridSize } from "../../grid-context";

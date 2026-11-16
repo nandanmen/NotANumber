@@ -1,5 +1,3 @@
-'use client'
-
 import { useStateContext } from "../state";
 import { parsePath } from "~/routes/svg-paths/lib/path";
 import * as Arc from "./arc-sandbox";

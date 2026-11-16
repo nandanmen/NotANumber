@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Fragment } from "react";
 import { FaArrowRight } from "react-icons/fa";

@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link";
+import { Link } from "react-router";
 import { FaListUl, FaPaperPlane, FaTimes } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
 import { motion } from "framer-motion";
@@ -77,7 +77,7 @@ export const MobileNavIsland = ({ headings }: { headings: Heading[] }) => {
         </SuccessText>
       )}
       <DynamicIsland>
-        <Link href="/">
+        <Link to="/">
           <HomeLink>NaN</HomeLink>
         </Link>
         <motion.div

@@ -1,5 +1,3 @@
-"use client";
-
 import { type ComponentPropsWithoutRef, forwardRef } from "react";
 import { FaPlay, FaUndo } from "react-icons/fa";
 import { cn } from "~/lib/cn";
@@ -19,7 +17,7 @@ export const Visualizer = forwardRef<HTMLDivElement, VisualizerProps>(
       <div
         ref={ref}
         className={cn(
-          "overflow-hidden md:rounded-lg border-y md:border-x border-borderStrong",
+          "overflow-hidden md:rounded-lg border-y md:border-x border-border-strong",
           childBorders
             ? "[&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-gray8"
             : "[&>*:not(:first-child)]:border-t-0",
@@ -39,7 +37,7 @@ export const Controls = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "relative flex justify-between bg-gray4 px-[var(--content-padding)] py-3 md:px-3",
+        "relative flex justify-between bg-gray4 px-(--content-padding) py-3 md:px-3",
         className,
       )}
       {...props}

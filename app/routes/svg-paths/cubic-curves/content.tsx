@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { StateProvider } from "../components/state-context";
 import { VisualWrapper } from "../components/visual-wrapper";

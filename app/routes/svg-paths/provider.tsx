@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 interface User {
@@ -22,12 +20,12 @@ export const useSession = (): Session | undefined => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [session, setSession] = React.useState();
+  const [session, setSession] = React.useState<Session>();
 
   React.useEffect(() => {
     const fetchSession = async () => {
       const res = await fetch("/api/auth/session");
-      const json = await res.json();
+      const json = (await res.json()) as Session;
       setSession(json);
     };
     fetchSession();

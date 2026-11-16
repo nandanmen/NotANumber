@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { useStateContext } from "./state";

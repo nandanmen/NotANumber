@@ -1,5 +1,3 @@
-"use client";
-
 import { motion, type HTMLMotionProps } from "framer-motion";
 import React from "react";
 import { cn } from "~/lib/cn";
@@ -84,7 +82,7 @@ export const GridBackground = React.forwardRef<
     <motion.div
       ref={ref}
       className={cn(
-        "relative border border-gray8 rounded-md bg-[url(/grid.svg)] bg-[length:40px_40px]",
+        "relative border border-gray8 rounded-md bg-[url(/grid.svg)] bg-size-[40px_40px]",
         noOverflow ? "overflow-hidden" : "overflow-auto",
         className,
       )}

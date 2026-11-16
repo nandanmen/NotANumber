@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Figure } from "~/components/mdx/figure";
@@ -22,12 +20,12 @@ export function FileSequence({ updateable = false }: { updateable?: boolean }) {
         </div>
       )}
       <FullWidth>
-        <div className="p-4 bg-gray5 md:rounded-lg overflow-hidden border-y md:border-x border-borderStrong">
+        <div className="p-4 bg-gray5 md:rounded-lg overflow-hidden border-y md:border-x border-border-strong">
           <p
             className={cn(
               "whitespace-pre font-mono",
               updateable &&
-                "-translate-x-[300px] md:-translate-x-[250px] lg:-translate-x-0",
+                "-translate-x-[300px] md:-translate-x-[250px] lg:translate-x-0",
             )}
           >
             {updateable ? (
