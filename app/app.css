@@ -81,6 +81,37 @@
   src: url("./fonts/sans/bold-italic.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "Commit Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/commit-mono/CommitMono-400-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Commit Mono";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/commit-mono/CommitMono-400-Italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Commit Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/commit-mono/CommitMono-700-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Commit Mono";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/commit-mono/CommitMono-700-Italic.otf") format("opentype");
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
