@@ -53,9 +53,6 @@ importers:
       '@stitches/react':
         specifier: ^1.2.8
         version: 1.2.8(react@19.2.4)
-      '@upstash/redis':
-        specifier: ^1.35.0
-        version: 1.35.0
       '@use-it/interval':
         specifier: ^1.0.0
         version: 1.0.0(react@19.2.4)
@@ -2843,9 +2840,6 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  '@upstash/redis@1.35.0':
-    resolution: {integrity: sha512-WUm0Jz1xN4DBDGeJIi2Y0kVsolWRB2tsVds4SExaiLg4wBdHFMB+8IfZtBWr+BP0FvhuBr5G1/VLrJ9xzIWHsg==}
-
   '@use-it/interval@1.0.0':
     resolution: {integrity: sha512-WQFcnSt/xM/mS8ZtJ0ut5lhPrl+V0HDPPcI/J0eUClsfiD+/r8A7IeW/pVcfpSVGWRmN3+WnjNteWuKyWs2WZg==}
     engines: {node: '>=10'}
@@ -4348,9 +4342,6 @@ packages:
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
-
-  uncrypto@0.1.3:
-    resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
@@ -7638,10 +7629,6 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@upstash/redis@1.35.0':
-    dependencies:
-      uncrypto: 0.1.3
-
   '@use-it/interval@1.0.0(react@19.2.4)':
     dependencies:
       react: 19.2.4
@@ -9497,8 +9484,6 @@ snapshots:
   typescript@5.9.3: {}
 
   ufo@1.5.4: {}
-
-  uncrypto@0.1.3: {}
 
   undici-types@7.16.0: {}
 

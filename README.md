@@ -18,13 +18,11 @@ pnpm dev
 
 See `migration.md` for how to add an article.
 
-## Secrets
+## Secrets and bindings
 
-The API routes need these secrets. For local development copy `.dev.vars.example` to `.dev.vars` and fill it in; in production set each with `wrangler secret put <NAME>`.
+The newsletter sign-up (`/api/subscribe`, `/api/verify`) needs one secret, `LOOPS_API_KEY`. For local development copy `.dev.vars.example` to `.dev.vars` and fill it in; in production set it with `wrangler secret put LOOPS_API_KEY`.
 
-| Name | Used by |
-|------|---------|
-| `LOOPS_API_KEY`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Newsletter sign-up (`/api/subscribe`, `/api/verify`) |
+Confirmation tokens are stored in the `SUBSCRIBE_TOKENS` Workers KV namespace (see `wrangler.json`). Wrangler creates the namespace on the first deploy; local dev uses a local KV store.
 
 ## Scripts
 

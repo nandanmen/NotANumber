@@ -1,5 +1,4 @@
 import { APIError } from "loops";
-import { getKv } from "../kv";
 import { getLoops } from "../loops";
 import type { Route } from "./+types/route";
 
@@ -47,7 +46,9 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 
   const token = randomToken();
-  await getKv(env).set(`token:${token}`, email, { ex: 60 * 60 * 24 * 7 });
+  await env.SUBSCRIBE_TOKENS.put(`token:${token}`, email, {
+    expirationTtl: 60 * 60 * 24 * 7,
+  });
 
   await loops.sendTransactionalEmail({
     transactionalId: CONFIRM_EMAIL_ID,

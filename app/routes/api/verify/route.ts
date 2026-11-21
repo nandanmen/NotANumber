@@ -1,5 +1,4 @@
 import { redirect } from "react-router";
-import { getKv } from "../kv";
 import { getLoops } from "../loops";
 import type { Route } from "./+types/route";
 
@@ -11,13 +10,12 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     return new Response(null, { status: 401 });
   }
 
-  const kv = getKv(env);
-  const email = await kv.get<string>(`token:${token}`);
+  const email = await env.SUBSCRIBE_TOKENS.get(`token:${token}`);
   if (!email) {
     return new Response(null, { status: 401 });
   }
 
-  await kv.del(`token:${token}`);
+  await env.SUBSCRIBE_TOKENS.delete(`token:${token}`);
   await getLoops(env).updateContact(email, { subscribed: true });
 
   url.searchParams.delete("token");

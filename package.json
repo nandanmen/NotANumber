@@ -29,7 +29,6 @@
     "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-slider": "^1.0.0",
     "@stitches/react": "^1.2.8",
-    "@upstash/redis": "^1.35.0",
     "@use-it/interval": "^1.0.0",
     "@xstate/react": "^3.0.1",
     "bezier-easing": "^2.1.0",
