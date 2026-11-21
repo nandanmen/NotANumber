@@ -33,6 +33,9 @@ export default [
     route("notes/diagram", "routes/notes/(content)/diagram/route.tsx"),
   ]),
 
+  // Ported from nan (github.com/nandanmen/nan), with its own full-page layout.
+  route("internet", "routes/internet/route.tsx"),
+
   route("experiments/family-browser-icon", "routes/experiments/family-browser-icon/page.tsx"),
 
   // Pages that used to live in the Next.js pages router.

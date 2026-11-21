@@ -1,84 +1,216 @@
-/* Design tokens shared by app.css and legacy.css. */
+/*
+  Design tokens shared by app.css and legacy.css.
+
+  Colors are nan's: Radix Colors 3, as CSS variables (--gray-1 …) from
+  @radix-ui/colors, exposed to Tailwind as `gray-1` … `gray-12` (and olive,
+  blue, green, red, yellow, orange, cyan). The older undashed names
+  (`gray1` … `gray12`, `blue1` …) are kept as aliases of the same values so
+  existing pages keep working.
+*/
+@import "@radix-ui/colors/gray.css";
+@import "@radix-ui/colors/gray-dark.css";
+@import "@radix-ui/colors/olive.css";
+@import "@radix-ui/colors/blue.css";
+@import "@radix-ui/colors/blue-dark.css";
+@import "@radix-ui/colors/green.css";
+@import "@radix-ui/colors/green-dark.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/red-dark.css";
+@import "@radix-ui/colors/yellow.css";
+@import "@radix-ui/colors/yellow-dark.css";
+@import "@radix-ui/colors/orange.css";
+@import "@radix-ui/colors/orange-dark.css";
+@import "@radix-ui/colors/cyan.css";
+@import "@radix-ui/colors/cyan-dark.css";
+
+@theme inline {
+  --color-olive-1: var(--olive-1);
+  --color-olive-2: var(--olive-2);
+  --color-olive-3: var(--olive-3);
+  --color-olive-4: var(--olive-4);
+  --color-olive-5: var(--olive-5);
+  --color-olive-6: var(--olive-6);
+  --color-olive-7: var(--olive-7);
+  --color-olive-8: var(--olive-8);
+  --color-olive-9: var(--olive-9);
+  --color-olive-10: var(--olive-10);
+  --color-olive-11: var(--olive-11);
+  --color-olive-12: var(--olive-12);
+
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-gray-6: var(--gray-6);
+  --color-gray-7: var(--gray-7);
+  --color-gray-8: var(--gray-8);
+  --color-gray-9: var(--gray-9);
+  --color-gray-10: var(--gray-10);
+  --color-gray-11: var(--gray-11);
+  --color-gray-12: var(--gray-12);
+
+  --color-blue-1: var(--blue-1);
+  --color-blue-2: var(--blue-2);
+  --color-blue-3: var(--blue-3);
+  --color-blue-4: var(--blue-4);
+  --color-blue-5: var(--blue-5);
+  --color-blue-6: var(--blue-6);
+  --color-blue-7: var(--blue-7);
+  --color-blue-8: var(--blue-8);
+  --color-blue-9: var(--blue-9);
+  --color-blue-10: var(--blue-10);
+  --color-blue-11: var(--blue-11);
+  --color-blue-12: var(--blue-12);
+
+  --color-green-1: var(--green-1);
+  --color-green-2: var(--green-2);
+  --color-green-3: var(--green-3);
+  --color-green-4: var(--green-4);
+  --color-green-5: var(--green-5);
+  --color-green-6: var(--green-6);
+  --color-green-7: var(--green-7);
+  --color-green-8: var(--green-8);
+  --color-green-9: var(--green-9);
+  --color-green-10: var(--green-10);
+  --color-green-11: var(--green-11);
+  --color-green-12: var(--green-12);
+
+  --color-red-1: var(--red-1);
+  --color-red-2: var(--red-2);
+  --color-red-3: var(--red-3);
+  --color-red-4: var(--red-4);
+  --color-red-5: var(--red-5);
+  --color-red-6: var(--red-6);
+  --color-red-7: var(--red-7);
+  --color-red-8: var(--red-8);
+  --color-red-9: var(--red-9);
+  --color-red-10: var(--red-10);
+  --color-red-11: var(--red-11);
+  --color-red-12: var(--red-12);
+
+  --color-yellow-1: var(--yellow-1);
+  --color-yellow-2: var(--yellow-2);
+  --color-yellow-3: var(--yellow-3);
+  --color-yellow-4: var(--yellow-4);
+  --color-yellow-5: var(--yellow-5);
+  --color-yellow-6: var(--yellow-6);
+  --color-yellow-7: var(--yellow-7);
+  --color-yellow-8: var(--yellow-8);
+  --color-yellow-9: var(--yellow-9);
+  --color-yellow-10: var(--yellow-10);
+  --color-yellow-11: var(--yellow-11);
+  --color-yellow-12: var(--yellow-12);
+
+  --color-orange-1: var(--orange-1);
+  --color-orange-2: var(--orange-2);
+  --color-orange-3: var(--orange-3);
+  --color-orange-4: var(--orange-4);
+  --color-orange-5: var(--orange-5);
+  --color-orange-6: var(--orange-6);
+  --color-orange-7: var(--orange-7);
+  --color-orange-8: var(--orange-8);
+  --color-orange-9: var(--orange-9);
+  --color-orange-10: var(--orange-10);
+  --color-orange-11: var(--orange-11);
+  --color-orange-12: var(--orange-12);
+
+  --color-cyan-1: var(--cyan-1);
+  --color-cyan-2: var(--cyan-2);
+  --color-cyan-3: var(--cyan-3);
+  --color-cyan-4: var(--cyan-4);
+  --color-cyan-5: var(--cyan-5);
+  --color-cyan-6: var(--cyan-6);
+  --color-cyan-7: var(--cyan-7);
+  --color-cyan-8: var(--cyan-8);
+  --color-cyan-9: var(--cyan-9);
+  --color-cyan-10: var(--cyan-10);
+  --color-cyan-11: var(--cyan-11);
+  --color-cyan-12: var(--cyan-12);
+
+  /* Older names for the same scales. */
+  --color-gray1: var(--gray-1);
+  --color-gray2: var(--gray-2);
+  --color-gray3: var(--gray-3);
+  --color-gray4: var(--gray-4);
+  --color-gray5: var(--gray-5);
+  --color-gray6: var(--gray-6);
+  --color-gray7: var(--gray-7);
+  --color-gray8: var(--gray-8);
+  --color-gray9: var(--gray-9);
+  --color-gray10: var(--gray-10);
+  --color-gray11: var(--gray-11);
+  --color-gray12: var(--gray-12);
+  --color-blue1: var(--blue-1);
+  --color-blue2: var(--blue-2);
+  --color-blue3: var(--blue-3);
+  --color-blue4: var(--blue-4);
+  --color-blue5: var(--blue-5);
+  --color-blue6: var(--blue-6);
+  --color-blue7: var(--blue-7);
+  --color-blue8: var(--blue-8);
+  --color-blue9: var(--blue-9);
+  --color-blue10: var(--blue-10);
+  --color-blue11: var(--blue-11);
+  --color-blue12: var(--blue-12);
+  --color-green1: var(--green-1);
+  --color-green2: var(--green-2);
+  --color-green3: var(--green-3);
+  --color-green4: var(--green-4);
+  --color-green5: var(--green-5);
+  --color-green6: var(--green-6);
+  --color-green7: var(--green-7);
+  --color-green8: var(--green-8);
+  --color-green9: var(--green-9);
+  --color-green10: var(--green-10);
+  --color-green11: var(--green-11);
+  --color-green12: var(--green-12);
+  --color-red1: var(--red-1);
+  --color-red2: var(--red-2);
+  --color-red3: var(--red-3);
+  --color-red4: var(--red-4);
+  --color-red5: var(--red-5);
+  --color-red6: var(--red-6);
+  --color-red7: var(--red-7);
+  --color-red8: var(--red-8);
+  --color-red9: var(--red-9);
+  --color-red10: var(--red-10);
+  --color-red11: var(--red-11);
+  --color-red12: var(--red-12);
+  --color-yellow1: var(--yellow-1);
+  --color-yellow2: var(--yellow-2);
+  --color-yellow3: var(--yellow-3);
+  --color-yellow4: var(--yellow-4);
+  --color-yellow5: var(--yellow-5);
+  --color-yellow6: var(--yellow-6);
+  --color-yellow7: var(--yellow-7);
+  --color-yellow8: var(--yellow-8);
+  --color-yellow9: var(--yellow-9);
+  --color-yellow10: var(--yellow-10);
+  --color-yellow11: var(--yellow-11);
+  --color-yellow12: var(--yellow-12);
+  --color-cyan1: var(--cyan-1);
+  --color-cyan2: var(--cyan-2);
+  --color-cyan3: var(--cyan-3);
+  --color-cyan4: var(--cyan-4);
+  --color-cyan5: var(--cyan-5);
+  --color-cyan6: var(--cyan-6);
+  --color-cyan7: var(--cyan-7);
+  --color-cyan8: var(--cyan-8);
+  --color-cyan9: var(--cyan-9);
+  --color-cyan10: var(--cyan-10);
+  --color-cyan11: var(--cyan-11);
+  --color-cyan12: var(--cyan-12);
+}
+
 @theme {
-  --color-gray1: hsl(0, 0%, 99%);
-  --color-gray2: hsl(0, 0%, 97.3%);
-  --color-gray3: hsl(0, 0%, 95.1%);
-  --color-gray4: hsl(0, 0%, 93%);
-  --color-gray5: hsl(0, 0%, 90.9%);
-  --color-gray6: hsl(0, 0%, 88.7%);
-  --color-gray7: hsl(0, 0%, 85.8%);
-  --color-gray8: hsl(0, 0%, 78%);
-  --color-gray9: hsl(0, 0%, 56.1%);
-  --color-gray10: hsl(0, 0%, 52.3%);
-  --color-gray11: hsl(0, 0%, 43.5%);
-  --color-gray12: hsl(0, 0%, 9%);
-  --color-blue1: hsl(206, 100%, 99.2%);
-  --color-blue2: hsl(210, 100%, 98%);
-  --color-blue3: hsl(209, 100%, 96.5%);
-  --color-blue4: hsl(210, 98.8%, 94%);
-  --color-blue5: hsl(209, 95%, 90.1%);
-  --color-blue6: hsl(209, 81.2%, 84.5%);
-  --color-blue7: hsl(208, 77.5%, 76.9%);
-  --color-blue8: hsl(206, 81.9%, 65.3%);
-  --color-blue9: hsl(206, 100%, 50%);
-  --color-blue10: hsl(208, 100%, 47.3%);
-  --color-blue11: hsl(211, 100%, 43.2%);
-  --color-blue12: hsl(211, 100%, 15%);
-  --color-green1: hsl(136, 50%, 98.9%);
-  --color-green2: hsl(138, 62.5%, 96.9%);
-  --color-green3: hsl(139, 55.2%, 94.5%);
-  --color-green4: hsl(140, 48.7%, 91%);
-  --color-green5: hsl(141, 43.7%, 86%);
-  --color-green6: hsl(143, 40.3%, 79%);
-  --color-green7: hsl(146, 38.5%, 69%);
-  --color-green8: hsl(151, 40.2%, 54.1%);
-  --color-green9: hsl(151, 55%, 41.5%);
-  --color-green10: hsl(152, 57.5%, 37.6%);
-  --color-green11: hsl(153, 67%, 28.5%);
-  --color-green12: hsl(155, 40%, 14%);
-  --color-red1: hsl(359, 100%, 99.4%);
-  --color-red2: hsl(359, 100%, 98.6%);
-  --color-red3: hsl(360, 100%, 96.8%);
-  --color-red4: hsl(360, 97.9%, 94.8%);
-  --color-red5: hsl(360, 90.2%, 91.9%);
-  --color-red6: hsl(360, 81.7%, 87.8%);
-  --color-red7: hsl(359, 74.2%, 81.7%);
-  --color-red8: hsl(359, 69.5%, 74.3%);
-  --color-red9: hsl(358, 75%, 59%);
-  --color-red10: hsl(358, 69.4%, 55.2%);
-  --color-red11: hsl(358, 65%, 48.7%);
-  --color-red12: hsl(354, 50%, 14.6%);
-  --color-yellow1: hsl(60, 54%, 98.5%);
-  --color-yellow2: hsl(52, 100%, 95.5%);
-  --color-yellow3: hsl(55, 100%, 90.9%);
-  --color-yellow4: hsl(54, 100%, 86.6%);
-  --color-yellow5: hsl(52, 97.9%, 82%);
-  --color-yellow6: hsl(50, 89.4%, 76.1%);
-  --color-yellow7: hsl(47, 80.4%, 68%);
-  --color-yellow8: hsl(48, 100%, 46.1%);
-  --color-yellow9: hsl(53, 92%, 50%);
-  --color-yellow10: hsl(50, 100%, 48.5%);
-  --color-yellow11: hsl(42, 100%, 29%);
-  --color-yellow12: hsl(40, 55%, 13.5%);
-  --color-cyan1: hsl(185, 60%, 98.7%);
-  --color-cyan2: hsl(185, 73.3%, 97.1%);
-  --color-cyan3: hsl(186, 70.2%, 94.4%);
-  --color-cyan4: hsl(186, 63.8%, 90.6%);
-  --color-cyan5: hsl(187, 58.3%, 85.4%);
-  --color-cyan6: hsl(188, 54.6%, 78.4%);
-  --color-cyan7: hsl(189, 53.7%, 68.7%);
-  --color-cyan8: hsl(189, 60.3%, 52.5%);
-  --color-cyan9: hsl(190, 95%, 39%);
-  --color-cyan10: hsl(191, 91.2%, 36.8%);
-  --color-cyan11: hsl(192, 85%, 31%);
-  --color-cyan12: hsl(192, 88%, 12.5%);
   --color-violet3: hsl(252, 96.9%, 97.4%);
   --color-border-strong: hsl(0, 0%, 78%);
   --color-border-soft: hsl(0, 0%, 85.8%);
 
   --font-serif: "PP Editorial New", ui-serif, Georgia, serif;
   --font-sans: "Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: Maple Mono, ui-monospace, monospace;
+  --font-mono: "Commit Mono", ui-monospace, monospace;
   --font-handwriting: "Shantell Sans", cursive;
 
   --breakpoint-coffee: 1370px;
@@ -90,22 +222,8 @@
 /*
   Dark mode. Only the experiment pages (routes/legacy-layout.tsx) have a theme
   toggle; it puts `dark` on <html>. Like the old Stitches `darkTheme`, it swaps
-  the gray scale for Radix's dark grays, so `bg-gray*` / `text-gray*` flip
-  automatically, and `dark:` handles the rest.
+  the color scales for Radix's dark ones (the *-dark.css imports above), so
+  `bg-gray*` / `text-gray*` flip automatically, and `dark:` handles the rest.
 */
 @custom-variant dark (&:where(.dark, .dark *));
 
-.dark {
-  --color-gray1: hsl(0, 0%, 8.5%);
-  --color-gray2: hsl(0, 0%, 11%);
-  --color-gray3: hsl(0, 0%, 13.6%);
-  --color-gray4: hsl(0, 0%, 15.8%);
-  --color-gray5: hsl(0, 0%, 17.9%);
-  --color-gray6: hsl(0, 0%, 20.5%);
-  --color-gray7: hsl(0, 0%, 24.3%);
-  --color-gray8: hsl(0, 0%, 31.2%);
-  --color-gray9: hsl(0, 0%, 43.9%);
-  --color-gray10: hsl(0, 0%, 49.4%);
-  --color-gray11: hsl(0, 0%, 62.8%);
-  --color-gray12: hsl(0, 0%, 93%);
-}
