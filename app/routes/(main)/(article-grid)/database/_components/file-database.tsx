@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { LayoutGroup } from "framer-motion";
-import { styled } from "~/stitches.config";
 import { cn } from "~/lib/cn";
 import type { DatabaseRecord } from "../_lib/use-file-database";
 import { useIsPresent, motion, AnimatePresence } from "motion/react";
@@ -127,8 +126,12 @@ type RecordTextProps = {
   dbKey: number;
   dbValue: string;
   animate: boolean;
+  active?: boolean;
+  highlighted?: boolean;
+  stale?: boolean;
+  type?: "active" | "success" | "base";
   children?: React.ReactNode;
-} & React.ComponentPropsWithoutRef<typeof RecordWrapper>;
+} & React.ComponentPropsWithoutRef<typeof motion.li>;
 
 export const RecordText = ({
   children,
@@ -178,59 +181,15 @@ export const RecordText = ({
   );
 };
 
-const HighlightDot = styled(motion.span, {
-  $$size: "6px",
-
-  position: "absolute",
-  width: "$$size",
-  height: "$$size",
-  borderRadius: "50%",
-  background: "$blue9",
-  right: "$6",
-  top: "calc(50% - ($$size / 2))",
-});
-
-export const RecordWrapper = styled(motion.li, {
-  padding: "2px $5",
-  display: "flex",
-  gap: "$2",
-  border: "1px solid transparent",
-  transition: "all 0.3s, transform 0s, opacity 0s",
-
-  variants: {
-    active: {
-      true: {
-        background: "$gray1",
-        borderColor: "$gray8",
-        borderRadius: "$base",
-        padding: "$4 $8",
-        boxShadow: "$sm",
-        margin: "0 -$4",
-      },
-    },
-    highlighted: {
-      true: {
-        position: "relative",
-        color: "$blue10",
-      },
-    },
-    stale: {
-      true: {
-        color: "$gray9",
-      },
-    },
-    type: {
-      active: {
-        background: "$blue5",
-        color: "$blue11",
-        borderColor: "$blue5",
-      },
-      success: {
-        background: "$green5",
-        color: "$green11",
-        borderColor: "$green5",
-      },
-      base: {},
-    },
-  },
-});
+const HighlightDot = ({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.span>) => (
+  <motion.span
+    className={cn(
+      "absolute top-[calc(50%-3px)] right-6 h-[6px] w-[6px] rounded-full bg-blue9",
+      className,
+    )}
+    {...props}
+  />
+);

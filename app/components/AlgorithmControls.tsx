@@ -1,4 +1,3 @@
-import { styled } from "~/stitches.config";
 import type { AlgorithmContext } from "~/lib/algorithm/types";
 
 import { Slider } from "./Slider";
@@ -11,7 +10,7 @@ type AlgorithmControlsProps = {
 
 export const AlgorithmControls = ({ context }: AlgorithmControlsProps) => {
   return (
-    <Controls center="vertical">
+    <Row center="vertical" className="gap-4 font-mono">
       <PlayButton onClick={context.toggle} isPlaying={context.isPlaying} />
       <Slider
         min={0}
@@ -24,11 +23,6 @@ export const AlgorithmControls = ({ context }: AlgorithmControlsProps) => {
         <p>/</p>
         <p>{context.totalSteps}</p>
       </Row>
-    </Controls>
+    </Row>
   );
 };
-
-const Controls = styled(Row, {
-  fontFamily: "$mono",
-  gap: "$4",
-});

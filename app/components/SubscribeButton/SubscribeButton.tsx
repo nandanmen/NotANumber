@@ -1,10 +1,9 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { darkTheme, styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 import { FaPaperPlane, FaTimes } from "react-icons/fa";
 
 import { PrimaryButton } from "../PrimaryButton";
 import { FormEvent, FormState, useSubscribe } from "../SubscribeInput";
-import { Row } from "../layout/Row";
 import { CgSpinner } from "react-icons/cg";
 import { motion } from "framer-motion";
 
@@ -25,61 +24,57 @@ export const SubscribeButton = ({ small = false }) => {
         <PrimaryButton small={small}>Subscribe</PrimaryButton>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Overlay />
-        <Content>
-          <ContentWrapper
+        <Dialog.Overlay className="fixed inset-0 bg-[rgba(0,0,0,0.2)] backdrop-blur-[4px]" />
+        <Dialog.Content className="fixed top-[15%] left-1/2 w-[min(420px,calc(100vw-2*--spacing(8)))] -translate-x-1/2 md:top-[20%]">
+          <motion.article
+            className="relative rounded-xl border border-gray12 bg-[linear-gradient(-45deg,var(--color-green6),var(--color-green4))] p-(--padding) shadow-[2px_2px_0_var(--color-gray12)] [--padding:--spacing(10)] md:[--padding:--spacing(12)] dark:border-gray1 dark:bg-[linear-gradient(-45deg,var(--color-green9),var(--color-green6))] dark:text-gray1 dark:shadow-[2px_2px_0_var(--color-gray1)]"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", damping: 20 }}
           >
             <Dialog.Close asChild>
-              <CloseButton aria-label="Close">
+              <button
+                type="button"
+                aria-label="Close"
+                className="absolute -top-5 -right-5 flex h-10 w-10 items-center justify-center rounded-full border border-gray12 bg-gray3 dark:border-gray1 dark:bg-gray2 dark:text-gray12"
+              >
                 <FaTimes />
-              </CloseButton>
+              </button>
             </Dialog.Close>
-            <Title>Get new content sent straight to your inbox.</Title>
-            <Text>
+            <Dialog.Title className="mb-10 font-serif text-[2.5rem] leading-[1.1]">
+              Get new content sent straight to your inbox.
+            </Dialog.Title>
+            <p className={textClassName}>
               Be the first to know when a new blog post is released. I'll also
               send occasional updates on cool things I'm working on!
-            </Text>
-            <Text>Unsubscribe anytime.</Text>
-            <Form onSubmit={handleSubmit}>
+            </p>
+            <p className={textClassName}>Unsubscribe anytime.</p>
+            <form className="flex gap-6" onSubmit={handleSubmit}>
               <label htmlFor="subscribe-email" hidden>
                 Email
               </label>
-              <Input
+              <input
                 id="subscribe-email"
                 type="email"
                 name="email"
                 placeholder="Email"
                 required
+                className="w-full border-b border-gray12 py-2 dark:border-gray1 dark:text-gray1 dark:placeholder:text-green11"
                 disabled={state === FormState.Loading}
                 onChange={() => dispatch(FormEvent.Change)}
               />
               <PrimaryButton
-                css={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 40,
-                  height: "100%",
-                  padding: 0,
-                  border: "none",
-                  background: success
-                    ? "linear-gradient(-45deg, $green8, $green6)"
-                    : undefined,
-
-                  "&:hover": {
-                    border: "1px solid $gray12",
-                  },
-                }}
+                className={cn(
+                  "flex h-full w-10 items-center justify-center border-none p-0 pt-0 hover:border hover:border-solid hover:border-gray12",
+                  success &&
+                    "bg-[linear-gradient(-45deg,var(--color-green8),var(--color-green6))]",
+                )}
                 disabled={state === FormState.Loading}
               >
                 {state === FormState.Start && <FaPaperPlane />}
                 {state === FormState.Loading && (
-                  <Row
-                    center="all"
-                    as={motion.span}
+                  <motion.span
+                    className="flex items-center justify-center"
                     animate={{ rotate: 360 }}
                     transition={{
                       type: "tween",
@@ -89,129 +84,26 @@ export const SubscribeButton = ({ small = false }) => {
                     }}
                   >
                     <CgSpinner />
-                  </Row>
+                  </motion.span>
                 )}
                 {success && "🎉"}
               </PrimaryButton>
-            </Form>
+            </form>
             {success && (
-              <ConfirmText
+              <motion.p
+                className="absolute right-(--padding) left-(--padding) mt-6 rounded-md border border-gray12 bg-green3 p-4"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: "spring", damping: 20 }}
               >
                 Thanks! Check your inbox—we sent you a confirmation email.
-              </ConfirmText>
+              </motion.p>
             )}
-          </ContentWrapper>
-        </Content>
+          </motion.article>
+        </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
 };
 
-const ConfirmText = styled(motion.p, {
-  position: "absolute",
-  background: "$green3",
-  padding: "$4",
-  borderRadius: "$base",
-  border: "1px solid $gray12",
-  left: "$$padding",
-  right: "$$padding",
-  marginTop: "$6",
-});
-
-const CloseButton = styled("button", {
-  position: "absolute",
-  top: -20,
-  right: -20,
-  width: 40,
-  height: 40,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "$gray3",
-  border: "1px solid $gray12",
-  borderRadius: "50%",
-
-  [`.${darkTheme} &`]: {
-    background: "$gray2",
-    color: "$gray12",
-    borderColor: "$gray1",
-  },
-});
-
-const ContentWrapper = styled(motion.article, {
-  $$padding: "$space$10",
-
-  position: "relative",
-  background: "linear-gradient(-45deg, $green6, $green4)",
-  border: "1px solid $gray12",
-  borderRadius: 12,
-  padding: "$$padding",
-  boxShadow: "2px 2px 0 $colors$gray12",
-
-  [`.${darkTheme} &`]: {
-    background: "linear-gradient(-45deg, $green9, $green6)",
-    color: "$gray1",
-    borderColor: "$gray1",
-    boxShadow: "2px 2px 0 $colors$gray1",
-  },
-
-  "@md": {
-    $$padding: "$space$12",
-  },
-});
-
-const Form = styled("form", {
-  display: "flex",
-  gap: "$6",
-});
-
-const Input = styled("input", {
-  padding: "$2 0",
-  borderBottom: "1px solid $gray12",
-  width: "100%",
-
-  [`.${darkTheme} &`]: {
-    "&::placeholder": {
-      color: "$green11",
-    },
-    color: "$gray1",
-    borderColor: "$gray1",
-  },
-});
-
-const Text = styled("p", {
-  lineHeight: "$body",
-
-  "&:not(:last-child)": {
-    marginBottom: "$4",
-  },
-});
-
-const Title = styled(Dialog.Title, {
-  fontFamily: "var(--font-serif)",
-  fontSize: "2.5rem",
-  lineHeight: "$title",
-  marginBottom: "$10",
-});
-
-const Overlay = styled(Dialog.Overlay, {
-  position: "fixed",
-  inset: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.2)",
-  backdropFilter: "blur(4px)",
-});
-
-const Content = styled(Dialog.Content, {
-  width: `min(420px, calc(100vw - 2 * $space$8))`,
-  position: "fixed",
-  top: "15%",
-  left: "50%",
-  transform: "translate(-50%, 0)",
-
-  "@md": {
-    top: "20%",
-  },
-});
+const textClassName = "leading-[1.7] [&:not(:last-child)]:mb-4";

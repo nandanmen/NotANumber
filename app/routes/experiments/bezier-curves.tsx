@@ -24,7 +24,7 @@ export default function BezierCurvesPage() {
     setEasing((_easing) =>
       produce(_easing, (draft) => {
         draft[index] = value;
-      })
+      }),
     );
   };
 
@@ -40,20 +40,14 @@ export default function BezierCurvesPage() {
       >
         <DebugField>
           <span>Easing</span>
-          <Row css={{ gap: "$1" }}>
+          <Row className="gap-1">
             {easing.map((value, index) => {
               return (
                 <ButtonSlider
                   key={index}
                   onValueChange={handleEasingPan(index)}
                   value={value}
-                  css={{
-                    "--text-color": "var(--colors-gray11)",
-                    "--active-color": "var(--colors-gray8)",
-                    padding: "$1",
-                    background: "$gray3",
-                    borderRadius: 4,
-                  }}
+                  className="rounded-[4px] bg-gray3 p-1 [--active-color:var(--color-gray8)] [--text-color:var(--color-gray11)]"
                 />
               );
             })}

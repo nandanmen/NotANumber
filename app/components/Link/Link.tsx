@@ -1,27 +1,24 @@
-import React from "react";
-import { styled } from "~/stitches.config";
+import type React from "react";
 
 type LinkProps = {
   href?: string;
   children: React.ReactNode;
 };
 
+const linkClassName =
+  "text-blue9 no-underline hover:underline hover:decoration-wavy hover:decoration-blue8";
+
 export const Link = ({ href, children }: LinkProps) => {
   if (href?.startsWith("http")) {
     return (
-      <LinkWrapper href={href} target="_blank" rel="noreferrer">
+      <a className={linkClassName} href={href} target="_blank" rel="noreferrer">
         {children}
-      </LinkWrapper>
+      </a>
     );
   }
-  return <LinkWrapper href={href}>{children}</LinkWrapper>;
+  return (
+    <a className={linkClassName} href={href}>
+      {children}
+    </a>
+  );
 };
-
-const LinkWrapper = styled("a", {
-  color: "$blue9",
-  textDecoration: "none",
-
-  "&:hover": {
-    textDecoration: "wavy underline $colors$blue8",
-  },
-});

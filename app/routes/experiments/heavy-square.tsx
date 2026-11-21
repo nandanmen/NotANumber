@@ -8,7 +8,6 @@ import {
   SvgBackgroundGradient,
   getFillFromId,
 } from "~/components/utils/SvgBackgroundGradient";
-import { styled } from "~/stitches.config";
 import { ToggleButton } from "~/components/Visualizer";
 
 export default function HeavySquarePage() {
@@ -27,7 +26,7 @@ export default function HeavySquarePage() {
 
   return (
     <ExperimentsPage page="heavy-square">
-      <ExperimentWrapper css={{ background: "none" }}>
+      <ExperimentWrapper className="bg-transparent">
         <svg width="100%" viewBox="-10 0 120 80">
           <mask id="mask">
             <rect x="0" y="0" width="100" height="100" fill="black" />
@@ -40,7 +39,8 @@ export default function HeavySquarePage() {
             stroke="black"
             strokeWidth="0.3"
           />
-          <Text
+          <motion.text
+            className="fill-blue11 font-mono text-[30px] font-bold"
             mask="url('#mask')"
             x="50"
             y={textOffset}
@@ -49,9 +49,9 @@ export default function HeavySquarePage() {
             ref={textRef}
           >
             {weight.get()}
-          </Text>
+          </motion.text>
         </svg>
-        <Controls>
+        <div className="mx-auto w-[500px]">
           <div
             style={{
               display: "flex",
@@ -74,23 +74,11 @@ export default function HeavySquarePage() {
               Light
             </ToggleButton>
           </div>
-        </Controls>
+        </div>
       </ExperimentWrapper>
     </ExperimentsPage>
   );
 }
-
-const Text = styled(motion.text, {
-  fontSize: 30,
-  fill: "$blue11",
-  fontFamily: "$mono",
-  fontWeight: "bold",
-});
-
-const Controls = styled("div", {
-  width: 500,
-  margin: "0 auto",
-});
 
 const squareConfig = {
   width: 80,
@@ -116,8 +104,8 @@ const HeavySquare = ({ weight, ...props }) => {
       L ${x + w + (h - r) * Math.sin(angle)} ${y + (h - r) * Math.cos(angle)}
       q ${yOffset} ${xOffset} ${-(xOffset - yOffset)} ${xOffset + yOffset}
       Q ${mx} ${y + h + weight} ${x + r - (h - r) * Math.sin(angle)} ${
-      y + h * Math.cos(angle)
-    }
+        y + h * Math.cos(angle)
+      }
       q ${-xOffset} ${-yOffset} ${-(xOffset - yOffset)} ${-(xOffset + yOffset)}
       z
     `;

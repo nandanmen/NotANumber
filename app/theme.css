@@ -1,0 +1,111 @@
+/* Design tokens shared by app.css and legacy.css. */
+@theme {
+  --color-gray1: hsl(0, 0%, 99%);
+  --color-gray2: hsl(0, 0%, 97.3%);
+  --color-gray3: hsl(0, 0%, 95.1%);
+  --color-gray4: hsl(0, 0%, 93%);
+  --color-gray5: hsl(0, 0%, 90.9%);
+  --color-gray6: hsl(0, 0%, 88.7%);
+  --color-gray7: hsl(0, 0%, 85.8%);
+  --color-gray8: hsl(0, 0%, 78%);
+  --color-gray9: hsl(0, 0%, 56.1%);
+  --color-gray10: hsl(0, 0%, 52.3%);
+  --color-gray11: hsl(0, 0%, 43.5%);
+  --color-gray12: hsl(0, 0%, 9%);
+  --color-blue1: hsl(206, 100%, 99.2%);
+  --color-blue2: hsl(210, 100%, 98%);
+  --color-blue3: hsl(209, 100%, 96.5%);
+  --color-blue4: hsl(210, 98.8%, 94%);
+  --color-blue5: hsl(209, 95%, 90.1%);
+  --color-blue6: hsl(209, 81.2%, 84.5%);
+  --color-blue7: hsl(208, 77.5%, 76.9%);
+  --color-blue8: hsl(206, 81.9%, 65.3%);
+  --color-blue9: hsl(206, 100%, 50%);
+  --color-blue10: hsl(208, 100%, 47.3%);
+  --color-blue11: hsl(211, 100%, 43.2%);
+  --color-blue12: hsl(211, 100%, 15%);
+  --color-green1: hsl(136, 50%, 98.9%);
+  --color-green2: hsl(138, 62.5%, 96.9%);
+  --color-green3: hsl(139, 55.2%, 94.5%);
+  --color-green4: hsl(140, 48.7%, 91%);
+  --color-green5: hsl(141, 43.7%, 86%);
+  --color-green6: hsl(143, 40.3%, 79%);
+  --color-green7: hsl(146, 38.5%, 69%);
+  --color-green8: hsl(151, 40.2%, 54.1%);
+  --color-green9: hsl(151, 55%, 41.5%);
+  --color-green10: hsl(152, 57.5%, 37.6%);
+  --color-green11: hsl(153, 67%, 28.5%);
+  --color-green12: hsl(155, 40%, 14%);
+  --color-red1: hsl(359, 100%, 99.4%);
+  --color-red2: hsl(359, 100%, 98.6%);
+  --color-red3: hsl(360, 100%, 96.8%);
+  --color-red4: hsl(360, 97.9%, 94.8%);
+  --color-red5: hsl(360, 90.2%, 91.9%);
+  --color-red6: hsl(360, 81.7%, 87.8%);
+  --color-red7: hsl(359, 74.2%, 81.7%);
+  --color-red8: hsl(359, 69.5%, 74.3%);
+  --color-red9: hsl(358, 75%, 59%);
+  --color-red10: hsl(358, 69.4%, 55.2%);
+  --color-red11: hsl(358, 65%, 48.7%);
+  --color-red12: hsl(354, 50%, 14.6%);
+  --color-yellow1: hsl(60, 54%, 98.5%);
+  --color-yellow2: hsl(52, 100%, 95.5%);
+  --color-yellow3: hsl(55, 100%, 90.9%);
+  --color-yellow4: hsl(54, 100%, 86.6%);
+  --color-yellow5: hsl(52, 97.9%, 82%);
+  --color-yellow6: hsl(50, 89.4%, 76.1%);
+  --color-yellow7: hsl(47, 80.4%, 68%);
+  --color-yellow8: hsl(48, 100%, 46.1%);
+  --color-yellow9: hsl(53, 92%, 50%);
+  --color-yellow10: hsl(50, 100%, 48.5%);
+  --color-yellow11: hsl(42, 100%, 29%);
+  --color-yellow12: hsl(40, 55%, 13.5%);
+  --color-cyan1: hsl(185, 60%, 98.7%);
+  --color-cyan2: hsl(185, 73.3%, 97.1%);
+  --color-cyan3: hsl(186, 70.2%, 94.4%);
+  --color-cyan4: hsl(186, 63.8%, 90.6%);
+  --color-cyan5: hsl(187, 58.3%, 85.4%);
+  --color-cyan6: hsl(188, 54.6%, 78.4%);
+  --color-cyan7: hsl(189, 53.7%, 68.7%);
+  --color-cyan8: hsl(189, 60.3%, 52.5%);
+  --color-cyan9: hsl(190, 95%, 39%);
+  --color-cyan10: hsl(191, 91.2%, 36.8%);
+  --color-cyan11: hsl(192, 85%, 31%);
+  --color-cyan12: hsl(192, 88%, 12.5%);
+  --color-violet3: hsl(252, 96.9%, 97.4%);
+  --color-border-strong: hsl(0, 0%, 78%);
+  --color-border-soft: hsl(0, 0%, 85.8%);
+
+  --font-serif: "PP Editorial New", ui-serif, Georgia, serif;
+  --font-sans: "Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: Maple Mono, ui-monospace, monospace;
+  --font-handwriting: "Shantell Sans", cursive;
+
+  --breakpoint-coffee: 1370px;
+
+  /* Formerly the Stitches `$sm` shadow. */
+  --shadow-soft: 0 8px 16px hsla(0, 0%, 0%, 0.03);
+}
+
+/*
+  Dark mode. Only the experiment pages (routes/legacy-layout.tsx) have a theme
+  toggle; it puts `dark` on <html>. Like the old Stitches `darkTheme`, it swaps
+  the gray scale for Radix's dark grays, so `bg-gray*` / `text-gray*` flip
+  automatically, and `dark:` handles the rest.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --color-gray1: hsl(0, 0%, 8.5%);
+  --color-gray2: hsl(0, 0%, 11%);
+  --color-gray3: hsl(0, 0%, 13.6%);
+  --color-gray4: hsl(0, 0%, 15.8%);
+  --color-gray5: hsl(0, 0%, 17.9%);
+  --color-gray6: hsl(0, 0%, 20.5%);
+  --color-gray7: hsl(0, 0%, 24.3%);
+  --color-gray8: hsl(0, 0%, 31.2%);
+  --color-gray9: hsl(0, 0%, 43.9%);
+  --color-gray10: hsl(0, 0%, 49.4%);
+  --color-gray11: hsl(0, 0%, 62.8%);
+  --color-gray12: hsl(0, 0%, 93%);
+}

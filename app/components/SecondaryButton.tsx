@@ -1,22 +1,16 @@
-import { styled } from "~/stitches.config";
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "~/lib/cn";
 
-export const SecondaryButton = styled("button", {
-  width: "$8",
-  height: "$8",
-  borderRadius: 4,
-  flexShrink: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  color: "$gray11",
-  background: "none",
-  boxShadow: "none",
-  border: "none",
-
-  "&:hover": {
-    color: "$gray11",
-    background: "$gray7",
-    border: "none",
-  },
-});
+export const SecondaryButton = ({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"button">) => (
+  <button
+    type="button"
+    className={cn(
+      "flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-[4px] border-none bg-transparent text-gray11 shadow-none hover:border-none hover:bg-gray7 hover:text-gray11",
+      className,
+    )}
+    {...props}
+  />
+);

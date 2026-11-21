@@ -2,7 +2,7 @@ import React from "react";
 import { v4 } from "uuid";
 import { motion } from "framer-motion";
 import { range } from "~/lib/utils";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 import { Checkbox } from "~/components/Checkbox";
 
 const colorStart = `hsl(360, 81.7%, 87.8%)`; // $red6
@@ -29,7 +29,7 @@ export const Cards = () => {
   const [showOverflow, setShowOverflow] = React.useState(false);
   const [speed, setSpeed] = React.useState(1);
   const [data, setData] = React.useState(() =>
-    range(5).map((value) => ({ id: v4(), value }))
+    range(5).map((value) => ({ id: v4(), value })),
   );
   const [discarded, setDiscarded] = React.useState([]);
 
@@ -51,13 +51,19 @@ export const Cards = () => {
   };
 
   return (
-    <PageWrapper>
+    <div className="mx-auto flex w-[700px] flex-col gap-6 font-mono text-gray11">
       <Checkbox
         label="Show overflow"
         checked={showOverflow}
         onCheckedChange={() => setShowOverflow(!showOverflow)}
       />
-      <Wrapper css={{ overflow: !showOverflow && "hidden" }} ref={wrapperRef}>
+      <div
+        className={cn(
+          "relative flex aspect-square w-full items-center justify-center rounded-xl border border-gray6 bg-gray1",
+          !showOverflow && "overflow-hidden",
+        )}
+        ref={wrapperRef}
+      >
         <Background />
         {mapReverse([...discarded, ...data], (item, index) => {
           const isDiscarded = discarded.includes(item);
@@ -88,64 +94,27 @@ export const Cards = () => {
             />
           );
         })}
-      </Wrapper>
+      </div>
       <div>
-        <SpeedButtonWrapper>
+        <div className="flex gap-2">
           {speeds.map((_speed) => (
-            <SpeedButton
+            <button
+              type="button"
               key={_speed}
-              active={_speed === speed}
+              className={cn(
+                "hover:text-gray12",
+                _speed === speed && "font-bold text-gray12",
+              )}
               onClick={() => setSpeed(_speed)}
             >
               {_speed}x
-            </SpeedButton>
+            </button>
           ))}
-        </SpeedButtonWrapper>
+        </div>
       </div>
-    </PageWrapper>
+    </div>
   );
 };
-
-const SpeedButton = styled("button", {
-  "&:hover": {
-    color: "$gray12",
-  },
-  variants: {
-    active: {
-      true: {
-        fontWeight: "bold",
-        color: "$gray12",
-      },
-    },
-  },
-});
-
-const SpeedButtonWrapper = styled("div", {
-  display: "flex",
-  gap: "$2",
-});
-
-const PageWrapper = styled("div", {
-  width: 700,
-  margin: "0 auto",
-  display: "flex",
-  flexDirection: "column",
-  gap: "$6",
-  fontFamily: "$mono",
-  color: "$gray11",
-});
-
-const Wrapper = styled("div", {
-  width: "100%",
-  aspectRatio: 1,
-  border: "1px solid $gray6",
-  borderRadius: 12,
-  background: "$gray1",
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
 
 const Card = ({
   index,
@@ -157,10 +126,11 @@ const Card = ({
 }) => {
   const background = `linear-gradient(-45deg, ${darken(
     colorEnd,
-    index * 12
+    index * 12,
   )}, ${darken(colorStart, index * 12)})`;
   return (
-    <_Card
+    <motion.button
+      className="absolute flex h-[350px] w-[250px] items-center justify-center rounded-xl bg-[linear-gradient(-45deg,var(--color-red11),var(--color-red6))] font-serif text-[10rem] text-red11 shadow-[0_25px_50px_-12px_rgb(0_0_0/0.25)]"
       animate={discarded ? "discarded" : "active"}
       variants={{
         discarded: {
@@ -189,33 +159,14 @@ const Card = ({
       initial={{ x: 500, y: 100, scale: 1 - index * 0.12 }}
       {...props}
     >
-      <span>{value}</span>
-    </_Card>
+      <span className="translate-y-2">{value}</span>
+    </motion.button>
   );
 };
 
-const _Card = styled(motion.button, {
-  position: "absolute",
-  height: 350,
-  width: 250,
-  background: `linear-gradient(-45deg, ${colorEnd}, ${colorStart})`,
-  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-  borderRadius: 12,
-  color: "$red11",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: "10rem",
-  fontFamily: "var(--font-serif)",
-
-  span: {
-    transform: "translateY(8px)",
-  },
-});
-
 const Background = () => {
   return (
-    <Svg viewBox="0 0 100 100">
+    <svg className="absolute inset-0" viewBox="0 0 100 100">
       {range(10).map((col) => {
         return range(10).map((row) => {
           return (
@@ -223,16 +174,11 @@ const Background = () => {
               key={`${col}-${row}`}
               style={{ x: row * 10, y: col * 10 }}
             >
-              <circle fill="var(--colors-gray9)" r="0.2" cx="5" cy="5" />
+              <circle fill="var(--color-gray9)" r="0.2" cx="5" cy="5" />
             </motion.g>
           );
         });
       })}
-    </Svg>
+    </svg>
   );
 };
-
-const Svg = styled("svg", {
-  position: "absolute",
-  inset: 0,
-});

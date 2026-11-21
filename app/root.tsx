@@ -25,9 +25,9 @@ export function meta() {
   return [{ title: "Not a Number" }];
 }
 
-// Tailwind (app.css) is imported by each section's layout rather than here, so
-// the pages from the old pages router (routes/legacy-layout.tsx) keep
-// rendering without it, as they did in Next.js.
+// Tailwind (app.css) is imported by each section's layout rather than here.
+// The pages from the old pages router (routes/legacy-layout.tsx) load
+// legacy.css instead, which skips Tailwind's preflight.
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export const QuizContext = React.createContext(null);
 
@@ -12,7 +11,7 @@ const QuizRoot = ({ label, answer, children }) => {
   React.useEffect(() => {
     if (isCorrect) {
       const spoilers = document.querySelectorAll(
-        `[data-spoiler-for="${label}"]`
+        `[data-spoiler-for="${label}"]`,
       );
       for (const spoiler of spoilers) {
         spoiler.setAttribute("data-revealed", "true");
@@ -21,65 +20,40 @@ const QuizRoot = ({ label, answer, children }) => {
   }, [isCorrect, label]);
 
   return (
-    <QuizWrapper id={label} data-answered={isCorrect}>
+    <motion.div
+      id={label}
+      data-answered={isCorrect}
+      className="rounded-md border border-gray8 p-4 leading-[1.6] [&>*:not(:last-child)]:mb-2"
+    >
       <QuizContext.Provider value={{ selected, select, answer: answer }}>
         {children}
       </QuizContext.Provider>
-    </QuizWrapper>
+    </motion.div>
   );
 };
-
-const QuizWrapper = styled(motion.div, {
-  padding: "$4",
-  borderRadius: "$base",
-  border: "1px solid $gray8",
-  lineHeight: 1.6,
-
-  "& > *:not(:last-child)": {
-    marginBottom: "$2",
-  },
-});
 
 export const QuizQuestion = (props) => {
   return <div>{props.children}</div>;
 };
 
 const Options = (props) => {
-  return <OptionsWrapper>{props.children}</OptionsWrapper>;
+  return <div className="flex gap-2">{props.children}</div>;
 };
-
-const OptionsWrapper = styled("div", {
-  display: "flex",
-  gap: "$2",
-});
 
 export const QuizOption = ({ label, children }) => {
   const { selected, select } = React.useContext(QuizContext);
   return (
-    <OptionWrapper
+    <motion.button
+      type="button"
+      className="flex flex-1 justify-center rounded-[4px] border border-gray8 bg-gray1 px-2 py-1 hover:border-blue8 hover:bg-blue6 data-[active=true]:border-blue8 data-[active=true]:bg-blue6"
       onClick={() => select(label)}
       data-active={selected === label}
       whileTap={{ scale: 0.95 }}
     >
       {children}
-    </OptionWrapper>
+    </motion.button>
   );
 };
-
-const OptionWrapper = styled(motion.button, {
-  border: "1px solid $gray8",
-  background: "$gray1",
-  padding: "$1 $2",
-  borderRadius: 4,
-  flex: 1,
-  display: "flex",
-  justifyContent: "center",
-
-  '&[data-active="true"], &:hover': {
-    background: "$blue6",
-    borderColor: "$blue8",
-  },
-});
 
 export const QuizTip = ({ htmlFor, children }) => {
   const { selected, answer } = React.useContext(QuizContext);
@@ -90,31 +64,18 @@ export const QuizTip = ({ htmlFor, children }) => {
 
   const isCorrect = answer === htmlFor;
   return (
-    <TipWrapper
-      correct={isCorrect}
+    <motion.div
+      className={cn(
+        "rounded-[4px] border border-gray7 bg-gray4 p-2",
+        isCorrect && "border-green7 bg-green4",
+      )}
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
     >
       {children}
-    </TipWrapper>
+    </motion.div>
   );
 };
-
-const TipWrapper = styled(motion.div, {
-  padding: "$2",
-  background: "$gray4",
-  border: "1px solid $gray7",
-  borderRadius: 4,
-
-  variants: {
-    correct: {
-      true: {
-        background: "$green4",
-        borderColor: "$green7",
-      },
-    },
-  },
-});
 
 export const QuizSpoiler = ({ htmlFor, children }) => {
   const [revealed, setRevealed] = React.useState(false);
@@ -127,32 +88,17 @@ export const QuizSpoiler = ({ htmlFor, children }) => {
   }, [htmlFor]);
 
   return (
-    <SpoilerWrapper
+    <button
+      type="button"
+      className="relative after:absolute after:inset-0 after:bg-gray7 after:opacity-100 after:transition-opacity after:duration-200 after:ease-out after:content-[''] data-[revealed=true]:after:opacity-0"
       onClick={() => setRevealed(true)}
       data-revealed={revealed}
       data-spoiler-for={htmlFor}
     >
       {children}
-    </SpoilerWrapper>
+    </button>
   );
 };
-
-const SpoilerWrapper = styled("button", {
-  position: "relative",
-
-  "&:after": {
-    content: "",
-    position: "absolute",
-    inset: 0,
-    background: "$gray7",
-    opacity: 1,
-    transition: "opacity 0.2s ease-out",
-  },
-
-  "&[data-revealed='true']:after": {
-    opacity: 0,
-  },
-});
 
 export const QuizOptions = Options;
 

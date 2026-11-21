@@ -11,7 +11,7 @@ import {
 import { FiChevronLeft, FiChevronRight, FiShare, FiCopy } from "react-icons/fi";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { FaUndo } from "react-icons/fa";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 function useScrollOffset(ref: React.RefObject<HTMLElement>) {
   const lastScrollTop = React.useRef(0);
@@ -61,36 +61,17 @@ export default function SafariScrollPage() {
 
   return (
     <ExperimentsPage page="safari-scroll">
-      <Box
-        as={motion.div}
-        css={{
-          width: 500,
-          margin: "0 auto",
-          height: 900,
-          background: "$gray1",
-          borderRadius: 16,
-          border: "1px solid $gray6",
-          position: "relative",
-          fontSize: "$lg",
-          overflowY: "auto",
-        }}
+      <motion.div
+        className="relative mx-auto h-[900px] w-[500px] overflow-y-auto rounded-[16px] border border-gray6 bg-gray1 text-[1.25rem]"
         ref={wrapperRef}
       >
-        <Box>
+        <div>
           <Article />
-        </Box>
-        <Box
-          css={{
-            position: "sticky",
-            bottom: 0,
-            width: "100%",
-            height: 150,
-            overflow: "hidden",
-          }}
-        >
+        </div>
+        <div className="sticky bottom-0 h-[150px] w-full overflow-hidden">
           <Navbar open={open} scrollOffset={scrollOffset} />
-        </Box>
-      </Box>
+        </div>
+      </motion.div>
     </ExperimentsPage>
   );
 }
@@ -113,55 +94,30 @@ const Navbar = ({
     stiffness: 300,
   });
   return (
-    <Box
-      css={{
-        background: "$gray2",
-        padding: "$6",
-        paddingTop: "$4",
-        paddingBottom: "$10",
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
-        borderTop: "1px solid $gray3",
-      }}
+    <motion.div
+      className="rounded-b-[16px] border-t border-gray3 bg-gray2 p-6 pt-4 pb-10"
       style={{ y }}
     >
-      <Box
-        css={{
-          display: "flex",
-          alignItems: "center",
-          background: "var(--background)",
-          borderRadius: 8,
-          padding: "$2 $4",
-          boxShadow: "0 25px 50px -12px rgb(0 0 0 / var(--shadow-opacity))",
-        }}
+      <motion.div
+        className="flex items-center rounded-[8px] bg-(--background) px-4 py-2 shadow-[0_25px_50px_-12px_rgb(0_0_0/var(--shadow-opacity))]"
         animate={
           {
             "--shadow-opacity": open ? 0.25 : 0,
-            "--background": open
-              ? "var(--colors-gray3)"
-              : "var(--colors-gray2)",
+            "--background": open ? "var(--color-gray3)" : "var(--color-gray2)",
           } as any
         }
       >
-        <Box
-          css={{ width: "100%", textAlign: "center" }}
+        <motion.div
+          className="w-full text-center"
           animate={{ fontSize: open ? "1em" : "0.75em" }}
         >
           nan.fyi
-        </Box>
+        </motion.div>
         <Icon animate={{ opacity: open ? 1 : 0 }}>
           <FaUndo size="0.9em" />
         </Icon>
-      </Box>
-      <Box
-        css={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontSize: "$xl",
-          marginTop: "$6",
-        }}
-      >
+      </motion.div>
+      <div className="mt-6 flex items-center justify-between text-[1.5rem]">
         <Icon>
           <FiChevronLeft />
         </Icon>
@@ -177,26 +133,18 @@ const Navbar = ({
         <Icon>
           <FiCopy />
         </Icon>
-      </Box>
-    </Box>
+      </div>
+    </motion.div>
   );
 };
 
 const Article = () => {
   return (
-    <Box
-      css={{
-        padding: "$12",
-        p: { marginTop: "$6", "&:first-of-type": { marginTop: "$12" } },
-        display: "flex",
-        flexDirection: "column",
-        gap: "$8",
-      }}
-    >
-      <Box as="h1" css={{ fontWeight: "bold", lineHeight: 1 }}>
+    <div className="flex flex-col gap-8 p-12 [&_p]:mt-6 [&_p:first-of-type]:mt-12">
+      <h1 className="font-bold leading-none">
         Remaking Safari's Bottom Nav in Framer Motion
-      </Box>
-      <SkeletonText lines={6} css={{ marginTop: "$4" }} />
+      </h1>
+      <SkeletonText lines={6} className="mt-4" />
       <SkeletonText lines={6} />
       <SkeletonText lines={6} />
       <SkeletonText lines={6} />
@@ -204,32 +152,39 @@ const Article = () => {
       <SkeletonText lines={6} />
       <SkeletonText lines={6} />
       <SkeletonText lines={6} />
-    </Box>
+    </div>
   );
 };
 
-const SkeletonText = ({ lines, ...props }) => {
+const SkeletonText = ({
+  lines,
+  className,
+}: {
+  lines: number;
+  className?: string;
+}) => {
   return (
-    <Box {...props}>
+    <div className={className}>
       {Array.from({ length: lines }, (_, i) => (
-        <Box
+        <div
           key={i}
-          css={{
-            height: "1.2em",
-            background: "$gray2",
-            width: i === lines - 1 ? "50%" : "100%",
-            marginTop: i === 0 ? 0 : "$2",
-          }}
+          className={cn(
+            "h-[1.2em] bg-gray2",
+            i === lines - 1 ? "w-1/2" : "w-full",
+            i === 0 ? "mt-0" : "mt-2",
+          )}
         />
       ))}
-    </Box>
+    </div>
   );
 };
 
-const Box = styled(motion.div, {});
-
-const Icon = styled(Box, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
+const Icon = ({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof motion.div>) => (
+  <motion.div
+    className={cn("flex items-center justify-center", className)}
+    {...props}
+  />
+);

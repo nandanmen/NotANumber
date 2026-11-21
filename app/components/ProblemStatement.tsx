@@ -1,16 +1,8 @@
-import { styled } from "~/stitches.config";
-
 export function ProblemStatement({ children }) {
   return (
-    <Wrapper>
+    <aside className="rounded-md border border-gray8 p-4">
       <h4>The Problem</h4>
       <div>{children}</div>
-    </Wrapper>
+    </aside>
   );
 }
-
-const Wrapper = styled("aside", {
-  padding: "$4",
-  border: "1px solid $gray8",
-  borderRadius: "$base",
-});

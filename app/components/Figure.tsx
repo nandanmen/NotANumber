@@ -1,10 +1,16 @@
-import { styled } from "~/stitches.config";
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "~/lib/cn";
 
-export const Figure = styled("figure");
+export const Figure = (props: ComponentPropsWithoutRef<"figure">) => (
+  <figure {...props} />
+);
 
-export const Caption = styled("p", {
-  padding: "$0 $8",
-  marginTop: "$4",
-  fontSize: "$sm",
-  textAlign: "center",
-});
+export const Caption = ({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"p">) => (
+  <p
+    className={cn("mt-4 px-8 text-center text-[0.875rem]", className)}
+    {...props}
+  />
+);
