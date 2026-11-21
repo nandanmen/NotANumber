@@ -11,7 +11,6 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import { mdxComponents } from "./mdx-components";
-import { AuthProvider } from "./routes/svg-paths/provider";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,13 +49,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <JotaiProvider>
-        <MDXProvider components={mdxComponents}>
-          <Outlet />
-        </MDXProvider>
-      </JotaiProvider>
-    </AuthProvider>
+    <JotaiProvider>
+      <MDXProvider components={mdxComponents}>
+        <Outlet />
+      </MDXProvider>
+    </JotaiProvider>
   );
 }
 

@@ -6,11 +6,3 @@ LOOPS_API_KEY=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
 
-# SVG paths comments (/api/comments)
-POSTGRES_URL=
-
-# GitHub sign-in for comments (/api/auth/*)
-GITHUB_ID=
-GITHUB_SECRET=
-# Any long random string; used to sign the session cookie.
-AUTH_SECRET=

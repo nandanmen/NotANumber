@@ -49,11 +49,6 @@ export default [
   // API
   route("api/subscribe", "routes/api/subscribe/route.ts"),
   route("api/verify", "routes/api/verify/route.ts"),
-  route("api/comments", "routes/api/comments/route.ts"),
-  route("api/auth/signin/github", "routes/api/auth/signin.ts"),
-  route("api/auth/callback/github", "routes/api/auth/callback.ts"),
-  route("api/auth/session", "routes/api/auth/session.ts"),
-  route("api/auth/signout", "routes/api/auth/signout.ts"),
 
   // Archived posts (previously `redirects` in next.config.js).
   route("how-arrays-work", "routes/archive-redirect.ts", { id: "archive-how-arrays-work" }),

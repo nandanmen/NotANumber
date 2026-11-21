@@ -1,10 +1,8 @@
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { signOut } from "../lib/auth";
 import { Link, useLocation } from "react-router";
 import type React from "react";
 import { FaGithub, FaTwitter } from "react-icons/fa";
-import { useSession } from "../provider";
 import { CommandList, CommandListFromSource } from "./command-list";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { IndexProvider } from "./index-provider";
@@ -15,7 +13,6 @@ import { PathEditor } from "./path-editor";
 import { PathHoverVisual } from "./path-hover-visual";
 import { PracticeQuestion, PracticeQuestionEditor } from "./path-practice";
 import { PlaySlider, PlaySliderFromSource } from "./play-slider";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Svg } from "./svg";
 
 const sections = [
@@ -40,7 +37,6 @@ export const ContentWrapper = ({
   content: React.ReactNode;
 }) => {
   const { pathname: pathName } = useLocation();
-  const session = useSession();
   return (
     <IndexProvider numSections={numSections}>
       <article className="lg:border-r lg:border-gray8 leading-7 lg:w-[55ch] xl:w-[68ch] w-full lg:max-w-[50vw]">
@@ -66,30 +62,6 @@ export const ContentWrapper = ({
               <FaGithub />
             </a>
           </motion.div>
-          {session?.user && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <motion.button
-                  className="shrink-0 ml-4"
-                  animate={{ opacity: 1 }}
-                  initial={{ opacity: 0 }}
-                >
-                  <img
-                    width="24"
-                    height="24"
-                    className="rounded-full"
-                    src={session.user.image}
-                    alt={session.user.username}
-                  />
-                </motion.button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <button className="w-full py-1" onClick={() => signOut()}>
-                  Sign out
-                </button>
-              </PopoverContent>
-            </Popover>
-          )}
         </header>
         {prefix && (
           <div

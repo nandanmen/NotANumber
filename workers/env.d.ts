@@ -5,9 +5,5 @@ declare namespace Cloudflare {
     LOOPS_API_KEY: string;
     UPSTASH_REDIS_REST_URL: string;
     UPSTASH_REDIS_REST_TOKEN: string;
-    POSTGRES_URL: string;
-    GITHUB_ID: string;
-    GITHUB_SECRET: string;
-    AUTH_SECRET: string;
   }
 }
