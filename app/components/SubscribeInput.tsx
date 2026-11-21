@@ -2,7 +2,7 @@ import React from "react";
 import { CgSpinner } from "react-icons/cg";
 import { FaPaperPlane } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { styled, darkTheme } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 import { Row } from "./layout/Row";
 
 export enum FormEvent {
@@ -33,10 +33,10 @@ const transition = (state: FormState, event: FormEvent): FormState => {
   return machine[state][event] ?? state;
 };
 
-const submitButtonTypeMap = {
+const submitButtonClassNames = {
   [FormState.Start]: undefined,
-  [FormState.Loading]: "loading",
-  [FormState.Done]: "success",
+  [FormState.Loading]: "bg-gray4",
+  [FormState.Done]: "bg-green7",
 };
 
 export const useSubscribe = () => {
@@ -62,22 +62,29 @@ export function SubscribeInput() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <InputGroup>
-        <Label htmlFor="email">Email</Label>
-        <Input
+      <div className="flex items-center overflow-hidden rounded-[4px] border border-gray8 bg-gray1 pr-[7px]">
+        <label
+          htmlFor="email"
+          className="hidden border-r border-gray8 bg-gray4 p-4 text-gray11 md:block"
+        >
+          Email
+        </label>
+        <input
           id="email"
           type="email"
           name="email"
           placeholder="john@doe.com"
+          className="grow bg-gray1 p-4"
           onChange={() => dispatch(FormEvent.Change)}
         />
-        <SubmitButton
-          as={motion.button}
-          center="all"
+        <motion.button
+          className={cn(
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-blue8 dark:bg-blue9 dark:text-gray1",
+            submitButtonClassNames[state],
+          )}
           whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.9 }}
           disabled={state === FormState.Loading}
-          type={submitButtonTypeMap[state]}
         >
           {state === FormState.Start && (
             <Row center="all">
@@ -85,9 +92,8 @@ export function SubscribeInput() {
             </Row>
           )}
           {state === FormState.Loading && (
-            <Row
-              center="all"
-              as={motion.span}
+            <motion.span
+              className="flex items-center justify-center"
               animate={{ rotate: 360 }}
               transition={{
                 type: "tween",
@@ -97,77 +103,19 @@ export function SubscribeInput() {
               }}
             >
               <CgSpinner />
-            </Row>
+            </motion.span>
           )}
           {state === FormState.Done && "🎉"}
-        </SubmitButton>
-      </InputGroup>
+        </motion.button>
+      </div>
       {state === FormState.Done && (
-        <SuccessText>
+        <p className="mt-2 font-mono text-[0.875rem]">
           Thanks! Check your inbox — we sent you a confirmation email.
-        </SuccessText>
+        </p>
       )}
     </form>
   );
 }
-
-const SuccessText = styled("p", {
-  marginTop: "$2",
-  fontFamily: "$mono",
-  fontSize: "$sm",
-});
-
-const InputGroup = styled("div", {
-  border: "1px solid $gray8",
-  borderRadius: 4,
-  display: "flex",
-  background: "$gray1",
-  overflow: "hidden",
-  alignItems: "center",
-  paddingRight: 7,
-});
-
-const Label = styled("label", {
-  display: "none",
-  padding: "$4",
-  borderRight: "1px solid $gray8",
-  color: "$gray11",
-  background: "$gray4",
-
-  "@md": {
-    display: "block",
-  },
-});
-
-const SubmitButton = styled(Row, {
-  background: "$blue8",
-  width: "$10",
-  height: "$10",
-  flexShrink: 0,
-  borderRadius: 4,
-
-  [`.${darkTheme} &`]: {
-    background: "$blue9",
-    color: "$gray1",
-  },
-
-  variants: {
-    type: {
-      success: {
-        background: "$green7",
-      },
-      loading: {
-        background: "$gray4",
-      },
-    },
-  },
-});
-
-const Input = styled("input", {
-  flexGrow: 1,
-  background: "$gray1",
-  padding: "$4",
-});
 
 function subscribe(email?: string) {
   if (!email) {

@@ -6,7 +6,6 @@ import {
   Controls,
   UndoButton,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
 import { alphanumericChars } from "./alphanumeric";
 
 export const TextLoadAnimation = () => {
@@ -22,12 +21,14 @@ export const TextLoadAnimation = () => {
           <TextScramble key={key} text={text} times={times} />
         </Content>
         <Controls className="p-2">
-          <Input
+          <input
+            className={inputClassName}
             type="text"
             value={text}
             onChange={(evt) => setText(evt.target.value)}
           />
-          <Input
+          <input
+            className={inputClassName}
             type="number"
             value={times}
             onChange={(evt) => setTimes(evt.target.valueAsNumber)}
@@ -44,10 +45,7 @@ export const TextLoadAnimationWindow = () => {
   return (
     <ClientOnly>
       <Visualizer>
-        <Content
-          padding="md"
-          className="flex h-[100px] items-center font-mono"
-        >
+        <Content padding="md" className="flex h-[100px] items-center font-mono">
           <TextScrambleWindow key={key}>
             Fast, unstyled, composable command menu for React
           </TextScrambleWindow>
@@ -60,12 +58,7 @@ export const TextLoadAnimationWindow = () => {
   );
 };
 
-const Input = styled("input", {
-  background: "$gray3",
-  padding: "$1",
-  borderRadius: 2,
-  border: "1px solid $gray8",
-});
+const inputClassName = "rounded-[2px] border border-gray8 bg-gray3 p-1";
 
 const scrambleText = (text: string) => {
   const chars = text.split("");
@@ -93,7 +86,7 @@ const TextScramble = ({ text, times }) => {
       setScrambledText(repetitions < times ? scrambleText(text) : text);
       setRepetitions(repetitions + 1);
     },
-    repetitions > times ? null : 50
+    repetitions > times ? null : 50,
   );
 
   return <span>{scrambledText}</span>;
@@ -102,7 +95,7 @@ const TextScramble = ({ text, times }) => {
 const getParts = (text: string, windowSize: number, windowStart: number) => {
   const done = text.slice(0, windowStart);
   const scrambled = scrambleText(
-    text.slice(windowStart, windowStart + windowSize)
+    text.slice(windowStart, windowStart + windowSize),
   );
   const todo = text.slice(windowStart + windowSize);
   return [done, scrambled, todo];
@@ -120,7 +113,7 @@ export const TextScrambleWindow = ({
   }
 
   const [[done, scrambled, todo], setScrambledText] = React.useState(
-    getParts(children, size, 0)
+    getParts(children, size, 0),
   );
   const [windowStart, increment] = React.useReducer((state) => state + 1, 0);
   const finished = windowStart > children.length;
@@ -131,49 +124,23 @@ export const TextScrambleWindow = ({
     () => {
       setScrambledText(getParts(children, size, windowStart));
     },
-    finished ? null : 30 / speed
+    finished ? null : 30 / speed,
   );
 
   if (debug) {
     return (
-      <TextWrapper mono={mono}>
+      <span className={mono ? "font-mono" : undefined}>
         {done}
-        <Scrambled>{scrambled}</Scrambled>
-        <Todo>{todo}</Todo>
-      </TextWrapper>
+        <span className="relative text-blue10 before:absolute before:top-[calc(100%+2px)] before:h-px before:w-full before:bg-blue10 before:content-['']">
+          {scrambled}
+        </span>
+        <span className="text-gray9">{todo}</span>
+      </span>
     );
   }
 
   return <span>{done + scrambled}</span>;
 };
-
-const TextWrapper = styled("span", {
-  variants: {
-    mono: {
-      true: {
-        fontFamily: "$mono",
-      },
-    },
-  },
-});
-
-const Todo = styled("span", {
-  color: "$gray9",
-});
-
-const Scrambled = styled("span", {
-  color: "$blue10",
-  position: "relative",
-
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: "calc(100% + 2px)",
-    height: 1,
-    width: "100%",
-    background: "$blue10",
-  },
-});
 
 export const ClientOnly = ({ children }) => {
   const [mounted, setMounted] = React.useState(false);

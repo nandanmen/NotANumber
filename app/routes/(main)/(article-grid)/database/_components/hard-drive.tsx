@@ -7,7 +7,6 @@ import {
 import React, { Fragment } from "react";
 import { Slider } from "~/components/Slider";
 import { range } from "~/lib/utils";
-import { styled } from "~/stitches.config";
 
 const numArcs = 4;
 const numSectors = 3;
@@ -93,13 +92,13 @@ export const HardDrive = () => {
             />
           </g>
           <g strokeWidth="0.3" fill="none">
-            <Box as={motion.g} style={{ x: 120, y: 80, rotate }}>
+            <motion.g style={{ x: 120, y: 80, rotate }}>
               <circle r="72" />
               <circle r="70" stroke="none" />
               <motion.g
                 animate="visible"
                 initial="hidden"
-                stroke="var(--colors-gray9)"
+                stroke="var(--color-gray9)"
                 strokeDasharray="1"
                 transition={{ staggerChildren: 0.1 }}
               >
@@ -143,13 +142,13 @@ export const HardDrive = () => {
                   );
                 })}
               </motion.g>
-              <Box as="circle" r="20" className="fill-gray3" />
+              <circle r="20" className="fill-gray3" />
               <g>
                 <Bolt cy={-12} />
                 <Bolt cy={12} />
                 <Bolt cx={-12} />
                 <Bolt cx={12} />
-                <Box as="circle" r="5" fill="var(--colors-gray2)" />
+                <circle r="5" fill="var(--color-gray2)" />
               </g>
               <g className="stroke-blue8 fill-blue5" strokeWidth="0.3">
                 <ArcGroup
@@ -166,10 +165,9 @@ export const HardDrive = () => {
                   }}
                 />
               </g>
-            </Box>
+            </motion.g>
             <motion.g style={{ x: 30, y: 30 }}>
-              <Box
-                as={motion.g}
+              <motion.g
                 style={{
                   originX: "9px",
                   originY: "9px",
@@ -184,26 +182,16 @@ export const HardDrive = () => {
                     stroke="none"
                     cx="2.5"
                     cy="8"
-                    fill="var(--colors-blue7)"
+                    fill="var(--color-blue7)"
                   />
-                  <Box
-                    as="path"
+                  <path
                     d="M 0 0 l 2.5 8 l 2.5 -8 z"
-                    fill="var(--colors-gray3)"
+                    fill="var(--color-gray3)"
                   />
                 </motion.g>
-                <Box
-                  as="path"
-                  d="M 0 9 l 5 80 l 1 2 h 6 l 1 -2 l 5 -80 A 9 9 0 0 0 0 9"
-                />
-                <Box
-                  as="circle"
-                  r="6"
-                  cx="9"
-                  cy="9"
-                  fill="var(--colors-gray2)"
-                />
-              </Box>
+                <path d="M 0 9 l 5 80 l 1 2 h 6 l 1 -2 l 5 -80 A 9 9 0 0 0 0 9" />
+                <circle r="6" cx="9" cy="9" fill="var(--color-gray2)" />
+              </motion.g>
             </motion.g>
           </g>
         </svg>
@@ -216,12 +204,7 @@ const ArcGroup = ({ startAngle, sectorNumber, length = 1, ...props }) => {
   const radius = getRadius(sectorNumber);
   const arcAngle = 360 / Math.floor((2 * Math.PI * radius) / ARC_LENGTH);
   return (
-    <Box
-      as={motion.g}
-      initial="hidden"
-      transition={{ staggerChildren: 0.1 }}
-      {...props}
-    >
+    <motion.g initial="hidden" transition={{ staggerChildren: 0.1 }} {...props}>
       {range(length).map((i) => {
         return (
           <Arc
@@ -231,7 +214,7 @@ const ArcGroup = ({ startAngle, sectorNumber, length = 1, ...props }) => {
           />
         );
       })}
-    </Box>
+    </motion.g>
   );
 };
 
@@ -257,8 +240,7 @@ const Arc = ({ startAngle, sectorNumber }) => {
   ].join(" ");
 
   return (
-    <Box
-      as={motion.path}
+    <motion.path
       variants={{
         shown: { scale: 1 },
         hidden: { scale: 0 },
@@ -295,8 +277,6 @@ const PolarLine = ({
     </motion.g>
   );
 };
-
-const Box = styled("g", {});
 
 const toCartesian = (angle: number, radius: number) => {
   const angleInRadians = ((angle - 90) * Math.PI) / 180.0;

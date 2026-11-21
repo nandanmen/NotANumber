@@ -1,10 +1,8 @@
-import { motion } from "framer-motion";
+import { type HTMLMotionProps, motion } from "framer-motion";
 import React from "react";
 import { Link } from "react-router";
-import { Content, ToggleButton, UndoButton } from "~/components/Visualizer";
+import { ToggleButton, UndoButton } from "~/components/Visualizer";
 import { cn } from "~/lib/cn";
-import { styled } from "~/stitches.config";
-import { Row } from "./Row";
 
 const experiments = [
   "scrambled-text",
@@ -18,92 +16,52 @@ const experiments = [
 
 export function ExperimentsPage({ children, page }) {
   return (
-    <Wrapper>
-      <Content className="flex h-full flex-col justify-center p-16">
-        <Row as={NavWrapper} css={{ flexDirection: "column", gap: "$4" }}>
-          <LinkWrapper>
+    <div className="h-screen">
+      <div className="flex h-full flex-col justify-center p-16">
+        <nav className="fixed top-8 left-8 flex flex-col gap-4 text-gray11 [&_a]:no-underline">
+          <div className="font-serif text-[1.5rem] [&_a]:text-gray11">
             <Link to="/" reloadDocument>
               NaN
             </Link>
-          </LinkWrapper>
-          <ExperimentsList>
+          </div>
+          <ul className="flex list-none flex-col gap-2 font-mono text-[0.875rem]">
             {experiments.map((experiment) => (
               <li key={experiment}>
-                <ExperimentItem
+                <Link
                   to={`/experiments/${experiment}`}
-                  active={page === experiment}
+                  className={
+                    page === experiment ? "text-gray12" : "text-gray11"
+                  }
                 >
                   {`${page === experiment ? ">" : ""} ${experiment}`}
-                </ExperimentItem>
+                </Link>
               </li>
             ))}
-          </ExperimentsList>
-        </Row>
+          </ul>
+        </nav>
         {children}
-      </Content>
-    </Wrapper>
+      </div>
+    </div>
   );
 }
 
-const ExperimentItem = styled(Link, {
-  color: "$gray11",
-  variants: {
-    active: {
-      true: {
-        color: "$gray12",
-      },
-    },
-  },
-});
-
-const NavWrapper = styled("nav", {
-  position: "fixed",
-  top: "$8",
-  left: "$8",
-  color: "$gray11",
-
-  a: {
-    textDecoration: "none",
-  },
-});
-
-const ExperimentsList = styled("ul", {
-  fontFamily: "$mono",
-  fontSize: "$sm",
-  listStyle: "none",
-  display: "flex",
-  flexDirection: "column",
-  gap: "$2",
-});
-
-const LinkWrapper = styled("div", {
-  fontFamily: "var(--font-serif)",
-  fontSize: "$xl",
-
-  a: {
-    color: "$gray11",
-  },
-});
-
 // --
 
-export const ExperimentWrapper = (
-  props: React.ComponentPropsWithoutRef<typeof _ExperimentWrapper>
-) => <_ExperimentWrapper layout {...props} />;
-
-const _ExperimentWrapper = styled(motion.div, {
-  background: "$gray4",
-  width: 1000,
-  margin: "0 auto",
-
-  variants: {
-    constrained: {
-      false: {
-        width: "auto",
-      },
-    },
-  },
-});
+export const ExperimentWrapper = ({
+  constrained = true,
+  className,
+  ...props
+}: HTMLMotionProps<"div"> & { constrained?: boolean }) => (
+  <motion.div
+    layout
+    className={cn(
+      "mx-auto w-[1000px] bg-gray4",
+      !constrained && "w-auto",
+      className,
+    )}
+    {...props}
+  />
+);
 
 // --
 
@@ -116,8 +74,12 @@ export type ControlsProps = {
 
 export const Controls = ({ debug, onDebugChange, onReset, children }) => {
   return (
-    <_Controls layout style={{ borderRadius: "12px" }}>
-      <ControlHeader layout>
+    <motion.div
+      layout
+      style={{ borderRadius: "12px" }}
+      className="mx-auto my-8 border border-gray8 bg-gray3 p-4 shadow-md"
+    >
+      <motion.div layout className="flex justify-between gap-8">
         <ToggleButton
           layout
           onClick={() => onDebugChange(!debug)}
@@ -130,60 +92,41 @@ export const Controls = ({ debug, onDebugChange, onReset, children }) => {
           Debug
         </ToggleButton>
         <UndoButton layout onClick={onReset} />
-      </ControlHeader>
-      {debug && <DebugControls>{children}</DebugControls>}
-    </_Controls>
+      </motion.div>
+      {debug && (
+        <motion.div className="min-w-[300px] rounded-[4px] rounded-tl-none bg-gray5 p-4">
+          {children}
+        </motion.div>
+      )}
+    </motion.div>
   );
 };
 
-export const DebugField = styled("div", {
-  display: "flex",
-  fontFamily: "$mono",
-  color: "$gray11",
-  fontWeight: "bold",
-  alignItems: "center",
-  justifyContent: "space-between",
-});
+export const DebugField = ({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) => (
+  <div
+    className={cn(
+      "flex items-center justify-between font-mono font-bold text-gray11",
+      className,
+    )}
+    {...props}
+  />
+);
 
-const ControlHeader = styled(motion.div, {
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "$8",
-});
-
-const Wrapper = styled("div", {
-  height: "100vh",
-});
-
-const _Controls = styled(motion.div, {
-  border: "1px solid $gray8",
-  boxShadow: "$md",
-  background: "$gray3",
-  margin: "$8 auto",
-  padding: "$4",
-});
-
-const DebugControls = styled(motion.div, {
-  minWidth: 300,
-  background: "$gray5",
-  padding: "$4",
-  borderRadius: 4,
-  borderTopLeftRadius: 0,
-});
-
-export const DebugFieldButton = styled("button", {
-  padding: "$1",
-  borderRadius: 2,
-
-  "&:hover": {
-    background: "$gray8",
-  },
-
-  variants: {
-    active: {
-      true: {
-        background: "$gray8",
-      },
-    },
-  },
-});
+export const DebugFieldButton = ({
+  active,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"button"> & { active?: boolean }) => (
+  <button
+    type="button"
+    className={cn(
+      "rounded-[2px] p-1 hover:bg-gray8",
+      active && "bg-gray8",
+      className,
+    )}
+    {...props}
+  />
+);

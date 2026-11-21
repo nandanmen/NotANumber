@@ -1,75 +1,27 @@
-import { motion } from "framer-motion";
-import type { ComponentPropsWithoutRef } from "react";
-import { darkTheme, styled } from "~/stitches.config";
+import { type HTMLMotionProps, motion } from "framer-motion";
+import { cn } from "~/lib/cn";
 
-export const PrimaryButton = (
-  props: ComponentPropsWithoutRef<typeof _Button>
-) => {
+type PrimaryButtonProps = HTMLMotionProps<"button"> & { small?: boolean };
+
+export const PrimaryButton = ({
+  small,
+  className,
+  ...props
+}: PrimaryButtonProps) => {
   return (
-    <Wrapper>
-      <Shadow />
-      <_Button whileTap={{ x: 2, y: 2 }} {...props} />
-    </Wrapper>
+    <div className="group relative w-fit">
+      <span className="absolute inset-0 -z-1 rounded-md bg-gray12 transition-all duration-200 ease-out group-hover:translate-x-[2px] group-hover:translate-y-[2px]" />
+      <motion.button
+        whileTap={{ x: 2, y: 2 }}
+        className={cn(
+          "relative cursor-pointer rounded-md border border-gray12 bg-gray12 px-4 py-2 pt-[calc(--spacing(2)+2px)] font-serif font-bold text-gray1 transition-all duration-200 ease-out dark:bg-gray1 dark:text-gray12",
+          "group-hover:bg-[linear-gradient(-45deg,var(--gradient-end,var(--color-blue6)),var(--gradient-start,var(--color-blue4)))] group-hover:text-gray12",
+          "dark:group-hover:border-gray1 dark:group-hover:bg-[linear-gradient(-45deg,var(--gradient-end,var(--color-blue9)),var(--gradient-start,var(--color-blue6)))] dark:group-hover:text-gray1",
+          small && "px-2 py-1 pt-[calc(--spacing(1)+2px)] text-[0.875rem]",
+          className,
+        )}
+        {...props}
+      />
+    </div>
   );
 };
-
-const Wrapper = styled("div", {
-  position: "relative",
-  width: "fit-content",
-
-  "&:hover": {
-    span: {
-      transform: "translate(2px, 2px)",
-    },
-    button: {
-      background:
-        "linear-gradient(-45deg, var(--gradient-end, $colors$blue6), var(--gradient-start, $colors$blue4))",
-      color: "$gray12",
-
-      [`.${darkTheme} &`]: {
-        background:
-          "linear-gradient(-45deg, var(--gradient-end, $colors$blue9), var(--gradient-start, $colors$blue6))",
-        color: "$gray1",
-        borderColor: "$gray1",
-      },
-    },
-  },
-});
-
-const Shadow = styled("span", {
-  position: "absolute",
-  inset: 0,
-  background: "$gray12",
-  borderRadius: "$base",
-  transition: "all 0.2s ease-out",
-  zIndex: -1,
-});
-
-const _Button = styled(motion.button, {
-  background: "$gray12",
-  padding: "$2 $4",
-  paddingTop: "calc($space$2 + 2px)",
-  borderRadius: "$base",
-  border: "1px solid $gray12",
-  color: "$gray1",
-  fontWeight: "bold",
-  cursor: "pointer",
-  fontFamily: "var(--font-serif)",
-  transition: "all 0.2s ease-out",
-  position: "relative",
-
-  [`.${darkTheme} &`]: {
-    background: "$gray1",
-    color: "$gray12",
-  },
-
-  variants: {
-    small: {
-      true: {
-        fontSize: "$sm",
-        padding: "$1 $2",
-        paddingTop: "calc($space$1 + 2px)",
-      },
-    },
-  },
-});

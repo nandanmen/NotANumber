@@ -1,22 +1,16 @@
-import { useTheme } from "./theme";
 import { BiSun } from "react-icons/bi";
-import { styled } from "~/stitches.config";
+import { useTheme } from "./theme";
 
 import { SecondaryButton } from "./SecondaryButton";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   return (
-    <Button
+    <SecondaryButton
+      className="h-10 w-10 text-[1.5rem]"
       onClick={() => (theme === "dark" ? setTheme("light") : setTheme("dark"))}
     >
       <BiSun />
-    </Button>
+    </SecondaryButton>
   );
 };
-
-const Button = styled(SecondaryButton, {
-  fontSize: "$xl",
-  width: "$10",
-  height: "$10",
-});

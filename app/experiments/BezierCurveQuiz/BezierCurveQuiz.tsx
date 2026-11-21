@@ -17,7 +17,6 @@ import {
 } from "~/components/Visualizer";
 import { FullWidth } from "~/components/FullWidth";
 import { cn } from "~/lib/cn";
-import { styled } from "~/stitches.config";
 
 import {
   EasingCurveEditor,
@@ -74,7 +73,7 @@ export const BezierCurveQuiz = ({
   return (
     <FullWidth>
       <Visualizer childBorders={false} className="flex">
-        <Aside>
+        <aside className="relative shrink-0 basis-[280px] border-r border-gray8">
           <EasingCurveEditor
             easing={easing}
             onEasingChange={(easing) => {
@@ -82,9 +81,10 @@ export const BezierCurveQuiz = ({
               debouncedPlay();
             }}
           />
-          <SvgCheckWrapper>
+          <div className="pointer-events-none absolute inset-0">
             <svg viewBox={viewbox}>
-              <ExamplePath
+              <motion.path
+                className="fill-none stroke-yellow8 stroke-3"
                 d={`M 0 0 C ${x1} ${-y1} ${x2} ${-y2} ${config.size} -${
                   config.size
                 }`}
@@ -92,10 +92,10 @@ export const BezierCurveQuiz = ({
                 initial={{ pathLength: 0 }}
               />
             </svg>
-          </SvgCheckWrapper>
-        </Aside>
-        <ContentWrapper>
-          <AnimationStack>
+          </div>
+        </aside>
+        <div className="w-full">
+          <div className="flex h-[calc(100%-47px)] flex-col">
             <Animation
               easing={exampleEasing}
               controls={exampleControls}
@@ -105,13 +105,13 @@ export const BezierCurveQuiz = ({
             <Content ref={container} className="min-h-0 flex-1">
               <Animation easing={easing} controls={controls} target={target} />
             </Content>
-          </AnimationStack>
+          </div>
           <Controls className="border-t border-gray8">
-            <Stack>
+            <div className="flex">
               <PlayButton onClick={() => play(speed)} />
               <UndoButton onClick={reset} />
-            </Stack>
-            <Stack>
+            </div>
+            <div className="flex">
               {[0.25, 0.5, 1].map((_speed) => (
                 <ToggleButton
                   key={_speed}
@@ -128,40 +128,14 @@ export const BezierCurveQuiz = ({
                   {_speed}x
                 </ToggleButton>
               ))}
-            </Stack>
+            </div>
             <ToggleButton onClick={() => setShowLine(true)}>Check</ToggleButton>
           </Controls>
-        </ContentWrapper>
+        </div>
       </Visualizer>
     </FullWidth>
   );
 };
-
-const ExamplePath = styled(motion.path, {
-  fill: "none",
-  strokeWidth: 3,
-  stroke: "$yellow8",
-});
-
-const SvgCheckWrapper = styled("div", {
-  position: "absolute",
-  inset: 0,
-  pointerEvents: "none",
-});
-
-const AnimationStack = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  height: "calc(100% - 47px)",
-});
-
-const Stack = styled("div", {
-  display: "flex",
-});
-
-const ContentWrapper = styled("div", {
-  width: "100%",
-});
 
 const useWidth = (ref) => {
   const [width, setWidth] = React.useState(0);
@@ -198,74 +172,30 @@ const Animation = ({
     (current) => {
       const progress = current / BASE_DURATION;
       return easingCurve(progress) * target;
-    }
+    },
   );
   const getOpacity = transform([0, target], [0.2, 0.6]);
   return (
-    <AnimationWrapper>
+    <div className="relative flex h-full flex-1 items-center px-10 last:border-t last:border-gray8">
       {steps.map((x) => (
-        <Shadow
+        <motion.div
           key={x}
           style={{ x, "--opacity": getOpacity(x) } as React.CSSProperties}
-          example={example}
+          className={cn(
+            "absolute aspect-square w-[100px] rounded-xl border-4 border-dashed opacity-50",
+            example ? "border-yellow7" : "border-blue7",
+          )}
         />
       ))}
-      <Square animate={controls} example={example} />
-    </AnimationWrapper>
+      <motion.div
+        animate={controls}
+        className={cn(
+          "relative aspect-square w-[100px] rounded-xl border border-gray12 shadow-[3px_3px_0_var(--color-gray12)]",
+          example
+            ? "bg-[linear-gradient(45deg,var(--color-yellow8),var(--color-yellow6))]"
+            : "bg-[linear-gradient(45deg,var(--color-blue8),var(--color-blue6))]",
+        )}
+      />
+    </div>
   );
 };
-
-const AnimationWrapper = styled("div", {
-  padding: "0 $10",
-  display: "flex",
-  alignItems: "center",
-  flex: 1,
-  height: "100%",
-  position: "relative",
-
-  "&:last-child": {
-    borderTop: "1px solid $gray8",
-  },
-});
-
-const Shadow = styled(motion.div, {
-  position: "absolute",
-  width: 100,
-  aspectRatio: 1,
-  border: "4px dashed $blue7",
-  borderRadius: 12,
-  opacity: 0.5,
-
-  variants: {
-    example: {
-      true: {
-        borderColor: "$yellow7",
-      },
-    },
-  },
-});
-
-const Square = styled(motion.div, {
-  width: 100,
-  aspectRatio: 1,
-  background: "linear-gradient(45deg, $blue8, $blue6)",
-  border: "1px solid $gray12",
-  borderRadius: 12,
-  boxShadow: "3px 3px 0 $colors$gray12",
-  position: "relative",
-
-  variants: {
-    example: {
-      true: {
-        background: "linear-gradient(45deg, $yellow8, $yellow6)",
-      },
-    },
-  },
-});
-
-const Aside = styled("aside", {
-  flexBasis: 280,
-  flexShrink: 0,
-  borderRight: "1px solid $gray8",
-  position: "relative",
-});

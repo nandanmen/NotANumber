@@ -1,21 +1,19 @@
-import { motion } from "framer-motion";
-import { styled } from "~/stitches.config";
+import { type HTMLMotionProps, motion } from "framer-motion";
+import { cn } from "~/lib/cn";
 
-export const Row = styled(motion.div, {
-  display: "flex",
+type RowProps = HTMLMotionProps<"div"> & {
+  center?: "all" | "vertical" | "horizontal";
+};
 
-  variants: {
-    center: {
-      all: {
-        alignItems: "center",
-        justifyContent: "center",
-      },
-      vertical: {
-        alignItems: "center",
-      },
-      horizontal: {
-        justifyContent: "center",
-      },
-    },
-  },
-});
+export const rowCenter = {
+  all: "items-center justify-center",
+  vertical: "items-center",
+  horizontal: "justify-center",
+};
+
+export const Row = ({ center, className, ...props }: RowProps) => (
+  <motion.div
+    className={cn("flex", center && rowCenter[center], className)}
+    {...props}
+  />
+);

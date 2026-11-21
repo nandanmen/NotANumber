@@ -1,51 +1,23 @@
 import React from "react";
-import { darkTheme, styled } from "~/stitches.config";
-import { violet, blackA } from "@radix-ui/colors";
 import { FaCheck } from "react-icons/fa";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-
-const StyledCheckbox = styled(CheckboxPrimitive.Root, {
-  all: "unset",
-  backgroundColor: "white",
-  width: 22,
-  height: 22,
-  borderRadius: 4,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid $gray8",
-  "&:hover": { backgroundColor: violet.violet3 },
-  "&:focus": { borderColor: "$gray12" },
-
-  [`.${darkTheme} &`]: {
-    backgroundColor: "$gray2",
-  },
-});
-
-const StyledIndicator = styled(CheckboxPrimitive.Indicator, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
-
-// Your app...
-const Flex = styled("div", { display: "flex" });
-const Label = styled("label", {
-  userSelect: "none",
-});
 
 export const Checkbox = ({ label, ...props }) => {
   const id = React.useId();
   return (
-    <Flex css={{ alignItems: "center" }}>
-      <StyledCheckbox {...props} id={id}>
-        <StyledIndicator>
+    <div className="flex items-center">
+      <CheckboxPrimitive.Root
+        {...props}
+        id={id}
+        className="flex h-[22px] w-[22px] items-center justify-center rounded-[4px] border border-gray8 bg-white hover:bg-violet3 focus:border-gray12 dark:bg-gray2"
+      >
+        <CheckboxPrimitive.Indicator className="flex items-center justify-center">
           <FaCheck size={12} />
-        </StyledIndicator>
-      </StyledCheckbox>
-      <Label css={{ paddingLeft: "$2" }} htmlFor={id}>
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
+      <label className="pl-2 select-none" htmlFor={id}>
         {label}
-      </Label>
-    </Flex>
+      </label>
+    </div>
   );
 };

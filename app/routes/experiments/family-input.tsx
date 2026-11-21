@@ -4,7 +4,7 @@ import {
   ExperimentsPage,
   ExperimentWrapper,
 } from "~/components/layout/ExperimentsPage";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 import { range } from "~/lib/utils";
 import { FaChevronLeft } from "react-icons/fa";
 
@@ -17,25 +17,14 @@ export default function FamilyInputPage() {
   const [number, setNumber] = React.useState("0");
   return (
     <ExperimentsPage page="family-input">
-      <ExperimentWrapper
-        css={{
-          borderRadius: "$base",
-          border: "1px solid $gray4",
-          background: "$gray1",
-          width: "fit-content",
-        }}
-      >
-        <Box css={{ padding: "$4" }}>
-          <Box css={{ margin: "$20 0" }}>
+      <ExperimentWrapper className="w-fit rounded-md border border-gray4 bg-gray1">
+        <div className="p-4">
+          <div className="my-20">
             <Amount amount={Number(number)} />
-          </Box>
-          <Box
-            css={{
-              width: NUM_INPUT_WIDTH * 3 + GAP * 2,
-              display: "flex",
-              gap: GAP,
-              flexWrap: "wrap",
-            }}
+          </div>
+          <div
+            className="flex flex-wrap"
+            style={{ width: NUM_INPUT_WIDTH * 3 + GAP * 2, gap: GAP }}
           >
             {range(9).map((i) => (
               <NumberButton key={i} onClick={() => setNumber(number + (i + 1))}>
@@ -48,17 +37,12 @@ export default function FamilyInputPage() {
             <NumberButton onClick={() => setNumber(number + 0)}>0</NumberButton>
             <NumberButton
               onClick={() => setNumber(number.slice(0, -1))}
-              css={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "$lg",
-              }}
+              className="flex items-center justify-center text-[1.25rem]"
             >
               <FaChevronLeft />
             </NumberButton>
-          </Box>
-        </Box>
+          </div>
+        </div>
       </ExperimentWrapper>
     </ExperimentsPage>
   );
@@ -84,28 +68,15 @@ const getKey = (formattedIndex: number, original: number) => {
 const Amount = ({ amount }: { amount: number }) => {
   const formatted = formatter.format(amount);
   return (
-    <Box
-      as="h1"
-      css={{
-        fontSize: "5rem",
-        fontWeight: 800,
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        position: "relative",
-        overflow: "hidden",
-        padding: "$2 0",
-      }}
-    >
-      <Box as={motion.span} layout css={{ fontSize: "3rem" }}>
+    <h1 className="relative flex items-start justify-center overflow-hidden py-2 text-[5rem] font-extrabold">
+      <motion.span layout className="text-[3rem]">
         $
-      </Box>
+      </motion.span>
       <AnimatePresence mode="popLayout">
         {[...formatted].map((char, i) => {
           return (
-            <Box
-              css={{ lineHeight: 1 }}
-              as={motion.span}
+            <motion.span
+              className="leading-none"
               key={char + getKey(i, amount)}
               layout
               animate={{
@@ -119,25 +90,25 @@ const Amount = ({ amount }: { amount: number }) => {
               initial={{ y: "1.5em" }}
             >
               {char}
-            </Box>
+            </motion.span>
           );
         })}
       </AnimatePresence>
-    </Box>
+    </h1>
   );
 };
 
-const Box = styled("div", {});
-
-const NumberButton = styled("button", {
-  width: NUM_INPUT_WIDTH,
-  textAlign: "center",
-  padding: "$4 0",
-  fontSize: "$xl",
-  fontWeight: "bold",
-  borderRadius: 6,
-
-  "&:hover": {
-    background: "$gray2",
-  },
-});
+const NumberButton = ({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"button">) => (
+  <button
+    type="button"
+    className={cn(
+      "rounded-[6px] py-4 text-center text-[1.5rem] font-bold hover:bg-gray2",
+      className,
+    )}
+    style={{ width: NUM_INPUT_WIDTH }}
+    {...props}
+  />
+);

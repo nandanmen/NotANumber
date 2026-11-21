@@ -1,9 +1,8 @@
-import { styled } from "~/stitches.config";
 import { SubscribeInput } from "./SubscribeInput";
 
 export function NewsletterForm() {
   return (
-    <Wrapper>
+    <div className="rounded-md border border-gray8 p-4 [&>:not(:last-child)]:mb-2">
       <h4>Newsletter</h4>
       <p>
         Sign up for my newsletter to get new content sent straight to your
@@ -11,16 +10,6 @@ export function NewsletterForm() {
         anything I find interesting.
       </p>
       <SubscribeInput />
-    </Wrapper>
+    </div>
   );
 }
-
-const Wrapper = styled("div", {
-  border: "1px solid $gray8",
-  padding: "$4",
-  borderRadius: "$base",
-
-  "> :not(:last-child)": {
-    marginBottom: "$2",
-  },
-});

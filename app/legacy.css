@@ -1,0 +1,47 @@
+/*
+  Styles for the pages from the old Next.js pages router
+  (routes/legacy-layout.tsx). They never had Tailwind's preflight, so this pulls
+  in only the theme and utilities and keeps their own small reset.
+*/
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source ".";
+@import "./theme.css";
+
+@layer base {
+  :root {
+    --font-sans: Nunito, system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, Monaco, "Segoe UI Mono",
+      "Roboto Mono", monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  input,
+  button {
+    all: unset;
+  }
+  button {
+    cursor: pointer;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-gray4);
+  }
+  h1,
+  h2 {
+    font-weight: normal;
+  }
+  pre > code {
+    display: grid;
+  }
+  code {
+    font-family: var(--font-mono);
+  }
+}

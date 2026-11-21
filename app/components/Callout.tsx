@@ -1,51 +1,19 @@
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { styled } from "~/stitches.config";
 import { Row } from "./layout/Row";
 
 export function Callout({ label, children }) {
   return (
-    <Details>
-      <Summary as="summary" center="vertical">
-        <Row data-closed-icon center="all">
+    <details className="group rounded-md border border-gray8 p-4 [&>:not(summary)]:mt-2">
+      <summary className="flex cursor-pointer items-center gap-2 font-bold text-gray11">
+        <Row center="all" className="group-open:hidden">
           <FaPlus />
         </Row>
-        <Row data-opened-icon center="all">
+        <Row center="all" className="hidden group-open:flex">
           <FaMinus />
         </Row>
         {label}
-      </Summary>
+      </summary>
       {children}
-    </Details>
+    </details>
   );
 }
-
-const Details = styled("details", {
-  border: "1px solid $gray8",
-  padding: "$4",
-  borderRadius: "$base",
-
-  "> :not(summary)": {
-    marginTop: "$2",
-  },
-
-  "[data-opened-icon]": {
-    display: "none",
-  },
-
-  "&[open]": {
-    "[data-closed-icon]": {
-      display: "none",
-    },
-
-    "[data-opened-icon]": {
-      display: "flex",
-    },
-  },
-});
-
-const Summary = styled(Row, {
-  fontWeight: "bold",
-  color: "$gray11",
-  gap: "$2",
-  cursor: "pointer",
-});

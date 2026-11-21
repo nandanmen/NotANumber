@@ -1,7 +1,7 @@
 import React, { type ComponentPropsWithoutRef } from "react";
 import { motion, transform, type PanInfo } from "framer-motion";
 import produce from "immer";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 export type CubicBezier = [number, number, number, number];
 
@@ -60,7 +60,7 @@ export const EasingCurveEditor = ({
       produce(easing, (draft) => {
         draft[second ? 2 : 0] = transformX(relativeX - padding);
         draft[second ? 3 : 1] = transformY(relativeY);
-      })
+      }),
     );
   };
 
@@ -188,18 +188,17 @@ export const EasingCurveEditor = ({
   );
 };
 
-type LineProps = ComponentPropsWithoutRef<typeof _Line> & {
+type LineProps = ComponentPropsWithoutRef<"line"> & {
   color: string;
 };
 
 const Line = ({ color, ...props }: LineProps) => (
-  <_Line stroke={`var(--colors-${color}7)`} {...props} />
+  <line
+    stroke={`var(--color-${color}7)`}
+    className="stroke-1 [stroke-dasharray:2]"
+    {...props}
+  />
 );
-
-const _Line = styled("line", {
-  strokeWidth: 1,
-  strokeDasharray: "2",
-});
 
 type CircleProps = ComponentPropsWithoutRef<typeof motion.circle> & {
   color: string;
@@ -209,26 +208,23 @@ type CircleProps = ComponentPropsWithoutRef<typeof motion.circle> & {
 const Circle = ({ color, active, ...props }: CircleProps) => (
   <motion.circle
     animate={{ r: active ? 7 : 2 }}
-    fill={`var(--colors-${color}7)`}
+    fill={`var(--color-${color}7)`}
     {...props}
   />
 );
 
 const ControlLine = ({ x2 = 0, y2 = 0, color, ...props }) => {
   return (
-    <_ControlLine
-      css={{ stroke: `var(--colors-${color}7)` }}
+    <motion.line
+      className="stroke-2"
+      style={{ stroke: `var(--color-${color}7)` }}
       animate={{ x2, y2 }}
       {...props}
     />
   );
 };
 
-const _ControlLine = styled(motion.line, {
-  strokeWidth: 2,
-});
-
-type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
+type PointProps = ComponentPropsWithoutRef<typeof motion.circle> & {
   cx?: number;
   cy?: number;
   color: string;
@@ -236,8 +232,9 @@ type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
 
 const Point = ({ cx = 0, cy = 0, color, ...props }: PointProps) => {
   return (
-    <_Point
-      css={{ fill: `var(--colors-${color}5)` }}
+    <motion.circle
+      className="cursor-pointer stroke-gray12 stroke-1"
+      style={{ fill: `var(--color-${color}5)` }}
       animate={{ cx, cy }}
       r="5"
       {...props}
@@ -245,35 +242,31 @@ const Point = ({ cx = 0, cy = 0, color, ...props }: PointProps) => {
   );
 };
 
-const _Point = styled(motion.circle, {
-  strokeWidth: 1,
-  stroke: "$gray12",
-  cursor: "pointer",
-});
+const Text = ({ className, ...props }: ComponentPropsWithoutRef<"text">) => (
+  <text
+    className={cn(
+      "fill-gray10 font-mono text-[9px] font-bold select-none",
+      className,
+    )}
+    {...props}
+  />
+);
 
-const Text = styled("text", {
-  fontFamily: "$mono",
-  fontSize: 9,
-  fontWeight: "bold",
-  fill: "$gray10",
-  userSelect: "none",
-});
+const Axis = ({
+  dashed,
+  className,
+  ...props
+}: React.ComponentProps<"line"> & { dashed?: boolean }) => (
+  <line
+    className={cn(
+      "stroke-gray8 stroke-1",
+      dashed && "[stroke-dasharray:2_1]",
+      className,
+    )}
+    {...props}
+  />
+);
 
-const Axis = styled("line", {
-  stroke: "$gray8",
-  strokeWidth: 1,
-
-  variants: {
-    dashed: {
-      true: {
-        strokeDasharray: "2 1",
-      },
-    },
-  },
-});
-
-const Path = styled(motion.path, {
-  stroke: "$gray12",
-  strokeWidth: 2,
-  fill: "none",
-});
+const Path = (props: ComponentPropsWithoutRef<typeof motion.path>) => (
+  <motion.path className="fill-none stroke-gray12 stroke-2" {...props} />
+);

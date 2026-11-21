@@ -76,7 +76,7 @@ The following sections summarize how the **magic-motion** article demos were mig
 ### Project conventions
 
 - **Merge classes** with [`lib/cn.ts`](app/lib/cn.ts): `cn` = `clsx` + `tailwind-merge`. Use it whenever classes are conditional or passed from props.
-- **Colors**: the `@theme` block in [`app/app.css`](app/app.css) defines the Radix palettes (`gray`, `blue`, etc.) as Tailwind colors (Tailwind 4; there is no `tailwind.config.js`). Map Stitches tokens like `$blue8` → `blue8`, `$gray11` → `gray11` (typically `bg-*`, `text-*`, `border-*`, `fill-*`, `stroke-*`).
+- **Colors**: the `@theme` block in [`app/theme.css`](app/theme.css) defines the Radix palettes (`gray`, `blue`, etc.) as Tailwind colors (Tailwind 4; there is no `tailwind.config.js`). Map Stitches tokens like `$blue8` → `blue8`, `$gray11` → `gray11` (typically `bg-*`, `text-*`, `border-*`, `fill-*`, `stroke-*`).
 - **Radii**: Stitches `radii.base` (6px) aligns with Tailwind `rounded-md` in practice; confirm visually when porting.
 
 ### Constraints we used (adjust per task)
@@ -123,10 +123,10 @@ The following sections summarize how the **magic-motion** article demos were mig
 - **Lint**: `pnpm exec biome check <path>`.
 - **Build**: `pnpm run build` (the build doesn't type-check; run `pnpm typecheck` to see type errors).
 
-### Out of scope by default
+### Status
 
-- Global [`stitches.config.ts`](app/stitches.config.ts) and unrelated packages still on Stitches (e.g. `components/Visualizer`, MDX helpers) unless the migration ticket explicitly includes them.
+Stitches has been fully removed (`@stitches/react`, `stitches.config.ts` and the SSR style injection in `entry.server.tsx`). Theme tokens live in [`app/theme.css`](app/theme.css), shared by [`app/app.css`](app/app.css) and [`app/legacy.css`](app/legacy.css). Extra tokens added during the migration: `shadow-soft` (old `$sm` shadow) and `violet3`.
 
-### Theme / `dark:` (FYI)
+### Theme / `dark:`
 
-- Only the experiment pages (the old pages-router pages, under [`routes/legacy-layout.tsx`](app/routes/legacy-layout.tsx)) have a theme toggle. It maps dark mode to **`darkTheme.className`** from Stitches, not the string `"dark"`, via the small [`ThemeProvider`](app/components/theme.tsx). If you reintroduce dark mode elsewhere, align Tailwind's `dark:` variant with whatever class actually lands on `<html>`—that is separate from "delete dark branches" migrations.
+Only the experiment pages (under [`routes/legacy-layout.tsx`](app/routes/legacy-layout.tsx)) have a theme toggle. [`ThemeProvider`](app/components/theme.tsx) puts `dark` on `<html>`; `theme.css` then swaps the gray scale for Radix's dark grays (as Stitches' `darkTheme` did) and defines the `dark:` variant for that class. Those pages load `legacy.css`, which has Tailwind's theme and utilities but not its preflight, plus their old reset and Nunito / JetBrains Mono fonts.

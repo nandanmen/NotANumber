@@ -15,7 +15,7 @@ import {
   Controls,
   PlayButton,
 } from "~/components/Visualizer";
-import { styled } from "~/stitches.config";
+import { cn } from "~/lib/cn";
 
 const easingFunctions = {
   linear: [0, 0, 1, 1],
@@ -70,7 +70,7 @@ export const EasingFunctionSandbox = () => {
     setEasing((easing) =>
       produce(easing, (draft) => {
         draft[index] = value;
-      })
+      }),
     );
   };
 
@@ -83,14 +83,14 @@ export const EasingFunctionSandbox = () => {
       produce(easing, (draft) => {
         draft[second ? 2 : 0] = transformX(relativeX - 40);
         draft[second ? 3 : 1] = transformY(relativeY);
-      })
+      }),
     );
   };
 
   return (
     <FullWidth>
       <Visualizer className="flex">
-        <Aside>
+        <aside className="relative flex w-[375px] flex-col border-r border-gray8 bg-gray4">
           <CodeBlock>
             {easing.map((value, index) => {
               const isFirstPoint = index === 0 || index === 1;
@@ -119,7 +119,7 @@ export const EasingFunctionSandbox = () => {
               );
             })}
           </CodeBlock>
-          <SvgWrapper>
+          <div>
             <svg viewBox="-20 -155 140 210" ref={svgRef}>
               <Axis dashed x1="0" y1="-100" x2="103" y2="-100" />
               <Axis dashed x1="100" y1="-103" x2="100" y2="0" />
@@ -219,20 +219,16 @@ export const EasingFunctionSandbox = () => {
                 />
               </motion.g>
             </svg>
-          </SvgWrapper>
-        </Aside>
-        <ContentWrapper>
-          <Content
-            padding="lg"
-            ref={containerRef}
-            className="h-full min-h-0"
-          >
+          </div>
+        </aside>
+        <div className="flex w-full flex-[2] flex-col border-none!">
+          <Content padding="lg" ref={containerRef} className="h-full min-h-0">
             <Ball animate={controls} />
           </Content>
           <Controls className="border-t border-gray8">
             <select
               value={Object.keys(easingFunctions).find((key) =>
-                easingFunctions[key].every((n, i) => n === easing[i])
+                easingFunctions[key].every((n, i) => n === easing[i]),
               )}
               onChange={(evt) => setEasing(easingFunctions[evt.target.value])}
             >
@@ -244,24 +240,23 @@ export const EasingFunctionSandbox = () => {
             </select>
             <PlayButton onClick={play} />
           </Controls>
-        </ContentWrapper>
+        </div>
       </Visualizer>
     </FullWidth>
   );
 };
 
-type LineProps = ComponentPropsWithoutRef<typeof _Line> & {
+type LineProps = ComponentPropsWithoutRef<"line"> & {
   color: string;
 };
 
 const Line = ({ color, ...props }: LineProps) => (
-  <_Line stroke={`var(--colors-${color}7)`} {...props} />
+  <line
+    stroke={`var(--color-${color}7)`}
+    className="stroke-1 [stroke-dasharray:2]"
+    {...props}
+  />
 );
-
-const _Line = styled("line", {
-  strokeWidth: 1,
-  strokeDasharray: "2",
-});
 
 type CircleProps = ComponentPropsWithoutRef<typeof motion.circle> & {
   color: string;
@@ -271,14 +266,14 @@ type CircleProps = ComponentPropsWithoutRef<typeof motion.circle> & {
 const Circle = ({ color, active, ...props }: CircleProps) => (
   <motion.circle
     animate={{ r: active ? 7 : 2 }}
-    fill={`var(--colors-${color}7)`}
+    fill={`var(--color-${color}7)`}
     {...props}
   />
 );
 
 const CodeBlock = ({ children }) => {
   return (
-    <CodeWrapper>
+    <pre className="border-b border-dashed border-gray8 p-8 font-mono text-[0.875rem]">
       <code data-language="tsx" data-theme="light">
         <span className="line">
           <span style={{ color: "#24292F" }}>&lt;</span>
@@ -319,7 +314,7 @@ const CodeBlock = ({ children }) => {
           <span style={{ color: "#24292F" }}>/&gt;</span>
         </span>
       </code>
-    </CodeWrapper>
+    </pre>
   );
 };
 
@@ -330,7 +325,7 @@ type ButtonSliderProps = {
   onHoverEnd?: (panning: boolean) => void;
   value: number;
   active?: boolean;
-} & Omit<React.ComponentPropsWithoutRef<typeof _ButtonSlider>, "onHoverEnd">;
+} & Omit<React.ComponentPropsWithoutRef<typeof motion.button>, "onHoverEnd">;
 
 export const ButtonSlider = ({
   onValueChange,
@@ -339,12 +334,18 @@ export const ButtonSlider = ({
   onPanStart,
   onPanEnd,
   onHoverEnd,
+  className,
   ...props
 }: ButtonSliderProps) => {
   const [panning, setPanning] = React.useState(false);
   return (
-    <_ButtonSlider
-      active={active || panning}
+    <motion.button
+      type="button"
+      className={cn(
+        "text-(--text-color,#0550AE) hover:bg-(--active-color,var(--color-blue6))",
+        (active || panning) && "bg-(--active-color,var(--color-blue6))",
+        className,
+      )}
       onPanStart={(...args) => {
         setPanning(true);
         onPanStart?.(...args);
@@ -358,41 +359,22 @@ export const ButtonSlider = ({
       {...props}
     >
       {value.toFixed(2)}
-    </_ButtonSlider>
+    </motion.button>
   );
 };
 
-const _ButtonSlider = styled(motion.button, {
-  color: "var(--text-color, #0550AE)",
-
-  "&:hover": {
-    background: "var(--active-color, $colors$blue6)",
-  },
-
-  variants: {
-    active: {
-      true: {
-        background: "var(--active-color, $colors$blue6)",
-      },
-    },
-  },
-});
-
 const ControlLine = ({ x2 = 0, y2 = 0, color, ...props }) => {
   return (
-    <_ControlLine
-      css={{ stroke: `var(--colors-${color}7)` }}
+    <motion.line
+      className="stroke-2"
+      style={{ stroke: `var(--color-${color}7)` }}
       animate={{ x2, y2 }}
       {...props}
     />
   );
 };
 
-const _ControlLine = styled(motion.line, {
-  strokeWidth: 2,
-});
-
-type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
+type PointProps = ComponentPropsWithoutRef<typeof motion.circle> & {
   cx?: number;
   cy?: number;
   color: string;
@@ -400,8 +382,9 @@ type PointProps = ComponentPropsWithoutRef<typeof _Point> & {
 
 const Point = ({ cx = 0, cy = 0, color, ...props }: PointProps) => {
   return (
-    <_Point
-      css={{ fill: `var(--colors-${color}5)` }}
+    <motion.circle
+      className="cursor-pointer stroke-gray12 stroke-1"
+      style={{ fill: `var(--color-${color}5)` }}
       animate={{ cx, cy }}
       r="5"
       {...props}
@@ -409,71 +392,39 @@ const Point = ({ cx = 0, cy = 0, color, ...props }: PointProps) => {
   );
 };
 
-const _Point = styled(motion.circle, {
-  strokeWidth: 1,
-  stroke: "$gray12",
-  cursor: "pointer",
-});
+const Text = ({ className, ...props }: ComponentPropsWithoutRef<"text">) => (
+  <text
+    className={cn(
+      "fill-gray10 font-mono text-[9px] font-bold select-none",
+      className,
+    )}
+    {...props}
+  />
+);
 
-const Text = styled("text", {
-  fontFamily: "$mono",
-  fontSize: 9,
-  fontWeight: "bold",
-  fill: "$gray10",
-  userSelect: "none",
-});
+const Axis = ({
+  dashed,
+  className,
+  ...props
+}: React.ComponentProps<"line"> & { dashed?: boolean }) => (
+  <line
+    className={cn(
+      "stroke-gray8 stroke-1",
+      dashed && "[stroke-dasharray:2_1]",
+      className,
+    )}
+    {...props}
+  />
+);
 
-const Axis = styled("line", {
-  stroke: "$gray8",
-  strokeWidth: 1,
+const Path = (props: ComponentPropsWithoutRef<typeof motion.path>) => (
+  <motion.path className="fill-none stroke-gray12 stroke-2" {...props} />
+);
 
-  variants: {
-    dashed: {
-      true: {
-        strokeDasharray: "2 1",
-      },
-    },
-  },
-});
-
-const Path = styled(motion.path, {
-  stroke: "$gray12",
-  strokeWidth: 2,
-  fill: "none",
-});
-
-const ContentWrapper = styled("div", {
-  width: "100%",
-  flex: 2,
-  border: "none !important",
-  display: "flex",
-  flexDirection: "column",
-});
-
-const Aside = styled("aside", {
-  width: 375,
-  borderRight: "1px solid $gray8",
-  display: "flex",
-  flexDirection: "column",
-  position: "relative",
-  background: "$gray4",
-});
-
-const CodeWrapper = styled("pre", {
-  borderBottom: "1px dashed $gray8",
-  fontFamily: "$mono",
-  padding: "$8",
-  fontSize: "$sm",
-});
-
-const SvgWrapper = styled("div", {});
-
-const Ball = styled(motion.div, {
-  width: SQUARE_SIZE,
-  aspectRatio: 1,
-  border: "1px solid $gray12",
-  background: "linear-gradient(45deg, $blue7, $blue5)",
-  borderRadius: "$base",
-  boxShadow: "3px 3px 0 $colors$gray12",
-  margin: "0 auto",
-});
+const Ball = (props: ComponentPropsWithoutRef<typeof motion.div>) => (
+  <motion.div
+    className="mx-auto aspect-square rounded-md border border-gray12 bg-[linear-gradient(45deg,var(--color-blue7),var(--color-blue5))] shadow-[3px_3px_0_var(--color-gray12)]"
+    style={{ width: SQUARE_SIZE }}
+    {...props}
+  />
+);

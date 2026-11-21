@@ -1,6 +1,3 @@
-import React from "react";
-import { darkTheme, styled } from "~/stitches.config";
-
 export type Color = "yellow" | "green";
 
 export type SvgBackgroundGradientProps = {
@@ -10,6 +7,24 @@ export type SvgBackgroundGradientProps = {
 
 export const getFillFromId = (id: string) => `url('#${id}')`;
 
+const stopStart = {
+  blue: "[stop-color:var(--color-blue4)] dark:[stop-color:var(--color-blue7)]",
+  green:
+    "[stop-color:var(--color-green4)] dark:[stop-color:var(--color-green7)]",
+  yellow:
+    "[stop-color:var(--color-yellow4)] dark:[stop-color:var(--color-yellow7)]",
+  red: "[stop-color:var(--color-red4)] dark:[stop-color:var(--color-red7)]",
+};
+
+const stopEnd = {
+  blue: "[stop-color:var(--color-blue6)] dark:[stop-color:var(--color-blue9)]",
+  green:
+    "[stop-color:var(--color-green6)] dark:[stop-color:var(--color-green9)]",
+  yellow:
+    "[stop-color:var(--color-yellow6)] dark:[stop-color:var(--color-yellow9)]",
+  red: "[stop-color:var(--color-red6)] dark:[stop-color:var(--color-red9)]",
+};
+
 export function SvgBackgroundGradient({
   id,
   color,
@@ -17,71 +32,9 @@ export function SvgBackgroundGradient({
   return (
     <defs>
       <linearGradient id={id} gradientTransform="rotate(45)">
-        <StopStart offset="0%" color={color} />
-        <StopEnd offset="100%" color={color} />
+        <stop offset="0%" className={stopStart[color ?? "blue"]} />
+        <stop offset="100%" className={stopEnd[color ?? "blue"]} />
       </linearGradient>
     </defs>
   );
 }
-
-const StopStart = styled("stop", {
-  stopColor: "$colors$blue4",
-
-  [`.${darkTheme} &`]: {
-    stopColor: "$colors$blue7",
-  },
-
-  variants: {
-    color: {
-      green: {
-        stopColor: "$colors$green4",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$green7",
-        },
-      },
-      yellow: {
-        stopColor: "$colors$yellow4",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$yellow7",
-        },
-      },
-      red: {
-        stopColor: "$colors$red4",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$red7",
-        },
-      },
-    },
-  },
-});
-
-const StopEnd = styled("stop", {
-  stopColor: "$colors$blue6",
-
-  [`.${darkTheme} &`]: {
-    stopColor: "$colors$blue9",
-  },
-
-  variants: {
-    color: {
-      green: {
-        stopColor: "$colors$green6",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$green9",
-        },
-      },
-      yellow: {
-        stopColor: "$colors$yellow6",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$yellow9",
-        },
-      },
-      red: {
-        stopColor: "$colors$red6",
-        [`.${darkTheme} &`]: {
-          stopColor: "$colors$red9",
-        },
-      },
-    },
-  },
-});

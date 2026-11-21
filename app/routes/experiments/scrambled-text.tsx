@@ -11,7 +11,6 @@ import {
   TextScrambleWindow,
   ClientOnly,
 } from "~/experiments/TextLoadAnimation";
-import { styled } from "~/stitches.config";
 
 const speeds = [0.1, 0.25, 0.5, 1];
 
@@ -30,7 +29,7 @@ export default function ScrambledTextPage() {
   return (
     <ExperimentsPage page="scrambled-text">
       <ExperimentWrapper>
-        <AnimationWrapper>
+        <motion.div className="relative w-full rounded-md border border-gray8 bg-gray4 p-6">
           <ClientOnly>
             <TextScrambleWindow
               key={key}
@@ -41,8 +40,12 @@ export default function ScrambledTextPage() {
               Fast, unstyled, composable command menu for React
             </TextScrambleWindow>
           </ClientOnly>
-          {debug && <CurrentSpeed>{speed}x</CurrentSpeed>}
-        </AnimationWrapper>
+          {debug && (
+            <div className="absolute top-2 right-2 text-[0.875rem] font-bold text-gray11">
+              {speed}x
+            </div>
+          )}
+        </motion.div>
       </ExperimentWrapper>
       <Controls
         debug={debug}
@@ -74,21 +77,3 @@ export default function ScrambledTextPage() {
     </ExperimentsPage>
   );
 }
-
-const CurrentSpeed = styled("div", {
-  position: "absolute",
-  top: "$2",
-  right: "$2",
-  fontSize: "$sm",
-  color: "$gray11",
-  fontWeight: "bold",
-});
-
-const AnimationWrapper = styled(motion.div, {
-  border: "1px solid $gray8",
-  background: "$gray4",
-  padding: "$6",
-  borderRadius: "$base",
-  width: "100%",
-  position: "relative",
-});

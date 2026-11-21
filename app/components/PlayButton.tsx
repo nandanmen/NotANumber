@@ -1,6 +1,5 @@
 import { FaPlay, FaPause } from "react-icons/fa";
-import { styled, darkTheme } from "~/stitches.config";
-import { Row } from "./layout/Row";
+import { cn } from "~/lib/cn";
 
 type PlayButtonProps = {
   isPlaying: boolean;
@@ -14,72 +13,18 @@ export const PlayButton = ({
   secondary,
 }: PlayButtonProps) => {
   return (
-    <Wrapper
-      as="button"
-      center="all"
+    <button
+      type="button"
       onClick={onClick}
       title={isPlaying ? "Pause" : "Play"}
-      secondary={secondary}
+      className={cn(
+        "flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-[4px] text-[0.875rem]",
+        secondary
+          ? "border-none bg-transparent text-gray11 shadow-none hover:border-none hover:bg-gray7 hover:text-gray11"
+          : "border border-black bg-blue6 shadow-md hover:border-blue11 hover:bg-blue9 hover:text-gray1 dark:border-blue9 dark:bg-blue9 dark:text-gray1 dark:hover:border-blue10 dark:hover:bg-blue10 dark:hover:text-inherit",
+      )}
     >
       {isPlaying ? <FaPause /> : <FaPlay />}
-    </Wrapper>
+    </button>
   );
 };
-
-const Wrapper = styled(Row, {
-  background: "$blue6",
-  border: "1px solid black",
-  width: "$8",
-  height: "$8",
-  borderRadius: 4,
-  boxShadow: "$md",
-  flexShrink: 0,
-  fontSize: "$sm",
-  cursor: "pointer",
-
-  "&:hover": {
-    color: "$gray1",
-    background: "$blue9",
-    borderColor: "$blue11",
-  },
-
-  [`.${darkTheme} &`]: {
-    background: "$blue9",
-    borderColor: "$blue9",
-    color: "$gray1",
-
-    "&:hover": {
-      color: "inherit",
-      background: "$blue10",
-      borderColor: "$blue10",
-    },
-  },
-
-  variants: {
-    secondary: {
-      true: {
-        color: "$gray11",
-        background: "none",
-        boxShadow: "none",
-        border: "none",
-
-        "&:hover": {
-          color: "$gray11",
-          background: "$gray7",
-          border: "none",
-        },
-
-        [`.${darkTheme} &`]: {
-          background: "none",
-          border: "none",
-
-          "&:hover": {
-            color: "$gray11",
-            background: "$gray7",
-            border: "none",
-          },
-        },
-      },
-    },
-  },
-});
