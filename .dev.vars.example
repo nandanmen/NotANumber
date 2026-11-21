@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local development. In production, set each of these
+# with `wrangler secret put <NAME>`.
+
+# Newsletter (/api/subscribe, /api/verify)
+LOOPS_API_KEY=
+

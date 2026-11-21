@@ -2,68 +2,64 @@
 
 This document holds **two playbooks** for agents migrating content here:
 
-1. **App Router + article-grid** — moving an interactive article into [`app/(main)/(article-grid)/`](app/(main)/(article-grid)/) with MDX, metadata, and colocated demos (see the next major section).
+1. **Article under (article-grid)** — adding or moving an interactive article into [`app/routes/(main)/(article-grid)/`](app/routes/(main)/(article-grid)/) with MDX, metadata, and colocated demos (see the next major section).
 2. **Stitches → Tailwind** — replacing `@stitches/react` with Tailwind in article demos and components (see [Stitches → Tailwind migration](#stitches--tailwind-migration)).
 
-Use the section that matches the task. The legacy in-app `/_stories` browser and `*.stories.tsx` pipeline were removed from this repo; do not reintroduce them when migrating articles.
+The site runs on **React Router 7 (framework mode) + MDX + Vite**, deployed to **Cloudflare Workers** (same stack as the `nan` repo). Routes are listed explicitly in [`app/routes.ts`](app/routes.ts); there is no file-system routing.
 
 ---
 
-## App Router: article under (article-grid)
+## Article under (article-grid)
 
-How to add or move a post to the App Router under the article-grid layout (pattern proven with **magic-motion**; references **keys-in-framer-motion**, **database**).
+How to add or move a post under the article-grid layout (pattern proven with **magic-motion**; references **keys-in-framer-motion**, **database**).
 
 ### Route layout and files
 
-Create a segment at `app/(main)/(article-grid)/<slug>/`:
+Create a folder at `app/routes/(main)/(article-grid)/<slug>/` and register it in [`app/routes.ts`](app/routes.ts) inside the `(article-grid)` layout: `route("<slug>", `${articleGrid}/<slug>/route.tsx`)`.
 
 | File | Role |
 |------|------|
-| [`layout.tsx`](app/(main)/(article-grid)/keys-in-framer-motion/layout.tsx) | `export const metadata` (title, description, authors, `twitter`, `openGraph` with `url: https://nan.fyi/<slug>`). Render [`ArticleTitle`](app/(main)/(article-grid)/article-title.tsx) with the same title/description, then `{children}`. |
-| [`page.mdx`](app/(main)/(article-grid)/keys-in-framer-motion/page.mdx) | Article body: imports + prose + embedded components. **No YAML frontmatter** — metadata lives only in `layout.tsx`. |
-| `_components/` | Post-specific interactive demos, colocated with the page (same idea as keys-in-framer-motion / database / magic-motion). |
+| [`route.tsx`](app/routes/(main)/(article-grid)/keys-in-framer-motion/route.tsx) | The route module. `meta()` returns `toMeta(metadata, { image: ogImage, themeColor: "#ededed" })` using the `Metadata` shape from [`~/lib/meta`](app/lib/meta.ts) (title, description, authors, `twitter`, `openGraph` with `url: https://nan.fyi/<slug>`). The default export renders [`ArticleTitle`](app/routes/(main)/(article-grid)/article-title.tsx) with the same title/description, then `<MDXContent />` imported from `./page.mdx`. |
+| [`page.mdx`](app/routes/(main)/(article-grid)/keys-in-framer-motion/page.mdx) | Article body: imports + prose + embedded components. **No YAML frontmatter** — metadata lives only in `route.tsx`. |
+| `opengraph-image.png` | Optional. Import it in `route.tsx` and pass it to `toMeta` as `image`; otherwise use `../../opengraph-image.png` (the site default). |
+| `_components/` | Post-specific interactive demos, colocated with the page. |
 
-Parent shell: [`app/(main)/(article-grid)/layout.tsx`](app/(main)/(article-grid)/layout.tsx) supplies the grid shell, [`Navbar`](app/(main)/(article-grid)/nav.tsx), and `GridSizeProvider`.
+Parent shell: [`app/routes/(main)/(article-grid)/layout.tsx`](app/routes/(main)/(article-grid)/layout.tsx) supplies the grid shell, [`Navbar`](app/routes/(main)/(article-grid)/nav.tsx), and `GridSizeProvider`, and renders the article through `<Outlet />`.
 
-### ArticleTitle import (critical)
+### MDX components
 
-In the route’s **`layout.tsx`**, import **`ArticleTitle`** from **[`../article-title`](app/(main)/(article-grid)/article-title.tsx)**.
+Global MDX components (headings, `pre` → `CodeBlock`, `Aside`, `Wide`, `ScrollGroup`, …) are defined in [`app/mdx-components.tsx`](app/mdx-components.tsx) and provided to every MDX page through `MDXProvider` in [`app/root.tsx`](app/root.tsx). Imports in `.mdx` files can use the `~/` alias (it points at `app/`).
 
-**Do not** import `ArticleTitle` from [`how-computers-talk/header.tsx`](app/(main)/(article-grid)/how-computers-talk/header.tsx). That file re-exports the title helper in the same module as `PageHeader`, whose imports pull in **client** diagram code (`Connectors`, etc.). Loading that module while Next collects **layout configuration / RSC** for the segment can throw (e.g. `createContext`-style failures). [`article-title.tsx`](app/(main)/(article-grid)/article-title.tsx) is server-only markup.
+### Everything renders on the server and the client
 
-**Check:** `rg 'ArticleTitle.*how-computers-talk/header'` on new layouts should return nothing.
+There are no server components: every component renders during SSR (in the Workers runtime) and again in the browser. So:
 
-### MDX and RSC boundaries
-
-- **`"use client"`** on each interactive demo `.tsx` under `_components/` that uses hooks, **XState**, **`motion` / Framer Motion**, browser APIs, etc.
-- If **`page.mdx`** stays a **server** component, any **shared** component it imports that behaves like a client component (hooks, Stitches + React context, etc.) may need **`"use client"`** on that shared module, or the client boundary must move to a child.
-- **Function props cannot be serialized** from server MDX into client children. Patterns such as `<Demo from={(w, c) => ({ ... })} />` in MDX will fail at build/prerender. **Fix:** move that block into a dedicated **client** component that defines the callbacks inside the file (example: [`TransformOriginSection.tsx`](app/(main)/(article-grid)/magic-motion/_components/TransformOriginSection.tsx)).
+- **No `async` components** and no Node APIs (`fs`, `process.env`) in components. Code blocks are highlighted synchronously ([`code-block.tsx`](app/components/mdx/code-block.tsx) uses a sync Shiki highlighter with a fixed set of languages — add a language there if a post needs one).
+- **No crypto randomness, timers or I/O at module scope** (e.g. `const items = [{ id: nanoid() }]`). Workers reject them outside a request. Use `nanoid/non-secure`, or create the values inside a component/effect.
+- **Browser-only libraries** that run code on import (Sandpack) must be loaded lazily on the client; see [`components/Sandbox/Sandbox.tsx`](app/components/Sandbox/Sandbox.tsx).
+- `"use client"` directives are not needed.
+- Use `Link` from `react-router` (`to=`, not `href=`) and `useLocation()` instead of `next/link` / `usePathname`.
 
 ### MDX and compound `Quiz` components
 
-The MDX toolchain may not treat **`Quiz.Option`** as defined even when `Quiz.Option` is assigned on the `Quiz` object. **Fix:** use **named** exports from [`components/Quiz/Quiz.tsx`](components/Quiz/Quiz.tsx) — `QuizQuestion`, `QuizOption`, `QuizOptions`, `QuizTip`, `QuizSpoiler` — and write `<QuizOption>` in MDX instead of `<Quiz.Option>`. Keep `Quiz` as the root wrapper.
+The MDX toolchain may not treat **`Quiz.Option`** as defined even when `Quiz.Option` is assigned on the `Quiz` object. **Fix:** use **named** exports from [`components/Quiz/Quiz.tsx`](app/components/Quiz/Quiz.tsx) — `QuizQuestion`, `QuizOption`, `QuizOptions`, `QuizTip`, `QuizSpoiler` — and write `<QuizOption>` in MDX instead of `<Quiz.Option>`. Keep `Quiz` as the root wrapper.
 
 ### Full-bleed figures in the grid
 
-Prefer **[`Wide`](components/mdx/Wide.tsx)** (`~/components/mdx/Wide`) over [`FullWidth`](components/FullWidth.tsx) for figures inside article-grid content so width and padding align with the grid.
+Prefer **[`Wide`](app/components/mdx/Wide.tsx)** (`~/components/mdx/Wide`) over [`FullWidth`](app/components/FullWidth.tsx) for figures inside article-grid content so width and padding align with the grid.
 
 ### Cross-article shared UI
 
-If a demo imports another post’s code (e.g. **TokenList** from tokenizer), use a stable path such as **`~/content/tokenizer/components/TokenList`** until that post is migrated. If server MDX imports it, ensure that module is safe for the boundary (often **`"use client"`** on the shared file).
-
-### Legacy `content/` + Pages router (FYI)
-
-[`pages/[content].tsx`](pages/[content].tsx) and [`lib/content.server.ts`](lib/content.server.ts) still serve remaining **`content/**/index.mdx`** posts via **`_dist-content`** produced by **`pnpm build:content`** (Babel). Do not remove **`build:content`** from **`dev` / `build`** until every such post is migrated off the Pages router or `CONTENT_FOLDER` is repointed.
+If a demo imports another post's code (e.g. **TokenList** from tokenizer), use a stable path such as **`~/routes/(main)/(article-grid)/tokenizer/_components/TokenList`**.
 
 ### Verification (article-grid)
 
-- **`pnpm build`**
+- **`pnpm build`**, then **`pnpm preview`** (runs the built worker locally).
 - Open `/<slug>` and spot-check interactive blocks and layout chrome.
-- Confirm **`ArticleTitle`** is only imported from **`article-title.tsx`** in route layouts.
 
 ### Visualizer and buttons (FYI)
 
-Many article demos use **`~/components/Visualizer`** (`ToggleButton`, `IconButton`, `PlayButton`, `UndoButton`, etc.). Those re-use shared **[`components/Button.tsx`](components/Button.tsx)** under the hood. When changing control styling, prefer updating **`Button`** / Visualizer wrappers rather than forking one-off buttons in the post.
+Many article demos use **`~/components/Visualizer`** (`ToggleButton`, `IconButton`, `PlayButton`, `UndoButton`, etc.). Those re-use shared **[`components/Button.tsx`](app/components/Button.tsx)** under the hood. When changing control styling, prefer updating **`Button`** / Visualizer wrappers rather than forking one-off buttons in the post.
 
 ---
 
@@ -79,8 +75,8 @@ The following sections summarize how the **magic-motion** article demos were mig
 
 ### Project conventions
 
-- **Merge classes** with [`lib/cn.ts`](lib/cn.ts): `cn` = `clsx` + `tailwind-merge`. Use it whenever classes are conditional or passed from props.
-- **Colors**: [`tailwind.config.js`](tailwind.config.js) already spreads Radix palettes (`gray`, `blue`, etc.). Map Stitches tokens like `$blue8` → `blue8`, `$gray11` → `gray11` (typically `bg-*`, `text-*`, `border-*`, `fill-*`, `stroke-*`).
+- **Merge classes** with [`lib/cn.ts`](app/lib/cn.ts): `cn` = `clsx` + `tailwind-merge`. Use it whenever classes are conditional or passed from props.
+- **Colors**: the `@theme` block in [`app/app.css`](app/app.css) defines the Radix palettes (`gray`, `blue`, etc.) as Tailwind colors (Tailwind 4; there is no `tailwind.config.js`). Map Stitches tokens like `$blue8` → `blue8`, `$gray11` → `gray11` (typically `bg-*`, `text-*`, `border-*`, `fill-*`, `stroke-*`).
 - **Radii**: Stitches `radii.base` (6px) aligns with Tailwind `rounded-md` in practice; confirm visually when porting.
 
 ### Constraints we used (adjust per task)
@@ -100,7 +96,7 @@ The following sections summarize how the **magic-motion** article demos were mig
 | `@md` in Stitches | Tailwind `md:` (both use 768px here) |
 | `boxShadow: "$sm"` | `shadow-sm` |
 | SVG `filter: drop-shadow(...)` | `drop-shadow-sm` or `filter-none` |
-| Compound selectors (`&:after`, `&:before`) | Tailwind `after:*` / `before:*` with `content-['']` where needed, or a thin `@layer` rule in [`app/styles.css`](app/styles.css) if the markup becomes unmaintainable |
+| Compound selectors (`&:after`, `&:before`) | Tailwind `after:*` / `before:*` with `content-['']` where needed, or a thin `@layer` rule in [`app/app.css`](app/app.css) if the markup becomes unmaintainable |
 | `css={{ ... }}` prop (Stitches on components) | `style={{ ... }}` and/or `className` |
 
 ### Suggested order of work
@@ -125,12 +121,12 @@ The following sections summarize how the **magic-motion** article demos were mig
 
 - **Search**: `rg stitches app/(path)/` (or the target tree)—no hits in migrated files.
 - **Lint**: `pnpm exec biome check <path>`.
-- **Build**: `pnpm run build` (Next may skip full `tsc`—fix obvious type errors locally).
+- **Build**: `pnpm run build` (the build doesn't type-check; run `pnpm typecheck` to see type errors).
 
 ### Out of scope by default
 
-- Global [`stitches.config.ts`](stitches.config.ts) and unrelated packages still on Stitches (e.g. `components/Visualizer`, MDX helpers) unless the migration ticket explicitly includes them.
+- Global [`stitches.config.ts`](app/stitches.config.ts) and unrelated packages still on Stitches (e.g. `components/Visualizer`, MDX helpers) unless the migration ticket explicitly includes them.
 
 ### Theme / `dark:` (FYI)
 
-- Pages router [`pages/_app.tsx`](pages/_app.tsx) maps `next-themes` dark to **`darkTheme.className`** from Stitches, not the string `"dark"`. App-router layouts may not wrap `ThemeProvider` the same way. If you reintroduce dark mode later, align **Tailwind `darkMode`** with whatever class actually lands on `<html>`—that is separate from “delete dark branches” migrations.
+- Only the experiment pages (the old pages-router pages, under [`routes/legacy-layout.tsx`](app/routes/legacy-layout.tsx)) have a theme toggle. It maps dark mode to **`darkTheme.className`** from Stitches, not the string `"dark"`, via the small [`ThemeProvider`](app/components/theme.tsx). If you reintroduce dark mode elsewhere, align Tailwind's `dark:` variant with whatever class actually lands on `<html>`—that is separate from "delete dark branches" migrations.

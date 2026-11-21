@@ -1,0 +1,203 @@
+@import "tailwindcss" source(".");
+
+@font-face {
+  font-family: "PP Editorial New";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/pp-editorial-new/regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PP Editorial New";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/pp-editorial-new/bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/sans/regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/sans/regular-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/sans/medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/sans/medium-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/sans/semibold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/sans/semibold-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/sans/bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Sans";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/sans/bold-italic.woff2") format("woff2");
+}
+
+@theme {
+  --color-gray1: hsl(0, 0%, 99%);
+  --color-gray2: hsl(0, 0%, 97.3%);
+  --color-gray3: hsl(0, 0%, 95.1%);
+  --color-gray4: hsl(0, 0%, 93%);
+  --color-gray5: hsl(0, 0%, 90.9%);
+  --color-gray6: hsl(0, 0%, 88.7%);
+  --color-gray7: hsl(0, 0%, 85.8%);
+  --color-gray8: hsl(0, 0%, 78%);
+  --color-gray9: hsl(0, 0%, 56.1%);
+  --color-gray10: hsl(0, 0%, 52.3%);
+  --color-gray11: hsl(0, 0%, 43.5%);
+  --color-gray12: hsl(0, 0%, 9%);
+  --color-blue1: hsl(206, 100%, 99.2%);
+  --color-blue2: hsl(210, 100%, 98%);
+  --color-blue3: hsl(209, 100%, 96.5%);
+  --color-blue4: hsl(210, 98.8%, 94%);
+  --color-blue5: hsl(209, 95%, 90.1%);
+  --color-blue6: hsl(209, 81.2%, 84.5%);
+  --color-blue7: hsl(208, 77.5%, 76.9%);
+  --color-blue8: hsl(206, 81.9%, 65.3%);
+  --color-blue9: hsl(206, 100%, 50%);
+  --color-blue10: hsl(208, 100%, 47.3%);
+  --color-blue11: hsl(211, 100%, 43.2%);
+  --color-blue12: hsl(211, 100%, 15%);
+  --color-green1: hsl(136, 50%, 98.9%);
+  --color-green2: hsl(138, 62.5%, 96.9%);
+  --color-green3: hsl(139, 55.2%, 94.5%);
+  --color-green4: hsl(140, 48.7%, 91%);
+  --color-green5: hsl(141, 43.7%, 86%);
+  --color-green6: hsl(143, 40.3%, 79%);
+  --color-green7: hsl(146, 38.5%, 69%);
+  --color-green8: hsl(151, 40.2%, 54.1%);
+  --color-green9: hsl(151, 55%, 41.5%);
+  --color-green10: hsl(152, 57.5%, 37.6%);
+  --color-green11: hsl(153, 67%, 28.5%);
+  --color-green12: hsl(155, 40%, 14%);
+  --color-red1: hsl(359, 100%, 99.4%);
+  --color-red2: hsl(359, 100%, 98.6%);
+  --color-red3: hsl(360, 100%, 96.8%);
+  --color-red4: hsl(360, 97.9%, 94.8%);
+  --color-red5: hsl(360, 90.2%, 91.9%);
+  --color-red6: hsl(360, 81.7%, 87.8%);
+  --color-red7: hsl(359, 74.2%, 81.7%);
+  --color-red8: hsl(359, 69.5%, 74.3%);
+  --color-red9: hsl(358, 75%, 59%);
+  --color-red10: hsl(358, 69.4%, 55.2%);
+  --color-red11: hsl(358, 65%, 48.7%);
+  --color-red12: hsl(354, 50%, 14.6%);
+  --color-yellow1: hsl(60, 54%, 98.5%);
+  --color-yellow2: hsl(52, 100%, 95.5%);
+  --color-yellow3: hsl(55, 100%, 90.9%);
+  --color-yellow4: hsl(54, 100%, 86.6%);
+  --color-yellow5: hsl(52, 97.9%, 82%);
+  --color-yellow6: hsl(50, 89.4%, 76.1%);
+  --color-yellow7: hsl(47, 80.4%, 68%);
+  --color-yellow8: hsl(48, 100%, 46.1%);
+  --color-yellow9: hsl(53, 92%, 50%);
+  --color-yellow10: hsl(50, 100%, 48.5%);
+  --color-yellow11: hsl(42, 100%, 29%);
+  --color-yellow12: hsl(40, 55%, 13.5%);
+  --color-cyan1: hsl(185, 60%, 98.7%);
+  --color-cyan2: hsl(185, 73.3%, 97.1%);
+  --color-cyan3: hsl(186, 70.2%, 94.4%);
+  --color-cyan4: hsl(186, 63.8%, 90.6%);
+  --color-cyan5: hsl(187, 58.3%, 85.4%);
+  --color-cyan6: hsl(188, 54.6%, 78.4%);
+  --color-cyan7: hsl(189, 53.7%, 68.7%);
+  --color-cyan8: hsl(189, 60.3%, 52.5%);
+  --color-cyan9: hsl(190, 95%, 39%);
+  --color-cyan10: hsl(191, 91.2%, 36.8%);
+  --color-cyan11: hsl(192, 85%, 31%);
+  --color-cyan12: hsl(192, 88%, 12.5%);
+  --color-border-strong: hsl(0, 0%, 78%);
+  --color-border-soft: hsl(0, 0%, 85.8%);
+
+  --font-serif: "PP Editorial New", ui-serif, Georgia, serif;
+  --font-sans: "Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: Maple Mono, ui-monospace, monospace;
+  --font-handwriting: "Shantell Sans", cursive;
+
+  --breakpoint-coffee: 1370px;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+.article {
+  @apply gap-y-5;
+}
+
+.article > :where(*) {
+  @apply col-start-2;
+}
+
+.article-layout {
+  @apply grid grid-cols-[1fr_min(65ch,100%)_1fr] auto-rows-min;
+}
+
+.full-width {
+  @apply col-start-1 -col-end-1;
+}
+
+.inline-code:not(pre > code) {
+  @apply bg-gray7 px-1 text-sm;
+}

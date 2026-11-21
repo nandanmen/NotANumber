@@ -8,10 +8,6 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # production
 /build
 
@@ -29,15 +25,14 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
-
 # generated files
-_dist-content/
-old-src/
-
-.open-next/
 .wrangler/
 .pnpm-store/
 
-.tsconfig.tsbuildinfo
+*.tsbuildinfo
+# React Router
+.react-router/
+
+# Wrangler local secrets
+.dev.vars*
+!.dev.vars.example

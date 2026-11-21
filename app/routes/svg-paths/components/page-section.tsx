@@ -1,0 +1,55 @@
+import React from "react";
+import { clsx } from "clsx";
+import { useIndexContext } from "./index-provider";
+import styles from "./page-section.module.css";
+
+const isVisible = (element: HTMLElement) => {
+  const { top } = element.getBoundingClientRect();
+  return top < window.innerHeight / 2;
+};
+
+export function PageSection({
+  index,
+  children,
+}: {
+  index: number;
+  children: React.ReactNode;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { set } = useIndexContext();
+
+  React.useEffect(() => {
+    if (ref.current && isVisible(ref.current)) {
+      set(index);
+    }
+  }, [index, set]);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current && isVisible(ref.current)) {
+        set(index);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [index, set]);
+
+  return (
+    <section
+      ref={ref}
+      className={clsx(
+        styles.section,
+        "group relative px-8 pb-8 max-w-[100vw] lg:px-16",
+        // Tailwind 3's `space-y-[1.5em]` (top margins), which Tailwind 4
+        // changed to bottom margins; the em values differ per element.
+        "gap-y-6 lg:[&>:not([hidden])~:not([hidden])]:mt-[1.5em] lg:min-h-[50vh]",
+        "grid grid-cols-[1fr_min(100%,60ch)_1fr] lg:block"
+      )}
+    >
+      <hr className="border-gray8 border-dashed mb-10 lg:mb-16 group-first-of-type:hidden" />
+      {children}
+    </section>
+  );
+}
